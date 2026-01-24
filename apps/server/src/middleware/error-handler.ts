@@ -10,7 +10,7 @@ export function errorHandler(err: Error | HTTPResponseError, c: Context) {
 
   // Handle HTTP errors with status code
   if ("status" in err && typeof err.status === "number") {
-    return c.json({ error: err.message || "An error occurred" }, err.status);
+    return c.json({ error: err.message || "An error occurred" }, err.status as 400 | 404 | 500);
   }
 
   // Handle generic errors

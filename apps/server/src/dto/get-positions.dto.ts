@@ -1,8 +1,9 @@
-import { IsEnum, IsInt, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsInt, IsOptional } from "class-validator";
 
 import { PAGINATION } from "../constants";
-import { ClampPagination, DetailLevel, MinValue, OrderDirection, ToBoolean, ToNumber } from "./common.dto";
+import { ClampPagination, DetailLevel, MinValue, ToBoolean, ToNumber } from "./common.dto";
 import { IsEthereumAddress } from "./ethereum.validator";
+import { OrderDirection, Position_OrderBy } from "../gql/graphql";
 
 export class GetPositionsQueryDto {
   @IsEthereumAddress()
@@ -25,12 +26,12 @@ export class GetPositionsQueryDto {
   closed?: boolean = false;
 
   @IsOptional()
-  @IsString()
-  orderBy?: string = "createdAtTimestamp";
+  @IsEnum(Position_OrderBy)
+  orderBy?: Position_OrderBy = Position_OrderBy.CreatedAtTimestamp;
 
   @IsOptional()
   @IsEnum(OrderDirection)
-  orderDirection?: OrderDirection = OrderDirection.DESC;
+  orderDirection?: OrderDirection = OrderDirection.Desc;
 
   @IsOptional()
   @IsEnum(DetailLevel)

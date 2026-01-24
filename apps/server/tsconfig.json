@@ -1,7 +1,7 @@
 {
   "extends": "@matrapp/typescript-config/base.json",
   "compilerOptions": {
-    "types": ["bun"],
+    "types": ["bun", "reflect-metadata"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",

@@ -4,6 +4,12 @@ import { Hono } from "hono";
 
 import { errorHandler } from "./middleware/error-handler";
 import { positionsRoute } from "./routes/v1/positions.route";
+import { registerGlobalDependencies } from "./di/register";
+import { registerUniswapV3Feature } from "./features/uniswap-v3/di/register";
+
+// Register DI container
+registerGlobalDependencies();
+registerUniswapV3Feature();
 
 const app = new Hono();
 
