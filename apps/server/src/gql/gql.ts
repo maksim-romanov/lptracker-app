@@ -15,16 +15,22 @@ import * as types from './graphql';
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query Position($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      pool {\n        currentTick\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n": typeof types.PositionDocument,
+    "\n  query PositionForFees($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      liquidity\n\n      pool {\n        feeTier\n\n        currentTick\n        sqrtPriceX96\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n": typeof types.PositionForFeesDocument,
+    "\n  query Position($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      liquidity\n\n      pool {\n        feeTier\n\n        currentTick\n        sqrtPriceX96\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n": typeof types.PositionDocument,
 };
 const documents: Documents = {
-    "\n  query Position($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      pool {\n        currentTick\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n": types.PositionDocument,
+    "\n  query PositionForFees($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      liquidity\n\n      pool {\n        feeTier\n\n        currentTick\n        sqrtPriceX96\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n": types.PositionForFeesDocument,
+    "\n  query Position($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      liquidity\n\n      pool {\n        feeTier\n\n        currentTick\n        sqrtPriceX96\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n": types.PositionDocument,
 };
 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Position($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      pool {\n        currentTick\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n"): typeof import('./graphql').PositionDocument;
+export function graphql(source: "\n  query PositionForFees($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      liquidity\n\n      pool {\n        feeTier\n\n        currentTick\n        sqrtPriceX96\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n"): typeof import('./graphql').PositionForFeesDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Position($tokenId: ID!) {\n    position(id: $tokenId) {\n      id\n\n      tickLower\n      tickUpper\n\n      liquidity\n\n      pool {\n        feeTier\n\n        currentTick\n        sqrtPriceX96\n\n        token0 {\n          id\n          symbol\n          decimals\n        }\n\n        token1 {\n          id\n          symbol\n          decimals\n        }\n      }\n    }\n  }\n"): typeof import('./graphql').PositionDocument;
 
 
 export function graphql(source: string) {

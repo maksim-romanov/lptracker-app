@@ -737,12 +737,19 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
+export type PositionForFeesQueryVariables = Exact<{
+  tokenId: Scalars['ID']['input'];
+}>;
+
+
+export type PositionForFeesQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, tickLower: number, tickUpper: number, liquidity: any, pool?: { __typename?: 'Pool', feeTier: number, currentTick: number, sqrtPriceX96: any, token0: { __typename?: 'Token', id: string, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: string, symbol: string, decimals: number } } | null } | null };
+
 export type PositionQueryVariables = Exact<{
   tokenId: Scalars['ID']['input'];
 }>;
 
 
-export type PositionQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', currentTick: number, token0: { __typename?: 'Token', id: string, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: string, symbol: string, decimals: number } } | null } | null };
+export type PositionQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, tickLower: number, tickUpper: number, liquidity: any, pool?: { __typename?: 'Pool', feeTier: number, currentTick: number, sqrtPriceX96: any, token0: { __typename?: 'Token', id: string, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: string, symbol: string, decimals: number } } | null } | null };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -763,14 +770,42 @@ export class TypedDocumentString<TResult, TVariables>
   }
 }
 
+export const PositionForFeesDocument = new TypedDocumentString(`
+    query PositionForFees($tokenId: ID!) {
+  position(id: $tokenId) {
+    id
+    tickLower
+    tickUpper
+    liquidity
+    pool {
+      feeTier
+      currentTick
+      sqrtPriceX96
+      token0 {
+        id
+        symbol
+        decimals
+      }
+      token1 {
+        id
+        symbol
+        decimals
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<PositionForFeesQuery, PositionForFeesQueryVariables>;
 export const PositionDocument = new TypedDocumentString(`
     query Position($tokenId: ID!) {
   position(id: $tokenId) {
     id
     tickLower
     tickUpper
+    liquidity
     pool {
+      feeTier
       currentTick
+      sqrtPriceX96
       token0 {
         id
         symbol

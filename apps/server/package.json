@@ -11,7 +11,10 @@
     "check": "biome check .",
     "check:fix": "biome check --write ."
   },
-  "dependencies": {},
+  "dependencies": {
+    "@uniswap/v3-core": "^1.0.1",
+    "@uniswap/v3-periphery": "^1.4.4"
+  },
   "devDependencies": {
     "@graphql-codegen/cli": "^6.1.1",
     "@graphql-codegen/introspection": "^5.0.0",
