@@ -27,6 +27,9 @@
     "dev:android": {
       "cache": false,
       "persistent": true
+    },
+    "codegen": {
+      "cache": false
     }
   }
 }
