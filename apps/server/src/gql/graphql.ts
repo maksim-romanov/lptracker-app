@@ -751,6 +751,18 @@ export type PositionQueryVariables = Exact<{
 
 export type PositionQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, tickLower: number, tickUpper: number, liquidity: any, pool?: { __typename?: 'Pool', feeTier: number, currentTick: number, sqrtPriceX96: any, token0: { __typename?: 'Token', id: string, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: string, symbol: string, decimals: number } } | null } | null };
 
+export type WalletPositionsQueryVariables = Exact<{
+  owner: Scalars['Bytes']['input'];
+  first: Scalars['Int']['input'];
+  skip: Scalars['Int']['input'];
+  orderBy?: InputMaybe<Position_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  closed: Scalars['Boolean']['input'];
+}>;
+
+
+export type WalletPositionsQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: string, feeTier: number, currentTick: number, sqrtPriceX96: any, token0: { __typename?: 'Token', id: string, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: string, symbol: string, decimals: number } } | null }> };
+
 export class TypedDocumentString<TResult, TVariables>
   extends String
   implements DocumentTypeDecoration<TResult, TVariables>
@@ -820,3 +832,35 @@ export const PositionDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<PositionQuery, PositionQueryVariables>;
+export const WalletPositionsDocument = new TypedDocumentString(`
+    query WalletPositions($owner: Bytes!, $first: Int!, $skip: Int!, $orderBy: Position_orderBy, $orderDirection: OrderDirection, $closed: Boolean!) {
+  positions(
+    where: {owner: $owner, closed: $closed}
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    liquidity
+    tickLower
+    tickUpper
+    pool {
+      id
+      feeTier
+      currentTick
+      sqrtPriceX96
+      token0 {
+        id
+        symbol
+        decimals
+      }
+      token1 {
+        id
+        symbol
+        decimals
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<WalletPositionsQuery, WalletPositionsQueryVariables>;
