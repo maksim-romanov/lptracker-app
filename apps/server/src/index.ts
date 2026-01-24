@@ -1,19 +1,28 @@
-import { handleV1Route } from "api/v1";
+import "reflect-metadata";
 
-const server = Bun.serve({
+import { Hono } from "hono";
+
+import { errorHandler } from "./middleware/error-handler";
+import { positionsRoute } from "./routes/v1/positions.route";
+
+const app = new Hono();
+
+// Global error handler
+app.onError(errorHandler);
+
+// Health check endpoint
+app.get("/health", (c) => c.text("OK", 200));
+
+// API v1 routes
+app.route("/api/v1/positions", positionsRoute);
+
+// 404 handler
+app.notFound((c) => c.json({ error: "Not found" }, 404));
+
+// Export for Bun.serve
+export default {
   port: 3000,
-  async fetch(request) {
-    const url = new URL(request.url);
+  fetch: app.fetch,
+};
 
-    if (url.pathname === "/health") {
-      return new Response("OK", { status: 200 });
-    }
-
-    const v1Response = handleV1Route(url);
-    if (v1Response) return v1Response;
-
-    return Response.json({ error: "Not found" }, { status: 404 });
-  },
-});
-
-console.log(`Server running at http://localhost:${server.port}`);
+console.log("Server running at http://localhost:3000");

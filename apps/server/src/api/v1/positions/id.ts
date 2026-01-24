@@ -38,11 +38,23 @@ const getPositionQuery = graphql(`
   }
 `);
 
-export async function getPosition(tokenId: string): Promise<Response> {
+/**
+ * Pure business logic function for fetching a position by ID
+ * Throws errors instead of returning Response objects
+ */
+export async function getPositionLogic(tokenId: string) {
   const result = await gqlClient.request<PositionQuery, PositionQueryVariables>(getPositionQuery, { tokenId });
 
-  if (!result.position) return Response.json({ error: "Position not found" }, { status: 404 });
-  if (!result.position.pool) return Response.json({ error: "Pool not found" }, { status: 404 });
+  if (!result.position) {
+    const error = new Error("Position not found") as Error & { status: number };
+    error.status = 404;
+    throw error;
+  }
+  if (!result.position.pool) {
+    const error = new Error("Pool not found") as Error & { status: number };
+    error.status = 404;
+    throw error;
+  }
 
   const token0 = new Token(
     arbitrum.id,
@@ -106,7 +118,7 @@ export async function getPosition(tokenId: string): Promise<Response> {
   const t0PerT1Upper = priceUpperT1PerT0.invert().toSignificant(6);
   const t0PerT1Current = currentPriceT0PerT1.toSignificant(6);
 
-  return Response.json({
+  return {
     id: result.position.id,
     tickLower: result.position.tickLower,
     tickUpper: result.position.tickUpper,
@@ -136,5 +148,5 @@ export async function getPosition(tokenId: string): Promise<Response> {
       },
       isInRange,
     },
-  });
+  };
 }

@@ -67,11 +67,23 @@ const computeFeeGrowthInside = (
   return subInUint256(feeGrowthGlobalX128, feeGrowthOutsideLowerX128 + feeGrowthOutsideUpperX128);
 };
 
-export async function getPositionFees(tokenId: string): Promise<Response> {
+/**
+ * Pure business logic function for fetching position fees
+ * Throws errors instead of returning Response objects
+ */
+export async function getPositionFeesLogic(tokenId: string) {
   const result = await gqlClient.request<PositionForFeesQuery, PositionForFeesQueryVariables>(getPositionForFeesQuery, { tokenId });
 
-  if (!result.position) return Response.json({ error: "Position not found" }, { status: 404 });
-  if (!result.position.pool) return Response.json({ error: "Pool not found" }, { status: 404 });
+  if (!result.position) {
+    const error = new Error("Position not found") as Error & { status: number };
+    error.status = 404;
+    throw error;
+  }
+  if (!result.position.pool) {
+    const error = new Error("Pool not found") as Error & { status: number };
+    error.status = 404;
+    throw error;
+  }
 
   const token0 = new Token(
     arbitrum.id,
@@ -115,7 +127,9 @@ export async function getPositionFees(tokenId: string): Promise<Response> {
   });
 
   if (multicallResults.some((r) => r.status === "failure")) {
-    return Response.json({ error: "Failed to fetch on-chain data" }, { status: 500 });
+    const error = new Error("Failed to fetch on-chain data") as Error & { status: number };
+    error.status = 500;
+    throw error;
   }
 
   type TickData = [bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean];
@@ -174,7 +188,7 @@ export async function getPositionFees(tokenId: string): Promise<Response> {
   const totalInToken0 = fees0Formatted + fees1Formatted * Number(currentPriceT0PerT1.toSignificant(token0.decimals));
   const totalInToken1 = fees1Formatted + fees0Formatted * Number(currentPriceT1PerT0.toSignificant(token1.decimals));
 
-  return Response.json({
+  return {
     positionId: result.position.id,
     token0: {
       address: result.position.pool.token0.id,
@@ -204,5 +218,5 @@ export async function getPositionFees(tokenId: string): Promise<Response> {
         token1: unclaimedFees1.toString(),
       },
     },
-  });
+  };
 }
