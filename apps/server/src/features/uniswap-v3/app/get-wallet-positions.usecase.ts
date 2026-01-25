@@ -20,11 +20,7 @@ export class GetWalletPositionsUseCase {
     const positions = await Promise.all(
       chainIds.map(async (chainId) => {
         const repository = getContainer(chainId).resolve(PositionsRepository);
-        return repository.getWalletPositions(
-          owner,
-          pagination ? { first: pagination.limit, skip: pagination.offset } : undefined,
-          filters,
-        );
+        return repository.getWalletPositions(owner, pagination ? { first: pagination.limit, skip: pagination.offset } : undefined, filters);
       }),
     );
 
