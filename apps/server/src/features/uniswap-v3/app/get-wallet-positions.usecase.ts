@@ -1,4 +1,4 @@
-import { err, ok } from "neverthrow";
+import { ok } from "neverthrow";
 import { injectable } from "tsyringe";
 import { arbitrum } from "viem/chains";
 
@@ -9,10 +9,16 @@ import { getContainer } from "../di/containers";
 export class GetWalletPositionsUseCase {
   // constructor(@inject(PositionsRepository) readonly _positionsRepository: PositionsRepository) {}
 
-  async execute(owner: string) {
-    const arbitrumPositionsRes = await getContainer(arbitrum.id).resolve(PositionsRepository).getWalletPositions(owner);
-    if (arbitrumPositionsRes.isErr()) return err(arbitrumPositionsRes.error);
+  async execute(owner: string, chainIds = [arbitrum.id]) {
+    const positions = await Promise.all(
+      chainIds.map(async (chainId) => {
+        return getContainer(chainId).resolve(PositionsRepository).getWalletPositions(owner);
+      }),
+    );
 
-    return ok(arbitrumPositionsRes.value);
+    const successfulPositions = positions.filter((p) => p.isOk());
+    const _failedPositions = positions.filter((p) => p.isErr());
+
+    return ok(successfulPositions.flatMap((p) => p.value));
   }
 }

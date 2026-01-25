@@ -28,4 +28,10 @@ export class ChainContext {
     if (!url) throw new Error(`Graph URL not found for chain ${this.chain.id}`);
     return url;
   }
+
+  get deployments() {
+    const deployments = networks[this.chain.id as keyof typeof networks]?.deployments;
+    if (!deployments) throw new Error(`Deployments not found for chain ${this.chain.id}`);
+    return deployments;
+  }
 }

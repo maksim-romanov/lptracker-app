@@ -1,3 +1,5 @@
+import type { Address } from "viem";
+
 import type { TokenEntity } from "./token.entity";
 
 type PoolData = {
@@ -12,8 +14,8 @@ type PoolData = {
 export class PoolEntity {
   constructor(private readonly data: PoolData) {}
 
-  get id(): string {
-    return this.data.id;
+  get id(): Address {
+    return this.data.id as Address;
   }
 
   get feeTier(): number {

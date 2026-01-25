@@ -10,19 +10,19 @@ export class RPCClient {
 
   constructor(@inject(CHAIN_CONTEXT) readonly context: ChainContext) {}
 
-  public getClient(chain: Chain): PublicClient {
-    const client = this.clientsMap.get(chain.id);
+  get client(): PublicClient {
+    const client = this.clientsMap.get(this.context.chain.id);
     if (client) return client;
 
     const newRpcClient = createPublicClient({
-      chain,
+      chain: this.context.chain,
       transport: fallback(
         this.context.rpcUrls.map((url) => http(url)),
         { rank: true, retryCount: 3, retryDelay: 150 },
       ),
     });
 
-    this.clientsMap.set(chain.id, newRpcClient);
+    this.clientsMap.set(this.context.chain.id, newRpcClient);
     return newRpcClient;
   }
 }
