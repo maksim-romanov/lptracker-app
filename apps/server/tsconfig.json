@@ -1,0 +1,18 @@
+{
+  "extends": "@matrapp/typescript-config/base.json",
+  "compilerOptions": {
+    "types": ["bun", "reflect-metadata"],
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "baseUrl": "src",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "features/*": ["features/*"],
+      "routes/*": ["routes/*"],
+
+      "uniswap-v3/*": ["features/uniswap-v3/*", "features/uniswap-v3"]
+    }
+  }
+}

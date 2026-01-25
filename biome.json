@@ -11,13 +11,7 @@
         "organizeImports": {
           "level": "on",
           "options": {
-            "groups": [
-              ["react", "react-native"],
-              ":BLANK_LINE:",
-              ":PACKAGE:",
-              ":BLANK_LINE:",
-              ":PATH:"
-            ]
+            "groups": [["react", "react-native"], ":BLANK_LINE:", ":PACKAGE:", ":BLANK_LINE:", ":PATH:"]
           }
         }
       }
@@ -36,12 +30,11 @@
     "lineWidth": 145
   },
   "files": {
-    "includes": [
-      "**",
-      "!**/node_modules",
-      "!**/.expo",
-      "!**/dist",
-      "!**/.turbo"
-    ]
+    "includes": ["**", "!**/node_modules", "!**/.expo", "!**/dist", "!**/.turbo"]
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
   }
 }

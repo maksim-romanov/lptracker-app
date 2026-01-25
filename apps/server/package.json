@@ -1,7 +1,5 @@
 {
-  "name": "@matrapp/serverOLD",
-  "version": "0.0.1",
-  "private": true,
+  "name": "server",
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "dev:ios": "bun run --watch src/index.ts",
@@ -23,15 +21,14 @@
     "tsyringe": "^4.10.0"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@graphql-codegen/cli": "^6.1.1",
     "@graphql-codegen/introspection": "^5.0.0",
     "@graphql-codegen/typescript": "^5.0.7",
     "@graphql-codegen/typescript-graphql-request": "^6.4.0",
     "@graphql-codegen/typescript-operations": "^5.0.7",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@matrapp/typescript-config": "workspace:*",
-    "@types/bun": "latest",
-    "@types/node": "^25.0.10",
-    "graphql": "^16.12.0"
+    "graphql": "^16.12.0",
+    "@matrapp/typescript-config": "workspace:*"
   }
 }
