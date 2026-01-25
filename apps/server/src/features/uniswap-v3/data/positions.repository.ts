@@ -16,7 +16,33 @@ export class PositionsRepository extends BaseRepository {
     const positions = result.positions.map((p) => GraphQLPositionDto.fromGraphQL(p));
     return ok(positions);
   }
+
+  async getPosition(id: string) {
+    const result = await this.gql.request(getPositionQuery, { id });
+    const position = GraphQLPositionDto.fromGraphQL(result.position);
+    return ok(position);
+  }
 }
+
+const getPositionQuery = graphql(`
+  query Position($id: ID!) {
+    position(id: $id) {
+      id
+      liquidity
+      tickLower
+      tickUpper
+
+      pool {
+        id
+        feeTier
+        currentTick
+        sqrtPriceX96
+        token0 { id symbol decimals }
+        token1 { id symbol decimals }
+      }
+    }
+  }
+`);
 
 const getWalletPositionsQuery = graphql(`
   query WalletPositions(

@@ -737,6 +737,13 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
+export type PositionQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type PositionQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: string, feeTier: number, currentTick: number, sqrtPriceX96: any, token0: { __typename?: 'Token', id: string, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: string, symbol: string, decimals: number } } | null } | null };
+
 export type WalletPositionsQueryVariables = Exact<{
   owner: Scalars['Bytes']['input'];
   first: Scalars['Int']['input'];
@@ -768,6 +775,32 @@ export class TypedDocumentString<TResult, TVariables>
   }
 }
 
+export const PositionDocument = new TypedDocumentString(`
+    query Position($id: ID!) {
+  position(id: $id) {
+    id
+    liquidity
+    tickLower
+    tickUpper
+    pool {
+      id
+      feeTier
+      currentTick
+      sqrtPriceX96
+      token0 {
+        id
+        symbol
+        decimals
+      }
+      token1 {
+        id
+        symbol
+        decimals
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<PositionQuery, PositionQueryVariables>;
 export const WalletPositionsDocument = new TypedDocumentString(`
     query WalletPositions($owner: Bytes!, $first: Int!, $skip: Int!, $orderBy: Position_orderBy, $orderDirection: OrderDirection, $closed: Boolean!) {
   positions(

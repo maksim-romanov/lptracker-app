@@ -15,12 +15,18 @@ import * as types from './graphql';
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  query Position($id: ID!) {\n    position(id: $id) {\n      id\n      liquidity\n      tickLower\n      tickUpper\n\n      pool {\n        id\n        feeTier\n        currentTick\n        sqrtPriceX96\n        token0 { id symbol decimals }\n        token1 { id symbol decimals }\n      }\n    }\n  }\n": typeof types.PositionDocument,
     "\n  query WalletPositions(\n    $owner: Bytes!\n    $first: Int!\n    $skip: Int!\n    $orderBy: Position_orderBy\n    $orderDirection: OrderDirection\n    $closed: Boolean!\n  ) {\n    positions(\n      where: { owner: $owner, closed: $closed }\n      first: $first\n      skip: $skip\n      orderBy: $orderBy\n      orderDirection: $orderDirection\n    ) {\n      id\n      liquidity\n      tickLower\n      tickUpper\n      pool {\n        id\n        feeTier\n        currentTick\n        sqrtPriceX96\n        token0 { id symbol decimals }\n        token1 { id symbol decimals }\n      }\n    }\n  }\n": typeof types.WalletPositionsDocument,
 };
 const documents: Documents = {
+    "\n  query Position($id: ID!) {\n    position(id: $id) {\n      id\n      liquidity\n      tickLower\n      tickUpper\n\n      pool {\n        id\n        feeTier\n        currentTick\n        sqrtPriceX96\n        token0 { id symbol decimals }\n        token1 { id symbol decimals }\n      }\n    }\n  }\n": types.PositionDocument,
     "\n  query WalletPositions(\n    $owner: Bytes!\n    $first: Int!\n    $skip: Int!\n    $orderBy: Position_orderBy\n    $orderDirection: OrderDirection\n    $closed: Boolean!\n  ) {\n    positions(\n      where: { owner: $owner, closed: $closed }\n      first: $first\n      skip: $skip\n      orderBy: $orderBy\n      orderDirection: $orderDirection\n    ) {\n      id\n      liquidity\n      tickLower\n      tickUpper\n      pool {\n        id\n        feeTier\n        currentTick\n        sqrtPriceX96\n        token0 { id symbol decimals }\n        token1 { id symbol decimals }\n      }\n    }\n  }\n": types.WalletPositionsDocument,
 };
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Position($id: ID!) {\n    position(id: $id) {\n      id\n      liquidity\n      tickLower\n      tickUpper\n\n      pool {\n        id\n        feeTier\n        currentTick\n        sqrtPriceX96\n        token0 { id symbol decimals }\n        token1 { id symbol decimals }\n      }\n    }\n  }\n"): typeof import('./graphql').PositionDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
