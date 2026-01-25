@@ -7,8 +7,6 @@ import { getContainer } from "../di/containers";
 
 @injectable()
 export class GetWalletPositionsUseCase {
-  // constructor(@inject(PositionsRepository) readonly _positionsRepository: PositionsRepository) {}
-
   async execute(owner: string, chainIds = [arbitrum.id]) {
     const positions = await Promise.all(
       chainIds.map(async (chainId) => {

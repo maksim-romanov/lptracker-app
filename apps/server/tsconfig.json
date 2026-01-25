@@ -11,6 +11,7 @@
     "paths": {
       "features/*": ["features/*"],
       "routes/*": ["routes/*"],
+      "shared/*": ["shared/*"],
 
       "uniswap-v3/*": ["features/uniswap-v3/*", "features/uniswap-v3"]
     }

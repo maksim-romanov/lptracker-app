@@ -19,7 +19,7 @@ export class GetPositionFeesUseCase {
     if (position.isErr()) return err(position.error);
 
     const positionFees = await this.positionsRepository.getPositionFees(position.value.toDomain());
-    if (position.isErr()) return err(position.error);
+    if (positionFees.isErr()) return err(positionFees.error);
 
     const feeGrowthInside0X128 = computeFeeGrowthInside(
       position.value.pool.currentTick,
