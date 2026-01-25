@@ -1,1 +1,0 @@
-export const GRAPHQL_CLIENT = "GRAPHQL_CLIENT";
