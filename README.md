@@ -9,7 +9,7 @@ A modular data platform for querying, indexing, and analyzing on-chain positions
 
 ## Overview
 
-ThePlatform provides a unified interface to access position data from decentralized protocols. It handles the complexity of multi-chain indexing, real-time fee calculations, and data normalization — so you can focus on building.
+The platform gives you a simple way to monitor your LP positions — see your liquidity, track accumulated fees, and get a clear picture of your DeFi portfolio in one place.
 
 ## Platform Structure
 
@@ -30,13 +30,6 @@ The platform follows **Clean Architecture** with strict layer separation:
 - **Data** — Repositories, clients, and data transformation
 - **Application** — Use cases orchestrating business logic
 - **Presentation** — API routes, validation, error mapping
-
-**Key principles:**
-
-- Multi-chain support via isolated dependency containers
-- Type-safe error handling with Result types
-- DTO pattern for clean API contracts
-- OpenAPI-documented endpoints
 
 ## Tech Stack
 
