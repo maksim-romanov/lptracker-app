@@ -18,4 +18,12 @@ export class TokenEntity {
   get decimals(): number {
     return this.data.decimals;
   }
+
+  toResponse() {
+    return {
+      address: this.address,
+      symbol: this.symbol,
+      decimals: this.decimals,
+    };
+  }
 }

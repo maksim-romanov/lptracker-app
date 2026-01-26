@@ -1,5 +1,7 @@
 import * as v from "valibot";
 
+import { UNISWAP_V3_PROTOCOL } from "../../domain/constants/protocol";
+
 /**
  * Token entity schema
  */
@@ -32,6 +34,15 @@ export const positionSchema = v.object({
   pool: poolSchema,
   isActive: v.boolean(),
   isClosed: v.boolean(),
+});
+
+/**
+ * Wrapped position schema with protocol discriminator
+ */
+export const uniswapV3WrappedPositionSchema = v.object({
+  protocol: v.literal(UNISWAP_V3_PROTOCOL),
+  chainId: v.number(),
+  data: positionSchema,
 });
 
 /**
@@ -69,5 +80,6 @@ export const errorResponseSchema = v.object({
 export type Token = v.InferOutput<typeof tokenSchema>;
 export type Pool = v.InferOutput<typeof poolSchema>;
 export type Position = v.InferOutput<typeof positionSchema>;
+export type UniswapV3WrappedPosition = v.InferOutput<typeof uniswapV3WrappedPositionSchema>;
 export type PositionFees = v.InferOutput<typeof positionFeesSchema>;
 export type ErrorResponse = v.InferOutput<typeof errorResponseSchema>;

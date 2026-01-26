@@ -37,4 +37,15 @@ export class PoolEntity {
   get token1(): TokenEntity {
     return this.data.token1;
   }
+
+  toResponse() {
+    return {
+      id: this.id,
+      feeTier: this.feeTier,
+      currentTick: this.currentTick,
+      sqrtPriceX96: this.sqrtPriceX96,
+      token0: this.token0.toResponse(),
+      token1: this.token1.toResponse(),
+    };
+  }
 }

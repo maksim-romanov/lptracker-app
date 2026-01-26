@@ -31,12 +31,23 @@ export class PositionEntity {
     return this.data.pool;
   }
 
-  // Simple getters (Thin Entity pattern)
   get isActive(): boolean {
     return this.liquidity > 0n;
   }
 
   get isClosed(): boolean {
     return this.liquidity === 0n;
+  }
+
+  toResponse() {
+    return {
+      id: this.id,
+      tickLower: this.tickLower,
+      tickUpper: this.tickUpper,
+      liquidity: this.liquidity.toString(),
+      pool: this.pool.toResponse(),
+      isActive: this.isActive,
+      isClosed: this.isClosed,
+    };
   }
 }
