@@ -41,3 +41,10 @@ yarn-error.log*
 *.pem
 
 **/CLAUDE.md
+
+# The Graph Subgraphs
+apps/subgraphs/**/generated/
+apps/subgraphs/**/build/
+apps/subgraphs/**/data/
+apps/subgraphs/**/tests/.bin/
+apps/subgraphs/**/tests/.latest.json

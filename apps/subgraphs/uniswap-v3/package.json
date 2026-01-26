@@ -1,0 +1,26 @@
+{
+  "name": "@matrapp/subgraph-uniswap-v3",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "test": "graph test",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ uniswap-v3-graph",
+    "create-local": "graph create --node http://localhost:8020/ uniswap-v3-graph",
+    "remove-local": "graph remove --node http://localhost:8020/ uniswap-v3-graph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 uniswap-v3-graph",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "check": "echo 'AssemblyScript - no biome linter'",
+    "check:fix": "echo 'AssemblyScript - no biome linter'"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.98.1",
+    "@graphprotocol/graph-ts": "0.37.0"
+  },
+  "devDependencies": {
+    "assemblyscript": "0.19.23",
+    "matchstick-as": "0.6.0"
+  }
+}

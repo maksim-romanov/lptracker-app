@@ -1,0 +1,61 @@
+type Token @entity(immutable: true) {
+  id: ID!
+  symbol: String!
+  name: String!
+  decimals: Int!
+}
+
+type Pool @entity(immutable: false) {
+  id: ID!
+  token0: Token!
+  token1: Token!
+  feeTier: Int!
+
+  sqrtPriceX96: BigInt!
+  currentTick: Int!
+  liquidity: BigInt!
+
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+
+  ticks: [Tick!]! @derivedFrom(field: "pool")
+}
+
+type Tick @entity(immutable: false) {
+  id: ID! # poolAddress-tickIdx
+  pool: Pool!
+  tickIdx: Int!
+
+  liquidityGross: BigInt!
+  liquidityNet: BigInt!
+
+  feeGrowthOutside0X128: BigInt!
+  feeGrowthOutside1X128: BigInt!
+
+  "Block number when this tick data was last synced - WARNING: data may be stale!"
+  lastSyncedBlock: BigInt!
+}
+
+type Position @entity(immutable: false) {
+  id: ID!
+
+  owner: Bytes!
+  operator: Bytes!
+
+  pool: Pool
+
+  tickLower: Int!
+  tickUpper: Int!
+  tickLowerData: Tick
+  tickUpperData: Tick
+  liquidity: BigInt!
+
+  nonce: BigInt!
+
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  updatedAtBlock: BigInt!
+  updatedAtTimestamp: BigInt!
+
+  closed: Boolean!
+}

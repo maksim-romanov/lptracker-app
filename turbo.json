@@ -3,9 +3,9 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "codegen"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "build/**"]
     },
     "check": {
       "dependsOn": ["^check"]
@@ -29,6 +29,19 @@
       "persistent": true
     },
     "codegen": {
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["build"]
+    },
+    "deploy": {
+      "dependsOn": ["build", "test"],
+      "cache": false
+    },
+    "docker:up": {
+      "cache": false
+    },
+    "docker:down": {
       "cache": false
     }
   }

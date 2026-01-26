@@ -9,7 +9,11 @@
     "check": "turbo run check",
     "check:fix": "turbo run check:fix",
     "check-types": "turbo run check-types",
-    "codegen": "dotenv -- turbo run codegen"
+    "codegen": "dotenv -- turbo run codegen",
+    "graph:up": "turbo run docker:up --filter=@matrapp/subgraph-*",
+    "graph:down": "turbo run docker:down --filter=@matrapp/subgraph-*",
+    "graph:build": "turbo run build --filter=@matrapp/subgraph-*",
+    "graph:test": "turbo run test --filter=@matrapp/subgraph-*"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
@@ -21,6 +25,7 @@
   "packageManager": "bun@1.3.6",
   "workspaces": [
     "apps/*",
+    "apps/subgraphs/*",
     "packages/*"
   ],
   "dependencies": {

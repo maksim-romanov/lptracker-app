@@ -30,8 +30,37 @@
     "lineWidth": 145
   },
   "files": {
-    "includes": ["**", "!**/node_modules", "!**/.expo", "!**/dist", "!**/.turbo"]
+    "includes": ["**", "!**/node_modules", "!**/.expo", "!**/dist", "!**/.turbo", "!apps/subgraphs/**/generated", "!apps/server/**/gql"]
   },
+  "overrides": [
+    {
+      "includes": ["apps/subgraphs/**/src/**", "apps/subgraphs/**/tests/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useConst": "off",
+            "useImportType": "off",
+            "useArrayLiterals": "off",
+            "useTemplate": "off"
+          },
+          "suspicious": {
+            "noDoubleEquals": "off",
+            "noShadowRestrictedNames": "off"
+          },
+          "correctness": {
+            "noUnusedImports": "off"
+          }
+        }
+      },
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": "off"
+          }
+        }
+      }
+    }
+  ],
   "javascript": {
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
