@@ -9,7 +9,7 @@
     "check": "turbo run check",
     "check:fix": "turbo run check:fix",
     "check-types": "turbo run check-types",
-    "codegen": "dotenv -- turbo run codegen",
+    "codegen": "dotenv -- turbo run codegen --ui=stream",
     "graph:up": "turbo run docker:up --filter=@matrapp/subgraph-*",
     "graph:down": "turbo run docker:down --filter=@matrapp/subgraph-*",
     "graph:build": "turbo run build --filter=@matrapp/subgraph-*",

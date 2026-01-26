@@ -1,0 +1,684 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Uniswap V3 API",
+    "description": "API for querying Uniswap V3 positions and unclaimed fees",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/uniswap-v3/v1",
+      "description": "Uniswap V3 API v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Positions",
+      "description": "Uniswap V3 position management endpoints"
+    }
+  ],
+  "paths": {
+    "/wallets/{walletAddress}/positions": {
+      "get": {
+        "operationId": "getWallets:walletAddressPositions",
+        "tags": [
+          "Positions"
+        ],
+        "summary": "List wallet positions",
+        "description": "Retrieves all Uniswap V3 positions owned by a wallet address across supported chains",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved positions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "tickLower": {
+                        "type": "number"
+                      },
+                      "tickUpper": {
+                        "type": "number"
+                      },
+                      "liquidity": {
+                        "type": "string"
+                      },
+                      "pool": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "feeTier": {
+                            "type": "number"
+                          },
+                          "currentTick": {
+                            "type": "number"
+                          },
+                          "sqrtPriceX96": {
+                            "type": "string"
+                          },
+                          "token0": {
+                            "type": "object",
+                            "properties": {
+                              "address": {
+                                "type": "string"
+                              },
+                              "symbol": {
+                                "type": "string"
+                              },
+                              "decimals": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "address",
+                              "symbol",
+                              "decimals"
+                            ]
+                          },
+                          "token1": {
+                            "type": "object",
+                            "properties": {
+                              "address": {
+                                "type": "string"
+                              },
+                              "symbol": {
+                                "type": "string"
+                              },
+                              "decimals": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "address",
+                              "symbol",
+                              "decimals"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "feeTier",
+                          "currentTick",
+                          "sqrtPriceX96",
+                          "token0",
+                          "token1"
+                        ]
+                      },
+                      "isActive": {
+                        "type": "boolean"
+                      },
+                      "isClosed": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "tickLower",
+                      "tickUpper",
+                      "liquidity",
+                      "pool",
+                      "isActive",
+                      "isClosed"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "walletAddress",
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{40}$"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": "10"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": "0"
+            }
+          },
+          {
+            "in": "query",
+            "name": "closed",
+            "schema": {
+              "type": "boolean",
+              "default": "false"
+            }
+          }
+        ]
+      }
+    },
+    "/chains/{chainId}/positions/{id}": {
+      "get": {
+        "operationId": "getChains:chainIdPositions:id",
+        "tags": [
+          "Positions"
+        ],
+        "summary": "Get position details",
+        "description": "Retrieves detailed information about a specific Uniswap V3 position",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved position",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "tickLower": {
+                      "type": "number"
+                    },
+                    "tickUpper": {
+                      "type": "number"
+                    },
+                    "liquidity": {
+                      "type": "string"
+                    },
+                    "pool": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "feeTier": {
+                          "type": "number"
+                        },
+                        "currentTick": {
+                          "type": "number"
+                        },
+                        "sqrtPriceX96": {
+                          "type": "string"
+                        },
+                        "token0": {
+                          "type": "object",
+                          "properties": {
+                            "address": {
+                              "type": "string"
+                            },
+                            "symbol": {
+                              "type": "string"
+                            },
+                            "decimals": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "address",
+                            "symbol",
+                            "decimals"
+                          ]
+                        },
+                        "token1": {
+                          "type": "object",
+                          "properties": {
+                            "address": {
+                              "type": "string"
+                            },
+                            "symbol": {
+                              "type": "string"
+                            },
+                            "decimals": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "address",
+                            "symbol",
+                            "decimals"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "feeTier",
+                        "currentTick",
+                        "sqrtPriceX96",
+                        "token0",
+                        "token1"
+                      ]
+                    },
+                    "isActive": {
+                      "type": "boolean"
+                    },
+                    "isClosed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "tickLower",
+                    "tickUpper",
+                    "liquidity",
+                    "pool",
+                    "isActive",
+                    "isClosed"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Position not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "chainId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/chains/{chainId}/positions/{id}/fees": {
+      "get": {
+        "operationId": "getChains:chainIdPositions:idFees",
+        "tags": [
+          "Positions"
+        ],
+        "summary": "Get position unclaimed fees",
+        "description": "Calculates and returns the unclaimed trading fees for a specific Uniswap V3 position",
+        "responses": {
+          "200": {
+            "description": "Successfully calculated fees",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token0": {
+                      "type": "object",
+                      "properties": {
+                        "address": {
+                          "type": "string"
+                        },
+                        "symbol": {
+                          "type": "string"
+                        },
+                        "decimals": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "address",
+                        "symbol",
+                        "decimals"
+                      ]
+                    },
+                    "token1": {
+                      "type": "object",
+                      "properties": {
+                        "address": {
+                          "type": "string"
+                        },
+                        "symbol": {
+                          "type": "string"
+                        },
+                        "decimals": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "address",
+                        "symbol",
+                        "decimals"
+                      ]
+                    },
+                    "unclaimedFees": {
+                      "type": "object",
+                      "properties": {
+                        "token0PerToken1": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "token0": {
+                              "type": "number"
+                            },
+                            "token1": {
+                              "type": "number"
+                            },
+                            "total": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "token0",
+                            "token1",
+                            "total"
+                          ]
+                        },
+                        "token1PerToken0": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "token0": {
+                              "type": "number"
+                            },
+                            "token1": {
+                              "type": "number"
+                            },
+                            "total": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "token0",
+                            "token1",
+                            "total"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "token0PerToken1",
+                        "token1PerToken0"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "token0",
+                    "token1",
+                    "unclaimedFees"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Position not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "chainId",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "components": {}
+}

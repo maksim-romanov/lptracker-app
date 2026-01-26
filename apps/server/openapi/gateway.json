@@ -1,0 +1,256 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Matrapp Gateway API",
+    "description": "Gateway API for aggregating positions across all supported DeFi protocols",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "Gateway API v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Positions",
+      "description": "Multi-protocol position aggregation endpoints"
+    }
+  ],
+  "paths": {
+    "/wallets/{walletAddress}/positions": {
+      "get": {
+        "operationId": "getWallets:walletAddressPositions",
+        "tags": [
+          "Positions"
+        ],
+        "summary": "List all wallet positions across protocols",
+        "description": "Retrieves all positions owned by a wallet address across all supported protocols and chains",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved positions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "protocol": {
+                            "const": "uniswap-v3"
+                          },
+                          "chainId": {
+                            "type": "number"
+                          },
+                          "data": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "tickLower": {
+                                "type": "number"
+                              },
+                              "tickUpper": {
+                                "type": "number"
+                              },
+                              "liquidity": {
+                                "type": "string"
+                              },
+                              "pool": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "feeTier": {
+                                    "type": "number"
+                                  },
+                                  "currentTick": {
+                                    "type": "number"
+                                  },
+                                  "sqrtPriceX96": {
+                                    "type": "string"
+                                  },
+                                  "token0": {
+                                    "type": "object",
+                                    "properties": {
+                                      "address": {
+                                        "type": "string"
+                                      },
+                                      "symbol": {
+                                        "type": "string"
+                                      },
+                                      "decimals": {
+                                        "type": "number"
+                                      }
+                                    },
+                                    "required": [
+                                      "address",
+                                      "symbol",
+                                      "decimals"
+                                    ]
+                                  },
+                                  "token1": {
+                                    "type": "object",
+                                    "properties": {
+                                      "address": {
+                                        "type": "string"
+                                      },
+                                      "symbol": {
+                                        "type": "string"
+                                      },
+                                      "decimals": {
+                                        "type": "number"
+                                      }
+                                    },
+                                    "required": [
+                                      "address",
+                                      "symbol",
+                                      "decimals"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "feeTier",
+                                  "currentTick",
+                                  "sqrtPriceX96",
+                                  "token0",
+                                  "token1"
+                                ]
+                              },
+                              "isActive": {
+                                "type": "boolean"
+                              },
+                              "isClosed": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "tickLower",
+                              "tickUpper",
+                              "liquidity",
+                              "pool",
+                              "isActive",
+                              "isClosed"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "protocol",
+                          "chainId",
+                          "data"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "walletAddress",
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{40}$"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": "10"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": "0"
+            }
+          },
+          {
+            "in": "query",
+            "name": "closed",
+            "schema": {
+              "type": "boolean",
+              "default": "false"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {}
+}

@@ -7,6 +7,7 @@
     "dev": "expo start --dev-client",
     "dev:ios": "expo run:ios",
     "dev:android": "expo run:android",
+    "codegen": "echo 'hello world'",
     "check": "biome check .",
     "check:fix": "biome check --write ."
   },

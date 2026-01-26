@@ -15,5 +15,6 @@
 
       "uniswap-v3/*": ["features/uniswap-v3/*", "features/uniswap-v3"]
     }
-  }
+  },
+  "exclude": ["scripts"]
 }
