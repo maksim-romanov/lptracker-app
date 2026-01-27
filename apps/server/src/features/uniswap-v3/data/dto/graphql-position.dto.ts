@@ -85,7 +85,7 @@ export class GraphQLPositionDto {
     });
   }
 
-  static fromGraphQL(raw: any): GraphQLPositionDto {
+  static fromGraphQL(raw: unknown): GraphQLPositionDto {
     return plainToInstance(GraphQLPositionDto, raw, {
       excludeExtraneousValues: true,
     });

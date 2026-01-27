@@ -1,6 +1,17 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "core/*": ["./src/core/*"],
+      "positions/*": ["./src/positions/*"],
+      "wallets/*": ["./src/wallets/*"],
+      "onboarding/*": ["./src/onboarding/*"],
+      "types/*": ["./src/types/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

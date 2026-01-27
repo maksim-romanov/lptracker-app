@@ -21,9 +21,7 @@
     "/wallets/{walletAddress}/positions": {
       "get": {
         "operationId": "getWallets:walletAddressPositions",
-        "tags": [
-          "Positions"
-        ],
+        "tags": ["Positions"],
         "summary": "List all wallet positions across protocols",
         "description": "Retrieves all positions owned by a wallet address across all supported protocols and chains",
         "responses": {
@@ -87,11 +85,7 @@
                                         "type": "number"
                                       }
                                     },
-                                    "required": [
-                                      "address",
-                                      "symbol",
-                                      "decimals"
-                                    ]
+                                    "required": ["address", "symbol", "decimals"]
                                   },
                                   "token1": {
                                     "type": "object",
@@ -106,21 +100,10 @@
                                         "type": "number"
                                       }
                                     },
-                                    "required": [
-                                      "address",
-                                      "symbol",
-                                      "decimals"
-                                    ]
+                                    "required": ["address", "symbol", "decimals"]
                                   }
                                 },
-                                "required": [
-                                  "id",
-                                  "feeTier",
-                                  "currentTick",
-                                  "sqrtPriceX96",
-                                  "token0",
-                                  "token1"
-                                ]
+                                "required": ["id", "feeTier", "currentTick", "sqrtPriceX96", "token0", "token1"]
                               },
                               "isActive": {
                                 "type": "boolean"
@@ -129,22 +112,10 @@
                                 "type": "boolean"
                               }
                             },
-                            "required": [
-                              "id",
-                              "tickLower",
-                              "tickUpper",
-                              "liquidity",
-                              "pool",
-                              "isActive",
-                              "isClosed"
-                            ]
+                            "required": ["id", "tickLower", "tickUpper", "liquidity", "pool", "isActive", "isClosed"]
                           }
                         },
-                        "required": [
-                          "protocol",
-                          "chainId",
-                          "data"
-                        ]
+                        "required": ["protocol", "chainId", "data"]
                       }
                     ]
                   }
@@ -173,10 +144,7 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
+                  "required": ["error", "code"]
                 }
               }
             }
@@ -202,10 +170,7 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
+                  "required": ["error", "code"]
                 }
               }
             }

@@ -40,7 +40,6 @@
           "style": {
             "useConst": "off",
             "useImportType": "off",
-            "useArrayLiterals": "off",
             "useTemplate": "off"
           },
           "suspicious": {
