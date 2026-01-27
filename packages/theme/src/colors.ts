@@ -84,6 +84,23 @@ export const palette = {
   purple800: "#6A1B9A",
   purple900: "#4A148C",
 
+  // Neon Pink (Uniswap-inspired)
+  neonPink50: "#FFF0F6",
+  neonPink100: "#FFD6E8",
+  neonPink200: "#FFB3D4",
+  neonPink300: "#FF80BE",
+  neonPink400: "#FF4DA6",
+  neonPink500: "#FF007A", // Uniswap signature
+  neonPink600: "#E6006E",
+  neonPink700: "#CC0062",
+  neonPink800: "#99004A",
+  neonPink900: "#660031",
+
+  // Neon accents
+  neonCyan: "#00D9FF",
+  neonPurple: "#BF00FF",
+  neonYellow: "#FAFF00",
+
   // Teals
   teal50: "#E0F2F1",
   teal100: "#B2DFDB",

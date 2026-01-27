@@ -1,19 +1,4 @@
-import {
-  type ColorTokens,
-  midnightDark,
-  midnightLight,
-  mintDark,
-  mintLight,
-  nebulaDark,
-  nebulaLight,
-  oceanDark,
-  oceanLight,
-  radius,
-  spacing,
-  sunsetDark,
-  sunsetLight,
-  typography,
-} from "@matrapp/theme";
+import { type ColorTokens, neonDark, neonLight, radius, spacing, typography } from "@matrapp/theme";
 import { StyleSheet } from "react-native-unistyles";
 
 /**
@@ -39,16 +24,8 @@ const createTheme = (colors: ColorTokens): AppTheme => ({
  * All available themes
  */
 export const themes = {
-  oceanLight: createTheme(oceanLight),
-  oceanDark: createTheme(oceanDark),
-  nebulaLight: createTheme(nebulaLight),
-  nebulaDark: createTheme(nebulaDark),
-  mintLight: createTheme(mintLight),
-  mintDark: createTheme(mintDark),
-  sunsetLight: createTheme(sunsetLight),
-  sunsetDark: createTheme(sunsetDark),
-  midnightLight: createTheme(midnightLight),
-  midnightDark: createTheme(midnightDark),
+  neonLight: createTheme(neonLight),
+  neonDark: createTheme(neonDark),
 } as const;
 
 export type ThemeName = keyof typeof themes;
@@ -80,10 +57,7 @@ StyleSheet.configure({
   themes,
   breakpoints,
   settings: {
-    // Use adaptive themes - follows device dark/light mode
-    // Maps to midnightDark/midnightLight automatically
-    // adaptiveThemes: true,
-    initialTheme: "midnightLight",
+    initialTheme: "neonDark",
   },
 });
 

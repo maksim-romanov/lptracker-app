@@ -17,7 +17,9 @@ const featureConfigs: Record<string, FeatureConfig> = {
 type FeatureName = keyof typeof featureConfigs;
 
 const createFeatureConfig = (feature: FeatureName): CodegenConfig["generates"] => {
-  const { schema, headers } = featureConfigs[feature]!;
+  const config = featureConfigs[feature];
+  if (!config) throw new Error(`Unknown feature: ${feature}`);
+  const { schema, headers } = config;
 
   return {
     [`./src/features/${feature}/data/gql/`]: {

@@ -6,22 +6,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, UnistylesRuntime, useUnistyles } from "react-native-unistyles";
 
 const themeOptions: { name: ThemeName; label: string; emoji: string }[] = [
-  { name: "oceanLight", label: "Ocean Light", emoji: "🌊" },
-  { name: "oceanDark", label: "Ocean Dark", emoji: "🌌" },
-  { name: "nebulaLight", label: "Nebula Light", emoji: "💜" },
-  { name: "nebulaDark", label: "Nebula Dark", emoji: "🔮" },
-  { name: "mintLight", label: "Mint Light", emoji: "🌿" },
-  { name: "mintDark", label: "Mint Dark", emoji: "🌲" },
-  { name: "sunsetLight", label: "Sunset Light", emoji: "🌅" },
-  { name: "sunsetDark", label: "Sunset Dark", emoji: "🌆" },
-  { name: "midnightLight", label: "Midnight Light", emoji: "☁️" },
-  { name: "midnightDark", label: "Midnight Dark", emoji: "🌙" },
+  { name: "neonLight", label: "Light", emoji: "☀️" },
+  { name: "neonDark", label: "Dark", emoji: "🌙" },
 ];
 
 export function OnboardingScreen() {
   const router = useRouter();
   const { theme } = useUnistyles();
-  const themeName = (UnistylesRuntime.themeName ?? "midnightDark") as ThemeName;
+  const themeName = (UnistylesRuntime.themeName ?? "neonDark") as ThemeName;
 
   const handleThemeSelect = (newTheme: ThemeName) => {
     UnistylesRuntime.setTheme(newTheme);
@@ -35,23 +27,18 @@ export function OnboardingScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <ScrollView contentContainerStyle={[styles.content, { padding: theme.spacing["2xl"] }]} showsVerticalScrollIndicator={false}>
         <View style={[styles.header, { marginTop: theme.spacing["4xl"], marginBottom: theme.spacing["3xl"] }]}>
-          <Text style={[styles.title, theme.typography.displaySmall, { color: theme.onBackground, marginBottom: theme.spacing.md }]}>
-            Welcome to MatrApp
-          </Text>
+          <Text style={[styles.title, theme.typography.displaySmall, { color: theme.primary, marginBottom: theme.spacing.md }]}>MatrApp</Text>
           <Text style={[styles.subtitle, theme.typography.bodyLarge, { color: theme.onSurfaceVariant }]}>
             Track your DeFi positions across protocols
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, theme.typography.titleLarge, { color: theme.onBackground, marginBottom: theme.spacing.xs }]}>
-            Choose your theme
-          </Text>
-          <Text style={[theme.typography.bodyMedium, { color: theme.onSurfaceVariant, marginBottom: theme.spacing.xl }]}>
-            Current: {themeName}
+          <Text style={[styles.sectionTitle, theme.typography.titleLarge, { color: theme.onBackground, marginBottom: theme.spacing.xl }]}>
+            Choose appearance
           </Text>
 
-          <View style={[styles.themeGrid, { gap: theme.spacing.md }]}>
+          <View style={[styles.themeGrid, { gap: theme.spacing.lg }]}>
             {themeOptions.map((option) => (
               <Pressable
                 key={option.name}
@@ -59,17 +46,17 @@ export function OnboardingScreen() {
                   styles.themeCard,
                   {
                     backgroundColor: themeName === option.name ? theme.primaryContainer : theme.surfaceVariant,
-                    borderRadius: theme.radius.lg,
-                    padding: theme.spacing.lg,
+                    borderRadius: theme.radius.xl,
+                    padding: theme.spacing.xl,
                     borderColor: themeName === option.name ? theme.primary : "transparent",
                   },
                 ]}
                 onPress={() => handleThemeSelect(option.name)}
               >
-                <Text style={[styles.themeEmoji, { marginBottom: theme.spacing.sm }]}>{option.emoji}</Text>
+                <Text style={[styles.themeEmoji, { marginBottom: theme.spacing.md }]}>{option.emoji}</Text>
                 <Text
                   style={[
-                    theme.typography.labelMedium,
+                    theme.typography.titleMedium,
                     {
                       color: themeName === option.name ? theme.primary : theme.onSurfaceVariant,
                       fontWeight: themeName === option.name ? "600" : "500",
@@ -95,7 +82,7 @@ export function OnboardingScreen() {
           ]}
           onPress={handleContinue}
         >
-          <Text style={[theme.typography.labelLarge, { color: theme.onPrimary }]}>Get Started</Text>
+          <Text style={[theme.typography.labelLarge, { color: theme.onPrimary, fontWeight: "600" }]}>Get Started</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>
@@ -122,19 +109,20 @@ const styles = StyleSheet.create({
   section: {
     flex: 1,
   },
-  sectionTitle: {},
+  sectionTitle: {
+    textAlign: "center",
+  },
   themeGrid: {
     flexDirection: "row",
-    flexWrap: "wrap",
     justifyContent: "center",
   },
   themeCard: {
-    width: "45%",
+    flex: 1,
     alignItems: "center",
     borderWidth: 2,
   },
   themeEmoji: {
-    fontSize: 32,
+    fontSize: 48,
   },
   continueButton: {
     alignItems: "center",
