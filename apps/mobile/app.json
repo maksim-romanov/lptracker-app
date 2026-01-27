@@ -31,7 +31,8 @@
         {
           "root": "./src/app"
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,13 +1,21 @@
+import {
+  AppInfoService,
+  DeviceInfoService,
+  ReactNativeAlerts,
+  ReactNativeLogger,
+} from "core/services";
+
 import { container } from "./container";
+import { ALERTS, APP_INFO, DEVICE_INFO, LOGGER } from "./tokens";
 
 /**
  * Register all core dependencies
  */
 function registerCoreDependencies(): void {
-  // Core services will be registered here as the app grows
-  // Example:
-  // container.register(LOGGER_TOKEN, { useClass: LoggerService });
-  // container.register(API_CLIENT_TOKEN, { useClass: ApiClient });
+  container.register(LOGGER, { useValue: ReactNativeLogger });
+  container.register(ALERTS, { useValue: ReactNativeAlerts });
+  container.registerSingleton(APP_INFO, AppInfoService);
+  container.registerSingleton(DEVICE_INFO, DeviceInfoService);
 }
 
 /**
