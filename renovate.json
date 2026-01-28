@@ -1,4 +1,61 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"]
+  "extends": ["config:recommended", ":semanticCommits"],
+
+  "schedule": ["before 6am on monday"],
+  "timezone": "Europe/Moscow",
+
+  "minimumReleaseAge": "3 days",
+
+  "packageRules": [
+    {
+      "description": "Ignore Expo-managed packages (use expo install --fix instead)",
+      "matchPackagePatterns": [
+        "^expo",
+        "^@expo/",
+        "^react-native$",
+        "^react-native-",
+        "^@react-native/",
+        "^@react-navigation/"
+      ],
+      "matchPaths": ["apps/mobile/**"],
+      "enabled": false
+    },
+    {
+      "description": "Automerge devDependencies (patch/minor)",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true
+    },
+    {
+      "description": "Automerge lockfile maintenance",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "automerge": true
+    },
+    {
+      "description": "Group Biome updates",
+      "matchPackagePatterns": ["^@biomejs/"],
+      "groupName": "biome"
+    },
+    {
+      "description": "Group GraphQL codegen",
+      "matchPackagePatterns": ["^@graphql-codegen/"],
+      "groupName": "graphql-codegen"
+    },
+    {
+      "description": "Group Turborepo",
+      "matchPackageNames": ["turbo"],
+      "groupName": "turborepo"
+    },
+    {
+      "description": "Group Uniswap SDK",
+      "matchPackagePatterns": ["^@uniswap/"],
+      "groupName": "uniswap-sdk"
+    }
+  ],
+
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  }
 }

@@ -1,0 +1,22 @@
+name: Update Expo Dependencies
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: |
+          cd apps/mobile
+          npx expo install --fix
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'chore(mobile): update expo dependencies'
+          branch: expo-update
+          commit-message: 'chore(mobile): update expo dependencies'
