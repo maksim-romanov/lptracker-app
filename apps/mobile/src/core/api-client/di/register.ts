@@ -11,7 +11,7 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL;
 const client = createClient<GatewayPaths>({ baseUrl: `${API_URL}/api/v1` });
 export type GatewayApiClient = typeof client;
 
-export function register(): void {
+export function register() {
   client.use(errorMiddleware(), loggerMiddleware());
   container.register(GATEWAY_API, { useValue: client });
 }
