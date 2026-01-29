@@ -16,17 +16,12 @@ export type ColorTokens = {
   secondaryContainer: string;
   onSecondaryContainer: string;
 
-  // Surface colors
+  // Surface colors (MD3)
   surface: string;
   onSurface: string;
+  surfaceContainer: string;
   surfaceVariant: string;
   onSurfaceVariant: string;
-  surfaceDim: string;
-  surfaceBright: string;
-
-  // Background
-  background: string;
-  onBackground: string;
 
   // Outline
   outline: string;

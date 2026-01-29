@@ -1,47 +1,27 @@
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 
-import { Text } from "core/presentation/components";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
+import { PositionCard } from "src/features/uniswap-v3/presentation/PositionCard";
+
+const Separator = () => <View style={styles.separator} />;
 
 export function PositionsScreen() {
-  const { theme } = useUnistyles();
-
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["top"]}>
-      <View style={[styles.header, { padding: theme.spacing.xl, borderBottomColor: theme.outlineVariant }]}>
-        <Text variant="headline">Positions</Text>
-      </View>
-
-      <View style={[styles.content, { padding: theme.spacing["2xl"] }]}>
-        <View style={styles.placeholder}>
-          <Text variant="bodyLarge" color="primary">
-            No positions yet
-          </Text>
-
-          <Text>Connect a wallet to see your DeFi positions</Text>
-        </View>
-      </View>
-    </SafeAreaView>
+    <FlatList
+      data={new Array(1000).fill(0)}
+      renderItem={({ item }) => <PositionCard />}
+      ItemSeparatorComponent={Separator}
+      contentContainerStyle={styles.contentContainer}
+    />
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+const styles = StyleSheet.create((theme, rt) => ({
+  contentContainer: {
+    paddingHorizontal: theme.spacing.xl,
   },
-  header: {
-    borderBottomWidth: 1,
+
+  separator: {
+    height: theme.spacing.lg,
   },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  placeholder: {
-    alignItems: "center",
-  },
-  placeholderIcon: {
-    fontSize: 64,
-  },
-});
+}));

@@ -19,7 +19,7 @@ export function Text({ children, style, variant, color, uppercase, center, ...pr
 const styles = StyleSheet.create((theme) => ({
   text: {
     fontFamily: "Satoshi-Regular",
-    fontWeight: "400",
+    // fontWeight: "400",
     fontSize: { xs: 16, md: 18, lg: 20 },
     lineHeight: { xs: 24, md: 27, lg: 30 },
     letterSpacing: 0,
@@ -29,7 +29,7 @@ const styles = StyleSheet.create((theme) => ({
       variant: {
         display: {
           fontFamily: "Satoshi-Bold",
-          fontWeight: "700",
+          // fontWeight: "700",
           fontSize: { xs: 36, md: 42, lg: 48 },
           lineHeight: { xs: 40, md: 46, lg: 53 },
           letterSpacing: 0,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create((theme) => ({
 
         headline: {
           fontFamily: "Satoshi-Black",
-          fontWeight: "600",
+          // fontWeight: "600",
           fontSize: { xs: 24, md: 28, lg: 32 },
           lineHeight: { xs: 32, md: 37, lg: 42 },
           letterSpacing: 0,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create((theme) => ({
 
         bodyLarge: {
           fontFamily: "Satoshi-Medium",
-          fontWeight: "400",
+          // fontWeight: "400",
           fontSize: { xs: 18, md: 20, lg: 22 },
           lineHeight: { xs: 28, md: 30, lg: 33 },
           letterSpacing: 0,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create((theme) => ({
 
         bodySmall: {
           fontFamily: "Satoshi-Regular",
-          fontWeight: "400",
+          // fontWeight: "400",
           fontSize: { xs: 13, md: 15, lg: 16 },
           lineHeight: { xs: 20, md: 22, lg: 24 },
           letterSpacing: 0,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create((theme) => ({
 
         label: {
           fontFamily: "Satoshi-Medium",
-          fontWeight: "500",
+          // fontWeight: "500",
           fontSize: { xs: 14, md: 16, lg: 17 },
           lineHeight: { xs: 20, md: 22, lg: 24 },
           letterSpacing: 0.5,
@@ -69,6 +69,7 @@ const styles = StyleSheet.create((theme) => ({
       },
 
       color: {
+        onSurfaceVariant: { color: theme.onSurfaceVariant },
         muted: { color: theme.onSurfaceVariant },
         primary: { color: theme.primary },
         onPrimary: { color: theme.onPrimary },

@@ -34,6 +34,7 @@
     "@uniswap/sdk-core": "^7.10.1",
     "@uniswap/v3-sdk": "^3.27.0",
     "graphql-request": "^7.4.0",
+    "numbro": "^2.5.0",
     "viem": "^2.44.4"
   },
   "overrides": {

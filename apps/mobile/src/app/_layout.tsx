@@ -1,16 +1,19 @@
-import "core/di/register";
+import { useEffect, useMemo } from "react";
 
+import { ThemeProvider } from "@react-navigation/native";
 import { AppInitUseCase } from "core/application";
 import { container } from "core/di/container";
-import type { ThemeName } from "core/presentation/theme";
+import { createNavigationTheme, type ThemeName } from "core/presentation/theme";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
-import { UnistylesRuntime } from "react-native-unistyles";
+import { UnistylesRuntime, useUnistyles } from "react-native-unistyles";
 
 export default function RootLayout() {
-  const themeName = (UnistylesRuntime.themeName ?? "midnightDark") as ThemeName;
+  const themeName = (UnistylesRuntime.themeName ?? "neonDark") as ThemeName;
   const isDark = themeName.includes("Dark");
+  const { theme } = useUnistyles();
+
+  const navigationTheme = useMemo(() => createNavigationTheme(theme, isDark), [theme, isDark]);
 
   useEffect(() => {
     container.resolve(AppInitUseCase).execute();
@@ -19,11 +22,14 @@ export default function RootLayout() {
   return (
     <>
       <StatusBar style={isDark ? "light" : "dark"} />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="onboarding" />
-        <Stack.Screen name="(tabs)" />
-      </Stack>
+
+      <ThemeProvider value={navigationTheme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="onboarding" />
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+      </ThemeProvider>
     </>
   );
 }

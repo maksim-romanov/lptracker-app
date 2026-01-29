@@ -18,17 +18,12 @@ export const neonLight: ColorTokens = {
   secondaryContainer: "#B3F3FF",
   onSecondaryContainer: "#001F28",
 
-  // Surface - Clean with pink tint
+  // Surface (MD3)
   surface: "#FFFBFC",
   onSurface: "#1A1A1A",
+  surfaceContainer: "#FFF0F5",
   surfaceVariant: "#FFE6F0",
   onSurfaceVariant: "#4A3540",
-  surfaceDim: "#F5E6EB",
-  surfaceBright: "#FFFBFC",
-
-  // Background
-  background: "#FFFBFC",
-  onBackground: "#1A1A1A",
 
   // Outline
   outline: "#8C7280",
@@ -71,17 +66,12 @@ export const neonDark: ColorTokens = {
   secondaryContainer: "#005566",
   onSecondaryContainer: "#B3F3FF",
 
-  // Surface - Deep dark with subtle warmth
+  // Surface (MD3)
   surface: "#0D0D0F",
   onSurface: "#F5F5F5",
+  surfaceContainer: "#1A1518",
   surfaceVariant: "#1F1A1C",
   onSurfaceVariant: "#D4C4CA",
-  surfaceDim: "#0D0D0F",
-  surfaceBright: "#2A2428",
-
-  // Background - Pure dark
-  background: "#000000",
-  onBackground: "#F5F5F5",
 
   // Outline
   outline: "#9C8A92",

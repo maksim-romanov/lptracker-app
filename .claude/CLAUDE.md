@@ -27,6 +27,9 @@ Read the docs in order of relevance to your task:
 - [apps/mobile/docs/styling.md](../apps/mobile/docs/styling.md) - Theme system, @grapp/stacks
 - [apps/mobile/docs/commands.md](../apps/mobile/docs/commands.md) - Dev commands
 
+## Rules
+- Always run `bunx tsc --noEmit` after code changes to check for TypeScript errors
+
 ## Quick Reference
 
 ```bash

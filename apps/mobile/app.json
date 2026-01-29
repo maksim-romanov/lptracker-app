@@ -43,7 +43,14 @@
             "./assets/fonts/Satoshi-Black.otf"
           ]
         }
-      ]
+      ],
+      [
+        "expo-asset",
+        {
+          "assets": ["./assets/uniswap-uni-logo.png"]
+        }
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
