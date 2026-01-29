@@ -14,6 +14,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@grapp/stacks": "^4.0.0-beta.1",
     "@matrapp/theme": "workspace:*",
     "@react-navigation/native": "^7.0.0",
     "babel-plugin-transform-typescript-metadata": "^0.4.0",
@@ -21,6 +22,7 @@
     "expo-constants": "~18.0.13",
     "expo-dev-client": "^6.0.20",
     "expo-device": "~8.0.10",
+    "expo-font": "~14.0.11",
     "expo-linking": "~8.0.11",
     "expo-localization": "~17.0.8",
     "expo-router": "~6.0.22",

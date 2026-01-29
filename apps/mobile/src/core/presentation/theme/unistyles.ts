@@ -1,5 +1,14 @@
 import { type ColorTokens, neonDark, neonLight, radius, spacing, typography } from "@matrapp/theme";
+import type { StacksBreakpoints as _StacksBreakpoints } from "@grapp/stacks";
 import { StyleSheet } from "react-native-unistyles";
+
+/**
+ * Stacks layout configuration
+ */
+const stacks = {
+  spacing: 4, // Base unit matching @matrapp/theme (4px)
+  debug: false,
+};
 
 /**
  * Complete theme type combining colors, spacing, and typography
@@ -8,6 +17,7 @@ export type AppTheme = ColorTokens & {
   spacing: typeof spacing;
   radius: typeof radius;
   typography: typeof typography;
+  stacks: typeof stacks;
 };
 
 /**
@@ -18,6 +28,7 @@ const createTheme = (colors: ColorTokens): AppTheme => ({
   spacing,
   radius,
   typography,
+  stacks,
 });
 
 /**
@@ -48,6 +59,10 @@ type AppThemes = typeof themes;
 declare module "react-native-unistyles" {
   export interface UnistylesThemes extends AppThemes {}
   export interface UnistylesBreakpoints extends AppBreakpoints {}
+}
+
+declare module "@grapp/stacks" {
+  export interface StacksBreakpoints extends AppBreakpoints {}
 }
 
 /**

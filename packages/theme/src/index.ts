@@ -5,7 +5,7 @@ export { type RadiusKey, type RadiusValue, radius, type SpacingKey, type Spacing
 // Theme variants
 export { neonDark, neonLight } from "./themes/neon";
 // Typography
-export { type FontWeight, fontFamily, fontSize, letterSpacing, lineHeight, type TypographyTokens, typography } from "./typography";
+export { type FontWeight, fontFamily, letterSpacing, lineHeight, type TypographyTokens, typography } from "./typography";
 
 // All themes as a single object for convenience
 export const themes = {

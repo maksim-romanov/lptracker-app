@@ -27,14 +27,14 @@ export function OnboardingScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <ScrollView contentContainerStyle={[styles.content, { padding: theme.spacing["2xl"] }]} showsVerticalScrollIndicator={false}>
         <View style={[styles.header, { marginTop: theme.spacing["4xl"], marginBottom: theme.spacing["3xl"] }]}>
-          <Text style={[styles.title, theme.typography.displaySmall, { color: theme.primary, marginBottom: theme.spacing.md }]}>MatrApp</Text>
+          <Text style={[styles.title, theme.typography.display, { color: theme.primary, marginBottom: theme.spacing.md }]}>MatrApp</Text>
           <Text style={[styles.subtitle, theme.typography.bodyLarge, { color: theme.onSurfaceVariant }]}>
             Track your DeFi positions across protocols
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, theme.typography.titleLarge, { color: theme.onBackground, marginBottom: theme.spacing.xl }]}>
+          <Text style={[styles.sectionTitle, theme.typography.headline, { color: theme.onBackground, marginBottom: theme.spacing.xl }]}>
             Choose appearance
           </Text>
 
@@ -56,7 +56,7 @@ export function OnboardingScreen() {
                 <Text style={[styles.themeEmoji, { marginBottom: theme.spacing.md }]}>{option.emoji}</Text>
                 <Text
                   style={[
-                    theme.typography.titleMedium,
+                    theme.typography.label,
                     {
                       color: themeName === option.name ? theme.primary : theme.onSurfaceVariant,
                       fontWeight: themeName === option.name ? "600" : "500",
@@ -82,7 +82,7 @@ export function OnboardingScreen() {
           ]}
           onPress={handleContinue}
         >
-          <Text style={[theme.typography.labelLarge, { color: theme.onPrimary, fontWeight: "600" }]}>Get Started</Text>
+          <Text style={[theme.typography.label, { color: theme.onPrimary, fontWeight: "600" }]}>Get Started</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>

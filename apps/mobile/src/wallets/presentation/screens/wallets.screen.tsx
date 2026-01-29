@@ -9,14 +9,14 @@ export function WalletsScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["top"]}>
       <View style={[styles.header, { padding: theme.spacing.xl, borderBottomColor: theme.outlineVariant }]}>
-        <Text style={[theme.typography.headlineMedium, { color: theme.onBackground }]}>Wallets</Text>
+        <Text style={[theme.typography.headline, { color: theme.onBackground }]}>Wallets</Text>
       </View>
 
       <View style={[styles.content, { padding: theme.spacing["2xl"] }]}>
         <View style={styles.placeholder}>
           <Text style={[styles.placeholderIcon, { marginBottom: theme.spacing.lg }]}>👛</Text>
-          <Text style={[theme.typography.titleLarge, { color: theme.onSurface, marginBottom: theme.spacing.sm }]}>No wallets connected</Text>
-          <Text style={[theme.typography.bodyMedium, { color: theme.onSurfaceVariant, textAlign: "center" }]}>
+          <Text style={[theme.typography.bodyLarge, { color: theme.onSurface, marginBottom: theme.spacing.sm }]}>No wallets connected</Text>
+          <Text style={[theme.typography.body, { color: theme.onSurfaceVariant, textAlign: "center" }]}>
             Add a wallet to track your positions
           </Text>
         </View>

@@ -32,7 +32,18 @@
           "root": "./src/app"
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Satoshi-Regular.otf",
+            "./assets/fonts/Satoshi-Medium.otf",
+            "./assets/fonts/Satoshi-Bold.otf",
+            "./assets/fonts/Satoshi-Black.otf"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

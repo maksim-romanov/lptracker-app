@@ -1,6 +1,13 @@
 /**
- * Typography scale following Material Design 3 type scale
- * Inspired by Flighty, Uniswap, Stargate apps
+ * Typography scale - Simplified responsive system
+ *
+ * 6 essential variants:
+ * - display: Hero text, splash screens, empty states
+ * - headline: Screen titles, section headers, card titles
+ * - bodyLarge: Emphasized paragraphs, lead text
+ * - body: Default for paragraphs, descriptions, list items
+ * - bodySmall: Secondary info, timestamps, captions
+ * - label: UI controls - buttons, tabs, chips, form labels
  */
 
 export type FontWeight = "400" | "500" | "600" | "700";
@@ -14,62 +21,27 @@ export type TextStyleType = {
 };
 
 export type TypographyTokens = {
-  // Display - Large titles, hero text
-  displayLarge: TextStyleType;
-  displayMedium: TextStyleType;
-  displaySmall: TextStyleType;
-
-  // Headline - Section headers
-  headlineLarge: TextStyleType;
-  headlineMedium: TextStyleType;
-  headlineSmall: TextStyleType;
-
-  // Title - Card titles, list headers
-  titleLarge: TextStyleType;
-  titleMedium: TextStyleType;
-  titleSmall: TextStyleType;
-
-  // Body - Main content text
+  display: TextStyleType;
+  headline: TextStyleType;
   bodyLarge: TextStyleType;
-  bodyMedium: TextStyleType;
+  body: TextStyleType;
   bodySmall: TextStyleType;
-
-  // Label - Buttons, chips, tabs
-  labelLarge: TextStyleType;
-  labelMedium: TextStyleType;
-  labelSmall: TextStyleType;
+  label: TextStyleType;
 };
 
 /**
- * Font families
- * Using system fonts for optimal rendering
+ * Font families - Satoshi font family
  */
 export const fontFamily = {
-  regular: "System",
-  medium: "System",
-  semibold: "System",
-  bold: "System",
+  regular: "Satoshi-Regular",
+  medium: "Satoshi-Medium",
+  semibold: "Satoshi-Bold",
+  bold: "Satoshi-Bold",
   mono: "Menlo",
 } as const;
 
 /**
- * Font sizes in pixels
- */
-export const fontSize = {
-  xs: 11,
-  sm: 12,
-  md: 14,
-  lg: 16,
-  xl: 18,
-  "2xl": 22,
-  "3xl": 28,
-  "4xl": 36,
-  "5xl": 45,
-  "6xl": 57,
-} as const;
-
-/**
- * Line heights (multiplier)
+ * Line height multipliers
  */
 export const lineHeight = {
   tight: 1.1,
@@ -88,121 +60,50 @@ export const letterSpacing = {
 } as const;
 
 /**
- * Typography scale
+ * Typography scale - base sizes for phone (xs breakpoint)
+ * Responsive scaling happens in Unistyles via breakpoints
  */
 export const typography: TypographyTokens = {
-  // Display
-  displayLarge: {
+  display: {
     fontFamily: fontFamily.bold,
-    fontSize: fontSize["6xl"],
+    fontSize: 36,
     fontWeight: "700",
-    lineHeight: fontSize["6xl"] * lineHeight.tight,
-    letterSpacing: letterSpacing.tight,
+    lineHeight: 39.6,
+    letterSpacing: letterSpacing.normal,
   },
-  displayMedium: {
+  headline: {
     fontFamily: fontFamily.bold,
-    fontSize: fontSize["5xl"],
-    fontWeight: "700",
-    lineHeight: fontSize["5xl"] * lineHeight.tight,
-    letterSpacing: letterSpacing.tight,
-  },
-  displaySmall: {
-    fontFamily: fontFamily.bold,
-    fontSize: fontSize["4xl"],
-    fontWeight: "700",
-    lineHeight: fontSize["4xl"] * lineHeight.tight,
-    letterSpacing: letterSpacing.normal,
-  },
-
-  // Headline
-  headlineLarge: {
-    fontFamily: fontFamily.semibold,
-    fontSize: fontSize["3xl"],
+    fontSize: 22,
     fontWeight: "600",
-    lineHeight: fontSize["3xl"] * lineHeight.normal,
+    lineHeight: 30.8,
     letterSpacing: letterSpacing.normal,
   },
-  headlineMedium: {
-    fontFamily: fontFamily.semibold,
-    fontSize: fontSize["2xl"],
-    fontWeight: "600",
-    lineHeight: fontSize["2xl"] * lineHeight.normal,
-    letterSpacing: letterSpacing.normal,
-  },
-  headlineSmall: {
-    fontFamily: fontFamily.semibold,
-    fontSize: fontSize.xl,
-    fontWeight: "600",
-    lineHeight: fontSize.xl * lineHeight.normal,
-    letterSpacing: letterSpacing.normal,
-  },
-
-  // Title
-  titleLarge: {
-    fontFamily: fontFamily.medium,
-    fontSize: fontSize.xl,
-    fontWeight: "500",
-    lineHeight: fontSize.xl * lineHeight.normal,
-    letterSpacing: letterSpacing.normal,
-  },
-  titleMedium: {
-    fontFamily: fontFamily.medium,
-    fontSize: fontSize.lg,
-    fontWeight: "500",
-    lineHeight: fontSize.lg * lineHeight.normal,
-    letterSpacing: letterSpacing.wide,
-  },
-  titleSmall: {
-    fontFamily: fontFamily.medium,
-    fontSize: fontSize.md,
-    fontWeight: "500",
-    lineHeight: fontSize.md * lineHeight.normal,
-    letterSpacing: letterSpacing.wide,
-  },
-
-  // Body
   bodyLarge: {
     fontFamily: fontFamily.regular,
-    fontSize: fontSize.lg,
+    fontSize: 16,
     fontWeight: "400",
-    lineHeight: fontSize.lg * lineHeight.relaxed,
+    lineHeight: 25.6,
     letterSpacing: letterSpacing.normal,
   },
-  bodyMedium: {
+  body: {
     fontFamily: fontFamily.regular,
-    fontSize: fontSize.md,
+    fontSize: 14,
     fontWeight: "400",
-    lineHeight: fontSize.md * lineHeight.relaxed,
+    lineHeight: 22.4,
     letterSpacing: letterSpacing.normal,
   },
   bodySmall: {
     fontFamily: fontFamily.regular,
-    fontSize: fontSize.sm,
+    fontSize: 12,
     fontWeight: "400",
-    lineHeight: fontSize.sm * lineHeight.relaxed,
+    lineHeight: 19.2,
     letterSpacing: letterSpacing.normal,
   },
-
-  // Label
-  labelLarge: {
+  label: {
     fontFamily: fontFamily.medium,
-    fontSize: fontSize.md,
+    fontSize: 12,
     fontWeight: "500",
-    lineHeight: fontSize.md * lineHeight.normal,
+    lineHeight: 16.8,
     letterSpacing: letterSpacing.wide,
-  },
-  labelMedium: {
-    fontFamily: fontFamily.medium,
-    fontSize: fontSize.sm,
-    fontWeight: "500",
-    lineHeight: fontSize.sm * lineHeight.normal,
-    letterSpacing: letterSpacing.wider,
-  },
-  labelSmall: {
-    fontFamily: fontFamily.medium,
-    fontSize: fontSize.xs,
-    fontWeight: "500",
-    lineHeight: fontSize.xs * lineHeight.normal,
-    letterSpacing: letterSpacing.wider,
   },
 };
