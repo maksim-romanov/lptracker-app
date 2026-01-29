@@ -4,6 +4,7 @@ import { ThemeProvider } from "@react-navigation/native";
 import { AppInitUseCase } from "core/application";
 import { container } from "core/di/container";
 import { createNavigationTheme, type ThemeName } from "core/presentation/theme";
+import { QueryProvider } from "core/query/presentation/QueryProvider";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { UnistylesRuntime, useUnistyles } from "react-native-unistyles";
@@ -23,13 +24,15 @@ export default function RootLayout() {
     <>
       <StatusBar style={isDark ? "light" : "dark"} />
 
-      <ThemeProvider value={navigationTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-      </ThemeProvider>
+      <QueryProvider>
+        <ThemeProvider value={navigationTheme}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </ThemeProvider>
+      </QueryProvider>
     </>
   );
 }

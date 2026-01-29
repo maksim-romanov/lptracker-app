@@ -10,7 +10,8 @@
       "positions/*": ["./src/positions/*"],
       "wallets/*": ["./src/wallets/*"],
       "onboarding/*": ["./src/onboarding/*"],
-      "types/*": ["./src/types/*"]
+      "types/*": ["./src/types/*"],
+      "features/*": ["./src/features/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
