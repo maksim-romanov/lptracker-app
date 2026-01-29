@@ -7,6 +7,7 @@ import {
   ReactNativeLogger,
 } from "core/services";
 import * as uniswapV3 from "features/uniswap-v3/di/register";
+import * as positions from "positions/di/register";
 
 import { container } from "./container";
 import { ALERTS, APP_INFO, DEVICE_INFO, LOGGER } from "./tokens";
@@ -22,6 +23,7 @@ function register(): void {
 
   // Features
   uniswapV3.register();
+  positions.register();
 }
 
 // Auto-register on import

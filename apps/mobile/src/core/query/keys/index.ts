@@ -1,3 +1,5 @@
 import { mergeQueryKeys } from "@lukemorales/query-key-factory";
 
-export const queryKeys = mergeQueryKeys();
+import { positionsKeys } from "./positions.keys";
+
+export const queryKeys = mergeQueryKeys(positionsKeys);

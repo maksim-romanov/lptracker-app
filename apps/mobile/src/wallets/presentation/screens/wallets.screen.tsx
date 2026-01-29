@@ -7,9 +7,9 @@ export function WalletsScreen() {
   const { theme } = useUnistyles();
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["top"]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.surface }]} edges={["top"]}>
       <View style={[styles.header, { padding: theme.spacing.xl, borderBottomColor: theme.outlineVariant }]}>
-        <Text style={[theme.typography.headline, { color: theme.onBackground }]}>Wallets</Text>
+        <Text style={[theme.typography.headline, { color: theme.onSurface }]}>Wallets</Text>
       </View>
 
       <View style={[styles.content, { padding: theme.spacing["2xl"] }]}>

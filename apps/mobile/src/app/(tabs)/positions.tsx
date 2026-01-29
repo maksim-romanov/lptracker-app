@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { PositionsScreen } from "positions/presentation/screens/positions.screen";
+import { PositionsScreen } from "positions/presentation/screens/PositionsScreen";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function () {

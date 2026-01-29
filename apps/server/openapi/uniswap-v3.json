@@ -21,7 +21,9 @@
     "/wallets/{walletAddress}/positions": {
       "get": {
         "operationId": "getWallets:walletAddressPositions",
-        "tags": ["Positions"],
+        "tags": [
+          "Positions"
+        ],
         "summary": "List wallet positions",
         "description": "Retrieves all Uniswap V3 positions owned by a wallet address across supported chains",
         "responses": {
@@ -74,7 +76,11 @@
                                 "type": "number"
                               }
                             },
-                            "required": ["address", "symbol", "decimals"]
+                            "required": [
+                              "address",
+                              "symbol",
+                              "decimals"
+                            ]
                           },
                           "token1": {
                             "type": "object",
@@ -89,10 +95,21 @@
                                 "type": "number"
                               }
                             },
-                            "required": ["address", "symbol", "decimals"]
+                            "required": [
+                              "address",
+                              "symbol",
+                              "decimals"
+                            ]
                           }
                         },
-                        "required": ["id", "feeTier", "currentTick", "sqrtPriceX96", "token0", "token1"]
+                        "required": [
+                          "id",
+                          "feeTier",
+                          "currentTick",
+                          "sqrtPriceX96",
+                          "token0",
+                          "token1"
+                        ]
                       },
                       "isActive": {
                         "type": "boolean"
@@ -101,7 +118,15 @@
                         "type": "boolean"
                       }
                     },
-                    "required": ["id", "tickLower", "tickUpper", "liquidity", "pool", "isActive", "isClosed"]
+                    "required": [
+                      "id",
+                      "tickLower",
+                      "tickUpper",
+                      "liquidity",
+                      "pool",
+                      "isActive",
+                      "isClosed"
+                    ]
                   }
                 }
               }
@@ -128,7 +153,10 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": ["error", "code"]
+                  "required": [
+                    "error",
+                    "code"
+                  ]
                 }
               }
             }
@@ -154,7 +182,10 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": ["error", "code"]
+                  "required": [
+                    "error",
+                    "code"
+                  ]
                 }
               }
             }
@@ -203,7 +234,9 @@
     "/chains/{chainId}/positions/{id}": {
       "get": {
         "operationId": "getChains:chainIdPositions:id",
-        "tags": ["Positions"],
+        "tags": [
+          "Positions"
+        ],
         "summary": "Get position details",
         "description": "Retrieves detailed information about a specific Uniswap V3 position",
         "responses": {
@@ -254,7 +287,11 @@
                               "type": "number"
                             }
                           },
-                          "required": ["address", "symbol", "decimals"]
+                          "required": [
+                            "address",
+                            "symbol",
+                            "decimals"
+                          ]
                         },
                         "token1": {
                           "type": "object",
@@ -269,10 +306,21 @@
                               "type": "number"
                             }
                           },
-                          "required": ["address", "symbol", "decimals"]
+                          "required": [
+                            "address",
+                            "symbol",
+                            "decimals"
+                          ]
                         }
                       },
-                      "required": ["id", "feeTier", "currentTick", "sqrtPriceX96", "token0", "token1"]
+                      "required": [
+                        "id",
+                        "feeTier",
+                        "currentTick",
+                        "sqrtPriceX96",
+                        "token0",
+                        "token1"
+                      ]
                     },
                     "isActive": {
                       "type": "boolean"
@@ -281,7 +329,15 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["id", "tickLower", "tickUpper", "liquidity", "pool", "isActive", "isClosed"]
+                  "required": [
+                    "id",
+                    "tickLower",
+                    "tickUpper",
+                    "liquidity",
+                    "pool",
+                    "isActive",
+                    "isClosed"
+                  ]
                 }
               }
             }
@@ -307,7 +363,10 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": ["error", "code"]
+                  "required": [
+                    "error",
+                    "code"
+                  ]
                 }
               }
             }
@@ -333,7 +392,10 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": ["error", "code"]
+                  "required": [
+                    "error",
+                    "code"
+                  ]
                 }
               }
             }
@@ -359,7 +421,10 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": ["error", "code"]
+                  "required": [
+                    "error",
+                    "code"
+                  ]
                 }
               }
             }
@@ -389,7 +454,9 @@
     "/chains/{chainId}/positions/{id}/fees": {
       "get": {
         "operationId": "getChains:chainIdPositions:idFees",
-        "tags": ["Positions"],
+        "tags": [
+          "Positions"
+        ],
         "summary": "Get position unclaimed fees",
         "description": "Calculates and returns the unclaimed trading fees for a specific Uniswap V3 position",
         "responses": {
@@ -413,7 +480,11 @@
                           "type": "number"
                         }
                       },
-                      "required": ["address", "symbol", "decimals"]
+                      "required": [
+                        "address",
+                        "symbol",
+                        "decimals"
+                      ]
                     },
                     "token1": {
                       "type": "object",
@@ -428,7 +499,11 @@
                           "type": "number"
                         }
                       },
-                      "required": ["address", "symbol", "decimals"]
+                      "required": [
+                        "address",
+                        "symbol",
+                        "decimals"
+                      ]
                     },
                     "unclaimedFees": {
                       "type": "object",
@@ -449,7 +524,12 @@
                               "type": "number"
                             }
                           },
-                          "required": ["label", "token0", "token1", "total"]
+                          "required": [
+                            "label",
+                            "token0",
+                            "token1",
+                            "total"
+                          ]
                         },
                         "token1PerToken0": {
                           "type": "object",
@@ -467,13 +547,25 @@
                               "type": "number"
                             }
                           },
-                          "required": ["label", "token0", "token1", "total"]
+                          "required": [
+                            "label",
+                            "token0",
+                            "token1",
+                            "total"
+                          ]
                         }
                       },
-                      "required": ["token0PerToken1", "token1PerToken0"]
+                      "required": [
+                        "token0PerToken1",
+                        "token1PerToken0"
+                      ]
                     }
                   },
-                  "required": ["token0", "token1", "unclaimedFees"]
+                  "required": [
+                    "token0",
+                    "token1",
+                    "unclaimedFees"
+                  ]
                 }
               }
             }
@@ -499,7 +591,10 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": ["error", "code"]
+                  "required": [
+                    "error",
+                    "code"
+                  ]
                 }
               }
             }
@@ -525,7 +620,10 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": ["error", "code"]
+                  "required": [
+                    "error",
+                    "code"
+                  ]
                 }
               }
             }
@@ -551,7 +649,10 @@
                       "additionalProperties": {}
                     }
                   },
-                  "required": ["error", "code"]
+                  "required": [
+                    "error",
+                    "code"
+                  ]
                 }
               }
             }

@@ -39,11 +39,14 @@ export const positionSchema = v.object({
 /**
  * Wrapped position schema with protocol discriminator
  */
-export const uniswapV3WrappedPositionSchema = v.object({
-  protocol: v.literal(UNISWAP_V3_PROTOCOL),
-  chainId: v.number(),
-  data: positionSchema,
-});
+export const uniswapV3WrappedPositionSchema = v.pipe(
+  v.object({
+    protocol: v.literal(UNISWAP_V3_PROTOCOL),
+    chainId: v.number(),
+    data: positionSchema,
+  }),
+  v.metadata({ ref: "UniswapV3Position" }),
+);
 
 /**
  * Fees breakdown schema
