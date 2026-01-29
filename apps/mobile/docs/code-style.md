@@ -45,7 +45,8 @@ Theme types are augmented in `src/types/unistyles.d.ts`.
 
 ## Naming Conventions
 
-- **Files**: kebab-case (`positions.screen.tsx`, `wallet.repository.ts`)
+- **Components/Screens**: PascalCase (`PositionsScreen.tsx`, `PositionCard.tsx`)
+- **Other files**: kebab-case (`wallet.repository.ts`, `tokens.ts`)
 - **Types/Interfaces**: PascalCase with `T` prefix for types (`TPosition`, `IWalletState`)
 - **Enums**: PascalCase with `E` prefix (`ENetworkQuality`, `EErrorCode`)
 - **DI Tokens**: SCREAMING_SNAKE_CASE (`POSITIONS_REPOSITORY`, `WALLET_SERVICE`)

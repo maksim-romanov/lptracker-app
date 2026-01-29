@@ -41,6 +41,7 @@ yarn-error.log*
 *.pem
 
 **/CLAUDE.md
+!.claude/CLAUDE.md
 
 # The Graph Subgraphs
 apps/subgraphs/**/generated/
