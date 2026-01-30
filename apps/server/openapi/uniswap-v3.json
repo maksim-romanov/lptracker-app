@@ -46,7 +46,7 @@
                         "type": "number"
                       },
                       "liquidity": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/TokenPairAmount"
                       },
                       "pool": {
                         "type": "object",
@@ -257,7 +257,7 @@
                       "type": "number"
                     },
                     "liquidity": {
-                      "type": "string"
+                      "$ref": "#/components/schemas/TokenPairAmount"
                     },
                     "pool": {
                       "type": "object",
@@ -506,59 +506,7 @@
                       ]
                     },
                     "unclaimedFees": {
-                      "type": "object",
-                      "properties": {
-                        "token0PerToken1": {
-                          "type": "object",
-                          "properties": {
-                            "label": {
-                              "type": "string"
-                            },
-                            "token0": {
-                              "type": "number"
-                            },
-                            "token1": {
-                              "type": "number"
-                            },
-                            "total": {
-                              "type": "number"
-                            }
-                          },
-                          "required": [
-                            "label",
-                            "token0",
-                            "token1",
-                            "total"
-                          ]
-                        },
-                        "token1PerToken0": {
-                          "type": "object",
-                          "properties": {
-                            "label": {
-                              "type": "string"
-                            },
-                            "token0": {
-                              "type": "number"
-                            },
-                            "token1": {
-                              "type": "number"
-                            },
-                            "total": {
-                              "type": "number"
-                            }
-                          },
-                          "required": [
-                            "label",
-                            "token0",
-                            "token1",
-                            "total"
-                          ]
-                        }
-                      },
-                      "required": [
-                        "token0PerToken1",
-                        "token1PerToken0"
-                      ]
+                      "$ref": "#/components/schemas/TokenPairAmount"
                     }
                   },
                   "required": [
@@ -680,5 +628,38 @@
       }
     }
   },
-  "components": {}
+  "components": {
+    "schemas": {
+      "TokenAmount": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "USDValue": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "USDValue"
+        ]
+      },
+      "TokenPairAmount": {
+        "type": "object",
+        "properties": {
+          "token0": {
+            "$ref": "#/components/schemas/TokenAmount"
+          },
+          "token1": {
+            "$ref": "#/components/schemas/TokenAmount"
+          }
+        },
+        "required": [
+          "token0",
+          "token1"
+        ]
+      }
+    }
+  }
 }

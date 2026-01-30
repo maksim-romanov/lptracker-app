@@ -41,7 +41,7 @@ export class GetWalletPositionsUseCase {
       positions.map((dto) => ({
         protocol: UNISWAP_V3_PROTOCOL,
         chainId,
-        data: dto.toDomain().toResponse(),
+        data: dto.toDomain().response,
       })),
     );
 

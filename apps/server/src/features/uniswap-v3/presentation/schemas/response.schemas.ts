@@ -2,6 +2,16 @@ import * as v from "valibot";
 
 import { UNISWAP_V3_PROTOCOL } from "../../domain/constants/protocol";
 
+const tokenAmountSchema = v.pipe(
+  v.object({ value: v.number(), USDValue: v.number() }),
+  v.metadata({ ref: "TokenAmount" }),
+);
+
+const tokenPairAmountSchema = v.pipe(
+  v.object({ token0: tokenAmountSchema, token1: tokenAmountSchema }),
+  v.metadata({ ref: "TokenPairAmount" }),
+);
+
 /**
  * Token entity schema
  */
@@ -30,7 +40,7 @@ export const positionSchema = v.object({
   id: v.string(),
   tickLower: v.number(),
   tickUpper: v.number(),
-  liquidity: v.string(),
+  liquidity: tokenPairAmountSchema,
   pool: poolSchema,
   isActive: v.boolean(),
   isClosed: v.boolean(),
@@ -49,25 +59,12 @@ export const uniswapV3WrappedPositionSchema = v.pipe(
 );
 
 /**
- * Fees breakdown schema
- */
-export const feesBreakdownSchema = v.object({
-  label: v.string(),
-  token0: v.number(),
-  token1: v.number(),
-  total: v.number(),
-});
-
-/**
  * Position fees response schema
  */
 export const positionFeesSchema = v.object({
   token0: tokenSchema,
   token1: tokenSchema,
-  unclaimedFees: v.object({
-    token0PerToken1: feesBreakdownSchema,
-    token1PerToken0: feesBreakdownSchema,
-  }),
+  unclaimedFees: tokenPairAmountSchema,
 });
 
 /**

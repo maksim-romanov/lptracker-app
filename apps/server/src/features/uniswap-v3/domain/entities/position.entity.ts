@@ -1,3 +1,5 @@
+import { Position } from "@uniswap/v3-sdk";
+
 import type { PoolEntity } from "./pool.entity";
 
 type PositionData = {
@@ -39,13 +41,27 @@ export class PositionEntity {
     return this.liquidity === 0n;
   }
 
-  toResponse() {
+  get sdk(): Position {
+    return new Position({
+      pool: this.pool.sdk,
+      liquidity: this.liquidity.toString(),
+      tickLower: this.tickLower,
+      tickUpper: this.tickUpper,
+    });
+  }
+
+  get response() {
+    const sdk = this.sdk;
+
     return {
       id: this.id,
       tickLower: this.tickLower,
       tickUpper: this.tickUpper,
-      liquidity: this.liquidity.toString(),
-      pool: this.pool.toResponse(),
+      liquidity: {
+        token0: { value: Number(sdk.amount0.toExact()), USDValue: 0 },
+        token1: { value: Number(sdk.amount1.toExact()), USDValue: 0 },
+      },
+      pool: this.pool.response,
       isActive: this.isActive,
       isClosed: this.isClosed,
     };

@@ -146,6 +146,36 @@
   },
   "components": {
     "schemas": {
+      "TokenAmount": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "USDValue": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "USDValue"
+        ]
+      },
+      "TokenPairAmount": {
+        "type": "object",
+        "properties": {
+          "token0": {
+            "$ref": "#/components/schemas/TokenAmount"
+          },
+          "token1": {
+            "$ref": "#/components/schemas/TokenAmount"
+          }
+        },
+        "required": [
+          "token0",
+          "token1"
+        ]
+      },
       "UniswapV3Position": {
         "type": "object",
         "properties": {
@@ -168,7 +198,7 @@
                 "type": "number"
               },
               "liquidity": {
-                "type": "string"
+                "$ref": "#/components/schemas/TokenPairAmount"
               },
               "pool": {
                 "type": "object",

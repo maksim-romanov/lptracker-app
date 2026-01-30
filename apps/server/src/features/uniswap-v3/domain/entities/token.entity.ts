@@ -1,4 +1,7 @@
+import { Token } from "@uniswap/sdk-core";
+
 type TokenData = {
+  chainId: number;
   address: string;
   symbol: string;
   decimals: number;
@@ -6,6 +9,10 @@ type TokenData = {
 
 export class TokenEntity {
   constructor(private readonly data: TokenData) {}
+
+  get chainId(): number {
+    return this.data.chainId;
+  }
 
   get address(): string {
     return this.data.address;
@@ -19,7 +26,11 @@ export class TokenEntity {
     return this.data.decimals;
   }
 
-  toResponse() {
+  get sdk(): Token {
+    return new Token(this.chainId, this.address, this.decimals, this.symbol);
+  }
+
+  get response() {
     return {
       address: this.address,
       symbol: this.symbol,

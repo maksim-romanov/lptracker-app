@@ -14,7 +14,7 @@ const DEV_WALLET = "0xeCa0b7CDd7F2fE6389Ee3720aE415D07ABe0Ed58";
 const Separator = () => <View style={styles.separator} />;
 
 const renderPositionCard = ({ item }: { item: PositionComponent }) => {
-  if (item.protocol === "uniswap-v3") return <UniswapV3PositionCard />;
+  if (item.protocol === "uniswap-v3") return <UniswapV3PositionCard position={item} />;
   return null;
 };
 

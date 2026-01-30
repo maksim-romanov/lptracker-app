@@ -8,9 +8,9 @@ export class GetPositionUseCase {
   constructor(@inject(PositionsRepository) public readonly positionsRepository: PositionsRepository) {}
 
   async execute(id: string) {
-    const arbitrumPositionRes = await this.positionsRepository.getPosition(id);
-    if (arbitrumPositionRes.isErr()) return err(arbitrumPositionRes.error);
+    const result = await this.positionsRepository.getPosition(id);
+    if (result.isErr()) return err(result.error);
 
-    return ok(arbitrumPositionRes.value);
+    return ok(result.value.toDomain().response);
   }
 }

@@ -19,7 +19,7 @@ export class PositionsRepository extends BaseRepository {
   ) {
     try {
       const result = await this.gql.request(getWalletPositionsQuery, { owner, ...pagination, ...filters });
-      const positions = result.positions.map((p) => GraphQLPositionDto.fromGraphQL(p));
+      const positions = result.positions.map((p) => GraphQLPositionDto.fromGraphQL(p, this.chainContext.chain.id));
       return ok(positions);
     } catch {
       return err(new PositionError(PositionError.CODE.GRAPHQL_ERROR));
@@ -29,7 +29,7 @@ export class PositionsRepository extends BaseRepository {
   async getPosition(id: string) {
     try {
       const result = await this.gql.request(getPositionQuery, { id });
-      const position = GraphQLPositionDto.fromGraphQL(result.position);
+      const position = GraphQLPositionDto.fromGraphQL(result.position, this.chainContext.chain.id);
       return ok(position);
     } catch {
       return err(new PositionError(PositionError.CODE.GRAPHQL_ERROR));
@@ -92,6 +92,7 @@ const getPositionQuery = graphql(`
       pool {
         id
         feeTier
+        liquidity
         currentTick
         sqrtPriceX96
         token0 { id symbol decimals }
@@ -124,6 +125,7 @@ const getWalletPositionsQuery = graphql(`
       pool {
         id
         feeTier
+        liquidity
         currentTick
         sqrtPriceX96
         token0 { id symbol decimals }

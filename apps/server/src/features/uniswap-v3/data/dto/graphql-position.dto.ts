@@ -15,8 +15,9 @@ export class GraphQLTokenDto {
   @Expose()
   decimals!: number;
 
-  toDomain(): TokenEntity {
+  toDomain(chainId: number): TokenEntity {
     return new TokenEntity({
+      chainId,
       address: this.id,
       symbol: this.symbol,
       decimals: this.decimals,
@@ -38,6 +39,9 @@ export class GraphQLPoolDto {
   sqrtPriceX96!: string;
 
   @Expose()
+  liquidity!: string;
+
+  @Expose()
   @Type(() => GraphQLTokenDto)
   token0!: GraphQLTokenDto;
 
@@ -45,14 +49,18 @@ export class GraphQLPoolDto {
   @Type(() => GraphQLTokenDto)
   token1!: GraphQLTokenDto;
 
+  chainId!: number;
+
   toDomain(): PoolEntity {
     return new PoolEntity({
+      chainId: this.chainId,
       id: this.id,
       feeTier: this.feeTier,
+      liquidity: this.liquidity,
       currentTick: this.currentTick,
       sqrtPriceX96: this.sqrtPriceX96,
-      token0: this.token0.toDomain(),
-      token1: this.token1.toDomain(),
+      token0: this.token0.toDomain(this.chainId),
+      token1: this.token1.toDomain(this.chainId),
     });
   }
 }
@@ -75,6 +83,8 @@ export class GraphQLPositionDto {
   @Type(() => GraphQLPoolDto)
   pool!: GraphQLPoolDto;
 
+  private chainId!: number;
+
   toDomain(): PositionEntity {
     return new PositionEntity({
       id: this.id,
@@ -85,9 +95,12 @@ export class GraphQLPositionDto {
     });
   }
 
-  static fromGraphQL(raw: unknown): GraphQLPositionDto {
-    return plainToInstance(GraphQLPositionDto, raw, {
+  static fromGraphQL(raw: unknown, chainId: number): GraphQLPositionDto {
+    const dto = plainToInstance(GraphQLPositionDto, raw, {
       excludeExtraneousValues: true,
     });
+    dto.chainId = chainId;
+    dto.pool.chainId = chainId;
+    return dto;
   }
 }
