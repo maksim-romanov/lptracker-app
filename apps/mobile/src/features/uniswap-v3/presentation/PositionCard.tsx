@@ -1,6 +1,7 @@
 import { Box, Column, Columns, Inline, Stack } from "@grapp/stacks";
 import type { components } from "core/api-client/generated/gateway";
 import { Text } from "core/presentation/components";
+import { TokensImages } from "core/presentation/components/TokenLogos";
 import { Image } from "expo-image";
 import numbro from "numbro";
 import { StyleSheet } from "react-native-unistyles";
@@ -28,13 +29,15 @@ export const PositionCard = ({ position }: Props) => {
       />
 
       <Stack space={4}>
-        <Inline alignY="center">
-          <Inline space={4} alignY="center" flex="fluid">
+        <Inline alignY="top" alignX="between">
+          <Inline space={4} alignY="center">
             {/* <TokensImages tokens={tokens} chainId={chainId} /> */}
-            <Text variant="bodyLarge">
+            <Text variant="headline">
               {pool.token0.symbol}/{pool.token1.symbol}
             </Text>
           </Inline>
+
+          <TokensImages tokens={[pool.token0, pool.token1]} chainId={position.chainId} />
 
           {/* <Box marginRight={2}>
           <InRangeTag inRange={inRange} />

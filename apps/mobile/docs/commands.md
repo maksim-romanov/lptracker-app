@@ -23,13 +23,13 @@ bun check:fix
 
 ```bash
 # Start mobile dev server
-bun run dev --filter=@matrapp/mobile
+bun run dev --filter=mobile
 
 # Run iOS
-bun run dev:ios --filter=@matrapp/mobile
+bun run dev:ios --filter=mobile
 
 # Run Android
-bun run dev:android --filter=@matrapp/mobile
+bun run dev:android --filter=mobile
 ```
 
 ## Code Generation

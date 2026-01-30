@@ -17,6 +17,7 @@
     "hono": "^4.11.5",
     "hono-openapi": "^1.1.2",
     "neverthrow": "^8.2.0",
+    "p-limit": "^7.2.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0",
     "valibot": "^1.2.0"

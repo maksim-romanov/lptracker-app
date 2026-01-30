@@ -226,12 +226,16 @@
                       },
                       "decimals": {
                         "type": "number"
+                      },
+                      "logoUrl": {
+                        "type": "string"
                       }
                     },
                     "required": [
                       "address",
                       "symbol",
-                      "decimals"
+                      "decimals",
+                      "logoUrl"
                     ]
                   },
                   "token1": {
@@ -245,12 +249,16 @@
                       },
                       "decimals": {
                         "type": "number"
+                      },
+                      "logoUrl": {
+                        "type": "string"
                       }
                     },
                     "required": [
                       "address",
                       "symbol",
-                      "decimals"
+                      "decimals",
+                      "logoUrl"
                     ]
                   }
                 },

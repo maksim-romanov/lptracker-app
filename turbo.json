@@ -31,7 +31,7 @@
     "codegen": {
       "cache": false
     },
-    "@matrapp/mobile#codegen": {
+    "mobile#codegen": {
       "dependsOn": ["server#codegen"],
       "cache": false
     },
