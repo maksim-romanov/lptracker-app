@@ -10,22 +10,21 @@ type TProps = {
 
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
-export const TokensImages = function TokensImages({ tokens, chainId }: TProps) {
-  return (
-    <View style={[styles.container, styles.containerTransformed(tokens.length)]}>
-      {tokens.map((token, index) => (
+export const TokensImages = ({ tokens, chainId }: TProps) => (
+  <View style={[styles.container, styles.containerTransformed(tokens.length)]}>
+    {tokens.map((token, index) => (
+      <View key={token.address} style={[styles.imageContainer, styles.imageContainerTransformed(index)]}>
         <Image
-          key={token.address}
           contentFit="contain"
-          style={[styles.image, styles.imageTransformed(index)]}
+          style={styles.image}
           source={{ uri: `${BASE_URL}/meta/v1/chains/${chainId}/tokens/${token.address}/logo.png` }}
         />
-      ))}
-    </View>
-  );
-};
+      </View>
+    ))}
+  </View>
+);
 
-const IMAGE_SIZE = 60;
+const IMAGE_SIZE = 50;
 
 const styles = StyleSheet.create((theme) => ({
   container: {
@@ -39,15 +38,19 @@ const styles = StyleSheet.create((theme) => ({
 
   image: {
     aspectRatio: 1,
-    width: IMAGE_SIZE,
+    width: "100%",
+  },
+
+  imageContainer: {
     borderWidth: 4,
+    width: IMAGE_SIZE,
     borderColor: theme.surfaceContainer,
     backgroundColor: theme.surfaceVariant,
     borderRadius: 100,
+    overflow: "hidden",
   },
 
-  imageTransformed: (index: number) => ({
-    borderWidth: index === 0 ? 0 : 4,
+  imageContainerTransformed: (index: number) => ({
     transform: [{ translateX: index * -(IMAGE_SIZE / 2) }],
   }),
 }));

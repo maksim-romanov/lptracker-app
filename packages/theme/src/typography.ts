@@ -1,13 +1,15 @@
 /**
  * Typography scale - Simplified responsive system
  *
- * 6 essential variants:
- * - display: Hero text, splash screens, empty states
- * - headline: Screen titles, section headers, card titles
- * - bodyLarge: Emphasized paragraphs, lead text
- * - body: Default for paragraphs, descriptions, list items
- * - bodySmall: Secondary info, timestamps, captions
- * - label: UI controls - buttons, tabs, chips, form labels
+ * Headings (3 levels, always bold):
+ * - display: Hero text, splash screens, empty states (32px, Black)
+ * - title: Screen titles, section headers (22px, Bold)
+ * - headline: Card accents, section emphasis (18px, Bold)
+ *
+ * Text (with bold modifier):
+ * - body: Default paragraphs, descriptions (16px, Regular / Bold)
+ * - bodySmall: Secondary info, captions (13px, Regular / Medium)
+ * - label: UI controls - buttons, tabs, chips (14px, Medium / Bold)
  */
 
 export type FontWeight = "400" | "500" | "600" | "700";
@@ -22,8 +24,8 @@ export type TextStyleType = {
 
 export type TypographyTokens = {
   display: TextStyleType;
+  title: TextStyleType;
   headline: TextStyleType;
-  bodyLarge: TextStyleType;
   body: TextStyleType;
   bodySmall: TextStyleType;
   label: TextStyleType;
@@ -35,8 +37,8 @@ export type TypographyTokens = {
 export const fontFamily = {
   regular: "Satoshi-Regular",
   medium: "Satoshi-Medium",
-  semibold: "Satoshi-Bold",
   bold: "Satoshi-Bold",
+  black: "Satoshi-Black",
   mono: "Menlo",
 } as const;
 
@@ -65,45 +67,45 @@ export const letterSpacing = {
  */
 export const typography: TypographyTokens = {
   display: {
-    fontFamily: fontFamily.bold,
-    fontSize: 36,
+    fontFamily: fontFamily.black,
+    fontSize: 32,
     fontWeight: "700",
-    lineHeight: 39.6,
+    lineHeight: 38.4,
+    letterSpacing: letterSpacing.normal,
+  },
+  title: {
+    fontFamily: fontFamily.bold,
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 30.8,
     letterSpacing: letterSpacing.normal,
   },
   headline: {
     fontFamily: fontFamily.bold,
-    fontSize: 22,
-    fontWeight: "600",
-    lineHeight: 30.8,
+    fontSize: 18,
+    fontWeight: "700",
+    lineHeight: 25.2,
     letterSpacing: letterSpacing.normal,
   },
-  bodyLarge: {
+  body: {
     fontFamily: fontFamily.regular,
     fontSize: 16,
     fontWeight: "400",
     lineHeight: 25.6,
     letterSpacing: letterSpacing.normal,
   },
-  body: {
-    fontFamily: fontFamily.regular,
-    fontSize: 14,
-    fontWeight: "400",
-    lineHeight: 22.4,
-    letterSpacing: letterSpacing.normal,
-  },
   bodySmall: {
     fontFamily: fontFamily.regular,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "400",
-    lineHeight: 19.2,
+    lineHeight: 19.5,
     letterSpacing: letterSpacing.normal,
   },
   label: {
     fontFamily: fontFamily.medium,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "500",
-    lineHeight: 16.8,
+    lineHeight: 19.6,
     letterSpacing: letterSpacing.wide,
   },
 };

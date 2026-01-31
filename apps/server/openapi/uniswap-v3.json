@@ -74,16 +74,12 @@
                               },
                               "decimals": {
                                 "type": "number"
-                              },
-                              "logoUrl": {
-                                "type": "string"
                               }
                             },
                             "required": [
                               "address",
                               "symbol",
-                              "decimals",
-                              "logoUrl"
+                              "decimals"
                             ]
                           },
                           "token1": {
@@ -97,16 +93,12 @@
                               },
                               "decimals": {
                                 "type": "number"
-                              },
-                              "logoUrl": {
-                                "type": "string"
                               }
                             },
                             "required": [
                               "address",
                               "symbol",
-                              "decimals",
-                              "logoUrl"
+                              "decimals"
                             ]
                           }
                         },
@@ -293,16 +285,12 @@
                             },
                             "decimals": {
                               "type": "number"
-                            },
-                            "logoUrl": {
-                              "type": "string"
                             }
                           },
                           "required": [
                             "address",
                             "symbol",
-                            "decimals",
-                            "logoUrl"
+                            "decimals"
                           ]
                         },
                         "token1": {
@@ -316,16 +304,12 @@
                             },
                             "decimals": {
                               "type": "number"
-                            },
-                            "logoUrl": {
-                              "type": "string"
                             }
                           },
                           "required": [
                             "address",
                             "symbol",
-                            "decimals",
-                            "logoUrl"
+                            "decimals"
                           ]
                         }
                       },
@@ -494,16 +478,12 @@
                         },
                         "decimals": {
                           "type": "number"
-                        },
-                        "logoUrl": {
-                          "type": "string"
                         }
                       },
                       "required": [
                         "address",
                         "symbol",
-                        "decimals",
-                        "logoUrl"
+                        "decimals"
                       ]
                     },
                     "token1": {
@@ -517,16 +497,12 @@
                         },
                         "decimals": {
                           "type": "number"
-                        },
-                        "logoUrl": {
-                          "type": "string"
                         }
                       },
                       "required": [
                         "address",
                         "symbol",
-                        "decimals",
-                        "logoUrl"
+                        "decimals"
                       ]
                     },
                     "unclaimedFees": {

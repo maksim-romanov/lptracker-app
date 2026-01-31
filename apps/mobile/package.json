@@ -20,6 +20,7 @@
     "@matrapp/theme": "workspace:*",
     "@react-navigation/native": "^7.0.0",
     "@tanstack/react-query": "^5.90.20",
+    "@types/tinycolor2": "^1.4.6",
     "babel-plugin-transform-typescript-metadata": "^0.4.0",
     "expo": "~54.0.32",
     "expo-asset": "~12.0.12",
@@ -41,7 +42,9 @@
     "react-native-unistyles": "^3.0.0-alpha.44",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "tsyringe": "^4.8.0"
+    "tinycolor2": "^1.6.0",
+    "tsyringe": "^4.8.0",
+    "viem": "^2.45.1"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",

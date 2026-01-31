@@ -1,6 +1,6 @@
 import { container } from "tsyringe";
 
-import { TokenLogoCache } from "../token-logo/data/token-logo.cache";
+import { TokenLogoCache } from "../data/token-logo/data/token-logo.cache";
 import { TOKEN_LOGO_SERVICE } from "./tokens";
 
 export function register() {

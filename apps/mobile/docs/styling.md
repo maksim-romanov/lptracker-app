@@ -90,21 +90,30 @@ borderRadius: theme.radius.md, // 12px
 
 ## Typography
 
-6 semantic variants using Satoshi font:
+6 semantic variants using Satoshi font. Headings are always bold; text variants support a `bold` modifier.
 
-| Variant | Size | Weight | Usage |
-|---------|------|--------|-------|
-| `display` | 36px | 700 | Hero text, splash screens |
-| `headline` | 22px | 600 | Screen titles, section headers |
-| `bodyLarge` | 16px | 400 | Emphasized paragraphs |
-| `body` | 14px | 400 | Default text, descriptions |
-| `bodySmall` | 12px | 400 | Secondary info, timestamps |
-| `label` | 12px | 500 | Buttons, tabs, form labels |
+### Headings
+
+| Variant | Size | Font | Usage |
+|---------|------|------|-------|
+| `display` | 32px | Satoshi-Black | Hero text, splash screens |
+| `title` | 22px | Satoshi-Bold | Screen titles, section headers |
+| `headline` | 18px | Satoshi-Bold | Card accents, section emphasis |
+
+### Text
+
+| Variant | Size | Font (regular) | Font (bold) | Usage |
+|---------|------|----------------|-------------|-------|
+| `body` | 16px | Satoshi-Regular | Satoshi-Bold | Default text, descriptions |
+| `bodySmall` | 13px | Satoshi-Regular | Satoshi-Medium | Secondary info, captions |
+| `label` | 14px | Satoshi-Medium | Satoshi-Bold | Buttons, tabs, chips |
 
 ```typescript
-// Usage
-<Text style={theme.typography.headline}>Screen Title</Text>
-<Text style={theme.typography.body}>Description text</Text>
+// Usage with Text component
+<Text variant="title">Screen Title</Text>
+<Text variant="headline">Card Accent</Text>
+<Text variant="body" bold>Emphasized value</Text>
+<Text variant="bodySmall" color="muted">Caption</Text>
 ```
 
 ## @grapp/stacks Layout
