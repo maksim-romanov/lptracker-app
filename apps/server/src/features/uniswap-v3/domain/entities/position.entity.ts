@@ -50,16 +50,18 @@ export class PositionEntity {
     });
   }
 
-  get response() {
+  toResponse(prices?: { token0PriceUSD: number; token1PriceUSD: number }) {
     const sdk = this.sdk;
+    const amount0 = Number(sdk.amount0.toExact());
+    const amount1 = Number(sdk.amount1.toExact());
 
     return {
       id: this.id,
       tickLower: this.tickLower,
       tickUpper: this.tickUpper,
       liquidity: {
-        token0: { value: Number(sdk.amount0.toExact()), USDValue: 0 },
-        token1: { value: Number(sdk.amount1.toExact()), USDValue: 0 },
+        token0: { value: amount0, USDValue: amount0 * (prices?.token0PriceUSD ?? 0) },
+        token1: { value: amount1, USDValue: amount1 * (prices?.token1PriceUSD ?? 0) },
       },
       pool: this.pool.response,
       isActive: this.isActive,

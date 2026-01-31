@@ -1,0 +1,1 @@
+export const TOKEN_PRICE_SERVICE = Symbol("TOKEN_PRICE_SERVICE");

@@ -1,5 +1,9 @@
 import { ok } from "neverthrow";
-import { injectable } from "tsyringe";
+import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
+import type { TokenPriceService } from "token-prices/domain/token-price-service";
+import type { TokenPriceQuery } from "token-prices/domain/types";
+import { cacheKey } from "token-prices/domain/types";
+import { inject, injectable } from "tsyringe";
 import { arbitrum } from "viem/chains";
 
 import type { GraphQLPositionDto } from "../data/dto/graphql-position.dto";
@@ -17,6 +21,8 @@ export interface GetWalletPositionsParams {
 
 @injectable()
 export class GetWalletPositionsUseCase {
+  constructor(@inject(TOKEN_PRICE_SERVICE) private readonly priceService: TokenPriceService) {}
+
   async execute(params: GetWalletPositionsParams) {
     const { owner, chainIds = [arbitrum.id], pagination, filters } = params;
 
@@ -37,13 +43,31 @@ export class GetWalletPositionsUseCase {
       }),
     );
 
-    const wrappedPositions: UniswapV3WrappedPosition[] = results.flatMap(({ chainId, positions }) =>
-      positions.map((dto) => ({
+    const entities = results.flatMap(({ chainId, positions }) => positions.map((dto) => ({ chainId, entity: dto.toDomain() })));
+
+    // Collect unique tokens for batch price fetch
+    const tokenQueries = new Map<string, TokenPriceQuery>();
+    for (const { entity } of entities) {
+      const { token0, token1 } = entity.pool;
+      tokenQueries.set(cacheKey(token0.chainId, token0.address), { chainId: token0.chainId, address: token0.address });
+      tokenQueries.set(cacheKey(token1.chainId, token1.address), { chainId: token1.chainId, address: token1.address });
+    }
+
+    const priceMap = await this.priceService.getPrices([...tokenQueries.values()]);
+
+    const wrappedPositions: UniswapV3WrappedPosition[] = entities.map(({ chainId, entity }) => {
+      const { token0, token1 } = entity.pool;
+      const prices = {
+        token0PriceUSD: priceMap.get(cacheKey(token0.chainId, token0.address))?.priceUSD ?? 0,
+        token1PriceUSD: priceMap.get(cacheKey(token1.chainId, token1.address))?.priceUSD ?? 0,
+      };
+
+      return {
         protocol: UNISWAP_V3_PROTOCOL,
         chainId,
-        data: dto.toDomain().response,
-      })),
-    );
+        data: entity.toResponse(prices),
+      };
+    });
 
     return ok(wrappedPositions);
   }

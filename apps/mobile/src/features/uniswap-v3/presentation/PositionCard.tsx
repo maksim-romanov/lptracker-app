@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const PositionCard = ({ position }: Props) => {
-  const { pool, isActive } = position.data;
+  const { pool, isActive, liquidity } = position.data;
 
   return (
     <Box style={styles.container} rowGap={8}>
@@ -55,7 +55,7 @@ export const PositionCard = ({ position }: Props) => {
             </Text>
 
             <Text variant="title" numberOfLines={1} style={{ flexShrink: 1 }}>
-              {numbro(9999).formatCurrency({ average: true, mantissa: 2 })}
+              {numbro(liquidity.token0.USDValue + liquidity.token1.USDValue).formatCurrency({ average: true, mantissa: 2 })}
             </Text>
           </Box>
         </Column>
@@ -67,7 +67,7 @@ export const PositionCard = ({ position }: Props) => {
             </Text>
 
             <Text variant="body" numberOfLines={1}>
-              {numbro(123).formatCurrency({ average: false, mantissa: 2 })}
+              {numbro(0).formatCurrency({ average: false, mantissa: 2 })}
             </Text>
           </Box>
         </Column>

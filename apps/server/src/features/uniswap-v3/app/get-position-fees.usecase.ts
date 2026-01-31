@@ -1,12 +1,16 @@
 import { err, ok } from "neverthrow";
 import { inject, injectable } from "tsyringe";
 
+import type { TokenPriceService } from "token-prices/domain/token-price-service";
+import { cacheKey } from "token-prices/domain/types";
+import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
 import { PositionsRepository } from "../data/positions.repository";
 
 @injectable()
 export class GetPositionFeesUseCase {
   constructor(
     @inject(PositionsRepository) public readonly positionsRepository: PositionsRepository,
+    @inject(TOKEN_PRICE_SERVICE) private readonly priceService: TokenPriceService,
   ) {}
 
   async execute(id: string) {
@@ -46,12 +50,20 @@ export class GetPositionFeesUseCase {
     const fees0Formatted = Number(unclaimedFees0) / 10 ** token0.decimals;
     const fees1Formatted = Number(unclaimedFees1) / 10 ** token1.decimals;
 
+    const priceMap = await this.priceService.getPrices([
+      { chainId: token0.chainId, address: token0.address },
+      { chainId: token1.chainId, address: token1.address },
+    ]);
+
+    const price0USD = priceMap.get(cacheKey(token0.chainId, token0.address))?.priceUSD ?? 0;
+    const price1USD = priceMap.get(cacheKey(token1.chainId, token1.address))?.priceUSD ?? 0;
+
     return ok({
       token0: token0.response,
       token1: token1.response,
       unclaimedFees: {
-        token0: { value: fees0Formatted, USDValue: 0 },
-        token1: { value: fees1Formatted, USDValue: 0 },
+        token0: { value: fees0Formatted, USDValue: fees0Formatted * price0USD },
+        token1: { value: fees1Formatted, USDValue: fees1Formatted * price1USD },
       },
     });
   }
