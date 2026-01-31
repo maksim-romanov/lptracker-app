@@ -11,6 +11,7 @@ module.exports = (api) => {
           autoProcessPaths: ["@grapp/stacks"],
         },
       ],
+      "react-native-reanimated/plugin",
     ],
   };
 };

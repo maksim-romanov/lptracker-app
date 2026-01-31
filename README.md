@@ -5,11 +5,12 @@
 [![React Native](https://img.shields.io/badge/React_Native-61DAFB?logo=react&logoColor=black)](https://reactnative.dev)
 [![The Graph](https://img.shields.io/badge/The_Graph-6747ED?logo=thegraph&logoColor=white)](https://thegraph.com)
 
+<img align="right" src="assets/cover.png" alt="MatrApp" width="420" />
 A modular data platform for querying, indexing, and analyzing on-chain positions across multiple networks.
+<br />
+Monitor your LP positions — see your liquidity, track accumulated fees, and get a clear picture of your DeFi portfolio in one place.
 
-## Overview
-
-The platform gives you a simple way to monitor your LP positions — see your liquidity, track accumulated fees, and get a clear picture of your DeFi portfolio in one place.
+<br clear="both" />
 
 ## Platform Structure
 

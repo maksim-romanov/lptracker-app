@@ -72,16 +72,11 @@ export const FeeBpsTag = ({ feeBps }: { feeBps: number }) => {
 
 export const InRangeTag = ({ inRange }: { inRange: boolean }) => {
   if (inRange) return <SuccessTag glow>In Range</SuccessTag>;
-  return <WarningTag>Out of Range</WarningTag>;
+  return <WarningTag glow>Out Range</WarningTag>;
 };
 
-export const WarningTag = withUnistyles(Tag, (theme) => ({
-  colors: {
-    surface: theme.warning,
-    onSurface: theme.onWarning,
-    outline: theme.warning,
-    shadow: theme.warning,
-  },
+export const WarningTag = withUnistyles(AdaptiveTag, (theme) => ({
+  color: theme.warning,
 }));
 
 export const SuccessTag = withUnistyles(AdaptiveTag, (theme) => ({ color: theme.success }));
@@ -108,9 +103,9 @@ const styles = StyleSheet.create((theme) => ({
 
   shadow: (color: string) => ({
     shadowColor: color,
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.75,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 1,
+    shadowRadius: 6,
     elevation: 5,
   }),
 }));

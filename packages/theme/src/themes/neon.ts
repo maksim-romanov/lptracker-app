@@ -9,34 +9,34 @@ export const neonLight: ColorTokens = {
   // Primary - Hot pink
   primary: "#FF007A",
   onPrimary: "#FFFFFF",
-  primaryContainer: "#FFD6E8",
-  onPrimaryContainer: "#660031",
+  primaryContainer: "#FFE0EE",
+  onPrimaryContainer: "#5C0032",
 
   // Secondary - Cyan accent
-  secondary: "#00D9FF",
+  secondary: "#00B8D9",
   onSecondary: "#003544",
-  secondaryContainer: "#B3F3FF",
+  secondaryContainer: "#D4F7FF",
   onSecondaryContainer: "#001F28",
 
-  // Surface (MD3)
-  surface: "#FFFBFC",
-  onSurface: "#1A1A1A",
-  surfaceContainer: "#FFF0F5",
-  surfaceVariant: "#FFE6F0",
-  onSurfaceVariant: "#4A3540",
+  // Surface (MD3) - Neutral
+  surface: "#FFFFFF",
+  onSurface: "#1A1B1F",
+  surfaceContainer: "#F2F2F5",
+  surfaceVariant: "#E8E8EC",
+  onSurfaceVariant: "#5C5C66",
 
-  // Outline
-  outline: "#8C7280",
-  outlineVariant: "#E6D0DB",
+  // Outline - Neutral
+  outline: "#8E8E99",
+  outlineVariant: "#D1D1D9",
 
   // Error
-  error: "#FF3B30",
+  error: "#DC3545",
   onError: "#FFFFFF",
   errorContainer: "#FFD6D4",
   onErrorContainer: "#660000",
 
   // Success
-  success: "#30D158",
+  success: "#1AAB46",
   onSuccess: "#FFFFFF",
 
   // Warning
@@ -44,9 +44,9 @@ export const neonLight: ColorTokens = {
   onWarning: "#FFFFFF",
 
   // Inverse
-  inverseSurface: "#1A1A1A",
+  inverseSurface: "#2F3038",
   inverseOnSurface: "#F5F5F5",
-  inversePrimary: "#FF4DA6",
+  inversePrimary: "#FF5CA1",
 
   // Scrim & Shadow
   scrim: "#000000",
@@ -57,7 +57,7 @@ export const neonDark: ColorTokens = {
   // Primary - Glowing hot pink
   primary: "#FF007A",
   onPrimary: "#FFFFFF",
-  primaryContainer: "#99004A",
+  primaryContainer: "#7A003A",
   onPrimaryContainer: "#FFD6E8",
 
   // Secondary - Electric cyan
@@ -66,22 +66,22 @@ export const neonDark: ColorTokens = {
   secondaryContainer: "#005566",
   onSecondaryContainer: "#B3F3FF",
 
-  // Surface (MD3)
-  surface: "#0D0D0F",
-  onSurface: "#F5F5F5",
-  surfaceContainer: "#1A1518",
-  surfaceVariant: "#1F1A1C",
-  onSurfaceVariant: "#D4C4CA",
+  // Surface (MD3) - Cool neutral
+  surface: "#0E0E12",
+  onSurface: "#E8E8EC",
+  surfaceContainer: "#1C1C22",
+  surfaceVariant: "#252530",
+  onSurfaceVariant: "#B0B0BA",
 
-  // Outline
-  outline: "#9C8A92",
-  outlineVariant: "#4A3F44",
+  // Outline - Neutral
+  outline: "#6E6E7A",
+  outlineVariant: "#3A3A44",
 
   // Error - Bright red
-  error: "#FF453A",
+  error: "#FF4D4D",
   onError: "#FFFFFF",
-  errorContainer: "#660000",
-  onErrorContainer: "#FFD6D4",
+  errorContainer: "#5F0016",
+  onErrorContainer: "#FFDAD6",
 
   // Success - Vibrant green
   success: "#30D158",
@@ -92,8 +92,8 @@ export const neonDark: ColorTokens = {
   onWarning: "#3D2500",
 
   // Inverse
-  inverseSurface: "#F5F5F5",
-  inverseOnSurface: "#1A1A1A",
+  inverseSurface: "#E8E8EC",
+  inverseOnSurface: "#1A1B1F",
   inversePrimary: "#CC0062",
 
   // Scrim & Shadow

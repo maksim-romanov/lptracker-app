@@ -16,5 +16,6 @@ export function usePositionsQuery(walletAddress: string) {
     initialPageParam: 0,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => (lastPage?.length === LIMIT ? lastPageParam + LIMIT : undefined),
     select: (data) => data.pages.flat(),
+    refetchInterval: 1000 * 60 * 5, // 5 minutes
   });
 }
