@@ -30,7 +30,16 @@
     "lineWidth": 145
   },
   "files": {
-    "includes": ["**", "!**/node_modules", "!**/.expo", "!**/dist", "!**/.turbo", "!apps/subgraphs/**/generated", "!apps/server/**/gql"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/.expo",
+      "!**/dist",
+      "!**/.turbo",
+      "!apps/subgraphs/**/generated",
+      "!apps/server/**/gql",
+      "!apps/server/openapi"
+    ]
   },
   "overrides": [
     {

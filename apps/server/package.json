@@ -7,7 +7,8 @@
     "start": "bun run src/index.ts",
     "codegen": "graphql-codegen --config codegen.ts && bun run scripts/generate-openapi.ts",
     "check": "biome check .",
-    "check:fix": "biome check --write ."
+    "check:fix": "biome check --write .",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",
@@ -22,6 +23,7 @@
     "rate-limiter-flexible": "^9.0.1",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0",
+    "class-transformer": "^0.5.1",
     "valibot": "^1.2.0"
   },
   "devDependencies": {

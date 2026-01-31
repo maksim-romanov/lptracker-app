@@ -17,9 +17,7 @@ export class TokenLogoCache extends BaseCache<string | null> implements TokenLog
   }
 
   async resolve(chainId: number, address: string): Promise<string | null> {
-    return this.getOrFetch(logoCacheKey(chainId, address), () =>
-      this.limit(() => this.inner.resolve(chainId, address)),
-    );
+    return this.getOrFetch(logoCacheKey(chainId, address), () => this.limit(() => this.inner.resolve(chainId, address)));
   }
 
   async resolveMany(tokens: { chainId: number; address: string }[]): Promise<Map<string, string | null>> {

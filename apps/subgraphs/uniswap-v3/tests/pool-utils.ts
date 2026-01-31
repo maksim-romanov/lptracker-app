@@ -13,7 +13,7 @@ export function createSwapEvent(
 ): Swap {
   let event = changetype<Swap>(newMockEvent());
 
-  event.parameters = new Array();
+  event.parameters = [];
 
   event.parameters.push(new ethereum.EventParam("sender", ethereum.Value.fromAddress(sender)));
   event.parameters.push(new ethereum.EventParam("recipient", ethereum.Value.fromAddress(recipient)));
@@ -37,7 +37,7 @@ export function createMintEvent(
 ): Mint {
   let event = changetype<Mint>(newMockEvent());
 
-  event.parameters = new Array();
+  event.parameters = [];
 
   event.parameters.push(new ethereum.EventParam("sender", ethereum.Value.fromAddress(sender)));
   event.parameters.push(new ethereum.EventParam("owner", ethereum.Value.fromAddress(owner)));
@@ -53,7 +53,7 @@ export function createMintEvent(
 export function createBurnEvent(owner: Address, tickLower: i32, tickUpper: i32, amount: BigInt, amount0: BigInt, amount1: BigInt): Burn {
   let event = changetype<Burn>(newMockEvent());
 
-  event.parameters = new Array();
+  event.parameters = [];
 
   event.parameters.push(new ethereum.EventParam("owner", ethereum.Value.fromAddress(owner)));
   event.parameters.push(new ethereum.EventParam("tickLower", ethereum.Value.fromI32(tickLower)));

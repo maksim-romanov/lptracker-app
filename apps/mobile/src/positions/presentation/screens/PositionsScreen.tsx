@@ -10,7 +10,7 @@ import { usePositionsQuery } from "../hooks/positions-query.hook";
 type UniswapV3Position = components["schemas"]["UniswapV3Position"];
 type PositionComponent = UniswapV3Position;
 
-const DEV_WALLET = "0xdbc60ae662c91e0ae9457c815a71f5055adf4791";
+const DEV_WALLET = "0xeCa0b7CDd7F2fE6389Ee3720aE415D07ABe0Ed58";
 
 const Separator = () => <View style={styles.separator} />;
 

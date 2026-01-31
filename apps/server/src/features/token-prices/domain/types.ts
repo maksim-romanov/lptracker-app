@@ -8,5 +8,4 @@ export interface TokenPrice {
   confidence: number;
 }
 
-export const cacheKey = (chainId: number, address: string) =>
-  `${chainId}:${address.toLowerCase()}`;
+export const cacheKey = (chainId: number, address: string) => `${chainId}:${address.toLowerCase()}`;

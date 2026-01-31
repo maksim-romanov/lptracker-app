@@ -51,9 +51,7 @@ export class DefiLlamaProvider implements PriceProvider {
     }
 
     for (const chunk of chunks) {
-      const coins = chunk
-        .map((q) => `${this.config.chainNames[q.chainId]}:${q.address}`)
-        .join(",");
+      const coins = chunk.map((q) => `${this.config.chainNames[q.chainId]}:${q.address}`).join(",");
 
       const res = await fetch(`https://coins.llama.fi/prices/current/${coins}`, {
         signal: AbortSignal.timeout(this.config.timeout),

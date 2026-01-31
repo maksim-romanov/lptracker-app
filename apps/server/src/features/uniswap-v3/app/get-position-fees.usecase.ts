@@ -1,9 +1,9 @@
 import { err, ok } from "neverthrow";
-import { inject, injectable } from "tsyringe";
-
+import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
 import type { TokenPriceService } from "token-prices/domain/token-price-service";
 import { cacheKey } from "token-prices/domain/types";
-import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
+import { inject, injectable } from "tsyringe";
+
 import { PositionsRepository } from "../data/positions.repository";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
 

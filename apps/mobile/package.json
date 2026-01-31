@@ -10,6 +10,7 @@
     "codegen": "bunx openapi-typescript ../server/openapi/gateway.json -o src/core/api-client/generated/gateway.d.ts && bunx openapi-typescript ../server/openapi/uniswap-v3.json -o src/features/uniswap-v3/data/generated/uniswap-v3.d.ts",
     "check": "biome check .",
     "check:fix": "biome check --write .",
+    "check-types": "tsc --noEmit",
     "android": "expo run:android",
     "ios": "expo run:ios"
   },

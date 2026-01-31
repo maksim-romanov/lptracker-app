@@ -50,11 +50,7 @@ export class PositionEntity {
     });
   }
 
-  toResponse(params?: {
-    token0PriceUSD: number;
-    token1PriceUSD: number;
-    unclaimedFees?: { token0: number; token1: number } | null;
-  }) {
+  toResponse(params?: { token0PriceUSD: number; token1PriceUSD: number; unclaimedFees?: { token0: number; token1: number } | null }) {
     const sdk = this.sdk;
     const amount0 = Number(sdk.amount0.toExact());
     const amount1 = Number(sdk.amount1.toExact());
@@ -76,7 +72,7 @@ export class PositionEntity {
             token0: { value: fees.token0, USDValue: fees.token0 * token0PriceUSD },
             token1: { value: fees.token1, USDValue: fees.token1 * token1PriceUSD },
           }
-        : fees ?? null,
+        : (fees ?? null),
       pool: this.pool.response,
       isActive: this.isActive,
       isClosed: this.isClosed,

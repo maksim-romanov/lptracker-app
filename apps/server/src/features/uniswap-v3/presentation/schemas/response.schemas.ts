@@ -2,15 +2,9 @@ import * as v from "valibot";
 
 import { UNISWAP_V3_PROTOCOL } from "../../domain/constants/protocol";
 
-const tokenAmountSchema = v.pipe(
-  v.object({ value: v.number(), USDValue: v.number() }),
-  v.metadata({ ref: "TokenAmount" }),
-);
+const tokenAmountSchema = v.pipe(v.object({ value: v.number(), USDValue: v.number() }), v.metadata({ ref: "TokenAmount" }));
 
-const tokenPairAmountSchema = v.pipe(
-  v.object({ token0: tokenAmountSchema, token1: tokenAmountSchema }),
-  v.metadata({ ref: "TokenPairAmount" }),
-);
+const tokenPairAmountSchema = v.pipe(v.object({ token0: tokenAmountSchema, token1: tokenAmountSchema }), v.metadata({ ref: "TokenPairAmount" }));
 
 /**
  * Token entity schema

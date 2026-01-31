@@ -3,8 +3,8 @@ import { arbitrum, mainnet } from "viem/chains";
 
 import { ChainContext } from "../data/clients/chain-context";
 import { GraphQLClient } from "../data/clients/graph";
-import { PositionFeesCache } from "../data/position-fees.cache";
 import { RPCClient } from "../data/clients/rpc";
+import { PositionFeesCache } from "../data/position-fees.cache";
 import { PositionsRepository } from "../data/positions.repository";
 import { getContainer } from "./containers";
 import { CHAIN_CONTEXT, GRAPHQL_CLIENT, POSITION_FEES_CACHE, POSITIONS_REPOSITORY, RPC_CLIENT } from "./tokens";

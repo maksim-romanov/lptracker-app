@@ -9,10 +9,7 @@ import { DefiLlamaProvider } from "./providers/defillama.provider";
 export class TokenPriceResolver {
   private readonly providers: PriceProvider[];
 
-  constructor(
-    @inject(DefiLlamaProvider) defillama: DefiLlamaProvider,
-    @inject(CoinGeckoProvider) coingecko: CoinGeckoProvider,
-  ) {
+  constructor(@inject(DefiLlamaProvider) defillama: DefiLlamaProvider, @inject(CoinGeckoProvider) coingecko: CoinGeckoProvider) {
     this.providers = [defillama, coingecko];
   }
 

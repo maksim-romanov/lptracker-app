@@ -7,7 +7,7 @@ import { inject, injectable } from "tsyringe";
 import { arbitrum } from "viem/chains";
 
 import type { GraphQLPositionDto } from "../data/dto/graphql-position.dto";
-import { PositionFeesCache } from "../data/position-fees.cache";
+import type { PositionFeesCache } from "../data/position-fees.cache";
 import { PositionsRepository } from "../data/positions.repository";
 import { getContainer } from "../di/containers";
 import { POSITION_FEES_CACHE } from "../di/tokens";
@@ -62,10 +62,7 @@ export class GetWalletPositionsUseCase {
     }
 
     // Run price fetch and fee fetch in parallel
-    const [priceMap, feesMap] = await Promise.all([
-      this.priceService.getPrices([...tokenQueries.values()]),
-      this.fetchAllFees(entities),
-    ]);
+    const [priceMap, feesMap] = await Promise.all([this.priceService.getPrices([...tokenQueries.values()]), this.fetchAllFees(entities)]);
 
     const wrappedPositions: UniswapV3WrappedPosition[] = entities.map(({ chainId, entity }) => {
       const { token0, token1 } = entity.pool;
@@ -84,9 +81,7 @@ export class GetWalletPositionsUseCase {
     return ok(wrappedPositions);
   }
 
-  private async fetchAllFees(
-    entries: { chainId: number; entity: PositionEntity }[],
-  ): Promise<Map<string, ComputedFees>> {
+  private async fetchAllFees(entries: { chainId: number; entity: PositionEntity }[]): Promise<Map<string, ComputedFees>> {
     const allFees = new Map<string, ComputedFees>();
 
     const byChain = entries.reduce((map, { chainId, entity }) => {

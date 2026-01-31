@@ -5,9 +5,7 @@ import { ApiError } from "../domain/api.error";
 export const errorMiddleware = (): Middleware => ({
   async onResponse({ response, request }) {
     if (response.status >= 400) {
-      const data = response.headers.get("content-type")?.includes("json")
-        ? await response.clone().json()
-        : await response.clone().text();
+      const data = response.headers.get("content-type")?.includes("json") ? await response.clone().json() : await response.clone().text();
 
       throw new ApiError(response.statusText, {
         statusCode: response.status,

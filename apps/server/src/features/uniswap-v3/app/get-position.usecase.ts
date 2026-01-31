@@ -1,10 +1,10 @@
 import { err, ok } from "neverthrow";
-import { inject, injectable } from "tsyringe";
-
+import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
 import type { TokenPriceService } from "token-prices/domain/token-price-service";
 import { cacheKey } from "token-prices/domain/types";
-import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
-import { PositionFeesCache } from "../data/position-fees.cache";
+import { inject, injectable } from "tsyringe";
+
+import type { PositionFeesCache } from "../data/position-fees.cache";
 import { PositionsRepository } from "../data/positions.repository";
 import { POSITION_FEES_CACHE } from "../di/tokens";
 import type { PositionEntity } from "../domain/entities/position.entity";

@@ -10,14 +10,7 @@
   "packageRules": [
     {
       "description": "Ignore Expo-managed packages (use expo install --fix instead)",
-      "matchPackagePatterns": [
-        "^expo",
-        "^@expo/",
-        "^react-native$",
-        "^react-native-",
-        "^@react-native/",
-        "^@react-navigation/"
-      ],
+      "matchPackagePatterns": ["^expo", "^@expo/", "^react-native$", "^react-native-", "^@react-native/", "^@react-navigation/"],
       "matchPaths": ["apps/mobile/**"],
       "enabled": false
     },

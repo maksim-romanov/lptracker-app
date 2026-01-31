@@ -5,7 +5,7 @@ import { Collect, DecreaseLiquidity, IncreaseLiquidity, Transfer } from "../gene
 export function createCollectEvent(tokenId: BigInt, recipient: Address, amount0: BigInt, amount1: BigInt): Collect {
   let collectEvent = changetype<Collect>(newMockEvent());
 
-  collectEvent.parameters = new Array();
+  collectEvent.parameters = [];
 
   collectEvent.parameters.push(new ethereum.EventParam("tokenId", ethereum.Value.fromUnsignedBigInt(tokenId)));
   collectEvent.parameters.push(new ethereum.EventParam("recipient", ethereum.Value.fromAddress(recipient)));
@@ -18,7 +18,7 @@ export function createCollectEvent(tokenId: BigInt, recipient: Address, amount0:
 export function createDecreaseLiquidityEvent(tokenId: BigInt, liquidity: BigInt, amount0: BigInt, amount1: BigInt): DecreaseLiquidity {
   let decreaseLiquidityEvent = changetype<DecreaseLiquidity>(newMockEvent());
 
-  decreaseLiquidityEvent.parameters = new Array();
+  decreaseLiquidityEvent.parameters = [];
 
   decreaseLiquidityEvent.parameters.push(new ethereum.EventParam("tokenId", ethereum.Value.fromUnsignedBigInt(tokenId)));
   decreaseLiquidityEvent.parameters.push(new ethereum.EventParam("liquidity", ethereum.Value.fromUnsignedBigInt(liquidity)));
@@ -31,7 +31,7 @@ export function createDecreaseLiquidityEvent(tokenId: BigInt, liquidity: BigInt,
 export function createIncreaseLiquidityEvent(tokenId: BigInt, liquidity: BigInt, amount0: BigInt, amount1: BigInt): IncreaseLiquidity {
   let increaseLiquidityEvent = changetype<IncreaseLiquidity>(newMockEvent());
 
-  increaseLiquidityEvent.parameters = new Array();
+  increaseLiquidityEvent.parameters = [];
 
   increaseLiquidityEvent.parameters.push(new ethereum.EventParam("tokenId", ethereum.Value.fromUnsignedBigInt(tokenId)));
   increaseLiquidityEvent.parameters.push(new ethereum.EventParam("liquidity", ethereum.Value.fromUnsignedBigInt(liquidity)));
@@ -44,7 +44,7 @@ export function createIncreaseLiquidityEvent(tokenId: BigInt, liquidity: BigInt,
 export function createTransferEvent(from: Address, to: Address, tokenId: BigInt): Transfer {
   let transferEvent = changetype<Transfer>(newMockEvent());
 
-  transferEvent.parameters = new Array();
+  transferEvent.parameters = [];
 
   transferEvent.parameters.push(new ethereum.EventParam("from", ethereum.Value.fromAddress(from)));
   transferEvent.parameters.push(new ethereum.EventParam("to", ethereum.Value.fromAddress(to)));
