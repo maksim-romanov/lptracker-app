@@ -21,11 +21,13 @@ export type TProps = {
 } & Pick<ViewProps, "style"> &
   TComponentVariants;
 
-export const Tag = ({ children, colors, rounded, style }: React.PropsWithChildren<TProps>) => {
+export const Tag = ({ children, colors, glow, rounded, style }: React.PropsWithChildren<TProps>) => {
   styles.useVariants({ rounded });
 
   return (
-    <View style={[styles.container, styles.shadow(colors.outline), { backgroundColor: colors.surface, borderColor: colors.outline }, style]}>
+    <View
+      style={[styles.container, glow && styles.shadow(colors.outline), { backgroundColor: colors.surface, borderColor: colors.outline }, style]}
+    >
       <Text variant="label" style={[styles.text, { color: colors.onSurface }]}>
         {children}
       </Text>
@@ -70,7 +72,7 @@ export const FeeBpsTag = ({ feeBps }: { feeBps: number }) => {
 
 export const InRangeTag = ({ inRange }: { inRange: boolean }) => {
   if (inRange) return <SuccessTag glow>In Range</SuccessTag>;
-  return <WarningTag glow>Out of Range</WarningTag>;
+  return <WarningTag>Out of Range</WarningTag>;
 };
 
 export const WarningTag = withUnistyles(Tag, (theme) => ({

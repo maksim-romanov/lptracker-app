@@ -41,6 +41,7 @@ export const positionSchema = v.object({
   tickLower: v.number(),
   tickUpper: v.number(),
   liquidity: tokenPairAmountSchema,
+  unclaimedFees: v.nullable(tokenPairAmountSchema),
   pool: poolSchema,
   isActive: v.boolean(),
   isClosed: v.boolean(),

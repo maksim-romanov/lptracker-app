@@ -200,6 +200,16 @@
               "liquidity": {
                 "$ref": "#/components/schemas/TokenPairAmount"
               },
+              "unclaimedFees": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/TokenPairAmount"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "pool": {
                 "type": "object",
                 "properties": {
@@ -275,6 +285,7 @@
               "tickLower",
               "tickUpper",
               "liquidity",
+              "unclaimedFees",
               "pool",
               "isActive",
               "isClosed"

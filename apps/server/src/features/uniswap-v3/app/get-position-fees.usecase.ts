@@ -5,6 +5,7 @@ import type { TokenPriceService } from "token-prices/domain/token-price-service"
 import { cacheKey } from "token-prices/domain/types";
 import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
 import { PositionsRepository } from "../data/positions.repository";
+import { computeUnclaimedFees } from "../domain/utils/fee-math";
 
 @injectable()
 export class GetPositionFeesUseCase {
@@ -23,32 +24,14 @@ export class GetPositionFeesUseCase {
 
     const { token0, token1 } = entity.pool;
 
-    const feeGrowthInside0X128 = computeFeeGrowthInside(
+    const fees = computeUnclaimedFees(
+      positionFees.value,
       entity.pool.currentTick,
       entity.tickLower,
       entity.tickUpper,
-      positionFees.value.feeGrowthGlobal0X128,
-      positionFees.value.feeGrowthOutside0LowerX128,
-      positionFees.value.feeGrowthOutside0UpperX128,
+      token0.decimals,
+      token1.decimals,
     );
-
-    const feeGrowthInside1X128 = computeFeeGrowthInside(
-      entity.pool.currentTick,
-      entity.tickLower,
-      entity.tickUpper,
-      positionFees.value.feeGrowthGlobal1X128,
-      positionFees.value.feeGrowthOutside1LowerX128,
-      positionFees.value.feeGrowthOutside1UpperX128,
-    );
-
-    const feeGrowthInside0DeltaX128 = subInUint256(feeGrowthInside0X128, positionFees.value.feeGrowthInside0LastX128);
-    const feeGrowthInside1DeltaX128 = subInUint256(feeGrowthInside1X128, positionFees.value.feeGrowthInside1LastX128);
-
-    const unclaimedFees0 = positionFees.value.tokensOwed0 + (positionFees.value.onChainLiquidity * feeGrowthInside0DeltaX128) / Q128;
-    const unclaimedFees1 = positionFees.value.tokensOwed1 + (positionFees.value.onChainLiquidity * feeGrowthInside1DeltaX128) / Q128;
-
-    const fees0Formatted = Number(unclaimedFees0) / 10 ** token0.decimals;
-    const fees1Formatted = Number(unclaimedFees1) / 10 ** token1.decimals;
 
     const priceMap = await this.priceService.getPrices([
       { chainId: token0.chainId, address: token0.address },
@@ -62,28 +45,9 @@ export class GetPositionFeesUseCase {
       token0: token0.response,
       token1: token1.response,
       unclaimedFees: {
-        token0: { value: fees0Formatted, USDValue: fees0Formatted * price0USD },
-        token1: { value: fees1Formatted, USDValue: fees1Formatted * price1USD },
+        token0: { value: fees.token0, USDValue: fees.token0 * price0USD },
+        token1: { value: fees.token1, USDValue: fees.token1 * price1USD },
       },
     });
   }
 }
-
-export const Q128 = 2n ** 128n;
-export const Q256 = 2n ** 256n;
-
-const subInUint256 = (a: bigint, b: bigint) => (((a - b) % Q256) + Q256) % Q256;
-
-const computeFeeGrowthInside = (
-  currentTick: number,
-  tickLower: number,
-  tickUpper: number,
-  feeGrowthGlobalX128: bigint,
-  feeGrowthOutsideLowerX128: bigint,
-  feeGrowthOutsideUpperX128: bigint,
-) => {
-  if (currentTick < tickLower) return subInUint256(feeGrowthOutsideLowerX128, feeGrowthOutsideUpperX128);
-  if (currentTick >= tickUpper) return subInUint256(feeGrowthOutsideUpperX128, feeGrowthOutsideLowerX128);
-
-  return subInUint256(feeGrowthGlobalX128, feeGrowthOutsideLowerX128 + feeGrowthOutsideUpperX128);
-};
