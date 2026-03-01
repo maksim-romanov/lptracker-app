@@ -1,9 +1,10 @@
-import { FlatList, View } from "react-native";
+import { View } from "react-native";
 
 import { container } from "core/di/container";
 import { Icon, Placeholder } from "core/presentation/components";
 import { useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
+import Animated, { LinearTransition } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 import { WALLETS_STORE } from "wallets/di/tokens";
 import type { Wallet } from "wallets/domain/entities/wallet.entity";
@@ -38,7 +39,8 @@ export const WalletsScreen = observer(function WalletsScreen() {
   );
 
   return (
-    <FlatList
+    <Animated.FlatList
+      itemLayoutAnimation={LinearTransition}
       data={store.wallets.slice()}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
@@ -54,7 +56,7 @@ const styles = StyleSheet.create((theme) => ({
   contentContainer: {
     paddingHorizontal: theme.spacing.xl,
     paddingVertical: theme.spacing.lg,
-    flexGrow: 1,
+    flexGrow: 1 / 2,
   },
 
   separator: {

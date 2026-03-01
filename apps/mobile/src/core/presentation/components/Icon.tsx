@@ -1,5 +1,7 @@
+import React from "react";
 import type { StyleProp, TextStyle } from "react-native";
 
+import type { IconProps } from "@expo/vector-icons/build/createIconSet";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useUnistyles } from "react-native-unistyles";
 
@@ -18,8 +20,8 @@ type TProps = {
   style?: StyleProp<TextStyle>;
 };
 
-export function Icon({ name, size = "md", color, style }: TProps) {
+export const Icon = React.forwardRef<React.Component<IconProps<TProps["name"]>>, TProps>(({ name, size = "md", color, style }, ref) => {
   const { theme } = useUnistyles();
 
-  return <Ionicons name={name} size={SIZE_MAP[size]} color={color ?? theme.onSurfaceVariant} style={style} />;
-}
+  return <Ionicons ref={ref} name={name} size={SIZE_MAP[size]} color={color ?? theme.onSurfaceVariant} style={style} />;
+});

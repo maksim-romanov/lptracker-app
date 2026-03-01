@@ -3,7 +3,7 @@ import { action, computed, makeObservable, observable } from "mobx";
 import { inject, injectable } from "tsyringe";
 import type { WalletsRepository } from "wallets/data/wallets.repository";
 import { WALLETS_REPOSITORY } from "wallets/di/tokens";
-import { EWalletType, Wallet } from "wallets/domain/entities/wallet.entity";
+import { type EWalletType, Wallet } from "wallets/domain/entities/wallet.entity";
 
 import { DeleteWalletUseCase } from "../application/usecases/delete-wallet.usecase";
 
@@ -27,19 +27,7 @@ export class WalletsStore {
 
   @action
   hydrate(): void {
-    // this.wallets = this.repo.getAll();
-    this.wallets = [
-      Wallet.create({ name: "Wallet 1", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 2", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 3", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 4", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 5", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 6", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 7", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 8", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 9", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-      Wallet.create({ name: "Wallet 10", address: "0x1234567890123456789012345678901234567890", type: EWalletType.ERC20 }),
-    ];
+    this.wallets = this.repo.getAll();
   }
 
   @action

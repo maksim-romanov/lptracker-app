@@ -4,8 +4,7 @@ import { type TextInput as RNTextInput, View } from "react-native";
 import { useForm } from "@tanstack/react-form";
 import { container } from "core/di/container";
 import { Button } from "core/presentation/components";
-import { LabeledTextInput, TextInputAdapter } from "core/presentation/components/form/Textinput";
-import { withERC20 } from "core/presentation/components/TextInput/withERC20";
+import { TextInput, withAdapter, withERC20 } from "core/presentation/components/TextInput";
 import { useRouter } from "expo-router";
 import { KeyboardAwareScrollView, KeyboardStickyView } from "react-native-keyboard-controller";
 import { StyleSheet } from "react-native-unistyles";
@@ -16,7 +15,8 @@ import type { WalletsStore } from "wallets/presentation/wallets.store";
 
 const store = container.resolve<WalletsStore>(WALLETS_STORE);
 
-const ERC20TextInputAdapter = withERC20(TextInputAdapter);
+const TextInputAdapter = withAdapter(TextInput);
+const ERC20TextInputAdapter = withAdapter(withERC20(TextInput));
 
 type TProps = {
   walletId?: string;
@@ -28,8 +28,8 @@ export function WalletFormScreen({ walletId }: TProps) {
   const addressInput = React.useRef<RNTextInput>(null);
 
   React.useEffect(() => {
-    if (addressInput.current) setTimeout(() => addressInput.current?.focus(), 500);
-  }, []);
+    if (!walletId && addressInput.current) setTimeout(() => addressInput.current?.focus(), 500);
+  }, [walletId]);
 
   const existing = walletId ? store.wallets.find((w) => w.id === walletId) : undefined;
   const isEdit = !!existing;
@@ -40,6 +40,7 @@ export function WalletFormScreen({ walletId }: TProps) {
       address: existing?.address ?? "",
       type: existing?.type ?? EWalletType.ERC20,
     },
+
     onSubmit: ({ value }) => {
       store.save({
         id: existing?.id,
@@ -55,7 +56,7 @@ export function WalletFormScreen({ walletId }: TProps) {
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" bottomOffset={20}>
-        <form.Field name="name">{(field) => <TextInputAdapter field={field} label="Wallet name" />}</form.Field>
+        <form.Field name="name">{(field) => <TextInputAdapter field={field} label="Name" />}</form.Field>
 
         <form.Field
           name="address"
@@ -67,10 +68,10 @@ export function WalletFormScreen({ walletId }: TProps) {
             },
           }}
         >
-          {(field) => <ERC20TextInputAdapter ref={addressInput} field={field} />}
+          {(field) => <ERC20TextInputAdapter label="Wallet address (0x...)" ref={addressInput} field={field} />}
         </form.Field>
 
-        <LabeledTextInput label="Network" value="ERC-20" editable={false} placeholder="Wallet type" />
+        <TextInput label="Network" value="ERC-20" editable={false} placeholder="Wallet type" />
       </KeyboardAwareScrollView>
 
       <KeyboardStickyView offset={{ closed: 0, opened: 0 }}>

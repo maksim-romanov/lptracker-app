@@ -19,6 +19,7 @@
     "@grapp/stacks": "^4.0.0-beta.1",
     "@lukemorales/query-key-factory": "^1.3.4",
     "@matrapp/theme": "workspace:*",
+    "fp-ts": "workspace:*",
     "@react-navigation/native": "^7.0.0",
     "@tanstack/react-form": "^1.28.3",
     "@tanstack/react-query": "^5.90.20",

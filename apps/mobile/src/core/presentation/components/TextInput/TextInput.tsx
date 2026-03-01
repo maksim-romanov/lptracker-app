@@ -1,8 +1,10 @@
-import React from "react";
-import { TextInput as RNTextInput, type TextInputProps, View } from "react-native";
+import { forwardRef } from "react";
+import { TextInput as RNTextInput, type StyleProp, type TextInputProps, View, type ViewStyle } from "react-native";
 
+import { pipe } from "fp-ts/function";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
+import { withAnimatedBorder } from "./withAnimatedBorder";
 import { withLabel } from "./withLabel";
 
 const UniTextInput = withUnistyles(RNTextInput);
@@ -10,11 +12,16 @@ const UniTextInput = withUnistyles(RNTextInput);
 export type TProps = TextInputProps & {
   prefix?: React.ReactNode;
   postfix?: React.ReactNode;
+
+  isError?: boolean;
+  isValid?: boolean;
+
+  containerStyle?: StyleProp<ViewStyle>;
 };
 
-export const TextInput = withLabel(
-  React.forwardRef<RNTextInput, TProps>((props, ref) => {
-    const { style, prefix, postfix, editable, ...rest } = props;
+export const TextInput = pipe(
+  (props, ref) => {
+    const { style, prefix, postfix, editable, isError, containerStyle, ...rest } = props;
 
     styles.useVariants({
       hasPrefix: !!prefix,
@@ -23,20 +30,24 @@ export const TextInput = withLabel(
     });
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, containerStyle]}>
         {prefix && <View style={styles.prefix}>{prefix}</View>}
+
         <UniTextInput
           ref={ref}
           style={[styles.input, style]}
-          uniProps={(theme) => ({ placeholderTextColor: theme.onSurfaceVariant })}
           editable={editable}
+          uniProps={(theme) => ({ placeholderTextColor: theme.onSurfaceVariant })}
           {...rest}
         />
 
         {postfix && <View style={styles.postfix}>{postfix}</View>}
       </View>
     );
-  }),
+  },
+  forwardRef<RNTextInput, TProps>,
+  withLabel,
+  withAnimatedBorder,
 );
 
 const styles = StyleSheet.create((theme) => ({
@@ -44,6 +55,8 @@ const styles = StyleSheet.create((theme) => ({
     borderWidth: 1,
     borderColor: theme.outline,
     borderRadius: theme.radius.lg,
+    backgroundColor: theme.surface,
+    // overflow: "hidden",
 
     variants: {
       editable: {
