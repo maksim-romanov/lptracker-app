@@ -24,10 +24,5 @@ import type { Logger } from "core/services";
  * }
  */
 export abstract class Repository {
-  protected readonly logger: Logger;
-
-  constructor() {
-    const baseLogger = container.resolve<Logger>(LOGGER);
-    this.logger = baseLogger.extend(this.constructor.name);
-  }
+  protected readonly logger = container.resolve<Logger>(LOGGER).extend(this.constructor.name);
 }

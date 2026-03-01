@@ -1,4 +1,4 @@
-import { container } from "core/di/container";
+import { Store } from "core/domain/base/store";
 import { action, computed, makeObservable, observable } from "mobx";
 import { inject, injectable } from "tsyringe";
 import type { WalletsRepository } from "wallets/data/wallets.repository";
@@ -8,10 +8,14 @@ import { type EWalletType, Wallet } from "wallets/domain/entities/wallet.entity"
 import { DeleteWalletUseCase } from "../application/usecases/delete-wallet.usecase";
 
 @injectable()
-export class WalletsStore {
+export class WalletsStore extends Store {
   @observable wallets: Wallet[] = [];
 
-  constructor(@inject(WALLETS_REPOSITORY) private readonly repo: WalletsRepository) {
+  constructor(
+    @inject(WALLETS_REPOSITORY) private readonly repo: WalletsRepository,
+    @inject(DeleteWalletUseCase) private readonly deleteUseCase: DeleteWalletUseCase,
+  ) {
+    super();
     makeObservable(this);
   }
 
@@ -23,6 +27,10 @@ export class WalletsStore {
   @computed
   get isEmpty(): boolean {
     return this.wallets.length === 0;
+  }
+
+  isExists(address: string): boolean {
+    return this.wallets.some((w) => w.address === address);
   }
 
   @action
@@ -41,8 +49,7 @@ export class WalletsStore {
   }
 
   async remove(id: string): Promise<void> {
-    const useCase = container.resolve(DeleteWalletUseCase);
-    const confirmed = await useCase.execute(id);
+    const confirmed = await this.deleteUseCase.execute(id);
     if (confirmed) this.hydrate();
   }
 }

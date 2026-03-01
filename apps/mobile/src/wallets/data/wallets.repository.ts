@@ -3,7 +3,7 @@ import { createMMKV } from "react-native-mmkv";
 import { injectable } from "tsyringe";
 import { type TWallet, Wallet } from "wallets/domain/entities/wallet.entity";
 
-const WALLETS_KEY = "wallets";
+const WALLETS_KEY = "wallets:v1";
 
 @injectable()
 export class WalletsRepository extends Repository {

@@ -6,14 +6,13 @@ import { container } from "core/di/container";
 import { Button } from "core/presentation/components";
 import { TextInput, withAdapter, withERC20 } from "core/presentation/components/TextInput";
 import { useRouter } from "expo-router";
+import { observer } from "mobx-react-lite";
 import { KeyboardAwareScrollView, KeyboardStickyView } from "react-native-keyboard-controller";
 import { StyleSheet } from "react-native-unistyles";
 import { isAddress } from "viem";
 import { WALLETS_STORE } from "wallets/di/tokens";
 import { EWalletType } from "wallets/domain/entities/wallet.entity";
 import type { WalletsStore } from "wallets/presentation/wallets.store";
-
-const store = container.resolve<WalletsStore>(WALLETS_STORE);
 
 const TextInputAdapter = withAdapter(TextInput);
 const ERC20InputAdapter = withAdapter(withERC20(TextInput));
@@ -22,7 +21,9 @@ type TProps = {
   walletId?: string;
 };
 
-export function WalletFormScreen({ walletId }: TProps) {
+export const WalletFormScreen = observer(({ walletId }: TProps) => {
+  const store = container.resolve<WalletsStore>(WALLETS_STORE);
+
   const router = useRouter();
 
   const addressInput = React.useRef<RNTextInput>(null);
@@ -62,6 +63,7 @@ export function WalletFormScreen({ walletId }: TProps) {
           name="address"
           validators={{
             onChange: ({ value }) => {
+              if (store.isExists(value)) return "Wallet with this address already exists";
               if (!value.trim()) return "Address is required";
               if (!isAddress(value)) return "Invalid ERC-20 address";
               return undefined;
@@ -91,7 +93,7 @@ export function WalletFormScreen({ walletId }: TProps) {
       </KeyboardStickyView>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create((theme) => ({
   container: {
