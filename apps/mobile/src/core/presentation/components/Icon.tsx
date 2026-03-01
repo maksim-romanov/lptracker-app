@@ -11,7 +11,7 @@ const SIZE_MAP = {
 } as const;
 
 type TProps = {
-  name: "water-outline" | "wallet-outline";
+  name: "water-outline" | "wallet-outline" | "add-outline" | "trash-outline";
   size?: keyof typeof SIZE_MAP;
   color?: string;
   style?: StyleProp<TextStyle>;
@@ -20,9 +20,5 @@ type TProps = {
 export function Icon({ name, size = "md", color, style }: TProps) {
   const { theme } = useUnistyles();
 
-  if (name === "water-outline") {
-    return <Ionicons name="water-outline" size={SIZE_MAP[size]} color={color ?? theme.onSurfaceVariant} style={style} />;
-  }
-
-  return null;
+  return <Ionicons name={name} size={SIZE_MAP[size]} color={color ?? theme.onSurfaceVariant} style={style} />;
 }

@@ -1,0 +1,2 @@
+export const WALLETS_REPOSITORY = Symbol("WALLETS_REPOSITORY");
+export const WALLETS_STORE = Symbol("WALLETS_STORE");

@@ -1,4 +1,6 @@
 import { UseCase } from "core/domain/base";
+import { container } from "core/di/container";
+import { RootStore } from "core/presentation/root.store";
 import { inject, injectable } from "tsyringe";
 
 import { AppEvents } from "../events/app.events";
@@ -20,7 +22,7 @@ export class AppInitUseCase extends UseCase {
     this.appEvents.emit({ type: "APP_INITIALIZING" });
 
     try {
-      // <<< initialization logic will go here >>>
+      container.resolve(RootStore).hydrate();
 
       this.initialized = true;
 

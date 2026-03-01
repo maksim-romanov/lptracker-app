@@ -30,6 +30,7 @@ export default function RootLayout() {
             <Stack.Screen name="index" />
             <Stack.Screen name="onboarding" />
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="wallet-form" options={{ presentation: "modal" }} />
           </Stack>
         </ThemeProvider>
       </QueryProvider>
