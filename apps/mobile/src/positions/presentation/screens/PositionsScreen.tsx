@@ -42,6 +42,7 @@ export function PositionsScreen() {
 const styles = StyleSheet.create((theme, rt) => ({
   contentContainer: {
     paddingHorizontal: theme.spacing.xl,
+    flexGrow: 2 / 3,
   },
 
   separator: {

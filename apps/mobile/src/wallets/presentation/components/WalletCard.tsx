@@ -47,10 +47,10 @@ export function WalletCard({ wallet, onPress, onLongPress }: TProps) {
 const styles = StyleSheet.create((theme) => ({
   container: {
     backgroundColor: theme.surfaceContainer,
-    borderWidth: 2,
-    borderRadius: 12,
-    borderColor: theme.outline,
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.md,
+    borderWidth: 1,
+    borderRadius: theme.radius.lg,
+    borderColor: theme.outlineVariant,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.lg,
   },
 }));

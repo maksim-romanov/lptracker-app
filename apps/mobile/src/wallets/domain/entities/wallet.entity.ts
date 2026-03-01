@@ -1,4 +1,5 @@
 import { Entity } from "core/domain/base/entity";
+import * as Crypto from "expo-crypto";
 
 export enum EWalletType {
   ERC20 = "erc20",
@@ -26,7 +27,7 @@ export class Wallet extends Entity<string> {
   }
 
   static create(params: { name: string; address: string; type: EWalletType }): Wallet {
-    return new Wallet(crypto.randomUUID(), params.name, params.address, params.type, new Date().toISOString());
+    return new Wallet(Crypto.randomUUID(), params.name, params.address, params.type, new Date().toISOString());
   }
 
   static fromRaw(raw: TWallet): Wallet {

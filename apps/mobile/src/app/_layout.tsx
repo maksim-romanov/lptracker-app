@@ -7,6 +7,7 @@ import { createNavigationTheme, type ThemeName } from "core/presentation/theme";
 import { QueryProvider } from "core/query/presentation/QueryProvider";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { UnistylesRuntime, useUnistyles } from "react-native-unistyles";
 
 export default function RootLayout() {
@@ -24,16 +25,40 @@ export default function RootLayout() {
     <>
       <StatusBar style={isDark ? "light" : "dark"} />
 
-      <QueryProvider>
-        <ThemeProvider value={navigationTheme}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="onboarding" />
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="wallet-form" options={{ presentation: "modal" }} />
-          </Stack>
-        </ThemeProvider>
-      </QueryProvider>
+      <KeyboardProvider>
+        <QueryProvider>
+          <ThemeProvider value={navigationTheme}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                headerShadowVisible: false,
+                contentStyle: { backgroundColor: theme.surface },
+              }}
+            >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="onboarding" />
+              <Stack.Screen name="(tabs)" options={{ title: "" }} />
+
+              <Stack.Screen
+                name="wallets/new"
+                options={{
+                  headerShown: true,
+                  headerBackTitle: "",
+                  title: "New Wallet",
+                }}
+              />
+              <Stack.Screen
+                name="wallets/[walletId]"
+                options={{
+                  headerShown: true,
+                  headerBackTitle: "",
+                  title: "Edit Wallet",
+                }}
+              />
+            </Stack>
+          </ThemeProvider>
+        </QueryProvider>
+      </KeyboardProvider>
     </>
   );
 }

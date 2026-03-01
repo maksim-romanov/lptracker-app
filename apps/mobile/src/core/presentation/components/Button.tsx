@@ -10,10 +10,11 @@ type TProps = {
   title: string;
   loading?: boolean;
   disabled?: boolean;
+  size?: "sm" | "md";
 } & ComponentVariants &
   Omit<PressableProps, "children" | "disabled">;
 
-export function Button({ title, loading, disabled, variant = "filled", ...props }: TProps) {
+export function Button({ title, loading, disabled, variant = "filled", size = "md", ...props }: TProps) {
   styles.useVariants({ variant });
   const { theme } = useUnistyles();
 
@@ -22,7 +23,7 @@ export function Button({ title, loading, disabled, variant = "filled", ...props 
   const textColor = variant === "filled" ? theme.onPrimary : variant === "destructive" ? theme.error : theme.primary;
 
   return (
-    <Pressable style={[styles.container, isDisabled && styles.disabled]} disabled={isDisabled} {...props}>
+    <Pressable style={[styles.container, size === "sm" && styles.sm, isDisabled && styles.disabled]} disabled={isDisabled} {...props}>
       {loading ? (
         <ActivityIndicator color={textColor} size="small" />
       ) : (
@@ -40,7 +41,7 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "center",
     paddingHorizontal: theme.spacing.xl,
     paddingVertical: theme.spacing.md,
-    borderRadius: theme.radius.md,
+    borderRadius: theme.radius.full,
 
     variants: {
       variant: {
@@ -59,6 +60,11 @@ const styles = StyleSheet.create((theme) => ({
         },
       },
     },
+  },
+
+  sm: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
   },
 
   disabled: {

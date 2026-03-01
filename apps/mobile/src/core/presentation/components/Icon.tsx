@@ -4,6 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useUnistyles } from "react-native-unistyles";
 
 const SIZE_MAP = {
+  xs: 18,
   sm: 24,
   md: 32,
   lg: 56,

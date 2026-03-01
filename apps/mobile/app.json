@@ -22,7 +22,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0F1A"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.maksimromanov.matrapp"
     },
     "plugins": [

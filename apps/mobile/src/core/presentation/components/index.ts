@@ -3,6 +3,6 @@ export * from "./Icon";
 export * from "./Placeholder";
 export * from "./Tag";
 export * from "./Text";
-export * from "./TextInput";
+export { TextInput } from "./TextInput/TextInput";
 export * from "./TokenImage";
 export * from "./TokenRatio";
