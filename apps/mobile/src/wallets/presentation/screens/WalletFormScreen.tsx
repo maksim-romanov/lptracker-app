@@ -16,7 +16,7 @@ import type { WalletsStore } from "wallets/presentation/wallets.store";
 const store = container.resolve<WalletsStore>(WALLETS_STORE);
 
 const TextInputAdapter = withAdapter(TextInput);
-const ERC20TextInputAdapter = withAdapter(withERC20(TextInput));
+const ERC20InputAdapter = withAdapter(withERC20(TextInput));
 
 type TProps = {
   walletId?: string;
@@ -68,7 +68,7 @@ export function WalletFormScreen({ walletId }: TProps) {
             },
           }}
         >
-          {(field) => <ERC20TextInputAdapter label="Wallet address (0x...)" ref={addressInput} field={field} />}
+          {(field) => <ERC20InputAdapter label="Wallet address (0x...)" ref={addressInput} field={field} />}
         </form.Field>
 
         <TextInput label="Network" value="ERC-20" editable={false} placeholder="Wallet type" />
