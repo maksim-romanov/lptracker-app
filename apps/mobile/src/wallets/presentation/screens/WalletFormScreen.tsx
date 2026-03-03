@@ -33,7 +33,8 @@ export const WalletFormScreen = observer(({ walletId }: TProps) => {
   }, [walletId]);
 
   const existing = walletId ? store.wallets.find((w) => w.id === walletId) : undefined;
-  const isEdit = !!existing;
+  const isCreation = !existing;
+  const isEdit = !isCreation;
 
   const form = useForm({
     defaultValues: {
@@ -43,13 +44,7 @@ export const WalletFormScreen = observer(({ walletId }: TProps) => {
     },
 
     onSubmit: ({ value }) => {
-      store.save({
-        id: existing?.id,
-        name: value.name,
-        address: value.address,
-        type: value.type,
-      });
-
+      store.save({ id: existing?.id, ...value });
       router.back();
     },
   });
@@ -63,7 +58,7 @@ export const WalletFormScreen = observer(({ walletId }: TProps) => {
           name="address"
           validators={{
             onChange: ({ value }) => {
-              if (store.isExists(value)) return "Wallet with this address already exists";
+              if (isCreation && store.isExists(value)) return "Wallet with this address already exists";
               if (!value.trim()) return "Address is required";
               if (!isAddress(value)) return "Invalid ERC-20 address";
               return undefined;
@@ -78,13 +73,13 @@ export const WalletFormScreen = observer(({ walletId }: TProps) => {
 
       <KeyboardStickyView offset={{ closed: 0, opened: 0 }}>
         <View style={styles.footer}>
-          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-            {([canSubmit, isSubmitting]) => (
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting, state.isDirty]}>
+            {([canSubmit, isSubmitting, isDirty]) => (
               <Button
-                title={isEdit ? "Save" : "Add Wallet"}
+                title={isEdit ? "Update Wallet" : "Add Wallet"}
                 variant="filled"
-                disabled={!canSubmit}
-                loading={isSubmitting as boolean}
+                disabled={!canSubmit || !isDirty}
+                loading={isSubmitting}
                 onPress={form.handleSubmit}
               />
             )}
