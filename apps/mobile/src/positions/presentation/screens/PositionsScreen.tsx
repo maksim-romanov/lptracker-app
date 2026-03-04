@@ -1,16 +1,18 @@
 import { FlatList, View } from "react-native";
 
 import type { components } from "core/api-client/generated/gateway";
+import { container } from "core/di/container";
 import { Icon, Placeholder } from "core/presentation/components";
+import { observer } from "mobx-react-lite";
 import { StyleSheet } from "react-native-unistyles";
 import { PositionCard as UniswapV3PositionCard } from "src/features/uniswap-v3/presentation/PositionCard";
+import { WALLETS_STORE } from "wallets/di/tokens";
+import type { WalletsStore } from "wallets/presentation/wallets.store";
 
 import { usePositionsQuery } from "../hooks/positions-query.hook";
 
 type UniswapV3Position = components["schemas"]["UniswapV3Position"];
 type PositionComponent = UniswapV3Position;
-
-const DEV_WALLET = "0xeCa0b7CDd7F2fE6389Ee3720aE415D07ABe0Ed58";
 
 const Separator = () => <View style={styles.separator} />;
 
@@ -23,8 +25,9 @@ const renderPositionCard = ({ item }: { item: PositionComponent }) => {
   return null;
 };
 
-export function PositionsScreen() {
-  const { fetchNextPage, hasNextPage, data } = usePositionsQuery(DEV_WALLET);
+export const PositionsScreen = observer(function PositionsScreen() {
+  const store = container.resolve<WalletsStore>(WALLETS_STORE);
+  const { fetchNextPage, hasNextPage, data } = usePositionsQuery(store.activeWallet?.address);
 
   return (
     <FlatList
@@ -37,7 +40,7 @@ export function PositionsScreen() {
       onEndReachedThreshold={0.5}
     />
   );
-}
+});
 
 const styles = StyleSheet.create((theme, rt) => ({
   contentContainer: {

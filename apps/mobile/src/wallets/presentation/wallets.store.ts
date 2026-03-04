@@ -10,6 +10,7 @@ import { DeleteWalletUseCase } from "../application/usecases/delete-wallet.useca
 @injectable()
 export class WalletsStore extends Store {
   @observable wallets: Wallet[] = [];
+  @observable activeWalletId: string | undefined = undefined;
 
   constructor(
     @inject(WALLETS_REPOSITORY) private readonly repo: WalletsRepository,
@@ -25,6 +26,11 @@ export class WalletsStore extends Store {
   }
 
   @computed
+  get activeWallet(): Wallet | undefined {
+    return this.wallets.find((w) => w.id === this.activeWalletId);
+  }
+
+  @computed
   get isEmpty(): boolean {
     return this.wallets.length === 0;
   }
@@ -34,8 +40,14 @@ export class WalletsStore extends Store {
   }
 
   @action
+  setActiveWallet(id: string): void {
+    this.activeWalletId = id;
+  }
+
+  @action
   hydrate(): void {
     this.wallets = this.repo.getAll();
+    this.activeWalletId = this.wallets[0]?.id;
   }
 
   @action
@@ -50,6 +62,12 @@ export class WalletsStore extends Store {
 
   async remove(id: string): Promise<void> {
     const confirmed = await this.deleteUseCase.execute(id);
-    if (confirmed) this.hydrate();
+    if (!confirmed) return;
+
+    this.hydrate();
+
+    if (this.activeWalletId === id) {
+      this.activeWalletId = this.wallets[0]?.id;
+    }
   }
 }

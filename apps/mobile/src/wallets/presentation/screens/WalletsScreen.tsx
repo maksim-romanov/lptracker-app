@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { container } from "core/di/container";
 import { Icon, Placeholder } from "core/presentation/components";
@@ -11,8 +11,7 @@ import type { Wallet } from "wallets/domain/entities/wallet.entity";
 import type { WalletsStore } from "wallets/presentation/wallets.store";
 
 import { WalletCard } from "../components/WalletCard";
-
-const store = container.resolve<WalletsStore>(WALLETS_STORE);
+import { WalletCardMenu } from "../components/WalletCardMenu";
 
 const Separator = () => <View style={styles.separator} />;
 
@@ -21,6 +20,8 @@ const EmptyComponent = () => (
 );
 
 export const WalletsScreen = observer(function WalletsScreen() {
+  const store = container.resolve<WalletsStore>(WALLETS_STORE);
+
   const router = useRouter();
 
   const handleEdit = (wallet: Wallet) => {
@@ -34,21 +35,33 @@ export const WalletsScreen = observer(function WalletsScreen() {
     store.remove(wallet.id);
   };
 
-  const renderItem = ({ item }: { item: Wallet }) => (
-    <WalletCard wallet={item} onPress={() => handleEdit(item)} onLongPress={() => handleDelete(item)} />
-  );
-
   return (
     <Animated.FlatList
       itemLayoutAnimation={LinearTransition}
       data={store.wallets.slice()}
-      renderItem={renderItem}
+      renderItem={({ item }) => <WalletCardItem wallet={item} onEdit={handleEdit} onDelete={handleDelete} />}
       keyExtractor={(item) => item.id}
       ItemSeparatorComponent={Separator}
       ListEmptyComponent={EmptyComponent}
       contentContainerStyle={styles.contentContainer}
       contentInsetAdjustmentBehavior="automatic"
     />
+  );
+});
+
+const WalletCardItem = observer(function WalletCardItem({
+  wallet,
+  onEdit,
+  onDelete,
+}: { wallet: Wallet; onEdit: (wallet: Wallet) => void; onDelete: (wallet: Wallet) => void }) {
+  const store = container.resolve<WalletsStore>(WALLETS_STORE);
+
+  return (
+    <WalletCardMenu wallet={wallet} onEdit={() => onEdit(wallet)} onDelete={() => onDelete(wallet)}>
+      <Pressable onPress={() => store.setActiveWallet(wallet.id)}>
+        <WalletCard wallet={wallet} isActive={store.activeWalletId === wallet.id} />
+      </Pressable>
+    </WalletCardMenu>
   );
 });
 
