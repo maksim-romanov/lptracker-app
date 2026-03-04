@@ -5,6 +5,7 @@ import { cacheKey } from "token-prices/domain/types";
 import { inject, injectable } from "tsyringe";
 
 import { PositionsRepository } from "../data/positions.repository";
+import { PositionError } from "../domain/errors/position.error";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
 
 @injectable()
@@ -18,7 +19,12 @@ export class GetPositionFeesUseCase {
     const position = await this.positionsRepository.getPosition(id);
     if (position.isErr()) return err(position.error);
 
-    const entity = position.value.toDomain();
+    const dto = position.value;
+
+    const poolStateResult = await this.positionsRepository.getPoolState(dto.pool.id);
+    if (poolStateResult.isErr()) return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+
+    const entity = dto.toDomain(poolStateResult.value);
     const positionFees = await this.positionsRepository.getPositionFees(entity);
     if (positionFees.isErr()) return err(positionFees.error);
 

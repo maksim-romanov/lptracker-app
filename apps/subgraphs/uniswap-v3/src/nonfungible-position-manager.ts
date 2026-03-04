@@ -10,7 +10,6 @@ import {
 
 import { Position } from "../generated/schema";
 import { getOrCreatePool } from "./utils/pool";
-import { updateTick } from "./utils/tick";
 
 function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: BigInt, timestamp: BigInt): void {
   let position = Position.load(tokenId.toString());
@@ -39,26 +38,14 @@ function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: Bi
   position.updatedAtTimestamp = timestamp;
 
   // Get or create pool if not set (using shared utility)
-  if (position.pool == null) {
+  if (position.pool === null) {
     let pool = getOrCreatePool(data.getToken0(), data.getToken1(), data.getFee(), blockNumber, timestamp);
-    if (pool != null) {
+    if (pool !== null) {
       position.pool = pool.id;
-
-      // Update tick entities and link to position (using shared utility)
-      let poolAddress = Address.fromString(pool.id);
-      let tickLower = updateTick(poolAddress, position.tickLower, blockNumber);
-      let tickUpper = updateTick(poolAddress, position.tickUpper, blockNumber);
-
-      if (tickLower != null) {
-        position.tickLowerData = tickLower.id;
-      }
-      if (tickUpper != null) {
-        position.tickUpperData = tickUpper.id;
-      }
     }
   }
 
-  if (position.liquidity == BigInt.zero()) {
+  if (position.liquidity.equals(BigInt.zero())) {
     position.closed = true;
   }
 
@@ -80,8 +67,6 @@ export function handleTransfer(event: Transfer): void {
     position.pool = null;
     position.tickLower = 0;
     position.tickUpper = 0;
-    position.tickLowerData = null;
-    position.tickUpperData = null;
     position.closed = false;
     position.createdAtBlock = event.block.number;
     position.createdAtTimestamp = event.block.timestamp;
@@ -101,26 +86,14 @@ export function handleTransfer(event: Transfer): void {
 
       // Get or create pool (using shared utility)
       let pool = getOrCreatePool(data.getToken0(), data.getToken1(), data.getFee(), event.block.number, event.block.timestamp);
-      if (pool != null) {
+      if (pool !== null) {
         position.pool = pool.id;
-
-        // Update tick entities and link to position (using shared utility)
-        let poolAddress = Address.fromString(pool.id);
-        let tickLower = updateTick(poolAddress, position.tickLower, event.block.number);
-        let tickUpper = updateTick(poolAddress, position.tickUpper, event.block.number);
-
-        if (tickLower != null) {
-          position.tickLowerData = tickLower.id;
-        }
-        if (tickUpper != null) {
-          position.tickUpperData = tickUpper.id;
-        }
       }
     }
   }
 
   // burn
-  if (event.params.to == Address.zero()) {
+  if (event.params.to.equals(Address.zero())) {
     position.closed = true;
     position.updatedAtBlock = event.block.number;
     position.updatedAtTimestamp = event.block.timestamp;

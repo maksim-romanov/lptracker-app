@@ -4,6 +4,7 @@ import type { Address } from "viem";
 import { PoolEntity } from "../../domain/entities/pool.entity";
 import { PositionEntity } from "../../domain/entities/position.entity";
 import { TokenEntity } from "../../domain/entities/token.entity";
+import type { PoolStateRpcData } from "../../domain/types/pool-state";
 
 export class GraphQLTokenDto {
   @Expose()
@@ -33,15 +34,6 @@ export class GraphQLPoolDto {
   feeTier!: number;
 
   @Expose()
-  currentTick!: number;
-
-  @Expose()
-  sqrtPriceX96!: string;
-
-  @Expose()
-  liquidity!: string;
-
-  @Expose()
   @Type(() => GraphQLTokenDto)
   token0!: GraphQLTokenDto;
 
@@ -51,14 +43,14 @@ export class GraphQLPoolDto {
 
   chainId!: number;
 
-  toDomain(): PoolEntity {
+  toDomain(poolState: PoolStateRpcData): PoolEntity {
     return new PoolEntity({
       chainId: this.chainId,
       id: this.id,
       feeTier: this.feeTier,
-      liquidity: this.liquidity,
-      currentTick: this.currentTick,
-      sqrtPriceX96: this.sqrtPriceX96,
+      liquidity: poolState.liquidity.toString(),
+      currentTick: poolState.currentTick,
+      sqrtPriceX96: poolState.sqrtPriceX96.toString(),
       token0: this.token0.toDomain(this.chainId),
       token1: this.token1.toDomain(this.chainId),
     });
@@ -83,15 +75,15 @@ export class GraphQLPositionDto {
   @Type(() => GraphQLPoolDto)
   pool!: GraphQLPoolDto;
 
-  private chainId!: number;
+  chainId!: number;
 
-  toDomain(): PositionEntity {
+  toDomain(poolState: PoolStateRpcData): PositionEntity {
     return new PositionEntity({
       id: this.id,
       tickLower: this.tickLower,
       tickUpper: this.tickUpper,
       liquidity: this.liquidity,
-      pool: this.pool.toDomain(),
+      pool: this.pool.toDomain(poolState),
     });
   }
 

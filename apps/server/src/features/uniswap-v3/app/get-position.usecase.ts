@@ -8,6 +8,7 @@ import type { PositionFeesCache } from "../data/position-fees.cache";
 import { PositionsRepository } from "../data/positions.repository";
 import { POSITION_FEES_CACHE } from "../di/tokens";
 import type { PositionEntity } from "../domain/entities/position.entity";
+import { PositionError } from "../domain/errors/position.error";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
 
@@ -23,7 +24,12 @@ export class GetPositionUseCase {
     const result = await this.positionsRepository.getPosition(id);
     if (result.isErr()) return err(result.error);
 
-    const entity = result.value.toDomain();
+    const dto = result.value;
+
+    const poolStateResult = await this.positionsRepository.getPoolState(dto.pool.id);
+    if (poolStateResult.isErr()) return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+
+    const entity = dto.toDomain(poolStateResult.value);
     const { token0, token1 } = entity.pool;
 
     // Run price and fee fetch in parallel

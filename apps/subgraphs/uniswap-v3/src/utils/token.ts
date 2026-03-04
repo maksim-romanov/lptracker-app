@@ -1,6 +1,6 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, Bytes } from "@graphprotocol/graph-ts";
 
-import { ERC20 } from "../../generated/Factory/ERC20";
+import { ERC20 } from "../../generated/NonfungiblePositionManager/ERC20";
 import { Token } from "../../generated/schema";
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
@@ -31,9 +31,10 @@ export function fetchTokenDecimals(tokenAddress: Address): i32 {
 }
 
 export function getOrCreateToken(address: Address): Token {
-  let token = Token.load(address.toHexString());
+  let tokenId = Bytes.fromHexString(address.toHexString());
+  let token = Token.load(tokenId);
   if (token == null) {
-    token = new Token(address.toHexString());
+    token = new Token(tokenId);
     token.symbol = fetchTokenSymbol(address);
     token.name = fetchTokenName(address);
     token.decimals = fetchTokenDecimals(address);
