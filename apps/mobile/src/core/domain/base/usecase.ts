@@ -36,16 +36,9 @@ import type { AlertsService, DeviceInfoService, Logger } from "core/services";
  * }
  */
 export abstract class UseCase<TOutput = void, TInput = void> {
-  protected readonly logger: Logger;
-  protected readonly alert: AlertsService;
-  protected readonly device: DeviceInfoService;
-
-  constructor() {
-    const baseLogger = container.resolve<Logger>(LOGGER);
-    this.logger = baseLogger.extend(this.constructor.name);
-    this.alert = container.resolve<AlertsService>(ALERTS);
-    this.device = container.resolve<DeviceInfoService>(DEVICE_INFO);
-  }
+  protected readonly logger = container.resolve<Logger>(LOGGER).extend(this.constructor.name);
+  protected readonly alert = container.resolve<AlertsService>(ALERTS);
+  protected readonly device = container.resolve<DeviceInfoService>(DEVICE_INFO);
 
   abstract execute(input: TInput): Promise<TOutput>;
 }

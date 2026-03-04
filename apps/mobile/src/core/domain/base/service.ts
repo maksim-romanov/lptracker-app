@@ -20,14 +20,7 @@ import type { AppInfoService, DeviceInfoService, Logger } from "core/services";
  * }
  */
 export abstract class Service {
-  protected readonly logger: Logger;
-  protected readonly app: AppInfoService;
-  protected readonly device: DeviceInfoService;
-
-  constructor() {
-    const baseLogger = container.resolve<Logger>(LOGGER);
-    this.logger = baseLogger.extend(this.constructor.name);
-    this.app = container.resolve<AppInfoService>(APP_INFO);
-    this.device = container.resolve<DeviceInfoService>(DEVICE_INFO);
-  }
+  protected readonly logger = container.resolve<Logger>(LOGGER).extend(this.constructor.name);
+  protected readonly app = container.resolve<AppInfoService>(APP_INFO);
+  protected readonly device = container.resolve<DeviceInfoService>(DEVICE_INFO);
 }

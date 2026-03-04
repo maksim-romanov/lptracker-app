@@ -9,7 +9,11 @@
  * Text (with bold modifier):
  * - body: Default paragraphs, descriptions (16px, Regular / Bold)
  * - bodySmall: Secondary info, captions (13px, Regular / Medium)
- * - label: UI controls - buttons, tabs, chips (14px, Medium / Bold)
+ * - label: UI controls - tabs, chips (14px, Medium / Bold)
+ *
+ * Controls:
+ * - button: Button labels (16px, Bold)
+ * - input: Text fields, search bars (16px, Medium)
  */
 
 export type FontWeight = "400" | "500" | "600" | "700";
@@ -29,6 +33,8 @@ export type TypographyTokens = {
   body: TextStyleType;
   bodySmall: TextStyleType;
   label: TextStyleType;
+  button: TextStyleType;
+  input: TextStyleType;
 };
 
 /**
@@ -107,5 +113,19 @@ export const typography: TypographyTokens = {
     fontWeight: "500",
     lineHeight: 19.6,
     letterSpacing: letterSpacing.wide,
+  },
+  button: {
+    fontFamily: fontFamily.medium,
+    fontSize: 16,
+    fontWeight: "500",
+    lineHeight: 19.2,
+    letterSpacing: letterSpacing.wide,
+  },
+  input: {
+    fontFamily: fontFamily.medium,
+    fontSize: 16,
+    fontWeight: "500",
+    lineHeight: 19.2,
+    letterSpacing: letterSpacing.normal,
   },
 };
