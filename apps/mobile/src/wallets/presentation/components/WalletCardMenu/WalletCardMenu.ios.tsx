@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/a11y/useValidAriaRole: <explanation> */
+/** biome-ignore-all lint/a11y/useValidAriaRole: expo/ui uses non-standard aria roles */
 import { Button, ContextMenu, Host, Section } from "@expo/ui/swift-ui";
 
 import type { TWalletCardMenuProps } from "./walletCardMenu.types";

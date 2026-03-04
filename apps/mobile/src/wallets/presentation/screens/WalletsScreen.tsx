@@ -53,7 +53,11 @@ const WalletCardItem = observer(function WalletCardItem({
   wallet,
   onEdit,
   onDelete,
-}: { wallet: Wallet; onEdit: (wallet: Wallet) => void; onDelete: (wallet: Wallet) => void }) {
+}: {
+  wallet: Wallet;
+  onEdit: (wallet: Wallet) => void;
+  onDelete: (wallet: Wallet) => void;
+}) {
   const store = container.resolve<WalletsStore>(WALLETS_STORE);
 
   return (
