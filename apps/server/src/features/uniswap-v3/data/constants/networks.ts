@@ -11,7 +11,7 @@ const ARBITRUM_NETWORK = {
   },
 
   graph: {
-    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.0.32",
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.0.33",
   },
 
   deployments: {

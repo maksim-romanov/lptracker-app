@@ -1,14 +1,16 @@
-import { FlatList, View } from "react-native";
+import { useState } from "react";
+import { FlatList, RefreshControl, View } from "react-native";
 
 import type { components } from "core/api-client/generated/gateway";
 import { container } from "core/di/container";
 import { Icon, Placeholder } from "core/presentation/components";
 import { observer } from "mobx-react-lite";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { PositionCard as UniswapV3PositionCard } from "src/features/uniswap-v3/presentation/PositionCard";
 import { WALLETS_STORE } from "wallets/di/tokens";
 import type { WalletsStore } from "wallets/presentation/wallets.store";
 
+import { PositionCardSkeletonList } from "../components/PositionCardSkeleton";
 import { usePositionsQuery } from "../hooks/positions-query.hook";
 
 type UniswapV3Position = components["schemas"]["UniswapV3Position"];
@@ -25,19 +27,37 @@ const renderPositionCard = ({ item }: { item: PositionComponent }) => {
   return null;
 };
 
+const UnoRefreshControl = withUnistyles(RefreshControl);
+
 export const PositionsScreen = observer(function PositionsScreen() {
   const store = container.resolve<WalletsStore>(WALLETS_STORE);
-  const { fetchNextPage, hasNextPage, data } = usePositionsQuery(store.activeWallet?.address);
+  const { fetchNextPage, hasNextPage, data, isLoading, refetch } = usePositionsQuery(store.activeWallet?.address);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  };
 
   return (
     <FlatList
       data={data}
       renderItem={renderPositionCard}
       ItemSeparatorComponent={Separator}
-      ListEmptyComponent={EmptyComponent}
+      ListEmptyComponent={isLoading ? PositionCardSkeletonList : EmptyComponent}
       contentContainerStyle={styles.contentContainer}
       onEndReached={() => hasNextPage && fetchNextPage()}
       onEndReachedThreshold={0.5}
+      refreshControl={
+        <UnoRefreshControl
+          refreshing={isRefreshing}
+          onRefresh={onRefresh}
+          uniProps={(theme) => ({
+            tintColor: theme.onSurface,
+          })}
+        />
+      }
     />
   );
 });
