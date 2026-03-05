@@ -1,5 +1,5 @@
 import { container } from "tsyringe";
-import { arbitrum, mainnet } from "viem/chains";
+import { arbitrum, base, mainnet } from "viem/chains";
 
 import { ChainContext } from "../data/clients/chain-context";
 import { GraphQLClient } from "../data/clients/graph";
@@ -22,4 +22,5 @@ export const register = () => {
 
   registerChain(mainnet.id);
   registerChain(arbitrum.id);
+  registerChain(base.id);
 };

@@ -1,5 +1,5 @@
 import type { Address } from "viem";
-import { arbitrum, mainnet } from "viem/chains";
+import { arbitrum, base, mainnet } from "viem/chains";
 
 const ARBITRUM_NETWORK = {
   id: arbitrum.id,
@@ -39,7 +39,27 @@ const MAINNET_NETWORK = {
   },
 };
 
+const BASE_NETWORK = {
+  id: base.id,
+
+  rpcUrls: {
+    alchemy: {
+      http: ["https://base-mainnet.g.alchemy.com/v2/0720daf1848399dae566c9ab9efcb85e"],
+    },
+  },
+
+  graph: {
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-base/v0.0.2",
+  },
+
+  deployments: {
+    NonfungiblePositionManager: "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1" as Address,
+    UniswapV3Factory: "0x33128a8fC17869897dcE68Ed026d694621f6FDfD" as Address,
+  },
+};
+
 export const networks = {
   [arbitrum.id]: ARBITRUM_NETWORK,
   [mainnet.id]: MAINNET_NETWORK,
+  [base.id]: BASE_NETWORK,
 } as const;
