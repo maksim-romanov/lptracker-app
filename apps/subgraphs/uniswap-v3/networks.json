@@ -8,5 +8,15 @@
       "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
       "startBlock": 397484000
     }
+  },
+  "mainnet": {
+    "Factory": {
+      "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+      "startBlock": 12369621
+    },
+    "NonfungiblePositionManager": {
+      "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+      "startBlock": 12369621
+    }
   }
 }
