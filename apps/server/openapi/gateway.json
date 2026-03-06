@@ -139,6 +139,20 @@
               "type": "boolean",
               "default": "false"
             }
+          },
+          {
+            "in": "query",
+            "name": "chainIds",
+            "schema": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  1,
+                  8453,
+                  42161
+                ]
+              }
+            }
           }
         ]
       }
