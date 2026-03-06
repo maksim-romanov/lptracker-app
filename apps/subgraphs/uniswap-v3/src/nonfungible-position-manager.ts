@@ -39,7 +39,7 @@ function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: Bi
 
   // Get or create pool if not set (using shared utility)
   if (position.pool === null) {
-    let pool = getOrCreatePool(data.getToken0(), data.getToken1(), data.getFee(), blockNumber, timestamp);
+    let pool = getOrCreatePool(contractAddress, data.getToken0(), data.getToken1(), data.getFee(), blockNumber, timestamp);
     if (pool !== null) {
       position.pool = pool.id;
     }
@@ -85,7 +85,7 @@ export function handleTransfer(event: Transfer): void {
       position.liquidity = data.getLiquidity();
 
       // Get or create pool (using shared utility)
-      let pool = getOrCreatePool(data.getToken0(), data.getToken1(), data.getFee(), event.block.number, event.block.timestamp);
+      let pool = getOrCreatePool(event.address, data.getToken0(), data.getToken1(), data.getFee(), event.block.number, event.block.timestamp);
       if (pool !== null) {
         position.pool = pool.id;
       }

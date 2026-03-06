@@ -30,7 +30,7 @@ const MAINNET_NETWORK = {
   },
 
   graph: {
-    url: "TODO: deploy mainnet subgraph and update URL",
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-mainnet/v0.0.2",
   },
 
   deployments: {
@@ -49,7 +49,7 @@ const BASE_NETWORK = {
   },
 
   graph: {
-    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-base/v0.0.2",
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-base/v0.0.3",
   },
 
   deployments: {

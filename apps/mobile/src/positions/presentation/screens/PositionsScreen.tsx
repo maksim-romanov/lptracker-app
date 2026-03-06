@@ -11,7 +11,7 @@ import { WALLETS_STORE } from "wallets/di/tokens";
 import type { WalletsStore } from "wallets/presentation/wallets.store";
 
 import { PositionCardSkeletonList } from "../components/PositionCardSkeleton";
-import { usePositionsQuery } from "../hooks/positions-query.hook";
+import { usePositionsQuery } from "../hooks/usePositionsQuery";
 
 type UniswapV3Position = components["schemas"]["UniswapV3Position"];
 type PositionComponent = UniswapV3Position;
@@ -31,7 +31,9 @@ const UnoRefreshControl = withUnistyles(RefreshControl);
 
 export const PositionsScreen = observer(function PositionsScreen() {
   const store = container.resolve<WalletsStore>(WALLETS_STORE);
-  const { fetchNextPage, hasNextPage, data, isLoading, refetch } = usePositionsQuery(store.activeWallet?.address);
+  if (!store.activeWallet) throw new Error("No Active wallet");
+
+  const { fetchNextPage, hasNextPage, data, isLoading, refetch } = usePositionsQuery(store.activeWallet.address);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const onRefresh = async () => {

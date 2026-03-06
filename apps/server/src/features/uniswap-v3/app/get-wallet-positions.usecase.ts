@@ -5,7 +5,7 @@ import type { TokenPriceQuery } from "token-prices/domain/types";
 import { cacheKey } from "token-prices/domain/types";
 import { inject, injectable } from "tsyringe";
 import type { Address } from "viem";
-import { arbitrum } from "viem/chains";
+import { arbitrum, base, mainnet } from "viem/chains";
 
 import type { GraphQLPositionDto } from "../data/dto/graphql-position.dto";
 import type { PositionFeesCache } from "../data/position-fees.cache";
@@ -34,7 +34,7 @@ export class GetWalletPositionsUseCase {
   ) {}
 
   async execute(params: GetWalletPositionsParams) {
-    const { owner, chainIds = [arbitrum.id], pagination, filters } = params;
+    const { owner, chainIds = [mainnet.id, arbitrum.id, base.id], pagination, filters } = params;
 
     const results = await Promise.all(
       chainIds.map(async (chainId) => {

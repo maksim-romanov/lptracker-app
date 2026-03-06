@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: NonfungiblePositionManager
-    network: base
+    network: mainnet
     source:
       abi: NonfungiblePositionManager
-      address: "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1"
-      startBlock: 25000000
+      address: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88"
+      startBlock: 12369621
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9

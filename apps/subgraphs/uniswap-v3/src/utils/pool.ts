@@ -1,14 +1,18 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 
 import { Factory } from "../../generated/NonfungiblePositionManager/Factory";
+import { NonfungiblePositionManager } from "../../generated/NonfungiblePositionManager/NonfungiblePositionManager";
 import { Pool } from "../../generated/schema";
 
 import { getOrCreateToken } from "./token";
 
-const FACTORY_ADDRESS = "0x1F98431c8aD98523631AE4a59f267346ea31F984";
+function getFactoryAddress(npmAddress: Address): Address {
+  let npm = NonfungiblePositionManager.bind(npmAddress);
+  return npm.factory();
+}
 
-export function getOrCreatePool(token0Address: Address, token1Address: Address, fee: i32, blockNumber: BigInt, timestamp: BigInt): Pool | null {
-  let factory = Factory.bind(Address.fromString(FACTORY_ADDRESS));
+export function getOrCreatePool(npmAddress: Address, token0Address: Address, token1Address: Address, fee: i32, blockNumber: BigInt, timestamp: BigInt): Pool | null {
+  let factory = Factory.bind(getFactoryAddress(npmAddress));
   let poolAddressResult = factory.try_getPool(token0Address, token1Address, fee);
 
   if (poolAddressResult.reverted) {
