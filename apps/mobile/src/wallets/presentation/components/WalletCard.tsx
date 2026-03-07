@@ -1,6 +1,6 @@
 import { Box, Inline, Stack } from "@grapp/stacks";
 import { Text } from "core/presentation/components";
-import { AdaptiveTag } from "core/presentation/components/Tag";
+import { Tag } from "core/presentation/components/Tag";
 import { StyleSheet } from "react-native-unistyles";
 import type { EWalletType, Wallet } from "wallets/domain/entities/wallet.entity";
 
@@ -29,7 +29,7 @@ export function WalletCard({ wallet, isActive }: TProps) {
       <Stack space={2}>
         <Inline alignX="between" alignY="center">
           <Text variant="headline">{wallet.name}</Text>
-          <AdaptiveTag color={typeInfo.color}>{typeInfo.label}</AdaptiveTag>
+          <Tag color={typeInfo.color}>{typeInfo.label}</Tag>
         </Inline>
 
         <Text variant="bodySmall" color="muted">

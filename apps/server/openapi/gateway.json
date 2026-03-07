@@ -197,7 +197,11 @@
             "const": "uniswap-v3"
           },
           "chainId": {
-            "type": "number"
+            "enum": [
+              1,
+              8453,
+              42161
+            ]
           },
           "data": {
             "type": "object",

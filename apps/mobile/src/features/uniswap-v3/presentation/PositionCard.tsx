@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Box, Column, Columns, Inline, Stack } from "@grapp/stacks";
 import type { components } from "core/api-client/generated/gateway";
 import { Text, TokenRatio, TokensImages } from "core/presentation/components";
-import { AdaptiveTag, ChainTag, FeeBpsTag, InRangeTag } from "core/presentation/components/Tag";
+import { ChainTag, FeeBpsTag, InRangeTag, Tag } from "core/presentation/components/Tag";
 import { Image } from "expo-image";
 import numbro from "numbro";
 import { StyleSheet } from "react-native-unistyles";
@@ -31,7 +31,7 @@ export const PositionCard = ({ position }: Props) => {
 
             <Inline space={2}>
               <ChainTag chainId={position.chainId} />
-              <AdaptiveTag color="#FF007A">V3</AdaptiveTag>
+              <Tag color="#FF007A">V3</Tag>
               <FeeBpsTag feeBps={pool.feeTier} />
               <InRangeTag inRange={inRange} />
             </Inline>

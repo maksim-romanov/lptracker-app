@@ -1,6 +1,7 @@
 import * as v from "valibot";
 
 import { UNISWAP_V3_PROTOCOL } from "../../domain/constants/protocol";
+import { SUPPORTED_CHAIN_IDS } from "./request.schemas";
 
 const tokenAmountSchema = v.pipe(v.object({ value: v.number(), USDValue: v.number() }), v.metadata({ ref: "TokenAmount" }));
 
@@ -47,7 +48,7 @@ export const positionSchema = v.object({
 export const uniswapV3WrappedPositionSchema = v.pipe(
   v.object({
     protocol: v.literal(UNISWAP_V3_PROTOCOL),
-    chainId: v.number(),
+    chainId: v.picklist(SUPPORTED_CHAIN_IDS),
     data: positionSchema,
   }),
   v.metadata({ ref: "UniswapV3Position" }),

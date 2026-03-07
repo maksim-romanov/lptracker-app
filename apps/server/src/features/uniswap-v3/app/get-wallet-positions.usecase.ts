@@ -18,10 +18,11 @@ import type { PoolStateRpcData } from "../domain/types/pool-state";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
 import type { UniswapV3WrappedPosition } from "../presentation/schemas/response.schemas";
+import type { SupportedChainId } from "../presentation/schemas/request.schemas";
 
 export interface GetWalletPositionsParams {
   owner: string;
-  chainIds?: number[];
+  chainIds?: SupportedChainId[];
   pagination?: { limit: number; offset: number };
   filters?: { closed: boolean };
 }
@@ -34,7 +35,7 @@ export class GetWalletPositionsUseCase {
   ) {}
 
   async execute(params: GetWalletPositionsParams) {
-    const { owner, chainIds = [arbitrum.id], pagination, filters } = params;
+    const { owner, chainIds = [mainnet.id, arbitrum.id, base.id], pagination, filters } = params;
 
     const results = await Promise.all(
       chainIds.map(async (chainId) => {
@@ -50,7 +51,7 @@ export class GetWalletPositionsUseCase {
     );
 
     // Collect unique pool addresses and fetch pool states per chain (reusing repository instances)
-    const poolStatesByChain = new Map<number, Map<Address, PoolStateRpcData>>();
+    const poolStatesByChain = new Map<SupportedChainId, Map<Address, PoolStateRpcData>>();
     await Promise.all(
       results.map(async ({ chainId, repository, positions }) => {
         const addresses = [...new Set(positions.map((dto) => dto.pool.id))];
@@ -71,7 +72,7 @@ export class GetWalletPositionsUseCase {
           if (!poolState) return null;
           return { chainId, entity: dto.toDomain(poolState) };
         })
-        .filter((e): e is { chainId: number; entity: PositionEntity } => e !== null);
+        .filter((e): e is { chainId: SupportedChainId; entity: PositionEntity } => e !== null);
     });
 
     // Collect unique tokens for batch price fetch
@@ -102,14 +103,14 @@ export class GetWalletPositionsUseCase {
     return ok(wrappedPositions);
   }
 
-  private async fetchAllFees(entries: { chainId: number; entity: PositionEntity }[]): Promise<Map<string, ComputedFees>> {
+  private async fetchAllFees(entries: { chainId: SupportedChainId; entity: PositionEntity }[]): Promise<Map<string, ComputedFees>> {
     const allFees = new Map<string, ComputedFees>();
 
     const byChain = entries.reduce((map, { chainId, entity }) => {
       const list = map.get(chainId);
       list ? list.push(entity) : map.set(chainId, [entity]);
       return map;
-    }, new Map<number, PositionEntity[]>());
+    }, new Map<SupportedChainId, PositionEntity[]>());
 
     await Promise.all(
       Array.from(byChain.entries()).map(async ([chainId, positions]) => {
