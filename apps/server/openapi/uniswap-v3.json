@@ -238,6 +238,20 @@
               "type": "boolean",
               "default": "false"
             }
+          },
+          {
+            "in": "query",
+            "name": "chainIds",
+            "schema": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  1,
+                  8453,
+                  42161
+                ]
+              }
+            }
           }
         ]
       }
@@ -457,7 +471,12 @@
             "in": "path",
             "name": "chainId",
             "schema": {
-              "type": "number"
+              "type": "string",
+              "enum": [
+                1,
+                8453,
+                42161
+              ]
             },
             "required": true
           },
@@ -633,7 +652,12 @@
             "in": "path",
             "name": "chainId",
             "schema": {
-              "type": "number"
+              "type": "string",
+              "enum": [
+                1,
+                8453,
+                42161
+              ]
             },
             "required": true
           },

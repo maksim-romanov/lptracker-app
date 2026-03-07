@@ -2,11 +2,31 @@
   "arbitrum-one": {
     "Factory": {
       "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-      "startBlock": 397484000
+      "startBlock": 404672000
     },
     "NonfungiblePositionManager": {
       "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
-      "startBlock": 397484000
+      "startBlock": 404672000
+    }
+  },
+  "mainnet": {
+    "Factory": {
+      "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+      "startBlock": 12369621
+    },
+    "NonfungiblePositionManager": {
+      "address": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+      "startBlock": 12369621
+    }
+  },
+  "base": {
+    "Factory": {
+      "address": "0x33128a8fC17869897dcE68Ed026d694621f6FDfD",
+      "startBlock": 38722000
+    },
+    "NonfungiblePositionManager": {
+      "address": "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1",
+      "startBlock": 38722000
     }
   }
 }

@@ -48,23 +48,10 @@ export type Pool = {
   __typename?: 'Pool';
   createdAtBlock: Scalars['BigInt']['output'];
   createdAtTimestamp: Scalars['BigInt']['output'];
-  currentTick: Scalars['Int']['output'];
   feeTier: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
-  liquidity: Scalars['BigInt']['output'];
-  sqrtPriceX96: Scalars['BigInt']['output'];
-  ticks: Array<Tick>;
+  id: Scalars['Bytes']['output'];
   token0: Token;
   token1: Token;
-};
-
-
-export type PoolTicksArgs = {
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Tick_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']['input']>;
-  where?: InputMaybe<Tick_Filter>;
 };
 
 export type Pool_Filter = {
@@ -87,14 +74,6 @@ export type Pool_Filter = {
   createdAtTimestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
   createdAtTimestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
   createdAtTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  currentTick?: InputMaybe<Scalars['Int']['input']>;
-  currentTick_gt?: InputMaybe<Scalars['Int']['input']>;
-  currentTick_gte?: InputMaybe<Scalars['Int']['input']>;
-  currentTick_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  currentTick_lt?: InputMaybe<Scalars['Int']['input']>;
-  currentTick_lte?: InputMaybe<Scalars['Int']['input']>;
-  currentTick_not?: InputMaybe<Scalars['Int']['input']>;
-  currentTick_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   feeTier?: InputMaybe<Scalars['Int']['input']>;
   feeTier_gt?: InputMaybe<Scalars['Int']['input']>;
   feeTier_gte?: InputMaybe<Scalars['Int']['input']>;
@@ -103,32 +82,17 @@ export type Pool_Filter = {
   feeTier_lte?: InputMaybe<Scalars['Int']['input']>;
   feeTier_not?: InputMaybe<Scalars['Int']['input']>;
   feeTier_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  id_gt?: InputMaybe<Scalars['ID']['input']>;
-  id_gte?: InputMaybe<Scalars['ID']['input']>;
-  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
-  id_lt?: InputMaybe<Scalars['ID']['input']>;
-  id_lte?: InputMaybe<Scalars['ID']['input']>;
-  id_not?: InputMaybe<Scalars['ID']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
-  liquidity?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidity_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidity_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidity_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  liquidity_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidity_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidity_not?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidity_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id?: InputMaybe<Scalars['Bytes']['input']>;
+  id_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
   or?: InputMaybe<Array<InputMaybe<Pool_Filter>>>;
-  sqrtPriceX96?: InputMaybe<Scalars['BigInt']['input']>;
-  sqrtPriceX96_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  sqrtPriceX96_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  sqrtPriceX96_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  sqrtPriceX96_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  sqrtPriceX96_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  sqrtPriceX96_not?: InputMaybe<Scalars['BigInt']['input']>;
-  sqrtPriceX96_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  ticks_?: InputMaybe<Tick_Filter>;
   token0?: InputMaybe<Scalars['String']['input']>;
   token0_?: InputMaybe<Token_Filter>;
   token0_contains?: InputMaybe<Scalars['String']['input']>;
@@ -176,12 +140,8 @@ export type Pool_Filter = {
 export enum Pool_OrderBy {
   CreatedAtBlock = 'createdAtBlock',
   CreatedAtTimestamp = 'createdAtTimestamp',
-  CurrentTick = 'currentTick',
   FeeTier = 'feeTier',
   Id = 'id',
-  Liquidity = 'liquidity',
-  SqrtPriceX96 = 'sqrtPriceX96',
-  Ticks = 'ticks',
   Token0 = 'token0',
   Token0Decimals = 'token0__decimals',
   Token0Id = 'token0__id',
@@ -206,9 +166,7 @@ export type Position = {
   owner: Scalars['Bytes']['output'];
   pool?: Maybe<Pool>;
   tickLower: Scalars['Int']['output'];
-  tickLowerData?: Maybe<Tick>;
   tickUpper: Scalars['Int']['output'];
-  tickUpperData?: Maybe<Tick>;
   updatedAtBlock: Scalars['BigInt']['output'];
   updatedAtTimestamp: Scalars['BigInt']['output'];
 };
@@ -304,27 +262,6 @@ export type Position_Filter = {
   pool_starts_with?: InputMaybe<Scalars['String']['input']>;
   pool_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   tickLower?: InputMaybe<Scalars['Int']['input']>;
-  tickLowerData?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_?: InputMaybe<Tick_Filter>;
-  tickLowerData_contains?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_contains_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_ends_with?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_gt?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_gte?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  tickLowerData_lt?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_lte?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_not?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_not_contains?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  tickLowerData_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_starts_with?: InputMaybe<Scalars['String']['input']>;
-  tickLowerData_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   tickLower_gt?: InputMaybe<Scalars['Int']['input']>;
   tickLower_gte?: InputMaybe<Scalars['Int']['input']>;
   tickLower_in?: InputMaybe<Array<Scalars['Int']['input']>>;
@@ -333,27 +270,6 @@ export type Position_Filter = {
   tickLower_not?: InputMaybe<Scalars['Int']['input']>;
   tickLower_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   tickUpper?: InputMaybe<Scalars['Int']['input']>;
-  tickUpperData?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_?: InputMaybe<Tick_Filter>;
-  tickUpperData_contains?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_contains_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_ends_with?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_gt?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_gte?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  tickUpperData_lt?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_lte?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_not?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_not_contains?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  tickUpperData_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_starts_with?: InputMaybe<Scalars['String']['input']>;
-  tickUpperData_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   tickUpper_gt?: InputMaybe<Scalars['Int']['input']>;
   tickUpper_gte?: InputMaybe<Scalars['Int']['input']>;
   tickUpper_in?: InputMaybe<Array<Scalars['Int']['input']>>;
@@ -391,29 +307,10 @@ export enum Position_OrderBy {
   Pool = 'pool',
   PoolCreatedAtBlock = 'pool__createdAtBlock',
   PoolCreatedAtTimestamp = 'pool__createdAtTimestamp',
-  PoolCurrentTick = 'pool__currentTick',
   PoolFeeTier = 'pool__feeTier',
   PoolId = 'pool__id',
-  PoolLiquidity = 'pool__liquidity',
-  PoolSqrtPriceX96 = 'pool__sqrtPriceX96',
   TickLower = 'tickLower',
-  TickLowerData = 'tickLowerData',
-  TickLowerDataFeeGrowthOutside0X128 = 'tickLowerData__feeGrowthOutside0X128',
-  TickLowerDataFeeGrowthOutside1X128 = 'tickLowerData__feeGrowthOutside1X128',
-  TickLowerDataId = 'tickLowerData__id',
-  TickLowerDataLastSyncedBlock = 'tickLowerData__lastSyncedBlock',
-  TickLowerDataLiquidityGross = 'tickLowerData__liquidityGross',
-  TickLowerDataLiquidityNet = 'tickLowerData__liquidityNet',
-  TickLowerDataTickIdx = 'tickLowerData__tickIdx',
   TickUpper = 'tickUpper',
-  TickUpperData = 'tickUpperData',
-  TickUpperDataFeeGrowthOutside0X128 = 'tickUpperData__feeGrowthOutside0X128',
-  TickUpperDataFeeGrowthOutside1X128 = 'tickUpperData__feeGrowthOutside1X128',
-  TickUpperDataId = 'tickUpperData__id',
-  TickUpperDataLastSyncedBlock = 'tickUpperData__lastSyncedBlock',
-  TickUpperDataLiquidityGross = 'tickUpperData__liquidityGross',
-  TickUpperDataLiquidityNet = 'tickUpperData__liquidityNet',
-  TickUpperDataTickIdx = 'tickUpperData__tickIdx',
   UpdatedAtBlock = 'updatedAtBlock',
   UpdatedAtTimestamp = 'updatedAtTimestamp'
 }
@@ -426,8 +323,6 @@ export type Query = {
   pools: Array<Pool>;
   position?: Maybe<Position>;
   positions: Array<Position>;
-  tick?: Maybe<Tick>;
-  ticks: Array<Tick>;
   token?: Maybe<Token>;
   tokens: Array<Token>;
 };
@@ -474,24 +369,6 @@ export type QueryPositionsArgs = {
 };
 
 
-export type QueryTickArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID']['input'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryTicksArgs = {
-  block?: InputMaybe<Block_Height>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Tick_OrderBy>;
-  orderDirection?: InputMaybe<OrderDirection>;
-  skip?: InputMaybe<Scalars['Int']['input']>;
-  subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Tick_Filter>;
-};
-
-
 export type QueryTokenArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID']['input'];
@@ -509,125 +386,10 @@ export type QueryTokensArgs = {
   where?: InputMaybe<Token_Filter>;
 };
 
-export type Tick = {
-  __typename?: 'Tick';
-  feeGrowthOutside0X128: Scalars['BigInt']['output'];
-  feeGrowthOutside1X128: Scalars['BigInt']['output'];
-  id: Scalars['ID']['output'];
-  /** Block number when this tick data was last synced - WARNING: data may be stale! */
-  lastSyncedBlock: Scalars['BigInt']['output'];
-  liquidityGross: Scalars['BigInt']['output'];
-  liquidityNet: Scalars['BigInt']['output'];
-  pool: Pool;
-  tickIdx: Scalars['Int']['output'];
-};
-
-export type Tick_Filter = {
-  /** Filter for the block changed event. */
-  _change_block?: InputMaybe<BlockChangedFilter>;
-  and?: InputMaybe<Array<InputMaybe<Tick_Filter>>>;
-  feeGrowthOutside0X128?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside0X128_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside0X128_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside0X128_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  feeGrowthOutside0X128_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside0X128_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside0X128_not?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside0X128_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  feeGrowthOutside1X128?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside1X128_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside1X128_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside1X128_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  feeGrowthOutside1X128_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside1X128_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside1X128_not?: InputMaybe<Scalars['BigInt']['input']>;
-  feeGrowthOutside1X128_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  id_gt?: InputMaybe<Scalars['ID']['input']>;
-  id_gte?: InputMaybe<Scalars['ID']['input']>;
-  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
-  id_lt?: InputMaybe<Scalars['ID']['input']>;
-  id_lte?: InputMaybe<Scalars['ID']['input']>;
-  id_not?: InputMaybe<Scalars['ID']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
-  lastSyncedBlock?: InputMaybe<Scalars['BigInt']['input']>;
-  lastSyncedBlock_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  lastSyncedBlock_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  lastSyncedBlock_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  lastSyncedBlock_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  lastSyncedBlock_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  lastSyncedBlock_not?: InputMaybe<Scalars['BigInt']['input']>;
-  lastSyncedBlock_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  liquidityGross?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityGross_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityGross_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityGross_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  liquidityGross_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityGross_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityGross_not?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityGross_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  liquidityNet?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityNet_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityNet_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityNet_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  liquidityNet_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityNet_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityNet_not?: InputMaybe<Scalars['BigInt']['input']>;
-  liquidityNet_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  or?: InputMaybe<Array<InputMaybe<Tick_Filter>>>;
-  pool?: InputMaybe<Scalars['String']['input']>;
-  pool_?: InputMaybe<Pool_Filter>;
-  pool_contains?: InputMaybe<Scalars['String']['input']>;
-  pool_contains_nocase?: InputMaybe<Scalars['String']['input']>;
-  pool_ends_with?: InputMaybe<Scalars['String']['input']>;
-  pool_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  pool_gt?: InputMaybe<Scalars['String']['input']>;
-  pool_gte?: InputMaybe<Scalars['String']['input']>;
-  pool_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  pool_lt?: InputMaybe<Scalars['String']['input']>;
-  pool_lte?: InputMaybe<Scalars['String']['input']>;
-  pool_not?: InputMaybe<Scalars['String']['input']>;
-  pool_not_contains?: InputMaybe<Scalars['String']['input']>;
-  pool_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
-  pool_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  pool_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  pool_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  pool_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  pool_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  pool_starts_with?: InputMaybe<Scalars['String']['input']>;
-  pool_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  tickIdx?: InputMaybe<Scalars['Int']['input']>;
-  tickIdx_gt?: InputMaybe<Scalars['Int']['input']>;
-  tickIdx_gte?: InputMaybe<Scalars['Int']['input']>;
-  tickIdx_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  tickIdx_lt?: InputMaybe<Scalars['Int']['input']>;
-  tickIdx_lte?: InputMaybe<Scalars['Int']['input']>;
-  tickIdx_not?: InputMaybe<Scalars['Int']['input']>;
-  tickIdx_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-};
-
-export enum Tick_OrderBy {
-  FeeGrowthOutside0X128 = 'feeGrowthOutside0X128',
-  FeeGrowthOutside1X128 = 'feeGrowthOutside1X128',
-  Id = 'id',
-  LastSyncedBlock = 'lastSyncedBlock',
-  LiquidityGross = 'liquidityGross',
-  LiquidityNet = 'liquidityNet',
-  Pool = 'pool',
-  PoolCreatedAtBlock = 'pool__createdAtBlock',
-  PoolCreatedAtTimestamp = 'pool__createdAtTimestamp',
-  PoolCurrentTick = 'pool__currentTick',
-  PoolFeeTier = 'pool__feeTier',
-  PoolId = 'pool__id',
-  PoolLiquidity = 'pool__liquidity',
-  PoolSqrtPriceX96 = 'pool__sqrtPriceX96',
-  TickIdx = 'tickIdx'
-}
-
 export type Token = {
   __typename?: 'Token';
   decimals: Scalars['Int']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['Bytes']['output'];
   name: Scalars['String']['output'];
   symbol: Scalars['String']['output'];
 };
@@ -644,14 +406,16 @@ export type Token_Filter = {
   decimals_lte?: InputMaybe<Scalars['Int']['input']>;
   decimals_not?: InputMaybe<Scalars['Int']['input']>;
   decimals_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-  id_gt?: InputMaybe<Scalars['ID']['input']>;
-  id_gte?: InputMaybe<Scalars['ID']['input']>;
-  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
-  id_lt?: InputMaybe<Scalars['ID']['input']>;
-  id_lte?: InputMaybe<Scalars['ID']['input']>;
-  id_not?: InputMaybe<Scalars['ID']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id?: InputMaybe<Scalars['Bytes']['input']>;
+  id_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  id_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  id_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
   name?: InputMaybe<Scalars['String']['input']>;
   name_contains?: InputMaybe<Scalars['String']['input']>;
   name_contains_nocase?: InputMaybe<Scalars['String']['input']>;
@@ -742,7 +506,7 @@ export type PositionQueryVariables = Exact<{
 }>;
 
 
-export type PositionQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: string, feeTier: number, liquidity: any, currentTick: number, sqrtPriceX96: any, token0: { __typename?: 'Token', id: string, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: string, symbol: string, decimals: number } } | null } | null };
+export type PositionQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: any, feeTier: number, token0: { __typename?: 'Token', id: any, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: any, symbol: string, decimals: number } } | null } | null };
 
 export type WalletPositionsQueryVariables = Exact<{
   owner: Scalars['Bytes']['input'];
@@ -754,7 +518,7 @@ export type WalletPositionsQueryVariables = Exact<{
 }>;
 
 
-export type WalletPositionsQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: string, feeTier: number, liquidity: any, currentTick: number, sqrtPriceX96: any, token0: { __typename?: 'Token', id: string, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: string, symbol: string, decimals: number } } | null }> };
+export type WalletPositionsQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: any, feeTier: number, token0: { __typename?: 'Token', id: any, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: any, symbol: string, decimals: number } } | null }> };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -785,9 +549,6 @@ export const PositionDocument = new TypedDocumentString(`
     pool {
       id
       feeTier
-      liquidity
-      currentTick
-      sqrtPriceX96
       token0 {
         id
         symbol
@@ -818,9 +579,6 @@ export const WalletPositionsDocument = new TypedDocumentString(`
     pool {
       id
       feeTier
-      liquidity
-      currentTick
-      sqrtPriceX96
       token0 {
         id
         symbol

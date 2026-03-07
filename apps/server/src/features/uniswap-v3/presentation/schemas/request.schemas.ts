@@ -1,10 +1,8 @@
 import * as v from "valibot";
 
-// Supported chain IDs enum
-export enum SupportedChainId {
-  MAINNET = 1,
-  ARBITRUM = 42161,
-}
+// Supported chain IDs
+export const SUPPORTED_CHAIN_IDS = [1, 8453, 42161] as const;
+export type SupportedChainId = (typeof SUPPORTED_CHAIN_IDS)[number];
 
 // Ethereum address validation regex
 const ETH_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
@@ -24,12 +22,8 @@ export const walletAddressParamSchema = v.object({
 export const chainPositionParamSchema = v.object({
   chainId: v.pipe(
     v.string(),
-    v.transform((val) => Number(val)),
-    v.number(),
-    v.custom(
-      (val) => Object.values(SupportedChainId).includes(val as number),
-      `chainId must be one of: ${Object.values(SupportedChainId).join(", ")}`,
-    ),
+    v.transform((val) => Number(val) as SupportedChainId),
+    v.picklist(SUPPORTED_CHAIN_IDS),
   ),
   id: v.pipe(v.string(), v.regex(/^\d+$/, "id must be a numeric string")),
 });
@@ -67,6 +61,13 @@ export const getWalletPositionsQuerySchema = v.object({
       v.boolean(),
     ),
     "false", // Default as string
+  ),
+  chainIds: v.optional(
+    v.pipe(
+      v.string(),
+      v.transform((val) => val.split(",").map(Number) as SupportedChainId[]),
+      v.array(v.picklist(SUPPORTED_CHAIN_IDS)),
+    ),
   ),
 });
 

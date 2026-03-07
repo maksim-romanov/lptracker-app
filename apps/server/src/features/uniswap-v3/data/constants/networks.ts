@@ -1,17 +1,19 @@
 import type { Address } from "viem";
-import { arbitrum } from "viem/chains";
+import { arbitrum, base, mainnet } from "viem/chains";
+
+const ALCHEMY_API_KEY = Bun.env.ALCHEMY_API_KEY;
 
 const ARBITRUM_NETWORK = {
   id: arbitrum.id,
 
   rpcUrls: {
     alchemy: {
-      http: ["https://arb-mainnet.g.alchemy.com/v2/v_j-SYka_HKgzKcNAiLh_UpZzZFbl03O"],
+      http: [`https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`],
     },
   },
 
   graph: {
-    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.0.32",
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.0.34",
   },
 
   deployments: {
@@ -20,6 +22,46 @@ const ARBITRUM_NETWORK = {
   },
 };
 
+const MAINNET_NETWORK = {
+  id: mainnet.id,
+
+  rpcUrls: {
+    alchemy: {
+      http: [`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`],
+    },
+  },
+
+  graph: {
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-mainnet/v0.0.2",
+  },
+
+  deployments: {
+    NonfungiblePositionManager: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88" as Address,
+    UniswapV3Factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984" as Address,
+  },
+};
+
+const BASE_NETWORK = {
+  id: base.id,
+
+  rpcUrls: {
+    alchemy: {
+      http: [`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`],
+    },
+  },
+
+  graph: {
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-base/v0.0.4",
+  },
+
+  deployments: {
+    NonfungiblePositionManager: "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1" as Address,
+    UniswapV3Factory: "0x33128a8fC17869897dcE68Ed026d694621f6FDfD" as Address,
+  },
+};
+
 export const networks = {
   [arbitrum.id]: ARBITRUM_NETWORK,
+  [mainnet.id]: MAINNET_NETWORK,
+  [base.id]: BASE_NETWORK,
 } as const;

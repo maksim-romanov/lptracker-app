@@ -4,7 +4,8 @@ import type { TokenPriceService } from "token-prices/domain/token-price-service"
 import type { TokenPriceQuery } from "token-prices/domain/types";
 import { cacheKey } from "token-prices/domain/types";
 import { inject, injectable } from "tsyringe";
-import { arbitrum } from "viem/chains";
+import type { Address } from "viem";
+import { arbitrum, base, mainnet } from "viem/chains";
 
 import type { GraphQLPositionDto } from "../data/dto/graphql-position.dto";
 import type { PositionFeesCache } from "../data/position-fees.cache";
@@ -13,6 +14,7 @@ import { getContainer } from "../di/containers";
 import { POSITION_FEES_CACHE } from "../di/tokens";
 import { UNISWAP_V3_PROTOCOL } from "../domain/constants/protocol";
 import type { PositionEntity } from "../domain/entities/position.entity";
+import type { PoolStateRpcData } from "../domain/types/pool-state";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
 import type { UniswapV3WrappedPosition } from "../presentation/schemas/response.schemas";
@@ -43,15 +45,34 @@ export class GetWalletPositionsUseCase {
           filters,
         );
 
-        if (result.isErr()) {
-          return { chainId, positions: [] as GraphQLPositionDto[] };
-        }
-
-        return { chainId, positions: result.value };
+        return { chainId, repository, positions: result.isOk() ? result.value : ([] as GraphQLPositionDto[]) };
       }),
     );
 
-    const entities = results.flatMap(({ chainId, positions }) => positions.map((dto) => ({ chainId, entity: dto.toDomain() })));
+    // Collect unique pool addresses and fetch pool states per chain (reusing repository instances)
+    const poolStatesByChain = new Map<number, Map<Address, PoolStateRpcData>>();
+    await Promise.all(
+      results.map(async ({ chainId, repository, positions }) => {
+        const addresses = [...new Set(positions.map((dto) => dto.pool.id))];
+        if (addresses.length === 0) return;
+        const stateResult = await repository.getPoolStates(addresses);
+        if (stateResult.isOk()) {
+          poolStatesByChain.set(chainId, stateResult.value);
+        }
+      }),
+    );
+
+    // Convert DTOs to entities with pool state from RPC
+    const entities = results.flatMap(({ chainId, positions }) => {
+      const poolStates = poolStatesByChain.get(chainId);
+      return positions
+        .map((dto) => {
+          const poolState = poolStates?.get(dto.pool.id);
+          if (!poolState) return null;
+          return { chainId, entity: dto.toDomain(poolState) };
+        })
+        .filter((e): e is { chainId: number; entity: PositionEntity } => e !== null);
+    });
 
     // Collect unique tokens for batch price fetch
     const tokenQueries = new Map<string, TokenPriceQuery>();

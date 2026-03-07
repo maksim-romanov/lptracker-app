@@ -2,15 +2,20 @@ import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/I
 import NonfungiblePositionManagerABI from "@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json";
 import { err, ok } from "neverthrow";
 import { injectable } from "tsyringe";
-import type { Address } from "viem";
+import type { Abi, Address } from "viem";
 
 import type { PositionEntity } from "../domain/entities/position.entity";
 import { PositionError } from "../domain/errors/position.error";
+import type { PoolStateRpcData } from "../domain/types/pool-state";
 import type { PositionFeeRawData } from "../domain/utils/fee-math";
 import { BaseRepository } from "./base/base.repository";
 import { GraphQLPositionDto } from "./dto/graphql-position.dto";
 import { graphql } from "./gql";
 
+const poolAbi = IUniswapV3PoolABI.abi as Abi;
+const npmAbi = NonfungiblePositionManagerABI.abi as Abi;
+
+type Slot0Data = [bigint, number, number, number, number, number, boolean];
 type TickData = [bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean];
 type PositionData = [bigint, Address, Address, Address, number, number, number, bigint, bigint, bigint, bigint, bigint];
 
@@ -59,6 +64,33 @@ export class PositionsRepository extends BaseRepository {
     }
   }
 
+  async getPoolState(poolAddress: Address) {
+    const result = await this.getPoolStates([poolAddress]);
+    if (result.isErr()) return err(result.error);
+    const state = result.value.get(poolAddress);
+    if (!state) return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+    return ok(state);
+  }
+
+  async getPoolStates(poolAddresses: Address[]) {
+    const unique = [...new Set(poolAddresses)];
+    try {
+      const contracts = this.buildPoolStateContracts(unique);
+      const results = await this.rpc.multicall({ contracts });
+
+      const map = new Map<Address, PoolStateRpcData>();
+      for (let i = 0; i < unique.length; i++) {
+        const address = unique[i];
+        const slot0 = results[i * 2]?.result as Slot0Data;
+        const liquidity = results[i * 2 + 1]?.result as bigint;
+        if (address) map.set(address, { sqrtPriceX96: slot0[0], currentTick: slot0[1], liquidity });
+      }
+      return ok(map);
+    } catch {
+      return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+    }
+  }
+
   async getPositionFees(position: PositionEntity) {
     try {
       const results = await this.rpc.multicall({ contracts: this.buildFeeContracts(position) });
@@ -72,8 +104,8 @@ export class PositionsRepository extends BaseRepository {
     if (positions.length === 0) return ok(new Map<string, PositionFeeRawData>());
 
     try {
-      const contracts = positions.flatMap((p) => this.buildFeeContracts(p));
-      const results = await this.rpc.multicall({ contracts: contracts as Parameters<typeof this.rpc.multicall>[0]["contracts"] });
+      const contracts = positions.flatMap((p) => [...this.buildFeeContracts(p)]);
+      const results = await this.rpc.multicall({ contracts });
 
       const feeDataMap = new Map<string, PositionFeeRawData>();
       for (let i = 0; i < positions.length; i++) {
@@ -85,19 +117,26 @@ export class PositionsRepository extends BaseRepository {
     }
   }
 
+  private buildPoolStateContracts(addresses: Address[]) {
+    return addresses.flatMap((address) => [
+      { address, abi: poolAbi, functionName: "slot0" },
+      { address, abi: poolAbi, functionName: "liquidity" },
+    ]);
+  }
+
   private buildFeeContracts(position: PositionEntity) {
     return [
-      { address: position.pool.id, abi: IUniswapV3PoolABI.abi, functionName: "feeGrowthGlobal0X128" },
-      { address: position.pool.id, abi: IUniswapV3PoolABI.abi, functionName: "feeGrowthGlobal1X128" },
-      { address: position.pool.id, abi: IUniswapV3PoolABI.abi, functionName: "ticks", args: [position.tickLower] },
-      { address: position.pool.id, abi: IUniswapV3PoolABI.abi, functionName: "ticks", args: [position.tickUpper] },
+      { address: position.pool.id, abi: poolAbi, functionName: "feeGrowthGlobal0X128" },
+      { address: position.pool.id, abi: poolAbi, functionName: "feeGrowthGlobal1X128" },
+      { address: position.pool.id, abi: poolAbi, functionName: "ticks", args: [position.tickLower] },
+      { address: position.pool.id, abi: poolAbi, functionName: "ticks", args: [position.tickUpper] },
       {
         address: this.context.deployments.NonfungiblePositionManager,
-        abi: NonfungiblePositionManagerABI.abi,
+        abi: npmAbi,
         functionName: "positions",
         args: [position.id],
       },
-    ] as const;
+    ];
   }
 }
 
@@ -112,9 +151,6 @@ const getPositionQuery = graphql(`
       pool {
         id
         feeTier
-        liquidity
-        currentTick
-        sqrtPriceX96
         token0 { id symbol decimals }
         token1 { id symbol decimals }
       }
@@ -145,9 +181,6 @@ const getWalletPositionsQuery = graphql(`
       pool {
         id
         feeTier
-        liquidity
-        currentTick
-        sqrtPriceX96
         token0 { id symbol decimals }
         token1 { id symbol decimals }
       }

@@ -61,10 +61,11 @@ routes.get(
   async (c) => {
     try {
       const { walletAddress } = c.req.valid("param") as WalletAddressParam;
-      const { limit, offset, closed } = c.req.valid("query") as GetWalletPositionsQuery;
+      const { limit, offset, closed, chainIds } = c.req.valid("query") as GetWalletPositionsQuery;
 
       const result = await container.resolve(GetWalletPositionsUseCase).execute({
         owner: walletAddress,
+        chainIds,
         pagination: {
           limit: typeof limit === "string" ? 10 : limit,
           offset: typeof offset === "string" ? 0 : offset,

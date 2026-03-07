@@ -9,6 +9,7 @@ All documentation and code comments must be in **English only**.
 | Type | Convention | Example |
 |------|------------|---------|
 | Components, Screens | PascalCase | `PositionsScreen.tsx`, `PositionCard.tsx` |
+| Hooks | camelCase (match export) | `usePositionsQuery.ts`, `useAuth.ts` |
 | Everything else | kebab-case | `wallet.repository.ts`, `tokens.ts` |
 
 ## TypeScript Naming

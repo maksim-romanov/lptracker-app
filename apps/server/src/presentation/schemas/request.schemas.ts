@@ -1,5 +1,7 @@
 import * as v from "valibot";
 
+import { SUPPORTED_CHAIN_IDS, type SupportedChainId } from "../../features/uniswap-v3/presentation/schemas/request.schemas";
+
 // Ethereum address validation regex
 const ETH_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
 
@@ -42,6 +44,13 @@ export const getAllPositionsQuerySchema = v.object({
       v.boolean(),
     ),
     "false",
+  ),
+  chainIds: v.optional(
+    v.pipe(
+      v.string(),
+      v.transform((val) => val.split(",").map(Number) as SupportedChainId[]),
+      v.array(v.picklist(SUPPORTED_CHAIN_IDS)),
+    ),
   ),
 });
 
