@@ -24,8 +24,8 @@ All documentation and code comments must be in **English only**.
 Project uses **Biome** for linting and formatting:
 
 ```bash
-bun run check        # Check for issues
-bun run check:fix    # Auto-fix issues
+bun run lint         # Check for issues
+bun run lint:fix     # Auto-fix issues
 ```
 
 Biome config is in `biome.json` at the root.

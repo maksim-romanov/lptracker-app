@@ -6,9 +6,9 @@
     "dev:android": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
     "codegen": "graphql-codegen --config codegen.ts && bun run scripts/generate-openapi.ts",
-    "check": "biome check .",
-    "check:fix": "biome check --write .",
-    "check-types": "tsc --noEmit"
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",

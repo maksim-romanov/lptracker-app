@@ -42,8 +42,9 @@ bun run dev          # Start all dev servers
 bun run dev:ios      # Start server + iOS app
 bun run dev:android  # Start server + Android app
 bun run build        # Build all packages
-bun run check        # Lint with Biome
-bun run check:fix    # Lint and auto-fix
+bun run lint         # Lint with Biome
+bun run lint:fix     # Lint and auto-fix
+bun run typecheck    # Type-check (tsc)
 bun run codegen      # Generate types (see codegen.md)
 ```
 

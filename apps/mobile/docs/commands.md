@@ -13,10 +13,13 @@ bun dev:ios
 bun dev:android
 
 # Lint code
-bun check
+bun lint
 
 # Lint and fix code
-bun check:fix
+bun lint:fix
+
+# Type-check
+bun typecheck
 ```
 
 ## From Monorepo Root

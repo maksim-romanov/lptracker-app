@@ -24,7 +24,7 @@ Start here: [docs/README.md](../docs/README.md) — full documentation index.
 - [apps/server/docs/api.md](../apps/server/docs/api.md) - Endpoints, validation
 
 ## Rules
-- Always run `bunx tsc --noEmit` after code changes to check for TypeScript errors
+- Always run `bun run typecheck` after code changes to check for TypeScript errors
 
 ## Quick Reference
 
@@ -32,6 +32,7 @@ Start here: [docs/README.md](../docs/README.md) — full documentation index.
 bun install           # Install dependencies
 bun run dev           # Start all dev servers
 bun run dev:ios       # Server + iOS
-bun run check         # Lint (Biome)
+bun run lint          # Lint (Biome)
+bun run typecheck     # Type-check (tsc)
 bun run codegen       # Generate types
 ```

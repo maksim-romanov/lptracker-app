@@ -17,8 +17,8 @@ import type { PositionEntity } from "../domain/entities/position.entity";
 import type { PoolStateRpcData } from "../domain/types/pool-state";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
-import type { UniswapV3WrappedPosition } from "../presentation/schemas/response.schemas";
 import type { SupportedChainId } from "../presentation/schemas/request.schemas";
+import type { UniswapV3WrappedPosition } from "../presentation/schemas/response.schemas";
 
 export interface GetWalletPositionsParams {
   owner: string;

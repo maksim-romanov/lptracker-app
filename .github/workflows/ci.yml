@@ -18,6 +18,6 @@ jobs:
       - name: Codegen
         run: bunx turbo run codegen
       - name: Lint
-        run: bun run check
+        run: bun run lint
       - name: Type check
-        run: bun run check-types
+        run: bun run typecheck
