@@ -49,3 +49,6 @@ apps/subgraphs/**/build/
 apps/subgraphs/**/data/
 apps/subgraphs/**/tests/.bin/
 apps/subgraphs/**/tests/.latest.json
+
+# redis
+dump.rdb

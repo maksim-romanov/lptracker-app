@@ -34,7 +34,7 @@ export class GetWalletPositionsUseCase {
   ) {}
 
   async execute(params: GetWalletPositionsParams) {
-    const { owner, chainIds = [mainnet.id, arbitrum.id, base.id], pagination, filters } = params;
+    const { owner, chainIds = [arbitrum.id], pagination, filters } = params;
 
     const results = await Promise.all(
       chainIds.map(async (chainId) => {

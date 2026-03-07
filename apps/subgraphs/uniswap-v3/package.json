@@ -9,7 +9,7 @@
     "build:mainnet": "graph build --network mainnet",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ uniswap-v3-graph",
     "deploy:mainnet": "graph deploy --network mainnet --node https://api.studio.thegraph.com/deploy/ uniswap-v-3-mainnet",
-    "deploy:arbitrum": "graph deploy --network arbitrum-one --node https://api.studio.thegraph.com/deploy/ uniswap-v3-graph",
+    "deploy:arbitrum": "graph deploy --network arbitrum-one --node https://api.studio.thegraph.com/deploy/ uniswap-v-3-graph",
     "deploy:base": "graph deploy --network base --node https://api.studio.thegraph.com/deploy/ uniswap-v-3-base",
     "create-local": "graph create --node http://localhost:8020/ uniswap-v3-graph",
     "remove-local": "graph remove --node http://localhost:8020/ uniswap-v3-graph",

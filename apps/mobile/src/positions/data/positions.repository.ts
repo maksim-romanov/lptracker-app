@@ -1,7 +1,7 @@
 import type { GatewayApiClient } from "core/api-client/di/register";
-import type { operations } from "core/api-client/generated/gateway";
 import { GATEWAY_API } from "core/api-client/di/tokens";
 import { ApiError } from "core/api-client/domain/api.error";
+import type { operations } from "core/api-client/generated/gateway";
 import { container } from "core/di/container";
 import { Repository } from "core/domain/base/repository";
 
