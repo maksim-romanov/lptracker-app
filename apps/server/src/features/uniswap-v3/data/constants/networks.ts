@@ -1,12 +1,14 @@
 import type { Address } from "viem";
 import { arbitrum, base, mainnet } from "viem/chains";
 
+const ALCHEMY_API_KEY = Bun.env.ALCHEMY_API_KEY;
+
 const ARBITRUM_NETWORK = {
   id: arbitrum.id,
 
   rpcUrls: {
     alchemy: {
-      http: ["https://arb-mainnet.g.alchemy.com/v2/v_j-SYka_HKgzKcNAiLh_UpZzZFbl03O"],
+      http: [`https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`],
     },
   },
 
@@ -25,7 +27,7 @@ const MAINNET_NETWORK = {
 
   rpcUrls: {
     alchemy: {
-      http: ["https://eth-mainnet.g.alchemy.com/v2/v_j-SYka_HKgzKcNAiLh_UpZzZFbl03O"],
+      http: [`https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`],
     },
   },
 
@@ -44,7 +46,7 @@ const BASE_NETWORK = {
 
   rpcUrls: {
     alchemy: {
-      http: ["https://base-mainnet.g.alchemy.com/v2/v_j-SYka_HKgzKcNAiLh_UpZzZFbl03O"],
+      http: [`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`],
     },
   },
 
