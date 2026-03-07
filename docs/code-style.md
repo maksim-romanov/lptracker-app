@@ -6,20 +6,18 @@ All documentation and code comments must be in **English only**.
 
 ## File Naming
 
-| Type | Convention | Example |
-|------|------------|---------|
-| Components, Screens | PascalCase | `PositionsScreen.tsx`, `PositionCard.tsx` |
-| Hooks | camelCase (match export) | `usePositionsQuery.ts`, `useAuth.ts` |
-| Everything else | kebab-case | `wallet.repository.ts`, `tokens.ts` |
+- **Components & Screens** — `PascalCase.tsx` (e.g. `PositionCard.tsx`, `WalletsScreen.tsx`)
+- **Hooks** — `camelCase.ts` matching export name (e.g. `usePositionsQuery.ts`)
+- **Everything else** — `kebab-case.ts` (e.g. `wallet.repository.ts`, `fee-math.ts`)
+
+> See [apps/mobile/docs/code-style.md](../apps/mobile/docs/code-style.md#file-naming) for detailed suffix conventions (`.repository.ts`, `.usecase.ts`, `.store.ts`, etc.).
 
 ## TypeScript Naming
 
-| Type | Convention | Example |
-|------|------------|---------|
-| Types | PascalCase + `T` prefix | `TPosition`, `TWallet` |
-| Interfaces | PascalCase + `I` prefix | `IWalletState` |
-| Enums | PascalCase + `E` prefix | `ENetworkQuality`, `EErrorCode` |
-| DI Tokens | SCREAMING_SNAKE_CASE | `POSITIONS_REPOSITORY`, `WALLET_SERVICE` |
+- **Types** — `T` prefix: `TPosition`, `TWallet`
+- **Interfaces** — `I` prefix: `IRepository`, `ICache`
+- **Enums** — `E` prefix: `EChainId`, `EStatus`
+- **DI Tokens** — `SCREAMING_SNAKE_CASE`: `POSITIONS_REPOSITORY`
 
 ## Linting
 

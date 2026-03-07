@@ -4,6 +4,8 @@
 
 React Native 0.81 + Expo 54 + TypeScript 5.9 | Unistyles | tsyringe DI | expo-router
 
+See [project architecture](../../../docs/architecture.md) for the full tech stack and monorepo structure.
+
 ## Project Structure
 
 ```
@@ -75,7 +77,7 @@ constructor(
 
 ## Theme System
 
-The app uses `@matrapp/theme` package with Material Design 3 color tokens:
+The app uses `@mars-909/theme` package with Material Design 3 color tokens:
 
 - **5 theme variants**: Ocean, Nebula, Mint, Sunset, Midnight
 - **Light/Dark modes** for each variant

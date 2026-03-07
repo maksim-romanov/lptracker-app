@@ -1,12 +1,12 @@
 import type { StacksBreakpoints as _StacksBreakpoints } from "@grapp/stacks";
-import { type ColorTokens, neonDark, neonLight, radius, spacing, typography } from "@matrapp/theme";
+import { type ColorTokens, neonDark, neonLight, radius, spacing, typography } from "@mars-909/theme";
 import { StyleSheet } from "react-native-unistyles";
 
 /**
  * Stacks layout configuration
  */
 const stacks = {
-  spacing: 4, // Base unit matching @matrapp/theme (4px)
+  spacing: 4, // Base unit matching @mars-909/theme (4px)
   debug: false,
 };
 

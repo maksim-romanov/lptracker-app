@@ -37,24 +37,16 @@ bun run dev:android
 
 ## Common Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun run dev` | Start all dev servers |
-| `bun run dev:ios` | Start server + iOS app |
-| `bun run dev:android` | Start server + Android app |
-| `bun run build` | Build all packages |
-| `bun run check` | Lint with Biome |
-| `bun run check:fix` | Lint and auto-fix |
-| `bun run codegen` | Generate types (see [codegen.md](./codegen.md)) |
+```bash
+bun run dev          # Start all dev servers
+bun run dev:ios      # Start server + iOS app
+bun run dev:android  # Start server + Android app
+bun run build        # Build all packages
+bun run check        # Lint with Biome
+bun run check:fix    # Lint and auto-fix
+bun run codegen      # Generate types (see codegen.md)
+```
 
 ## Project Structure
 
-```
-apps/
-├── server/     # Hono API server
-├── mobile/     # Expo React Native app
-└── subgraphs/  # The Graph indexers
-
-packages/
-└── typescript-config/  # Shared TS config
-```
+See [Architecture](architecture.md) for the full project structure and tech stack.

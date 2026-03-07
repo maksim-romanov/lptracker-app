@@ -43,12 +43,12 @@ bun run graph:test
 
 ## Commands Summary
 
-| Command | Description |
-|---------|-------------|
-| `bun run graph:up` | Start local Graph Node (Docker) |
-| `bun run graph:down` | Stop local Graph Node |
-| `bun run graph:build` | Build all subgraphs |
-| `bun run graph:test` | Test all subgraphs |
+```bash
+bun run graph:up      # Start local Graph Node (Docker)
+bun run graph:down    # Stop local Graph Node
+bun run graph:build   # Build all subgraphs
+bun run graph:test    # Test all subgraphs
+```
 
 ## Working with Individual Subgraphs
 
@@ -56,5 +56,5 @@ Filter to a specific subgraph:
 
 ```bash
 # Build only uniswap-v3 subgraph
-turbo run build --filter=@matrapp/subgraph-uniswap-v3
+turbo run build --filter=@mars-909/subgraph-uniswap-v3
 ```

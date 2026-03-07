@@ -1,5 +1,5 @@
 {
-  "name": "@matrapp/theme",
+  "name": "@mars-909/theme",
   "version": "0.0.1",
   "private": true,
   "main": "./src/index.ts",
@@ -17,6 +17,6 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@matrapp/typescript-config": "workspace:*"
+    "@mars-909/typescript-config": "workspace:*"
   }
 }

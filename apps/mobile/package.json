@@ -19,7 +19,7 @@
     "@expo/vector-icons": "^15.0.3",
     "@grapp/stacks": "^4.0.0-beta.1",
     "@lukemorales/query-key-factory": "^1.3.4",
-    "@matrapp/theme": "workspace:*",
+    "@mars-909/theme": "workspace:*",
     "fp-ts": "^2.16.0",
     "@react-navigation/native": "^7.0.0",
     "@tanstack/react-form": "^1.28.3",

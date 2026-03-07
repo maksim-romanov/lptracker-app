@@ -33,7 +33,7 @@
     "@graphql-codegen/typescript-graphql-request": "^6.4.0",
     "@graphql-codegen/typescript-operations": "^5.0.7",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@matrapp/typescript-config": "workspace:*",
+    "@mars-909/typescript-config": "workspace:*",
     "@types/bun": "latest",
     "@types/opossum": "^8.1.9",
     "graphql": "^16.12.0",

@@ -1,5 +1,5 @@
 {
-  "name": "matrapp",
+  "name": "mars-909",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -10,10 +10,10 @@
     "check:fix": "turbo run check:fix",
     "check-types": "turbo run check-types",
     "codegen": "dotenv -- turbo run codegen --ui=stream",
-    "graph:up": "turbo run docker:up --filter=@matrapp/subgraph-*",
-    "graph:down": "turbo run docker:down --filter=@matrapp/subgraph-*",
-    "graph:build": "turbo run build --filter=@matrapp/subgraph-*",
-    "graph:test": "turbo run test --filter=@matrapp/subgraph-*"
+    "graph:up": "turbo run docker:up --filter=@mars-909/subgraph-*",
+    "graph:down": "turbo run docker:down --filter=@mars-909/subgraph-*",
+    "graph:build": "turbo run build --filter=@mars-909/subgraph-*",
+    "graph:test": "turbo run test --filter=@mars-909/subgraph-*"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",

@@ -1,5 +1,5 @@
 {
-  "name": "@matrapp/subgraph-uniswap-v3",
+  "name": "@mars-909/subgraph-uniswap-v3",
   "version": "0.1.0",
   "private": true,
   "scripts": {

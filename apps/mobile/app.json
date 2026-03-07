@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "MatrApp",
-    "slug": "matrapp",
+    "name": "mars-909",
+    "slug": "mars-909",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "matrapp",
+    "scheme": "mars-909",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.maksimromanov.matrapp"
+      "bundleIdentifier": "com.maksimromanov.mars909"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0F1A"
       },
-      "package": "com.maksimromanov.matrapp"
+      "package": "com.maksimromanov.mars909"
     },
     "plugins": [
       [

@@ -13,7 +13,7 @@ const OUTPUT_DIR = join(import.meta.dir, "..", "openapi");
 const gatewaySpec = {
   openapi: "3.1.0",
   info: {
-    title: "Matrapp Gateway API",
+    title: "mars-909 Gateway API",
     version: "1.0.0",
     description: "Gateway API for aggregating positions across all supported DeFi protocols",
   },

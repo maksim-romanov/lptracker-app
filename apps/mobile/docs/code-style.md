@@ -45,8 +45,49 @@ Theme types are augmented in `src/types/unistyles.d.ts`.
 
 ## Naming Conventions
 
-- **Components/Screens**: PascalCase (`PositionsScreen.tsx`, `PositionCard.tsx`)
-- **Other files**: kebab-case (`wallet.repository.ts`, `tokens.ts`)
+### File Naming
+
+#### Components & Screens — PascalCase
+
+- `PositionCard.tsx` — UI component
+- `WalletsScreen.tsx` — screen component
+- `PositionCardSkeleton.tsx` — skeleton/loading variant
+- `withAuth.tsx` — higher-order component
+- `WalletCardMenu.ios.tsx` — platform-specific variant
+
+#### Hooks — camelCase
+
+- `usePositionsQuery.ts` — matches export name
+
+#### Domain & Infrastructure — kebab-case with suffix
+
+- `positions.repository.ts` — data access
+- `delete-wallet.usecase.ts` — business logic
+- `token-price.service.ts` — domain service
+- `wallets.store.ts` — state management
+- `position.events.ts` — domain events
+- `position.error.ts` — error classes
+- `auth.middleware.ts` — middleware
+- `positions.keys.ts` — React Query keys
+- `walletCardMenu.types.ts` — co-located types
+- `gateway.d.ts` — generated type declarations
+
+#### Special Files
+
+- `tokens.ts` — DI token definitions (Symbols)
+- `register.ts` — DI module registration
+- `index.ts` — barrel exports
+- `_layout.tsx` — Expo Router layout
+- `+not-found.tsx` — Expo Router 404
+
+### Directory Naming
+
+- Lowercase, kebab-case when multi-word (e.g. `nonfungible-positions/`)
+- Feature modules live at `src/` root level (`wallets/`, `positions/`, `core/`)
+- DDD layers as subdirectories: `di/`, `domain/`, `data/`, `application/`, `presentation/`
+
+### TypeScript Naming
+
 - **Types/Interfaces**: PascalCase with `T` prefix for types (`TPosition`, `IWalletState`)
 - **Enums**: PascalCase with `E` prefix (`ENetworkQuality`, `EErrorCode`)
 - **DI Tokens**: SCREAMING_SNAKE_CASE (`POSITIONS_REPOSITORY`, `WALLET_SERVICE`)

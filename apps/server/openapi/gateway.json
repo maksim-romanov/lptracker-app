@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Matrapp Gateway API",
+    "title": "mars-909 Gateway API",
     "description": "Gateway API for aggregating positions across all supported DeFi protocols",
     "version": "1.0.0"
   },

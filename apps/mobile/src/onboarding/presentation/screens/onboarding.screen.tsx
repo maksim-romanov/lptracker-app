@@ -27,7 +27,7 @@ export function OnboardingScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.surface }]}>
       <ScrollView contentContainerStyle={[styles.content, { padding: theme.spacing["2xl"] }]} showsVerticalScrollIndicator={false}>
         <View style={[styles.header, { marginTop: theme.spacing["4xl"], marginBottom: theme.spacing["3xl"] }]}>
-          <Text style={[styles.title, theme.typography.display, { color: theme.primary, marginBottom: theme.spacing.md }]}>MatrApp</Text>
+          <Text style={[styles.title, theme.typography.display, { color: theme.primary, marginBottom: theme.spacing.md }]}>mars-909</Text>
           <Text style={[styles.subtitle, theme.typography.body, { color: theme.onSurfaceVariant }]}>
             Track your DeFi positions across protocols
           </Text>

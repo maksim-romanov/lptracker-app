@@ -2,7 +2,7 @@
 
 ## Overview
 
-MatrApp is a DeFi portfolio monitoring platform built with Clean Architecture principles.
+DeFi portfolio monitoring platform built with Clean Architecture principles.
 
 ## Project Structure
 
@@ -18,17 +18,15 @@ packages/
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Runtime | Bun |
-| Server | Hono + Valibot validation |
-| Mobile | React Native 0.81 + Expo 54 |
-| Styling | react-native-unistyles + @grapp/stacks |
-| DI | tsyringe |
-| Blockchain | viem |
-| Indexing | The Graph |
-| Monorepo | Turborepo |
-| Linting | Biome |
+- **Runtime** — Bun
+- **Server** — Hono + Valibot validation
+- **Mobile** — React Native 0.81 + Expo 54
+- **Styling** — react-native-unistyles + @grapp/stacks
+- **DI** — tsyringe
+- **Blockchain** — viem
+- **Indexing** — The Graph
+- **Monorepo** — Turborepo
+- **Linting** — Biome
 
 ## Clean Architecture Layers
 
@@ -54,6 +52,6 @@ Mobile App (presentation)
 ## Package Dependencies
 
 ```
-@matrapp/theme ← apps/mobile
-@matrapp/typescript-config ← all packages
+@mars-909/theme ← apps/mobile
+@mars-909/typescript-config ← all packages
 ```
