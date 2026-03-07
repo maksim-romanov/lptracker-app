@@ -8,7 +8,7 @@ interface FeatureConfig {
 // TODO: Update schema URL after subgraph redeployment with simplified schema (no Tick, no pool state fields)
 const featureConfigs: Record<string, FeatureConfig> = {
   "uniswap-v3": {
-    schema: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.0.32",
+    schema: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.0.34",
     headers: {
       Authorization: `Bearer ${process.env.GRAPH_API_KEY}`,
     },
