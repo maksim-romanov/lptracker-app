@@ -6,7 +6,7 @@ const ARBITRUM_NETWORK = {
 
   rpcUrls: {
     alchemy: {
-      http: ["https://arb-mainnet.g.alchemy.com/v2/0720daf1848399dae566c9ab9efcb85e"],
+      http: ["https://arb-mainnet.g.alchemy.com/v2/v_j-SYka_HKgzKcNAiLh_UpZzZFbl03O"],
     },
   },
 
@@ -25,7 +25,7 @@ const MAINNET_NETWORK = {
 
   rpcUrls: {
     alchemy: {
-      http: ["https://eth-mainnet.g.alchemy.com/v2/0720daf1848399dae566c9ab9efcb85e"],
+      http: ["https://eth-mainnet.g.alchemy.com/v2/v_j-SYka_HKgzKcNAiLh_UpZzZFbl03O"],
     },
   },
 
@@ -44,7 +44,7 @@ const BASE_NETWORK = {
 
   rpcUrls: {
     alchemy: {
-      http: ["https://base-mainnet.g.alchemy.com/v2/0720daf1848399dae566c9ab9efcb85e"],
+      http: ["https://base-mainnet.g.alchemy.com/v2/v_j-SYka_HKgzKcNAiLh_UpZzZFbl03O"],
     },
   },
 
