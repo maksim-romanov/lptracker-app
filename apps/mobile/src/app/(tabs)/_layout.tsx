@@ -20,6 +20,11 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Label>Positions</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
+      <NativeTabs.Trigger name="following">
+        <NativeTabs.Trigger.Icon sf="star.fill" drawable="star" />
+        <NativeTabs.Trigger.Label>Following</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
       <NativeTabs.Trigger name="wallets">
         <NativeTabs.Trigger.Icon sf="wallet.pass.fill" drawable="account_balance_wallet" />
         <NativeTabs.Trigger.Label>Wallets</NativeTabs.Trigger.Label>

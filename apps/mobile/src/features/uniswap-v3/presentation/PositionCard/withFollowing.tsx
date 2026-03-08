@@ -9,9 +9,7 @@ export const withFollowing = <T extends Props>(Component: React.ComponentType<T>
   return observer((props: Omit<T, "isFollowing"> & { isFollowing?: boolean }) => {
     const { position } = props;
 
-    const positionId = `${position.chainId}:${position.data.id}`;
-    const { isFollowing } = useFollowing(positionId);
-
+    const isFollowing = useFollowing().isFollowing(position);
     return <Component {...(props as T)} isFollowing={props.isFollowing ?? isFollowing} />;
   });
 };

@@ -53,6 +53,7 @@ export const PositionsScreen = observer(function PositionsScreen() {
       onEndReached={() => hasNextPage && fetchNextPage()}
       onEndReachedThreshold={0.5}
       getItemLayout={(_, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}
+      contentInsetAdjustmentBehavior="automatic"
       refreshControl={
         <UnoRefreshControl
           refreshing={isRefreshing}

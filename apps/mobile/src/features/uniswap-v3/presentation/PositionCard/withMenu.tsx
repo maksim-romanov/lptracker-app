@@ -14,16 +14,17 @@ export const withMenu = <T extends Props>(Component: React.ComponentType<T>) => 
   return observer((props: T) => {
     const { position } = props;
 
-    const positionId = `${position.chainId}:${position.data.id}`;
-    const { isFollowing, toggle } = useFollowing(positionId);
+    const store = useFollowing();
 
     const handleOpenUniswap = React.useCallback(
       () => openOnUniswap.execute({ chainId: position.chainId, positionId: position.data.id }),
       [position.chainId, position.data.id],
     );
 
+    const handleToggleFollow = React.useCallback(() => store.toggle(position), [store, position]);
+
     return (
-      <PositionMenu isFollowing={isFollowing} onToggleFollow={toggle} onOpenUniswap={handleOpenUniswap}>
+      <PositionMenu isFollowing={store.isFollowing(position)} onToggleFollow={handleToggleFollow} onOpenUniswap={handleOpenUniswap}>
         <Component {...props} />
       </PositionMenu>
     );

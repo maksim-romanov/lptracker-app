@@ -1,12 +1,19 @@
 import { Repository } from "core/domain/base/repository";
+import type { Position } from "positions/domain/position";
 import { createMMKV } from "react-native-mmkv";
 import { injectable } from "tsyringe";
 
-const FOLLOWING_KEY = "following:v1";
+const FOLLOWING_KEY = "following:v2";
+
+export type FollowingPosition = Pick<Position, "protocol" | "chainId"> & { data: Pick<Position["data"], "id"> };
 
 @injectable()
 export class FollowingRepository extends Repository {
   private readonly storage = createMMKV({ id: "following" });
+
+  buildId(position: FollowingPosition): string {
+    return `${position.protocol}:${position.chainId}:${position.data.id}`;
+  }
 
   getAll(): string[] {
     const raw = this.storage.getString(FOLLOWING_KEY);
@@ -14,11 +21,12 @@ export class FollowingRepository extends Repository {
     return JSON.parse(raw) as string[];
   }
 
-  isFollowing(id: string): boolean {
-    return this.getAll().includes(id);
+  isFollowing(position: FollowingPosition): boolean {
+    return this.getAll().includes(this.buildId(position));
   }
 
-  follow(id: string): void {
+  follow(position: FollowingPosition): void {
+    const id = this.buildId(position);
     const ids = this.getAll();
     if (!ids.includes(id)) {
       ids.push(id);
@@ -27,18 +35,19 @@ export class FollowingRepository extends Repository {
     }
   }
 
-  unfollow(id: string): void {
+  unfollow(position: FollowingPosition): void {
+    const id = this.buildId(position);
     const ids = this.getAll().filter((i) => i !== id);
     this.storage.set(FOLLOWING_KEY, JSON.stringify(ids));
     this.logger.debug("Position unfollowed", { id });
   }
 
-  toggle(id: string): boolean {
-    if (this.isFollowing(id)) {
-      this.unfollow(id);
+  toggle(position: FollowingPosition): boolean {
+    if (this.isFollowing(position)) {
+      this.unfollow(position);
       return false;
     }
-    this.follow(id);
+    this.follow(position);
     return true;
   }
 }
