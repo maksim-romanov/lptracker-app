@@ -5,12 +5,13 @@ import { AppInitUseCase } from "core/application";
 import { container } from "core/di/container";
 import { createNavigationTheme, type ThemeName } from "core/presentation/theme";
 import { QueryProvider } from "core/query/presentation/QueryProvider";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { UnistylesRuntime, useUnistyles } from "react-native-unistyles";
 
 export default function RootLayout() {
+  const router = useRouter();
   const themeName = (UnistylesRuntime.themeName ?? "neonDark") as ThemeName;
   const isDark = themeName.includes("Dark");
   const { theme } = useUnistyles();
@@ -39,6 +40,25 @@ export default function RootLayout() {
               <Stack.Screen name="onboarding" />
               <Stack.Screen name="(tabs)" options={{ title: "" }} />
 
+              <Stack.Screen
+                name="wallets/index"
+                options={{
+                  headerShown: true,
+                  headerBackTitle: "",
+                  title: "Wallets",
+                  headerLargeTitle: true,
+                  headerLargeTitleEnabled: true,
+                  headerTransparent: true,
+                  unstable_headerRightItems: () => [
+                    {
+                      type: "button",
+                      label: "Add",
+                      icon: { type: "sfSymbol", name: "plus" },
+                      onPress: () => router.navigate("/wallets/new"),
+                    },
+                  ],
+                }}
+              />
               <Stack.Screen
                 name="wallets/new"
                 options={{

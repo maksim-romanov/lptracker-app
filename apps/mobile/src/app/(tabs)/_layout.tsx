@@ -25,10 +25,6 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Label>Following</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="wallets">
-        <NativeTabs.Trigger.Icon sf="wallet.pass.fill" drawable="account_balance_wallet" />
-        <NativeTabs.Trigger.Label>Wallets</NativeTabs.Trigger.Label>
-      </NativeTabs.Trigger>
     </ThemedNativeTabs>
   );
 }

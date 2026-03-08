@@ -1,6 +1,6 @@
 import { Stack, useRouter } from "expo-router";
 
-export default function WalletsLayout() {
+export default function FollowingLayout() {
   const router = useRouter();
 
   return (
@@ -8,23 +8,20 @@ export default function WalletsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Wallets",
+          title: "Following",
           headerLargeTitle: true,
           headerLargeTitleEnabled: true,
           headerTransparent: true,
           unstable_headerRightItems: () => [
             {
               type: "button",
-              label: "Add",
-              icon: { type: "sfSymbol", name: "plus" },
-              onPress: () => router.navigate("/wallets/new"),
+              label: "Wallets",
+              icon: { type: "sfSymbol", name: "wallet.pass" },
+              onPress: () => router.navigate("/wallets"),
             },
           ],
         }}
       />
-
-      {/* <Stack.Screen name="new" options={{ title: "New Wallet" }} />
-      <Stack.Screen name="[walletId]" options={{ title: "Edit Wallet" }} /> */}
     </Stack>
   );
 }
