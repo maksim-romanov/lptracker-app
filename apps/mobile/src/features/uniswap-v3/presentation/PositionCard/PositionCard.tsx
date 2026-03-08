@@ -1,18 +1,19 @@
-import { View } from "react-native";
-
+import Fontisto from "@expo/vector-icons/Fontisto";
 import { Box, Column, Columns, Inline, Stack } from "@grapp/stacks";
 import type { components } from "core/api-client/generated/gateway";
 import { Text, TokenRatio, TokensImages } from "core/presentation/components";
 import { ChainTag, FeeBpsTag, InRangeTag, Tag } from "core/presentation/components/Tag";
-import { Image } from "expo-image";
 import numbro from "numbro";
 import { StyleSheet } from "react-native-unistyles";
 
-type Props = {
+import { withMenu } from "./withMenu";
+
+export type Props = {
   position: components["schemas"]["UniswapV3Position"];
+  isFollowing?: boolean;
 };
 
-export const PositionCard = ({ position }: Props) => {
+export const PositionCard = withMenu(({ position, isFollowing }: Props) => {
   const { pool, liquidity, unclaimedFees, tickLower, tickUpper } = position.data;
 
   const inRange = pool.currentTick >= tickLower && pool.currentTick <= tickUpper;
@@ -23,28 +24,30 @@ export const PositionCard = ({ position }: Props) => {
   return (
     <Box style={styles.container} rowGap={8}>
       <Stack space={4}>
-        <Inline alignY="top" alignX="between">
-          <Stack space={2}>
-            <Text variant="title">
-              {pool.token0.symbol}/{pool.token1.symbol}
-            </Text>
+        <Columns alignY="top" space={4}>
+          <Column flex="fluid">
+            <Stack space={2}>
+              <Box direction="row" alignY="center" gap={2} wrap="no-wrap">
+                <Text variant="title" numberOfLines={1} style={styles.pairName}>
+                  {pool.token0.symbol}/{pool.token1.symbol}
+                </Text>
 
-            <Inline space={2}>
-              <ChainTag chainId={position.chainId} />
-              <Tag color="#FF007A">V3</Tag>
-              <FeeBpsTag feeBps={pool.feeTier} />
-              <InRangeTag inRange={inRange} />
-            </Inline>
-          </Stack>
+                {isFollowing && <Fontisto name="star" size={12} color="#FF007A" />}
+              </Box>
 
-          <Box>
+              <Inline space={2}>
+                <ChainTag chainId={position.chainId} />
+                <Tag color="#FF007A">V3</Tag>
+                <FeeBpsTag feeBps={pool.feeTier} />
+                <InRangeTag inRange={inRange} />
+              </Inline>
+            </Stack>
+          </Column>
+
+          <Column flex="content">
             <TokensImages tokens={[pool.token0, pool.token1]} chainId={position.chainId} />
-
-            {/* <View style={styles.uniswapUniLogoContainer}>
-              <Image source="uniswap-uni-logo" contentFit="contain" style={styles.uniswapUniLogo} />
-            </View> */}
-          </Box>
-        </Inline>
+          </Column>
+        </Columns>
       </Stack>
 
       <Inline space={12}>
@@ -84,9 +87,12 @@ export const PositionCard = ({ position }: Props) => {
       </Inline>
     </Box>
   );
-};
+});
 
 const styles = StyleSheet.create((theme) => ({
+  pairName: {
+    flexShrink: 1,
+  },
   container: {
     overflow: "hidden",
     backgroundColor: theme.surfaceContainer,

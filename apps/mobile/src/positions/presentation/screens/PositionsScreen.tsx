@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { FlatList, RefreshControl, View } from "react-native";
 
 import type { components } from "core/api-client/generated/gateway";
@@ -11,6 +11,7 @@ import { WALLETS_STORE } from "wallets/di/tokens";
 import type { WalletsStore } from "wallets/presentation/wallets.store";
 
 import { PositionCardSkeletonList } from "../components/PositionCardSkeleton";
+import { useFollowing } from "../hooks/useFollowing";
 import { usePositionsQuery } from "../hooks/usePositionsQuery";
 
 type UniswapV3Position = components["schemas"]["UniswapV3Position"];
@@ -22,12 +23,18 @@ const EmptyComponent = () => (
   <Placeholder icon={<Icon name="water-outline" size="xl" />} title="No positions" description="Your liquidity positions will appear here" />
 );
 
-const renderPositionCard = ({ item }: { item: PositionComponent }) => {
-  if (item.protocol === "uniswap-v3") return <UniswapV3PositionCard position={item} />;
+const PositionItem = React.memo(function PositionItem({ item }: { item: PositionComponent }) {
+  const positionId = `${item.chainId}:${item.data.id}`;
+  const { isFollowing } = useFollowing(positionId);
+
+  if (item.protocol === "uniswap-v3") return <UniswapV3PositionCard position={item} isFollowing={isFollowing} />;
+
   return null;
-};
+});
 
 const UnoRefreshControl = withUnistyles(RefreshControl);
+
+const ITEM_HEIGHT = 300;
 
 export const PositionsScreen = observer(function PositionsScreen() {
   const store = container.resolve<WalletsStore>(WALLETS_STORE);
@@ -45,12 +52,13 @@ export const PositionsScreen = observer(function PositionsScreen() {
   return (
     <FlatList
       data={data}
-      renderItem={renderPositionCard}
+      renderItem={({ item }) => <PositionItem item={item} />}
       ItemSeparatorComponent={Separator}
       ListEmptyComponent={isLoading ? PositionCardSkeletonList : EmptyComponent}
       contentContainerStyle={styles.contentContainer}
       onEndReached={() => hasNextPage && fetchNextPage()}
       onEndReachedThreshold={0.5}
+      getItemLayout={(_, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}
       refreshControl={
         <UnoRefreshControl
           refreshing={isRefreshing}

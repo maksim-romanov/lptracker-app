@@ -4,5 +4,5 @@ export default function Index() {
   // Redirect to onboarding on initial load
   // In the future, this can check if user has completed onboarding
   // return <Redirect href="/onboarding" />;
-  return <Redirect href="/(tabs)/wallets" />;
+  return <Redirect href="/(tabs)/positions" />;
 }
