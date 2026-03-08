@@ -1,17 +1,9 @@
-import { useState } from "react";
-
 import { container } from "core/di/container";
-import type { FollowingRepository } from "positions/data/following.repository";
-import { FOLLOWING_REPOSITORY } from "positions/di/tokens";
+import { FollowingStore } from "positions/presentation/stores/following.store";
 
 export function useFollowing(positionId: string) {
-  const repository = container.resolve<FollowingRepository>(FOLLOWING_REPOSITORY);
-  const [isFollowing, setIsFollowing] = useState(() => repository.isFollowing(positionId));
-
-  const toggle = () => {
-    const result = repository.toggle(positionId);
-    setIsFollowing(result);
-  };
-
+  const store = container.resolve(FollowingStore);
+  const isFollowing = store.isFollowing(positionId);
+  const toggle = () => store.toggle(positionId);
   return { isFollowing, toggle };
 }

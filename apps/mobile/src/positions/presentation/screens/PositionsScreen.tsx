@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FlatList, RefreshControl, View } from "react-native";
+import { useState } from "react";
+import { FlatList, type ListRenderItemInfo, RefreshControl, View } from "react-native";
 
 import type { components } from "core/api-client/generated/gateway";
 import { container } from "core/di/container";
@@ -11,7 +11,6 @@ import { WALLETS_STORE } from "wallets/di/tokens";
 import type { WalletsStore } from "wallets/presentation/wallets.store";
 
 import { PositionCardSkeletonList } from "../components/PositionCardSkeleton";
-import { useFollowing } from "../hooks/useFollowing";
 import { usePositionsQuery } from "../hooks/usePositionsQuery";
 
 type UniswapV3Position = components["schemas"]["UniswapV3Position"];
@@ -23,14 +22,10 @@ const EmptyComponent = () => (
   <Placeholder icon={<Icon name="water-outline" size="xl" />} title="No positions" description="Your liquidity positions will appear here" />
 );
 
-const PositionItem = React.memo(function PositionItem({ item }: { item: PositionComponent }) {
-  const positionId = `${item.chainId}:${item.data.id}`;
-  const { isFollowing } = useFollowing(positionId);
-
-  if (item.protocol === "uniswap-v3") return <UniswapV3PositionCard position={item} isFollowing={isFollowing} />;
-
+const renderPositionItem = ({ item }: ListRenderItemInfo<PositionComponent>) => {
+  if (item.protocol === "uniswap-v3") return <UniswapV3PositionCard position={item} />;
   return null;
-});
+};
 
 const UnoRefreshControl = withUnistyles(RefreshControl);
 
@@ -52,7 +47,7 @@ export const PositionsScreen = observer(function PositionsScreen() {
   return (
     <FlatList
       data={data}
-      renderItem={({ item }) => <PositionItem item={item} />}
+      renderItem={renderPositionItem}
       ItemSeparatorComponent={Separator}
       ListEmptyComponent={isLoading ? PositionCardSkeletonList : EmptyComponent}
       contentContainerStyle={styles.contentContainer}

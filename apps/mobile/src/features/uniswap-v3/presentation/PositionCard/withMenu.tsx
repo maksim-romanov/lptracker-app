@@ -1,6 +1,7 @@
 import React from "react";
 
 import { container } from "core/di/container";
+import { observer } from "mobx-react-lite";
 import { useFollowing } from "positions/presentation/hooks/useFollowing";
 
 import { OpenOnUniswapUseCase } from "../../application/usecase/open-on-uniswap.usecase";
@@ -10,7 +11,7 @@ import { PositionMenu } from "./PositionMenu";
 export const withMenu = <T extends Props>(Component: React.ComponentType<T>) => {
   const openOnUniswap = container.resolve(OpenOnUniswapUseCase);
 
-  return (props: T) => {
+  return observer((props: T) => {
     const { position } = props;
 
     const positionId = `${position.chainId}:${position.data.id}`;
@@ -26,5 +27,5 @@ export const withMenu = <T extends Props>(Component: React.ComponentType<T>) => 
         <Component {...props} />
       </PositionMenu>
     );
-  };
+  });
 };
