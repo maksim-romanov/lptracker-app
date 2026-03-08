@@ -7,8 +7,7 @@ import { Icon, Placeholder } from "core/presentation/components";
 import { observer } from "mobx-react-lite";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { PositionCard as UniswapV3PositionCard } from "src/features/uniswap-v3/presentation/PositionCard";
-import { WALLETS_STORE } from "wallets/di/tokens";
-import type { WalletsStore } from "wallets/presentation/wallets.store";
+import { WalletsStore } from "wallets/presentation/wallets.store";
 
 import { PositionCardSkeletonList } from "../components/PositionCardSkeleton";
 import { usePositionsQuery } from "../hooks/usePositionsQuery";
@@ -32,7 +31,7 @@ const UnoRefreshControl = withUnistyles(RefreshControl);
 const ITEM_HEIGHT = 300;
 
 export const PositionsScreen = observer(function PositionsScreen() {
-  const store = container.resolve<WalletsStore>(WALLETS_STORE);
+  const store = container.resolve(WalletsStore);
   if (!store.activeWallet) throw new Error("No Active wallet");
 
   const { fetchNextPage, hasNextPage, data, isLoading, refetch } = usePositionsQuery(store.activeWallet.address);

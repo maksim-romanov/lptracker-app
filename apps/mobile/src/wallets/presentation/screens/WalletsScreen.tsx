@@ -6,9 +6,8 @@ import { useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
-import { WALLETS_STORE } from "wallets/di/tokens";
 import type { Wallet } from "wallets/domain/entities/wallet.entity";
-import type { WalletsStore } from "wallets/presentation/wallets.store";
+import { WalletsStore } from "wallets/presentation/wallets.store";
 
 import { WalletCard } from "../components/WalletCard";
 import { WalletCardMenu } from "../components/WalletCardMenu";
@@ -20,7 +19,7 @@ const EmptyComponent = () => (
 );
 
 export const WalletsScreen = observer(function WalletsScreen() {
-  const store = container.resolve<WalletsStore>(WALLETS_STORE);
+  const store = container.resolve(WalletsStore);
 
   const router = useRouter();
 
@@ -58,7 +57,7 @@ const WalletCardItem = observer(function WalletCardItem({
   onEdit: (wallet: Wallet) => void;
   onDelete: (wallet: Wallet) => void;
 }) {
-  const store = container.resolve<WalletsStore>(WALLETS_STORE);
+  const store = container.resolve(WalletsStore);
 
   return (
     <WalletCardMenu wallet={wallet} onEdit={() => onEdit(wallet)} onDelete={() => onDelete(wallet)}>

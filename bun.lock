@@ -51,6 +51,7 @@
         "fp-ts": "^2.16.0",
         "lottie-react-native": "~7.3.4",
         "mobx": "^6.15.0",
+        "mobx-persist-store": "^1.1.8",
         "mobx-react-lite": "^4.1.1",
         "openapi-fetch": "^0.15.0",
         "react": "19.2.0",
@@ -1952,6 +1953,8 @@
     "mobile": ["mobile@workspace:apps/mobile"],
 
     "mobx": ["mobx@6.15.0", "", {}, "sha512-UczzB+0nnwGotYSgllfARAqWCJ5e/skuV2K/l+Zyck/H6pJIhLXuBnz+6vn2i211o7DtbE78HQtsYEKICHGI+g=="],
+
+    "mobx-persist-store": ["mobx-persist-store@1.1.8", "", { "peerDependencies": { "mobx": "*" } }, "sha512-7SiLvang0POfGvfP69fzmppBKv36e0TNndKJT1UokZuLXt13CqF3PAxIcRacHqjTBe4ktmzDsh3DK+fbM6epNg=="],
 
     "mobx-react-lite": ["mobx-react-lite@4.1.1", "", { "dependencies": { "use-sync-external-store": "^1.4.0" }, "peerDependencies": { "mobx": "^6.9.0", "react": "^16.8.0 || ^17 || ^18 || ^19" } }, "sha512-iUxiMpsvNraCKXU+yPotsOncNNmyeS2B5DKL+TL6Tar/xm+wwNJAubJmtRSeAoYawdZqwv8Z/+5nPRHeQxTiXg=="],
 

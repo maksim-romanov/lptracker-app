@@ -1,13 +1,14 @@
 import { Store } from "core/domain/base/store";
 import { action, computed, makeObservable, observable } from "mobx";
-import { inject, injectable } from "tsyringe";
+import { makePersistable } from "mobx-persist-store";
+import { inject, singleton } from "tsyringe";
 import type { WalletsRepository } from "wallets/data/wallets.repository";
 import { WALLETS_REPOSITORY } from "wallets/di/tokens";
 import { type EWalletType, Wallet } from "wallets/domain/entities/wallet.entity";
 
 import { DeleteWalletUseCase } from "../application/usecases/delete-wallet.usecase";
 
-@injectable()
+@singleton()
 export class WalletsStore extends Store {
   @observable wallets: Wallet[] = [];
   @observable activeWalletId: string | undefined = undefined;
@@ -18,6 +19,10 @@ export class WalletsStore extends Store {
   ) {
     super();
     makeObservable(this);
+    makePersistable(this, {
+      name: "WalletsStore",
+      properties: ["activeWalletId"],
+    });
   }
 
   @computed
@@ -47,7 +52,9 @@ export class WalletsStore extends Store {
   @action
   hydrate(): void {
     this.wallets = this.repo.getAll();
-    this.activeWalletId = this.wallets[0]?.id;
+    if (!this.activeWalletId || !this.wallets.some((w) => w.id === this.activeWalletId)) {
+      this.activeWalletId = this.wallets[0]?.id;
+    }
   }
 
   @action
@@ -55,6 +62,8 @@ export class WalletsStore extends Store {
     const wallet = input.id
       ? new Wallet(input.id, input.name, input.address, input.type, this.repo.getById(input.id)?.createdAt ?? new Date().toISOString())
       : Wallet.create({ name: input.name, address: input.address, type: input.type });
+
+    if (!input.id) this.activeWalletId = wallet.id;
 
     this.repo.save(wallet);
     this.hydrate();

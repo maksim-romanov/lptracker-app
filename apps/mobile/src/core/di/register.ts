@@ -1,3 +1,5 @@
+import "core/presentation/configurePersistable";
+
 import * as apiClient from "core/api-client/di/register";
 import * as linking from "core/linking/di/register";
 import * as query from "core/query/di/register";

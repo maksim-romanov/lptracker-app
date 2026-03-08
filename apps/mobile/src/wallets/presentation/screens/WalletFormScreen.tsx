@@ -10,9 +10,8 @@ import { observer } from "mobx-react-lite";
 import { KeyboardAwareScrollView, KeyboardStickyView } from "react-native-keyboard-controller";
 import { StyleSheet } from "react-native-unistyles";
 import { isAddress } from "viem";
-import { WALLETS_STORE } from "wallets/di/tokens";
 import { EWalletType } from "wallets/domain/entities/wallet.entity";
-import type { WalletsStore } from "wallets/presentation/wallets.store";
+import { WalletsStore } from "wallets/presentation/wallets.store";
 
 const TextInputAdapter = withAdapter(TextInput);
 const ERC20InputAdapter = withAdapter(withERC20(TextInput));
@@ -22,7 +21,7 @@ type TProps = {
 };
 
 export const WalletFormScreen = observer(({ walletId }: TProps) => {
-  const store = container.resolve<WalletsStore>(WALLETS_STORE);
+  const store = container.resolve(WalletsStore);
 
   const router = useRouter();
 
