@@ -3,6 +3,7 @@ import { Box, Column, Columns, Inline, Stack } from "@grapp/stacks";
 import type { components } from "core/api-client/generated/gateway";
 import { Text, TokenRatio, TokensImages } from "core/presentation/components";
 import { ChainTag, FeeBpsTag, InRangeTag, Tag } from "core/presentation/components/Tag";
+import { pipe } from "fp-ts/lib/function";
 import numbro from "numbro";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -13,7 +14,7 @@ export type Props = {
   isFollowing?: boolean;
 };
 
-export const PositionCard = withMenu(({ position, isFollowing }: Props) => {
+export const PositionCard = pipe(({ position, isFollowing }: Props) => {
   const { pool, liquidity, unclaimedFees, tickLower, tickUpper } = position.data;
 
   const inRange = pool.currentTick >= tickLower && pool.currentTick <= tickUpper;
@@ -87,7 +88,7 @@ export const PositionCard = withMenu(({ position, isFollowing }: Props) => {
       </Inline>
     </Box>
   );
-});
+}, withMenu);
 
 const styles = StyleSheet.create((theme) => ({
   pairName: {

@@ -2,7 +2,7 @@ import * as ContextMenu from "zeego/context-menu";
 
 import type { TPositionCardMenuProps } from "./PositionMenu.types";
 
-export function PositionMenu({ children, isFollowing, onToggleFollow }: TPositionCardMenuProps) {
+export function PositionMenu({ children, isFollowing, onToggleFollow, onOpenUniswap }: TPositionCardMenuProps) {
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
@@ -12,6 +12,10 @@ export function PositionMenu({ children, isFollowing, onToggleFollow }: TPositio
         <ContextMenu.Item key="toggle-follow" onSelect={onToggleFollow}>
           <ContextMenu.ItemIcon ios={{ name: isFollowing ? "star.fill" : "star" }} />
           <ContextMenu.ItemTitle>{isFollowing ? "Unfollow" : "Follow"}</ContextMenu.ItemTitle>
+        </ContextMenu.Item>
+        <ContextMenu.Item key="open-uniswap" onSelect={onOpenUniswap}>
+          <ContextMenu.ItemIcon ios={{ name: "arrow.up.right.square" }} />
+          <ContextMenu.ItemTitle>Open on Uniswap</ContextMenu.ItemTitle>
         </ContextMenu.Item>
       </ContextMenu.Content>
     </ContextMenu.Root>
