@@ -32,7 +32,7 @@ const ITEM_HEIGHT = 300;
 
 export const PositionsScreen = observer(function PositionsScreen() {
   const store = container.resolve(WalletsStore);
-  if (!store.activeWallet) throw new Error("No Active wallet");
+  if (!store.activeWallet) throw new Error("No active wallet");
 
   const { fetchNextPage, hasNextPage, data, isLoading, refetch } = usePositionsQuery(store.activeWallet.address);
   const [isRefreshing, setIsRefreshing] = useState(false);

@@ -23,6 +23,14 @@ export type Scalars = {
   Timestamp: { input: any; output: any; }
 };
 
+/** Indicates whether the current, partially filled bucket should be included in the response. Defaults to `exclude` */
+export enum Aggregation_Current {
+  /** Exclude the current, partially filled bucket from the response */
+  Exclude = 'exclude',
+  /** Include the current, partially filled bucket in the response */
+  Include = 'include'
+}
+
 export enum Aggregation_Interval {
   Day = 'day',
   Hour = 'hour'

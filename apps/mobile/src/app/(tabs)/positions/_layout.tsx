@@ -1,16 +1,7 @@
-import { container } from "core/di/container";
-import { router, Stack } from "expo-router";
-import { observer } from "mobx-react-lite";
-import { WalletsStore } from "wallets/presentation/wallets.store";
+import { Stack } from "expo-router";
+import { WalletMenuButton } from "wallets/presentation/components/WalletMenuButton/WalletMenuButton";
 
-function truncateAddress(address: string): string {
-  return `…${address.slice(-6)}`;
-}
-
-export default observer(function PositionsLayout() {
-  const store = container.resolve(WalletsStore);
-  const wallet = store.activeWallet;
-
+export default function PositionsLayout() {
   return (
     <Stack>
       <Stack.Screen
@@ -20,46 +11,9 @@ export default observer(function PositionsLayout() {
           headerLargeTitle: true,
           headerLargeTitleEnabled: true,
           headerTransparent: true,
-          unstable_headerRightItems: () => [
-            {
-              type: "menu",
-              label: wallet ? truncateAddress(wallet.address) : "Wallets",
-              icon: { type: "sfSymbol", name: "wallet.bifold" },
-              changesSelectionAsPrimaryAction: true,
-              menu: {
-                items: [
-                  {
-                    type: "submenu",
-                    label: "Wallets",
-                    inline: true,
-                    items: store.wallets.map((w) => ({
-                      type: "action" as const,
-                      label: w.name,
-                      state: (w.id === store.activeWalletId ? "on" : "off") as
-                        | "on"
-                        | "off",
-                      onPress: () => store.setActiveWallet(w.id),
-                    })),
-                  },
-                  {
-                    type: "submenu",
-                    label: "Actions",
-                    inline: true,
-                    items: [
-                      {
-                        type: "action" as const,
-                        label: "Manage Wallets",
-                        icon: { type: "sfSymbol" as const, name: "gear" },
-                        onPress: () => router.push("/wallets"),
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
-          ],
+          headerRight: () => <WalletMenuButton />,
         }}
       />
     </Stack>
   );
-});
+}

@@ -20,14 +20,15 @@ const EmptyComponent = () => (
 
 export const WalletsScreen = observer(function WalletsScreen() {
   const store = container.resolve(WalletsStore);
-
   const router = useRouter();
 
+  const handleViewPositions = (wallet: Wallet) => {
+    store.setActiveWallet(wallet.id);
+    router.navigate("/(tabs)/positions");
+  };
+
   const handleEdit = (wallet: Wallet) => {
-    router.push({
-      pathname: "/wallets/[walletId]",
-      params: { walletId: wallet.id },
-    });
+    router.push(`/wallets/${wallet.id}/edit`);
   };
 
   const handleDelete = (wallet: Wallet) => {
@@ -38,33 +39,19 @@ export const WalletsScreen = observer(function WalletsScreen() {
     <Animated.FlatList
       itemLayoutAnimation={LinearTransition}
       data={store.wallets.slice()}
-      renderItem={({ item }) => <WalletCardItem wallet={item} onEdit={handleEdit} onDelete={handleDelete} />}
+      renderItem={({ item }) => (
+        <WalletCardMenu wallet={item} onViewPositions={() => handleViewPositions(item)} onEdit={() => handleEdit(item)} onDelete={() => handleDelete(item)}>
+          <Pressable onPress={() => handleEdit(item)}>
+            <WalletCard wallet={item} isActive={store.activeWalletId === item.id} />
+          </Pressable>
+        </WalletCardMenu>
+      )}
       keyExtractor={(item) => item.id}
       ItemSeparatorComponent={Separator}
       ListEmptyComponent={EmptyComponent}
       contentContainerStyle={styles.contentContainer}
       contentInsetAdjustmentBehavior="automatic"
     />
-  );
-});
-
-const WalletCardItem = observer(function WalletCardItem({
-  wallet,
-  onEdit,
-  onDelete,
-}: {
-  wallet: Wallet;
-  onEdit: (wallet: Wallet) => void;
-  onDelete: (wallet: Wallet) => void;
-}) {
-  const store = container.resolve(WalletsStore);
-
-  return (
-    <WalletCardMenu wallet={wallet} onEdit={() => onEdit(wallet)} onDelete={() => onDelete(wallet)}>
-      <Pressable onPress={() => store.setActiveWallet(wallet.id)}>
-        <WalletCard wallet={wallet} isActive={store.activeWalletId === wallet.id} />
-      </Pressable>
-    </WalletCardMenu>
   );
 });
 

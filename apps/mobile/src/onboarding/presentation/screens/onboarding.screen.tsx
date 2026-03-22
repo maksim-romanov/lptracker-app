@@ -20,7 +20,7 @@ export function OnboardingScreen() {
   };
 
   const handleContinue = () => {
-    router.replace("/(tabs)/positions");
+    router.replace("/");
   };
 
   return (

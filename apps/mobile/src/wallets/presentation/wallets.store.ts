@@ -58,7 +58,7 @@ export class WalletsStore extends Store {
   }
 
   @action
-  save(input: { id?: string; name: string; address: string; type: EWalletType }): void {
+  save(input: { id?: string; name: string; address: string; type: EWalletType }): string {
     const wallet = input.id
       ? new Wallet(input.id, input.name, input.address, input.type, this.repo.getById(input.id)?.createdAt ?? new Date().toISOString())
       : Wallet.create({ name: input.name, address: input.address, type: input.type });
@@ -67,6 +67,7 @@ export class WalletsStore extends Store {
 
     this.repo.save(wallet);
     this.hydrate();
+    return wallet.id;
   }
 
   async remove(id: string): Promise<void> {

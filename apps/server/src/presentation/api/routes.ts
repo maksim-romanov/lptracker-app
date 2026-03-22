@@ -6,13 +6,16 @@ import { container } from "tsyringe";
 import * as v from "valibot";
 
 import { GetAllPositionsUseCase } from "../../app/get-all-positions.usecase";
+import { GetPositionUseCase } from "../../app/get-position.usecase";
 import {
+  type ChainPositionParam,
+  chainPositionParamSchema,
   type GetAllPositionsQuery,
   getAllPositionsQuerySchema,
   type WalletAddressParam,
   walletAddressParamSchema,
 } from "../schemas/request.schemas";
-import { allPositionsResponseSchema } from "../schemas/response.schemas";
+import { allPositionsResponseSchema, wrappedPositionSchema } from "../schemas/response.schemas";
 import { mapToHttpResponse } from "../utils/error-mapper";
 
 const errorResponseSchema = v.object({
@@ -74,6 +77,65 @@ routes.get(
           closed: typeof closed === "string" ? false : closed,
         },
       });
+
+      if (result.isErr()) {
+        return mapToHttpResponse(c, result.error);
+      }
+
+      return c.json(result.value);
+    } catch (error) {
+      return mapToHttpResponse(c, error);
+    }
+  },
+);
+
+routes.get(
+  "/chains/:chainId/positions/:id",
+  describeRoute({
+    tags: ["Positions"],
+    summary: "Get position details",
+    description: "Retrieves detailed information about a specific position across supported protocols",
+    responses: {
+      200: {
+        description: "Successfully retrieved position",
+        content: {
+          "application/json": {
+            schema: resolver(wrappedPositionSchema),
+          },
+        },
+      },
+      400: {
+        description: "Validation error",
+        content: {
+          "application/json": {
+            schema: resolver(errorResponseSchema),
+          },
+        },
+      },
+      404: {
+        description: "Position not found",
+        content: {
+          "application/json": {
+            schema: resolver(errorResponseSchema),
+          },
+        },
+      },
+      500: {
+        description: "Internal server error",
+        content: {
+          "application/json": {
+            schema: resolver(errorResponseSchema),
+          },
+        },
+      },
+    },
+  }),
+  validator("param", chainPositionParamSchema),
+  async (c) => {
+    try {
+      const { chainId, id } = c.req.valid("param") as ChainPositionParam;
+
+      const result = await container.resolve(GetPositionUseCase).execute(chainId, id);
 
       if (result.isErr()) {
         return mapToHttpResponse(c, result.error);

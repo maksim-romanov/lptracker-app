@@ -54,6 +54,19 @@ export const getAllPositionsQuerySchema = v.object({
   ),
 });
 
+/**
+ * Validates chain ID and position ID path parameters
+ */
+export const chainPositionParamSchema = v.object({
+  chainId: v.pipe(
+    v.string(),
+    v.transform((val) => Number(val) as SupportedChainId),
+    v.picklist(SUPPORTED_CHAIN_IDS),
+  ),
+  id: v.pipe(v.string(), v.regex(/^\d+$/, "id must be a numeric string")),
+});
+
 // Export types for use in handlers
 export type WalletAddressParam = v.InferOutput<typeof walletAddressParamSchema>;
+export type ChainPositionParam = v.InferOutput<typeof chainPositionParamSchema>;
 export type GetAllPositionsQuery = v.InferOutput<typeof getAllPositionsQuerySchema>;

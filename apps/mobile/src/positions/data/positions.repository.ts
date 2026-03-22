@@ -4,6 +4,7 @@ import { ApiError } from "core/api-client/domain/api.error";
 import type { operations } from "core/api-client/generated/gateway";
 import { container } from "core/di/container";
 import { Repository } from "core/domain/base/repository";
+import type { Position } from "positions/domain/position";
 
 type PositionsQuery = NonNullable<operations["getWallets:walletAddressPositions"]["parameters"]["query"]>;
 
@@ -26,6 +27,20 @@ export class PositionsRepository extends Repository {
       return data ?? [];
     } catch (error) {
       if (ApiError.isInstance(error)) this.logger.error("Failed to fetch positions", { walletAddress, statusCode: error.statusCode });
+
+      throw error;
+    }
+  }
+
+  async getPosition(chainId: Position["chainId"], id: string): Promise<Position> {
+    try {
+      const { data } = await this.api.GET("/chains/{chainId}/positions/{id}", {
+        params: { path: { chainId, id } },
+      });
+
+      return data!;
+    } catch (error) {
+      if (ApiError.isInstance(error)) this.logger.error("Failed to fetch position", { chainId, id, statusCode: error.statusCode });
 
       throw error;
     }

@@ -2,13 +2,17 @@ import * as ContextMenu from "zeego/context-menu";
 
 import type { TWalletCardMenuProps } from "./walletCardMenu.types";
 
-export function WalletCardMenu({ children, onEdit, onDelete }: TWalletCardMenuProps) {
+export function WalletCardMenu({ children, onViewPositions, onEdit, onDelete }: TWalletCardMenuProps) {
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
 
       <ContextMenu.Content>
         <ContextMenu.Label>Actions</ContextMenu.Label>
+        <ContextMenu.Item key="view-positions" onSelect={onViewPositions}>
+          <ContextMenu.ItemIcon ios={{ name: "chart.bar" }} />
+          <ContextMenu.ItemTitle>View Positions</ContextMenu.ItemTitle>
+        </ContextMenu.Item>
         <ContextMenu.Item key="edit" onSelect={onEdit}>
           <ContextMenu.ItemIcon ios={{ name: "pencil" }} />
           <ContextMenu.ItemTitle>Edit</ContextMenu.ItemTitle>

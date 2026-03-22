@@ -14,7 +14,7 @@ const SIZE_MAP = {
 } as const;
 
 type TProps = {
-  name: "water-outline" | "wallet-outline" | "add-outline" | "trash-outline";
+  name: "water-outline" | "wallet-outline" | "wallet" | "add-outline" | "trash-outline";
   size?: keyof typeof SIZE_MAP;
   color?: string;
   style?: StyleProp<TextStyle>;

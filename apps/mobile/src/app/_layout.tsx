@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 import { ThemeProvider } from "@react-navigation/native";
 import { AppInitUseCase } from "core/application";
@@ -10,6 +10,8 @@ import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { UnistylesRuntime, useUnistyles } from "react-native-unistyles";
 
+container.resolve(AppInitUseCase).execute();
+
 export default function RootLayout() {
   const router = useRouter();
   const themeName = (UnistylesRuntime.themeName ?? "neonDark") as ThemeName;
@@ -17,10 +19,6 @@ export default function RootLayout() {
   const { theme } = useUnistyles();
 
   const navigationTheme = useMemo(() => createNavigationTheme(theme, isDark), [theme, isDark]);
-
-  useEffect(() => {
-    container.resolve(AppInitUseCase).execute();
-  }, []);
 
   return (
     <>
@@ -68,7 +66,7 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
-                name="wallets/[walletId]"
+                name="wallets/[walletId]/edit"
                 options={{
                   headerShown: true,
                   headerBackTitle: "",

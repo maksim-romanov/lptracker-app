@@ -24,7 +24,6 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Icon sf="star.fill" drawable="star" />
         <NativeTabs.Trigger.Label>Following</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
-
     </ThemedNativeTabs>
   );
 }
