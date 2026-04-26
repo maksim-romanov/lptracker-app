@@ -7,9 +7,14 @@
   "exports": {
     ".": "./src/index.ts",
     "./colors": "./src/colors.ts",
-    "./typography": "./src/typography.ts",
+    "./elevation": "./src/elevation.ts",
+    "./motion": "./src/motion.ts",
+    "./networks": "./src/networks.ts",
+    "./pnl": "./src/pnl.ts",
     "./spacing": "./src/spacing.ts",
-    "./themes/*": "./src/themes/*.ts"
+    "./themes/*": "./src/themes/*.ts",
+    "./typography": "./src/typography.ts",
+    "./z-index": "./src/z-index.ts"
   },
   "scripts": {
     "lint": "biome check .",

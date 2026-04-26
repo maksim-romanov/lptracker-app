@@ -1,5 +1,17 @@
 import type { StacksBreakpoints as _StacksBreakpoints } from "@grapp/stacks";
-import { type ColorTokens, neonDark, neonLight, radius, spacing, typography } from "@mars-909/theme";
+import {
+  type ColorTokens,
+  elevation,
+  motion,
+  neonDark,
+  neonLight,
+  networks,
+  pnl,
+  radius,
+  spacing,
+  typography,
+  zIndex,
+} from "@mars-909/theme";
 import { StyleSheet } from "react-native-unistyles";
 
 /**
@@ -11,13 +23,18 @@ const stacks = {
 };
 
 /**
- * Complete theme type combining colors, spacing, and typography
+ * Complete theme type combining colors with all design-system tokens.
  */
 export type AppTheme = ColorTokens & {
   spacing: typeof spacing;
   radius: typeof radius;
   typography: typeof typography;
   stacks: typeof stacks;
+  elevation: typeof elevation;
+  motion: typeof motion;
+  networks: typeof networks;
+  pnl: typeof pnl;
+  zIndex: typeof zIndex;
 };
 
 /**
@@ -29,6 +46,11 @@ const createTheme = (colors: ColorTokens): AppTheme => ({
   radius,
   typography,
   stacks,
+  elevation,
+  motion,
+  networks,
+  pnl,
+  zIndex,
 });
 
 /**
