@@ -37,7 +37,7 @@ export const PositionCard = pipe(
                   {isFollowing ? <Symbol name="star.fill" color="primary" size="xs" /> : null}
                 </Box>
 
-                <Inline space={2}>
+                <Inline space={2} alignY="center">
                   <NetworkChip network={position.chainId} />
                   <Tag color={theme.primary}>V3</Tag>
                   <FeeBpsTag feeBps={pool.feeTier} />
@@ -51,14 +51,14 @@ export const PositionCard = pipe(
             </Column>
           </Columns>
 
-          <Inline space={12}>
-            <Columns space={6} defaultFlex="content" alignX="left">
+          <Inline space={4} alignY="center">
+            <Columns space={4} defaultFlex="content" alignX="left">
               <Column flex="content">
                 <ValuePill label="Value" value={totalLiquidityUSDValue} size="md" abbreviated />
               </Column>
 
               <Column flex="content">
-                <ValuePill label="Fees" value={totalUnclaimedFeesUSDValue} size="sm" emptyPlaceholder="–" />
+                <ValuePill label="Fees" value={totalUnclaimedFeesUSDValue} size="md" emptyPlaceholder="–" abbreviated />
               </Column>
             </Columns>
 

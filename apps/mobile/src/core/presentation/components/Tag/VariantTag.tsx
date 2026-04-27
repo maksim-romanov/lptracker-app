@@ -1,9 +1,9 @@
-import type React from "react";
+import type { PropsWithChildren } from "react";
 import type { ViewProps } from "react-native";
 
 import { useUnistyles } from "react-native-unistyles";
 
-import { Tag } from "./Tag";
+import { Tag, type TagSize, type TagTone } from "./Tag";
 
 const VARIANT_MAP = {
   success: "success",
@@ -11,12 +11,13 @@ const VARIANT_MAP = {
   error: "error",
 } as const;
 
-type TProps = {
+type Props = {
   variant: keyof typeof VARIANT_MAP;
-  glow?: boolean;
+  size?: TagSize;
+  tone?: TagTone;
 } & Pick<ViewProps, "style">;
 
-export const VariantTag = ({ variant, ...rest }: React.PropsWithChildren<TProps>) => {
+export const VariantTag = ({ variant, ...rest }: PropsWithChildren<Props>) => {
   const { theme } = useUnistyles();
   const color = theme[VARIANT_MAP[variant]];
 

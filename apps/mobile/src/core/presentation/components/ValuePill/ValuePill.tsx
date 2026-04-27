@@ -80,8 +80,11 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   label: {
+    fontSize: 10,
+    lineHeight: 12,
+    letterSpacing: 0.6,
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    color: theme.onSurfaceVariant,
   },
 
   value: {

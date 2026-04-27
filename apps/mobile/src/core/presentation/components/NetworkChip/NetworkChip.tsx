@@ -1,9 +1,9 @@
 import { View, type ViewProps } from "react-native";
 
 import type { NetworkKey } from "@mars-909/theme";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
-import { Text } from "../Text";
+import { Tag, type TagSize } from "../Tag/Tag";
 
 const CHAIN_ID_TO_NETWORK: Record<number, NetworkKey> = {
   1: "ethereum",
@@ -40,90 +40,37 @@ export type Props = {
   compact?: boolean;
   /** Override the displayed label (e.g. abbreviated) */
   label?: string;
+  /** Tag size (default: sm) */
+  size?: TagSize;
 } & Pick<ViewProps, "style">;
 
-export const NetworkChip = ({ network, compact, label, style }: Props) => {
+export const NetworkChip = ({ network, compact, label, size = "sm", style }: Props) => {
+  const { theme } = useUnistyles();
   const key = typeof network === "number" ? networkFromChainId(network) : network;
+  const color = theme.networks[key].fg;
   const text = label ?? LABELS[key];
 
-  styles.useVariants({ network: key });
-
   if (compact) {
-    return <View style={[styles.dot, style]} />;
+    return <View style={[styles.compactDot, { backgroundColor: color }, style]} />;
   }
 
   return (
-    <View style={[styles.chip, style]}>
-      <View style={styles.dot} />
-      <Text variant="label" style={styles.label}>
-        {text}
-      </Text>
-    </View>
+    <Tag color={color} size={size} leading={<View style={[styles.dot, { backgroundColor: color }]} />} style={style}>
+      {text}
+    </Tag>
   );
 };
 
-const styles = StyleSheet.create((theme) => ({
-  chip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.xs,
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xxs,
-    borderRadius: theme.radius.full,
-    borderWidth: 1,
-    borderCurve: "continuous",
-
-    variants: {
-      network: {
-        ethereum: { backgroundColor: `${theme.networks.ethereum.fg}1F`, borderColor: `${theme.networks.ethereum.fg}33` },
-        arbitrum: { backgroundColor: `${theme.networks.arbitrum.fg}1F`, borderColor: `${theme.networks.arbitrum.fg}33` },
-        optimism: { backgroundColor: `${theme.networks.optimism.fg}1F`, borderColor: `${theme.networks.optimism.fg}33` },
-        base: { backgroundColor: `${theme.networks.base.fg}1F`, borderColor: `${theme.networks.base.fg}33` },
-        polygon: { backgroundColor: `${theme.networks.polygon.fg}1F`, borderColor: `${theme.networks.polygon.fg}33` },
-        bnb: { backgroundColor: `${theme.networks.bnb.fg}1F`, borderColor: `${theme.networks.bnb.fg}33` },
-        avalanche: { backgroundColor: `${theme.networks.avalanche.fg}1F`, borderColor: `${theme.networks.avalanche.fg}33` },
-        tron: { backgroundColor: `${theme.networks.tron.fg}1F`, borderColor: `${theme.networks.tron.fg}33` },
-        solana: { backgroundColor: `${theme.networks.solana.fg}1F`, borderColor: `${theme.networks.solana.fg}33` },
-        unknown: { backgroundColor: `${theme.networks.unknown.fg}1F`, borderColor: `${theme.networks.unknown.fg}33` },
-      },
-    },
-  },
-
+const styles = StyleSheet.create(() => ({
   dot: {
     width: 6,
     height: 6,
-    borderRadius: theme.radius.full,
-
-    variants: {
-      network: {
-        ethereum: { backgroundColor: theme.networks.ethereum.fg },
-        arbitrum: { backgroundColor: theme.networks.arbitrum.fg },
-        optimism: { backgroundColor: theme.networks.optimism.fg },
-        base: { backgroundColor: theme.networks.base.fg },
-        polygon: { backgroundColor: theme.networks.polygon.fg },
-        bnb: { backgroundColor: theme.networks.bnb.fg },
-        avalanche: { backgroundColor: theme.networks.avalanche.fg },
-        tron: { backgroundColor: theme.networks.tron.fg },
-        solana: { backgroundColor: theme.networks.solana.fg },
-        unknown: { backgroundColor: theme.networks.unknown.fg },
-      },
-    },
+    borderRadius: 3,
   },
 
-  label: {
-    variants: {
-      network: {
-        ethereum: { color: theme.networks.ethereum.fg },
-        arbitrum: { color: theme.networks.arbitrum.fg },
-        optimism: { color: theme.networks.optimism.fg },
-        base: { color: theme.networks.base.fg },
-        polygon: { color: theme.networks.polygon.fg },
-        bnb: { color: theme.networks.bnb.fg },
-        avalanche: { color: theme.networks.avalanche.fg },
-        tron: { color: theme.networks.tron.fg },
-        solana: { color: theme.networks.solana.fg },
-        unknown: { color: theme.networks.unknown.fg },
-      },
-    },
+  compactDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
 }));
