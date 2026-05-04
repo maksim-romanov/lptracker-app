@@ -33,6 +33,11 @@ const LABELS: Record<NetworkKey, string> = {
   unknown: "Unknown",
 };
 
+export const networkLabel = (network: NetworkKey | number): string => {
+  const key = typeof network === "number" ? networkFromChainId(network) : network;
+  return LABELS[key];
+};
+
 export type Props = {
   /** Network key OR an EVM chainId (auto-mapped to network) */
   network: NetworkKey | number;

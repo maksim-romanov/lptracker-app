@@ -7,7 +7,7 @@ import type { FollowingRepository } from "../../data/following.repository";
 import type { PositionsRepository } from "../../data/positions.repository";
 import { FOLLOWING_REPOSITORY, POSITIONS_REPOSITORY } from "../../di/tokens";
 
-export function useFollowingPositionsQuery(ids: string[]) {
+export function useFollowingPositionsQuery(ids: ReadonlyArray<string>) {
   const positionsRepo = container.resolve<PositionsRepository>(POSITIONS_REPOSITORY);
   const followingRepo = container.resolve<FollowingRepository>(FOLLOWING_REPOSITORY);
 

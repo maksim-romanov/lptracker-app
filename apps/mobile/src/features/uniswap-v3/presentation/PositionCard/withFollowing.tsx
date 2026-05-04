@@ -13,7 +13,7 @@ export const withFollowing = <T extends Props>(Component: React.ComponentType<T>
     const walletId = container.resolve(WalletsStore).activeWalletId;
     const following = container.resolve(FollowingStore);
 
-    const isFollowing = walletId && following.isFollowing(walletId, position);
+    const isFollowing = walletId ? following.isFollowing(walletId, position) : false;
     return <Component {...(props as T)} isFollowing={props.isFollowing ?? isFollowing} />;
   });
 };

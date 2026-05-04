@@ -51,9 +51,16 @@ export const PositionsScreen = observer(function PositionsScreen() {
       ListEmptyComponent={isLoading ? PositionCardSkeletonList : EmptyComponent}
       contentContainerStyle={styles.contentContainer}
       onEndReached={() => hasNextPage && fetchNextPage()}
-      onEndReachedThreshold={0.5}
-      getItemLayout={(_, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}
+      // onEndReachedThreshold={0.5}
+      // getItemLayout={(_, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}
       contentInsetAdjustmentBehavior="automatic"
+      // Virtualization tuning — keeps mounted-card count low so iOS isn't
+      // compositing dozens of GlassCards + Skia layers during big-title scroll.
+      windowSize={5}
+      initialNumToRender={5}
+      maxToRenderPerBatch={4}
+      updateCellsBatchingPeriod={50}
+      removeClippedSubviews
       refreshControl={
         <UnoRefreshControl
           refreshing={isRefreshing}

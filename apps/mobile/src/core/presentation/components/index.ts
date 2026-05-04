@@ -4,6 +4,7 @@ export * from "./HapticPressable";
 export * from "./Icon";
 export * from "./NetworkChip";
 export * from "./Placeholder";
+export * from "./PriceRangeBar";
 export * from "./Skeleton";
 export * from "./Symbol";
 export * from "./Tag/index";
