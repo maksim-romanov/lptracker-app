@@ -44,6 +44,7 @@ yarn-error.log*
 !.claude/CLAUDE.md
 !apps/mobile/CLAUDE.md
 !apps/server/CLAUDE.md
+!apps/subgraphs/uniswap-v3/CLAUDE.md
 
 # The Graph Subgraphs
 apps/subgraphs/**/generated/
