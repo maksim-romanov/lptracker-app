@@ -68,4 +68,13 @@ describe("TokenLogoResolver", () => {
     const r = container.resolve(TokenLogoResolver);
     expect(await r.resolve(1, "0x1")).toBeNull();
   });
+
+  test("falls through when a provider throws", async () => {
+    tw.resolve = async () => {
+      throw new Error("trustwallet timeout");
+    };
+    oi.next = "https://example.com/oi.png";
+    const r = container.resolve(TokenLogoResolver);
+    expect(await r.resolve(1, "0x1")).toBe("https://example.com/oi.png");
+  });
 });
