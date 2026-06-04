@@ -58,10 +58,17 @@ export class WalletsStore extends Store {
   }
 
   @action
-  save(input: { id?: string; name: string; address: string; type: EWalletType }): void {
+  save(input: { id?: string; name: string; address: string; type: EWalletType; chainIds: number[] }): void {
     const wallet = input.id
-      ? new Wallet(input.id, input.name, input.address, input.type, this.repo.getById(input.id)?.createdAt ?? new Date().toISOString())
-      : Wallet.create({ name: input.name, address: input.address, type: input.type });
+      ? new Wallet(
+          input.id,
+          input.name,
+          input.address,
+          input.type,
+          input.chainIds,
+          this.repo.getById(input.id)?.createdAt ?? new Date().toISOString(),
+        )
+      : Wallet.create({ name: input.name, address: input.address, type: input.type, chainIds: input.chainIds });
 
     if (!input.id) this.activeWalletId = wallet.id;
 

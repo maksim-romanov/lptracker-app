@@ -1,52 +1,107 @@
-import { View } from "react-native";
+import { useMemo, useState } from "react";
+import { View, type ViewProps } from "react-native";
 
 import { Image } from "expo-image";
-import { StyleSheet, type UnistylesVariants } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
-type ComponentProps = UnistylesVariants<typeof styles>;
+import { Text } from "./Text";
 
-type TProps = {
-  chainId: number | string;
-  tokens: { address: string; symbol?: string }[];
-} & ComponentProps;
+export type TokenImageSize = "sm" | "md" | "lg";
+
+type Token = { address?: string; symbol?: string };
+
+type TokenImageProps = {
+  token: Token;
+  /** Used to fetch the logo from the meta endpoint (optional — falls back to monogram). */
+  chainId?: number | string;
+  /** Direct image URL — overrides chainId-based lookup. */
+  imageUrl?: string;
+  size?: TokenImageSize;
+} & Pick<ViewProps, "style">;
+
+type TokensImagesProps = {
+  tokens: Token[];
+  chainId?: number | string;
+  size?: TokenImageSize;
+};
+
+const OVERLAP = 0.65;
+const DIAMETER: Record<TokenImageSize, number> = { sm: 32, md: 44, lg: 56 };
 
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
-export const TokenImage = ({
-  token,
-  chainId,
-  size,
-}: { token: { address: string; symbol?: string }; chainId: number | string } & ComponentProps) => {
+const hashSeed = (s: string): number => {
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return h;
+};
+
+const monogram = (symbol?: string): string => (symbol ? symbol.charAt(0).toUpperCase() : "?");
+
+type FallbackProps = { seed: string; size: TokenImageSize; symbol?: string };
+
+/**
+ * Typography-first fallback: a hue-derived dark surface with a lighter
+ * monogram of the same hue. Coherent stamp, no patterns competing with the
+ * rest of the UI.
+ */
+const TokenFallback = ({ seed, size, symbol }: FallbackProps) => {
+  const palette = useMemo(() => {
+    const hue = Math.abs(hashSeed(seed)) % 360;
+    return {
+      surface: `hsl(${hue}, 26%, 22%)`,
+      ink: `hsl(${hue}, 70%, 78%)`,
+    };
+  }, [seed]);
+
   styles.useVariants({ size });
 
   return (
-    <View style={styles.imageContainer}>
-      <Image
-        contentFit="contain"
-        style={styles.image}
-        source={{ uri: `${BASE_URL}/meta/v1/chains/${chainId}/tokens/${token.address}/logo.png` }}
-      />
+    <View style={[styles.fallback, { backgroundColor: palette.surface }]}>
+      <Text allowFontScaling={false} numberOfLines={1} style={[styles.monogram, { color: palette.ink }]}>
+        {monogram(symbol)}
+      </Text>
     </View>
   );
 };
 
-export const TokensImages = ({ tokens, chainId, size }: TProps) => {
+export const TokenImage = ({ token, chainId, imageUrl, size = "md", style }: TokenImageProps) => {
+  const seed = (token.address || token.symbol || "?").toLowerCase();
+  const [errored, setErrored] = useState(false);
+
+  const remoteUrl =
+    imageUrl ?? (BASE_URL && chainId && token.address ? `${BASE_URL}/meta/v1/chains/${chainId}/tokens/${token.address}/logo.png` : undefined);
+
   styles.useVariants({ size });
 
   return (
-    <View style={[styles.container, styles.containerTransformed(tokens.length)]}>
+    <View style={[styles.image, style]}>
+      {!remoteUrl || errored ? (
+        <TokenFallback seed={seed} size={size} symbol={token.symbol} />
+      ) : (
+        <Image contentFit="contain" style={styles.imageLayer} source={{ uri: remoteUrl }} onError={() => setErrored(true)} />
+      )}
+    </View>
+  );
+};
+
+export const TokensImages = ({ tokens, chainId, size = "md" }: TokensImagesProps) => {
+  const overlapPx = DIAMETER[size] * OVERLAP;
+  const last = tokens.length - 1;
+
+  return (
+    <View style={styles.container}>
       {tokens.map((token, index) => (
-        <View key={token.address} style={[styles.imageContainerTransformed(index)]}>
-          <TokenImage token={token} chainId={chainId} />
-        </View>
+        <TokenImage
+          key={token.address ?? token.symbol ?? index}
+          token={token}
+          chainId={chainId}
+          size={size}
+          style={styles.stacked(index === 0 ? 0 : -overlapPx, last - index)}
+        />
       ))}
     </View>
   );
-};
-
-const IMAGE_SIZE = {
-  md: 55,
-  sm: 25,
 };
 
 const styles = StyleSheet.create((theme) => ({
@@ -55,50 +110,50 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
   },
 
-  containerTransformed: (count: number) => ({
-    width: count * IMAGE_SIZE.md - (count - 1) * (IMAGE_SIZE.md / 2),
-
-    vatiants: {
-      size: {
-        sm: {
-          width: count * IMAGE_SIZE.sm - (count - 1) * (IMAGE_SIZE.sm / 2),
-        },
-      },
-    },
-  }),
-
   image: {
-    aspectRatio: 1,
-    width: "100%",
-  },
-
-  imageContainer: {
-    borderWidth: 4,
-    width: IMAGE_SIZE.md,
-    borderColor: theme.surfaceContainer,
-    backgroundColor: theme.surfaceVariant,
-    borderRadius: 100,
     overflow: "hidden",
+    borderColor: theme.surface,
+    backgroundColor: theme.surfaceVariant,
 
     variants: {
       size: {
-        sm: {
-          width: IMAGE_SIZE.sm,
-          borderWidth: 2,
-        },
+        sm: { width: 32, height: 32, borderRadius: 16, borderWidth: 2 },
+        md: { width: 44, height: 44, borderRadius: 22, borderWidth: 2.5 },
+        lg: { width: 56, height: 56, borderRadius: 28, borderWidth: 3 },
       },
     },
   },
 
-  imageContainerTransformed: (index: number) => ({
-    transform: [{ translateX: index * -(IMAGE_SIZE.md / 2) }],
+  imageLayer: { ...StyleSheet.absoluteFillObject },
+
+  fallback: {
+    ...StyleSheet.absoluteFillObject,
+  },
+
+  // Classic absolute + transform centering: top sits at 50% of the parent, then
+  // the Text is shifted up by half its own line height. This places the Text's
+  // geometric middle on the circle's center regardless of font ascent/descent.
+  monogram: {
+    position: "absolute",
+    top: "50%",
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    fontFamily: "Satoshi-Bold",
+    letterSpacing: -0.5,
+    includeFontPadding: false,
 
     variants: {
       size: {
-        sm: {
-          transform: [{ translateX: index * -(IMAGE_SIZE.sm / 2) }],
-        },
+        sm: { fontSize: 15, lineHeight: 15 * 1.1, transform: [{ translateY: -15 / 2 }] },
+        md: { fontSize: 21, lineHeight: 21 * 1.1, transform: [{ translateY: -21 / 2 }] },
+        lg: { fontSize: 27, lineHeight: 27 * 1.1, transform: [{ translateY: -27 / 2 }] },
       },
     },
+  },
+
+  stacked: (marginLeft: number, zIndex: number) => ({
+    marginLeft,
+    zIndex,
   }),
 }));

@@ -1,3 +1,3 @@
 export interface LogoProvider {
-  readonly url: string | null;
+  resolve(): Promise<string | null>;
 }

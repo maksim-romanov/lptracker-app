@@ -11,7 +11,8 @@
       "wallets/*": ["./src/wallets/*"],
       "onboarding/*": ["./src/onboarding/*"],
       "types/*": ["./src/types/*"],
-      "features/*": ["./src/features/*"]
+      "features/*": ["./src/features/*"],
+      "assets/*": ["./assets/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

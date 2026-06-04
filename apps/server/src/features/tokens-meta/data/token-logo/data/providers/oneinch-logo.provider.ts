@@ -6,7 +6,7 @@ export class OneInchLogo implements LogoProvider {
     private address: string,
   ) {}
 
-  get url(): string | null {
+  async resolve(): Promise<string | null> {
     return `https://tokens.1inch.io/${this.address.toLowerCase()}.png`;
   }
 }

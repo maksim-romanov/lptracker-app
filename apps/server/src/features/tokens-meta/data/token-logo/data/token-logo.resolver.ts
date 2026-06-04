@@ -2,22 +2,23 @@ import { singleton } from "tsyringe";
 
 import type { LogoProvider } from "../domain/logo-provider";
 import type { TokenLogo } from "../domain/token-logo";
+import { LiFiLogo } from "./providers/lifi-logo.provider";
 import { OneInchLogo } from "./providers/oneinch-logo.provider";
 import { TrustWalletLogo } from "./providers/trustwallet-logo.provider";
 
 type LogoProviderConstructor = new (chainId: number, address: string) => LogoProvider;
 
-const PROVIDERS: LogoProviderConstructor[] = [TrustWalletLogo, OneInchLogo];
-const TIMEOUT = 3000;
+const PROVIDERS: LogoProviderConstructor[] = [TrustWalletLogo, OneInchLogo, LiFiLogo];
+const HEAD_TIMEOUT_MS = 3000;
 
 @singleton()
 export class TokenLogoResolver implements TokenLogo {
   async resolve(chainId: number, address: string): Promise<string | null> {
     for (const Provider of PROVIDERS) {
-      const { url } = new Provider(chainId, address);
+      const url = await new Provider(chainId, address).resolve();
       if (!url) continue;
       try {
-        const res = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(TIMEOUT) });
+        const res = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(HEAD_TIMEOUT_MS) });
         if (res.ok) return url;
       } catch {}
     }

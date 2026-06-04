@@ -12,6 +12,7 @@ export type TWallet = {
   name: string;
   address: string;
   type: EWalletType;
+  chainIds: number[];
   createdAt: string;
 };
 
@@ -21,17 +22,18 @@ export class Wallet extends Entity<string> {
     public readonly name: string,
     public readonly address: string,
     public readonly type: EWalletType,
+    public readonly chainIds: number[],
     public readonly createdAt: string,
   ) {
     super(id);
   }
 
-  static create(params: { name: string; address: string; type: EWalletType }): Wallet {
-    return new Wallet(Crypto.randomUUID(), params.name, params.address, params.type, new Date().toISOString());
+  static create(params: { name: string; address: string; type: EWalletType; chainIds: number[] }): Wallet {
+    return new Wallet(Crypto.randomUUID(), params.name, params.address, params.type, params.chainIds, new Date().toISOString());
   }
 
   static fromRaw(raw: TWallet): Wallet {
-    return new Wallet(raw.id, raw.name, raw.address, raw.type, raw.createdAt);
+    return new Wallet(raw.id, raw.name, raw.address, raw.type, raw.chainIds ?? [], raw.createdAt);
   }
 
   toRaw(): TWallet {
@@ -40,6 +42,7 @@ export class Wallet extends Entity<string> {
       name: this.name,
       address: this.address,
       type: this.type,
+      chainIds: this.chainIds,
       createdAt: this.createdAt,
     };
   }

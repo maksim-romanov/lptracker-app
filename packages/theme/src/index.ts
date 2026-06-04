@@ -1,5 +1,7 @@
 // Color tokens and palette
 export { type ColorTokens, palette } from "./colors";
+// Network brand colors
+export { type NetworkColor, type NetworkKey, networkColors } from "./networks";
 // Spacing
 export { type RadiusKey, type RadiusValue, radius, type SpacingKey, type SpacingValue, spacing } from "./spacing";
 // Theme variants

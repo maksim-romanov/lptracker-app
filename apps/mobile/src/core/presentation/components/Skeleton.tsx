@@ -1,30 +1,20 @@
-import { useEffect } from "react";
+import { View, type ViewStyle } from "react-native";
 
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 
 type Props = {
-  width: number | `${number}%`;
-  height: number;
-  borderRadius?: number;
+  width?: ViewStyle["width"];
+  height?: ViewStyle["height"];
+  radius?: number;
+  style?: ViewStyle;
 };
 
-export const Skeleton = ({ width, height, borderRadius = 6 }: Props) => {
-  const opacity = useSharedValue(0.3);
-
-  useEffect(() => {
-    opacity.value = withRepeat(withTiming(0.7, { duration: 800 }), -1, true);
-  }, [opacity]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-  }));
-
-  return <Animated.View style={[styles.skeleton, animatedStyle, { width, height, borderRadius }]} />;
-};
+export const Skeleton = ({ width = "100%", height = 16, radius = 8, style }: Props) => (
+  <View style={[styles.box, { width, height, borderRadius: radius }, style]} />
+);
 
 const styles = StyleSheet.create((theme) => ({
-  skeleton: {
-    backgroundColor: theme.outlineVariant,
+  box: {
+    backgroundColor: theme.surfaceVariant,
   },
 }));
