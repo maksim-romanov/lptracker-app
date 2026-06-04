@@ -18,10 +18,8 @@ export class TokenPriceResolver {
 
     for (const provider of this.providers) {
       try {
-        return await provider.getPrices(queries);
-      } catch {
-        // Provider failed (circuit open or fetch error), try next
-      }
+        return await provider.execute(queries);
+      } catch {}
     }
 
     return new Map();

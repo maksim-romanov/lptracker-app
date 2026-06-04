@@ -1,4 +1,3 @@
-import pLimit from "p-limit";
 import { BaseCache } from "shared/cache/base-cache";
 import { inject, singleton } from "tsyringe";
 
@@ -10,19 +9,18 @@ export class TokenLogoCache extends BaseCache<string | null> implements TokenLog
   protected readonly prefix = "logo";
   protected readonly ttl = 86400;
 
-  private readonly limit = pLimit(5);
-
   constructor(@inject(TokenLogoResolver) private readonly inner: TokenLogoResolver) {
     super();
   }
 
   async resolve(chainId: number, address: string): Promise<string | null> {
-    return this.getOrFetch(logoCacheKey(chainId, address), () => this.limit(() => this.inner.resolve(chainId, address)));
+    const id = `${chainId}:${address.toLowerCase()}`;
+    return this.getOrFetch(id, () => this.coalesce(`logo:${id}`, () => this.inner.resolve(chainId, address)));
   }
 
   async resolveMany(tokens: { chainId: number; address: string }[]): Promise<Map<string, string | null>> {
     const unique = new Map<string, { chainId: number; address: string }>();
-    for (const t of tokens) unique.set(logoCacheKey(t.chainId, t.address), t);
+    for (const t of tokens) unique.set(`${t.chainId}:${t.address.toLowerCase()}`, t);
 
     const results = new Map<string, string | null>();
     await Promise.all(
@@ -32,8 +30,4 @@ export class TokenLogoCache extends BaseCache<string | null> implements TokenLog
     );
     return results;
   }
-}
-
-function logoCacheKey(chainId: number, address: string) {
-  return `${chainId}:${address.toLowerCase()}`;
 }

@@ -1,6 +1,7 @@
+import { singleton } from "tsyringe";
 import { getAddress } from "viem";
 
-import type { ILogoProvider, TLogoResult } from "../../domain/logo-provider";
+import type { AsyncLogoProvider } from "../../domain/async-logo-provider";
 
 const CHAIN_NAMES: Record<number, string> = {
   1: "ethereum",
@@ -11,19 +12,21 @@ const CHAIN_NAMES: Record<number, string> = {
   42161: "arbitrum",
   43114: "avalanchec",
 };
+const TIMEOUT = 3000;
 
-export class TrustWalletLogo implements ILogoProvider {
-  constructor(
-    private chainId: number,
-    private address: string,
-  ) {}
+@singleton()
+export class TrustWalletLogo implements AsyncLogoProvider {
+  readonly name = "trustwallet";
 
-  async resolve(): Promise<TLogoResult | null> {
-    const chain = CHAIN_NAMES[this.chainId];
+  async resolve(chainId: number, address: string): Promise<string | null> {
+    const chain = CHAIN_NAMES[chainId];
     if (!chain) return null;
-    return {
-      url: `https://assets-cdn.trustwallet.com/blockchains/${chain}/assets/${getAddress(this.address)}/logo.png`,
-      verified: false,
-    };
+    const url = `https://assets-cdn.trustwallet.com/blockchains/${chain}/assets/${getAddress(address)}/logo.png`;
+    const res = await this.head(url);
+    return res.ok ? url : null;
+  }
+
+  protected async head(url: string): Promise<Response> {
+    return fetch(url, { method: "HEAD", signal: AbortSignal.timeout(TIMEOUT) });
   }
 }
