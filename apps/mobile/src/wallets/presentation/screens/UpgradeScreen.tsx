@@ -3,17 +3,18 @@ import { View } from "react-native";
 import { Button, Icon, Text } from "core/presentation/components";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+
+const StarIcon = withUnistyles(Icon, (theme) => ({ color: theme.warning }));
 
 export const UpgradeScreen = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { theme } = useUnistyles();
 
   return (
     <View style={styles.root}>
       <View style={styles.center}>
-        <Icon name="star" size="2xl" color={theme.warning} />
+        <StarIcon name="star" size="2xl" />
         <Text variant="title" weight="bold" center>
           Premium
         </Text>

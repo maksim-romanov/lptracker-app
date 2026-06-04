@@ -5,6 +5,8 @@ import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { Icon, type IconName } from "./Icon";
 import { Text } from "./Text";
 
+type AccentToken = "primary" | "warning" | "success" | "error";
+
 type Props = {
   label: string;
   icon: IconName;
@@ -13,15 +15,15 @@ type Props = {
   onPress: () => void;
   /** Optional numeric badge — e.g., unread count. */
   badge?: number;
-  /** Active-state accent color. Defaults to theme.primary. */
-  accent?: string;
+  /** Active-state accent token. Defaults to "primary". */
+  accent?: AccentToken;
   /** Wrap the row in a colored shadow halo when active. */
   glow?: boolean;
 };
 
-export const SidebarItem = ({ label, icon, iconActive, active, onPress, badge, accent, glow }: Props) => {
+export const SidebarItem = ({ label, icon, iconActive, active, onPress, badge, accent = "primary", glow }: Props) => {
   const { theme } = useUnistyles();
-  const accentColor = accent ?? theme.primary;
+  const accentColor = theme[accent];
   const tint = active ? accentColor : theme.onSurface;
   const showGlow = !!active && !!glow;
 

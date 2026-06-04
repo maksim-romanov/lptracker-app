@@ -7,7 +7,9 @@ import { PositionDetailView } from "features/uniswap-v3/presentation/components/
 import { observer } from "mobx-react-lite";
 import { usePositionByIdQuery } from "positions/presentation/hooks/usePositionByIdQuery";
 import { FollowingStore } from "positions/presentation/stores/following.store";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
+
+const ThemedIconButton = withUnistyles(IconButton);
 
 type TProps = {
   id: string;
@@ -57,19 +59,16 @@ export const PositionDetailScreen = observer(({ id }: TProps) => {
   );
 });
 
-const FollowHeaderButton = observer(({ isFollowing, onPress }: { isFollowing: boolean; onPress: () => void }) => {
-  const { theme } = useUnistyles();
-  return (
-    <IconButton
-      name={isFollowing ? "star" : "star-outline"}
-      iconSize="md"
-      color={isFollowing ? theme.warning : theme.onSurface}
-      onPress={onPress}
-      size="sm"
-      accessibilityLabel={isFollowing ? "Unfollow position" : "Follow position"}
-    />
-  );
-});
+const FollowHeaderButton = observer(({ isFollowing, onPress }: { isFollowing: boolean; onPress: () => void }) => (
+  <ThemedIconButton
+    name={isFollowing ? "star" : "star-outline"}
+    iconSize="md"
+    uniProps={(theme) => ({ color: isFollowing ? theme.warning : theme.onSurface })}
+    onPress={onPress}
+    size="sm"
+    accessibilityLabel={isFollowing ? "Unfollow position" : "Follow position"}
+  />
+));
 
 const styles = StyleSheet.create(() => ({
   empty: {

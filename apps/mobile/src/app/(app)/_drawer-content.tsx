@@ -4,7 +4,7 @@ import type { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { Divider, type IconName, SidebarItem, Text, type TickerToken, TrendingTokensMarquee } from "core/presentation/components";
 import { type Href, useRouter, useSegments } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 type TAccentToken = "warning" | "success" | "error";
 
@@ -63,7 +63,6 @@ const WALLETS_NAV: TNavEntry = {
 const arraysEqual = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((value, index) => value === b[index]);
 
 export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
-  const { theme } = useUnistyles();
   const router = useRouter();
   const segments = useSegments();
 
@@ -75,12 +74,12 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
   };
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: theme.surface }]} edges={["top", "bottom"]}>
+    <SafeAreaView style={styles.root} edges={["top", "bottom"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {/* Brand */}
         <View style={styles.brand}>
-          <View style={[styles.brandMark, { backgroundColor: theme.primary }]}>
-            <View style={[styles.brandMarkVoid, { backgroundColor: theme.surface }]} />
+          <View style={styles.brandMark}>
+            <View style={styles.brandMarkVoid} />
           </View>
           <View style={styles.brandText}>
             <Text style={styles.wordmark}>void</Text>
@@ -100,7 +99,7 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
               icon={entry.icon}
               iconActive={entry.iconActive}
               active={arraysEqual(entry.segments, relativeSegments)}
-              accent={entry.accent ? theme[entry.accent] : undefined}
+              accent={entry.accent}
               glow={entry.glow}
               onPress={() => navigate(entry.href)}
             />
@@ -114,7 +113,7 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
           icon={WALLETS_NAV.icon}
           iconActive={WALLETS_NAV.iconActive}
           active={arraysEqual(WALLETS_NAV.segments, relativeSegments)}
-          accent={WALLETS_NAV.accent ? theme[WALLETS_NAV.accent] : undefined}
+          accent={WALLETS_NAV.accent}
           glow={WALLETS_NAV.glow}
           onPress={() => navigate(WALLETS_NAV.href)}
         />
@@ -131,7 +130,10 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
 };
 
 const styles = StyleSheet.create((theme) => ({
-  root: { flex: 1 },
+  root: {
+    flex: 1,
+    backgroundColor: theme.surface,
+  },
 
   scroll: {
     paddingTop: theme.spacing.lg,
@@ -154,12 +156,14 @@ const styles = StyleSheet.create((theme) => ({
     transform: [{ rotate: "45deg" }],
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: theme.primary,
   },
 
   brandMarkVoid: {
     width: 9,
     height: 9,
     borderRadius: 2,
+    backgroundColor: theme.surface,
   },
 
   brandText: {

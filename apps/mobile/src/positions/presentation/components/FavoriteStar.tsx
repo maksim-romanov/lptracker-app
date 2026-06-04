@@ -2,7 +2,9 @@ import { Pressable } from "react-native";
 
 import { Icon } from "core/presentation/components";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
-import { useUnistyles } from "react-native-unistyles";
+import { withUnistyles } from "react-native-unistyles";
+
+const ThemedIcon = withUnistyles(Icon);
 
 type TProps = {
   favorite: boolean;
@@ -10,7 +12,6 @@ type TProps = {
 };
 
 export const FavoriteStar = ({ favorite, onToggle }: TProps) => {
-  const { theme } = useUnistyles();
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -36,7 +37,11 @@ export const FavoriteStar = ({ favorite, onToggle }: TProps) => {
       accessibilityLabel={favorite ? "Unfavorite position" : "Favorite position"}
     >
       <Animated.View style={animatedStyle}>
-        <Icon name={favorite ? "star" : "star-outline"} size="md" color={favorite ? theme.warning : theme.onSurfaceVariant} />
+        <ThemedIcon
+          name={favorite ? "star" : "star-outline"}
+          size="md"
+          uniProps={(theme) => ({ color: favorite ? theme.warning : theme.onSurfaceVariant })}
+        />
       </Animated.View>
     </Pressable>
   );

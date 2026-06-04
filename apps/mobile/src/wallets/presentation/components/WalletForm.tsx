@@ -7,16 +7,17 @@ import { Button, Card, Icon, NetworkStack, Text, TextField } from "core/presenta
 import { useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { SaveWalletUseCase } from "wallets/application/usecases/save-wallet.usecase";
 import { WalletDraftStore } from "wallets/presentation/wallet-draft.store";
 import { WalletsStore } from "wallets/presentation/wallets.store";
 
 const TOTAL_CHAINS = Object.values(CHAINS).length;
 
+const ChevronIcon = withUnistyles(Icon, (theme) => ({ color: theme.onSurfaceVariant }));
+
 export const WalletForm = observer(() => {
   const router = useRouter();
-  const { theme } = useUnistyles();
   const draft = container.resolve(WalletDraftStore);
 
   const onSubmit = async () => {
@@ -81,7 +82,7 @@ export const WalletForm = observer(() => {
                 <Text variant="bodySmall" color="muted">
                   {draft.chainIds.length} of {TOTAL_CHAINS}
                 </Text>
-                <Icon name="chevron-forward-outline" size="sm" color={theme.onSurfaceVariant} />
+                <ChevronIcon name="chevron-forward-outline" size="sm" />
               </View>
             </Card>
             {networksError ? (

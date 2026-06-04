@@ -5,13 +5,16 @@ import { container } from "core/di/container";
 import { DashedBanner, EmptyState, Icon, Text } from "core/presentation/components";
 import { useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import type { Wallet } from "wallets/domain/entities/wallet.entity";
 import { SwipeableWalletCard } from "wallets/presentation/components/SwipeableWalletCard";
 import type { WalletVM } from "wallets/presentation/components/WalletCard";
 import { WalletsStore } from "wallets/presentation/wallets.store";
 
 const WALLET_LIMIT = 2;
+
+const NeutralAddIcon = withUnistyles(Icon, (theme) => ({ color: theme.onSurface }));
+const PrimaryAddIcon = withUnistyles(Icon, (theme) => ({ color: theme.primary }));
 
 const toVM = (wallet: Wallet): WalletVM => ({
   id: wallet.id,
@@ -48,47 +51,41 @@ export const WalletsScreen = observer(() => {
   );
 });
 
-const AddWalletSlot = ({ onPress }: { onPress: () => void }) => {
-  const { theme } = useUnistyles();
-  return (
-    <DashedBanner onPress={onPress}>
-      <Box direction="row" alignY="center" gap={3}>
-        <View style={[styles.iconBubble, { backgroundColor: theme.surfaceContainer }]}>
-          <Icon name="add" size="md" color={theme.onSurface} />
-        </View>
-        <Box flex="fluid">
-          <Text variant="body" weight="bold">
-            Add wallet
-          </Text>
-          <Text variant="bodySmall" color="muted">
-            Track any address — up to {WALLET_LIMIT} on the free tier.
-          </Text>
-        </Box>
+const AddWalletSlot = ({ onPress }: { onPress: () => void }) => (
+  <DashedBanner onPress={onPress}>
+    <Box direction="row" alignY="center" gap={3}>
+      <View style={styles.iconBubble}>
+        <NeutralAddIcon name="add" size="md" />
+      </View>
+      <Box flex="fluid">
+        <Text variant="body" weight="bold">
+          Add wallet
+        </Text>
+        <Text variant="bodySmall" color="muted">
+          Track any address — up to {WALLET_LIMIT} on the free tier.
+        </Text>
       </Box>
-    </DashedBanner>
-  );
-};
+    </Box>
+  </DashedBanner>
+);
 
-const UpgradeSlot = ({ onPress }: { onPress: () => void }) => {
-  const { theme } = useUnistyles();
-  return (
-    <DashedBanner onPress={onPress}>
-      <Box direction="row" alignY="center" gap={3}>
-        <View style={[styles.iconBubble, { backgroundColor: `${theme.primary}1F` }]}>
-          <Icon name="add" size="md" color={theme.primary} />
-        </View>
-        <Box flex="fluid">
-          <Text variant="body" weight="bold" color="primary">
-            Add more wallets
-          </Text>
-          <Text variant="bodySmall" color="muted">
-            Free tier is limited to {WALLET_LIMIT} wallets. Upgrade to track unlimited addresses.
-          </Text>
-        </Box>
+const UpgradeSlot = ({ onPress }: { onPress: () => void }) => (
+  <DashedBanner onPress={onPress}>
+    <Box direction="row" alignY="center" gap={3}>
+      <View style={styles.iconBubblePrimary}>
+        <PrimaryAddIcon name="add" size="md" />
+      </View>
+      <Box flex="fluid">
+        <Text variant="body" weight="bold" color="primary">
+          Add more wallets
+        </Text>
+        <Text variant="bodySmall" color="muted">
+          Free tier is limited to {WALLET_LIMIT} wallets. Upgrade to track unlimited addresses.
+        </Text>
       </Box>
-    </DashedBanner>
-  );
-};
+    </Box>
+  </DashedBanner>
+);
 
 const styles = StyleSheet.create((theme) => ({
   list: {
@@ -100,15 +97,21 @@ const styles = StyleSheet.create((theme) => ({
     paddingBottom: theme.spacing.lg,
   },
 
-  footer: {
-    marginTop: theme.spacing.lg,
-  },
-
   iconBubble: {
     width: 40,
     height: 40,
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: theme.surfaceContainer,
+  },
+
+  iconBubblePrimary: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: `${theme.primary}1F`,
   },
 }));
