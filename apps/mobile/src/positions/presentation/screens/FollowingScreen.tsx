@@ -1,4 +1,4 @@
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 
 import { container } from "core/di/container";
 import { EmptyState } from "core/presentation/components";
@@ -26,21 +26,39 @@ export const FollowingScreen = observer(() => {
 
   const followed = (data ?? []).filter((p) => followingStore.isFollowing(p));
 
+  if (followed.length === 0) {
+    return (
+      <ScrollView
+        contentContainerStyle={styles.emptyRoot}
+        contentInsetAdjustmentBehavior="automatic"
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={false}
+      >
+        <View style={styles.emptyBanner}>
+          <WidgetBanner />
+        </View>
+        <View style={styles.emptyBody}>
+          <EmptyState
+            icon="star-outline"
+            tint="warning"
+            title="Nothing followed yet"
+            description="Tap the star on any position to track it. Followed positions can be pinned to your home screen."
+          />
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
     <Animated.FlatList
       data={followed}
       keyExtractor={(item) => item.id}
-      contentContainerStyle={[styles.list, followed.length === 0 && styles.listEmpty]}
+      contentContainerStyle={styles.list}
       contentInsetAdjustmentBehavior="automatic"
       itemLayoutAnimation={LinearTransition.duration(220)}
       ListHeaderComponent={
         <View style={styles.header}>
           <WidgetBanner />
-        </View>
-      }
-      ListEmptyComponent={
-        <View style={styles.emptyWrap}>
-          <EmptyState icon="star-outline" title="Nothing followed yet" description="Star a position on its detail page to track it here." />
         </View>
       }
       ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
@@ -64,23 +82,24 @@ const styles = StyleSheet.create((theme) => ({
     paddingBottom: theme.spacing["3xl"],
   },
 
-  listEmpty: {
-    flexGrow: 1,
-  },
-
   header: {
     paddingBottom: theme.spacing.lg,
   },
 
-  emptyWrap: {
-    flex: 1,
-    justifyContent: "center",
-    paddingBottom: 80,
-  },
-
   center: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+  },
+
+  emptyRoot: {
+    flexGrow: 1,
+  },
+
+  emptyBanner: {
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.lg,
+  },
+
+  emptyBody: {
+    flex: 1,
   },
 }));

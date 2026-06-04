@@ -2,7 +2,7 @@ import { ActivityIndicator, View } from "react-native";
 
 import { container } from "core/di/container";
 import { EmptyState, IconButton } from "core/presentation/components";
-import { Stack as RouterStack } from "expo-router";
+import { type Href, Stack as RouterStack, useRouter } from "expo-router";
 import { PositionDetailView } from "features/uniswap-v3/presentation/components/PositionDetailView";
 import { observer } from "mobx-react-lite";
 import { usePositionByIdQuery } from "positions/presentation/hooks/usePositionByIdQuery";
@@ -16,6 +16,7 @@ type TProps = {
 };
 
 export const PositionDetailScreen = observer(({ id }: TProps) => {
+  const router = useRouter();
   const { data: position, isLoading } = usePositionByIdQuery(id);
   const followingStore = container.resolve(FollowingStore);
 
@@ -29,9 +30,15 @@ export const PositionDetailScreen = observer(({ id }: TProps) => {
 
   if (!position) {
     return (
-      <View style={styles.empty}>
-        <EmptyState icon="search-outline" title="Position not found" description="This position no longer exists or has been removed." />
-      </View>
+      <EmptyState
+        icon="search-outline"
+        tint="primary"
+        title="Position not found"
+        description="This position no longer exists or has been removed."
+        actionLabel="Back to positions"
+        actionIcon="chevron-back-outline"
+        onAction={() => router.replace("/positions" as Href)}
+      />
     );
   }
 
@@ -71,10 +78,6 @@ const FollowHeaderButton = observer(({ isFollowing, onPress }: { isFollowing: bo
 ));
 
 const styles = StyleSheet.create(() => ({
-  empty: {
-    flex: 1,
-  },
-
   center: {
     flex: 1,
     alignItems: "center",

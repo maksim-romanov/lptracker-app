@@ -44,7 +44,16 @@ export const WalletsScreen = observer(() => {
           )}
         </View>
       }
-      ListEmptyComponent={<EmptyState icon="wallet-outline" title="No wallets yet" description="Add an EVM address to start tracking." />}
+      ListEmptyComponent={
+        <EmptyState
+          icon="wallet-outline"
+          tint="primary"
+          dense
+          title="No wallets yet"
+          description="Add your first EVM address above to start tracking positions across chains."
+          style={styles.empty}
+        />
+      }
       ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
       renderItem={({ item }) => <SwipeableWalletCard wallet={item} onPress={() => router.push(`/wallets/${item.id}`)} />}
     />
@@ -95,6 +104,11 @@ const styles = StyleSheet.create((theme) => ({
 
   header: {
     paddingBottom: theme.spacing.lg,
+  },
+
+  empty: {
+    paddingTop: theme.spacing.xl,
+    paddingHorizontal: 0,
   },
 
   iconBubble: {

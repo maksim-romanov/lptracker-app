@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import { View } from "react-native";
 
 import { container } from "core/di/container";
-import { EmptyState, Text } from "core/presentation/components";
+import { EmptyState } from "core/presentation/components";
+import { type Href, useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
-import { StyleSheet } from "react-native-unistyles";
 import { WalletForm } from "wallets/presentation/components/WalletForm";
 import { WalletDraftStore } from "wallets/presentation/wallet-draft.store";
 import { WalletsStore } from "wallets/presentation/wallets.store";
@@ -14,6 +13,7 @@ type TProps = {
 };
 
 export const WalletFormScreen = observer(({ walletId }: TProps) => {
+  const router = useRouter();
   const store = container.resolve(WalletsStore);
   const wallet = walletId ? store.wallets.find((w) => w.id === walletId) : undefined;
 
@@ -26,23 +26,17 @@ export const WalletFormScreen = observer(({ walletId }: TProps) => {
 
   if (walletId && !wallet) {
     return (
-      <View style={styles.empty}>
-        <EmptyState title="Wallet not found" description="This wallet was removed or doesn't exist on this device." icon="wallet-outline" />
-        <Text variant="bodySmall" color="muted" center>
-          ID: {walletId}
-        </Text>
-      </View>
+      <EmptyState
+        icon="wallet-outline"
+        tint="primary"
+        title="Wallet not found"
+        description="This wallet was removed or doesn't exist on this device."
+        actionLabel="Back to wallets"
+        actionIcon="chevron-back-outline"
+        onAction={() => router.replace("/wallets" as Href)}
+      />
     );
   }
 
   return <WalletForm />;
 });
-
-const styles = StyleSheet.create((theme) => ({
-  empty: {
-    flex: 1,
-    paddingHorizontal: theme.spacing.xl,
-    paddingTop: theme.spacing["4xl"],
-    gap: theme.spacing.lg,
-  },
-}));
