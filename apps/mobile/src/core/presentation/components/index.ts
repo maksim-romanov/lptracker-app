@@ -12,7 +12,6 @@ export { ListItem } from "./ListItem";
 export { NetworkBadge } from "./NetworkBadge";
 export { NetworkIcon } from "./NetworkIcon";
 export { NetworkStack } from "./NetworkStack";
-export { PriceRangeBar } from "./PriceRangeBar";
 export { ProtocolIcon } from "./ProtocolIcon";
 export { ProtocolStrip } from "./ProtocolStrip";
 export { SegmentedControl } from "./SegmentedControl";

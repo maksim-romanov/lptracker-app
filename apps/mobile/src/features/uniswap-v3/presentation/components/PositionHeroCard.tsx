@@ -1,14 +1,15 @@
 import { Box, Inline, Stack } from "@grapp/stacks";
-import { Card, NetworkBadge, PriceRangeBar, Tag, Text, TokensImages } from "core/presentation/components";
+import { Card, NetworkBadge, Tag, Text, TokensImages } from "core/presentation/components";
 import { formatPrice, formatUsd } from "core/presentation/utils/format";
-import type { PositionDetailVM, PriceRangeVM } from "positions/presentation/mocks/positions.mock";
+import { PriceRangeBar } from "features/uniswap-v3/presentation/components/PriceRangeBar";
+import type { PositionDetailVM, PriceRangeVM } from "positions/data/fixtures/positions.fixtures";
 import { StyleSheet } from "react-native-unistyles";
 
-type Props = {
+type TProps = {
   position: PositionDetailVM;
 };
 
-export const PositionHeroCard = ({ position }: Props) => {
+export const PositionHeroCard = ({ position }: TProps) => {
   const inRange = position.currentTick >= position.tickLower && position.currentTick <= position.tickUpper;
 
   return (
@@ -56,13 +57,10 @@ const PriceLabels = ({ price, inRange }: { price: PriceRangeVM; inRange: boolean
   <Box direction="row" alignY="top">
     <Box flex="fluid">
       <Text variant="label" color="muted" uppercase>
-        Min price
+        Min
       </Text>
       <Text variant="mono" weight="medium">
         {formatPrice(price.min)}
-      </Text>
-      <Text variant="bodySmall" color="muted">
-        {price.quoteSymbol}
       </Text>
     </Box>
     <Box flex="fluid" alignX="center">
@@ -72,19 +70,13 @@ const PriceLabels = ({ price, inRange }: { price: PriceRangeVM; inRange: boolean
       <Text variant="mono" weight="bold">
         {formatPrice(price.current)}
       </Text>
-      <Text variant="bodySmall" color="muted">
-        {price.quoteSymbol}
-      </Text>
     </Box>
     <Box flex="fluid" alignX="right">
       <Text variant="label" color="muted" uppercase>
-        Max price
+        Max
       </Text>
       <Text variant="mono" weight="medium">
         {formatPrice(price.max)}
-      </Text>
-      <Text variant="bodySmall" color="muted">
-        {price.quoteSymbol}
       </Text>
     </Box>
   </Box>

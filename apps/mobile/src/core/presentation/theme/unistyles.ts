@@ -1,4 +1,3 @@
-import type { StacksBreakpoints as _StacksBreakpoints } from "@grapp/stacks";
 import { type ColorTokens, neonDark, neonLight, radius, spacing, typography } from "@mars-909/theme";
 import { StyleSheet } from "react-native-unistyles";
 

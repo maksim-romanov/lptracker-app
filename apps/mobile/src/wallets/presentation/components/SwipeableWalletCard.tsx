@@ -18,7 +18,7 @@ type TProps = {
   onPress: () => void;
 };
 
-export const SwipeableWalletCard = function ({ wallet, onPress }: TProps) {
+export const SwipeableWalletCard = ({ wallet, onPress }: TProps) => {
   const swipeRef = useRef<SwipeableMethods>(null);
   const { theme } = useUnistyles();
 
@@ -50,7 +50,7 @@ type TRightActionProps = {
   onColor: string;
 };
 
-const RightAction = function ({ translation, swipeable, onDelete, color, onColor }: TRightActionProps) {
+const RightAction = ({ translation, swipeable, onDelete, color, onColor }: TRightActionProps) => {
   const fired = useRef(false);
 
   const triggerDelete = () => {

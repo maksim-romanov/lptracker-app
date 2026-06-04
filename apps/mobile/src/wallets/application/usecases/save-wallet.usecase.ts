@@ -7,8 +7,7 @@ import type { TWalletDraft } from "wallets/domain/schemas/wallet.schema";
 
 type TInput = TWalletDraft & { id?: string };
 
-const normalizeAddress = (address: string, type: EWalletType): string =>
-  type === EWalletType.ERC20 ? address.toLowerCase() : address;
+const normalizeAddress = (address: string, type: EWalletType): string => (type === EWalletType.ERC20 ? address.toLowerCase() : address);
 
 @injectable()
 export class SaveWalletUseCase extends UseCase<boolean, TInput> {

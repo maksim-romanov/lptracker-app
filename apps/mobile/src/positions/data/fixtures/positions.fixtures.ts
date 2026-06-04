@@ -1,5 +1,4 @@
-import type { Protocol } from "core/config/protocol-logos";
-import type { PositionVM } from "positions/presentation/components/PositionCard";
+import type { TPositionVM } from "positions/presentation/components/PositionCard";
 
 export type TokenAmountVM = {
   symbol: string;
@@ -12,14 +11,11 @@ export type PriceRangeVM = {
   min: number;
   current: number;
   max: number;
-  /** Token user thinks in (e.g., USDC when looking at ETH/USDC). */
   quoteSymbol: string;
-  /** The asset being priced (e.g., ETH in ETH/USDC). */
   baseSymbol: string;
 };
 
-export type PositionDetailVM = PositionVM & {
-  protocol: Protocol;
+export type PositionDetailVM = TPositionVM & {
   price: PriceRangeVM;
   liquidity: { token0: TokenAmountVM; token1: TokenAmountVM };
   unclaimedFees: { token0: TokenAmountVM; token1: TokenAmountVM; totalUsd: number };
@@ -182,5 +178,3 @@ export const POSITIONS_MOCK: PositionDetailVM[] = [
     },
   },
 ];
-
-export const getPositionById = (id: string): PositionDetailVM | undefined => POSITIONS_MOCK.find((p) => p.id === id);

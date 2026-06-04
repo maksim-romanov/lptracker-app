@@ -62,7 +62,7 @@ const WALLETS_NAV: TNavEntry = {
 
 const arraysEqual = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((value, index) => value === b[index]);
 
-export const DrawerContent = function ({ navigation }: DrawerContentComponentProps) {
+export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
   const { theme } = useUnistyles();
   const router = useRouter();
   const segments = useSegments();

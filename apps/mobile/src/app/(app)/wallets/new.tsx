@@ -1,15 +1,5 @@
-import { useEffect } from "react";
+import { WalletFormScreen } from "wallets/presentation/screens/WalletFormScreen";
 
-import { container } from "core/di/container";
-import { WalletForm } from "wallets/presentation/components/WalletForm";
-import { WalletDraftStore } from "wallets/presentation/wallet-draft.store";
-
-const NewWalletScreen = () => {
-  useEffect(() => {
-    container.resolve(WalletDraftStore).resetForCreate();
-  }, []);
-
-  return <WalletForm />;
-};
-
-export default NewWalletScreen;
+export default function Screen() {
+  return <WalletFormScreen />;
+}

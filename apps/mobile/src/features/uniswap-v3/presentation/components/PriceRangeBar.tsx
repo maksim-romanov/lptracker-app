@@ -4,22 +4,17 @@ import { View, type ViewProps } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import tinycolor from "tinycolor2";
 
-export type Props = {
+export type TPriceRangeBarProps = {
   currentTick: number;
   tickLower: number;
   tickUpper: number;
 } & Pick<ViewProps, "style">;
 
-/**
- * Concentrated-liquidity range visualization.
- *
- * The track is a *context window* — wider than the position itself, so
- * out-of-range drift reads as space between the liquidity segment and the
- * thumb. The colored segment is the position's [tickLower, tickUpper]; the
- * thumb is the current pool tick. The window stays minimally readable via
- * MIN_LIQ_PCT — the liquidity bar can't shrink below that fraction of width.
- */
-export const PriceRangeBar = ({ currentTick, tickLower, tickUpper, style }: Props) => {
+// Concentrated-liquidity range visualization. The track is a *context window* —
+// wider than the position itself, so out-of-range drift reads as space between
+// the liquidity segment and the thumb. MIN_LIQ_PCT keeps the liquidity bar from
+// shrinking below a readable fraction of the width.
+export const PriceRangeBar = ({ currentTick, tickLower, tickUpper, style }: TPriceRangeBarProps) => {
   const { liquidityLeftPct, liquidityWidthPct, thumbPct, inRange } = useMemo(() => {
     const span = tickUpper - tickLower;
     if (span <= 0) {

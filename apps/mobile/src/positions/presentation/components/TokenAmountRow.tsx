@@ -1,7 +1,7 @@
 import { Box } from "@grapp/stacks";
 import { Text, TokenImage } from "core/presentation/components";
 import { formatAmount, formatUsd } from "core/presentation/utils/format";
-import type { TokenAmountVM } from "positions/presentation/mocks/positions.mock";
+import type { TokenAmountVM } from "positions/data/fixtures/positions.fixtures";
 import { StyleSheet } from "react-native-unistyles";
 
 type Props = {
