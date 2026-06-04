@@ -46,9 +46,7 @@
       [
         "expo-asset",
         {
-          "assets": [
-            "./assets/uniswap-uni-logo.png"
-          ]
+          "assets": ["./assets/uniswap-uni-logo.png"]
         }
       ],
       "expo-asset",

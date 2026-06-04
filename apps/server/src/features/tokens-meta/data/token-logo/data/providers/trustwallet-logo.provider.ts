@@ -3,7 +3,15 @@ import { getAddress } from "viem";
 
 import type { AsyncLogoProvider } from "../../domain/async-logo-provider";
 
-const CHAIN_NAMES: Record<number, string> = { 1: "ethereum", 42161: "arbitrum", 8453: "base" };
+const CHAIN_NAMES: Record<number, string> = {
+  1: "ethereum",
+  10: "optimism",
+  56: "smartchain",
+  137: "polygon",
+  8453: "base",
+  42161: "arbitrum",
+  43114: "avalanchec",
+};
 const TIMEOUT = 3000;
 
 @singleton()

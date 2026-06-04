@@ -2,6 +2,7 @@ import { inject, singleton } from "tsyringe";
 
 import type { AsyncLogoProvider } from "../domain/async-logo-provider";
 import type { TokenLogo } from "../domain/token-logo";
+import { LiFiLogo } from "./providers/lifi-logo.provider";
 import { OneInchLogo } from "./providers/oneinch-logo.provider";
 import { TrustWalletLogo } from "./providers/trustwallet-logo.provider";
 
@@ -9,8 +10,12 @@ import { TrustWalletLogo } from "./providers/trustwallet-logo.provider";
 export class TokenLogoResolver implements TokenLogo {
   private readonly providers: AsyncLogoProvider[];
 
-  constructor(@inject(TrustWalletLogo) trustwallet: TrustWalletLogo, @inject(OneInchLogo) oneinch: OneInchLogo) {
-    this.providers = [trustwallet, oneinch];
+  constructor(
+    @inject(TrustWalletLogo) trustwallet: TrustWalletLogo,
+    @inject(OneInchLogo) oneinch: OneInchLogo,
+    @inject(LiFiLogo) lifi: LiFiLogo,
+  ) {
+    this.providers = [trustwallet, oneinch, lifi];
   }
 
   async resolve(chainId: number, address: string): Promise<string | null> {

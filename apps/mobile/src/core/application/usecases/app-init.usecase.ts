@@ -1,5 +1,7 @@
+import { CHAIN_LOGOS } from "core/config/chain-logos";
 import { UseCase } from "core/domain/base";
 import { RootStore } from "core/presentation/root.store";
+import { Asset } from "expo-asset";
 import { inject, injectable } from "tsyringe";
 
 import { AppEvents } from "../events/app.events";
@@ -24,7 +26,7 @@ export class AppInitUseCase extends UseCase {
     this.appEvents.emit({ type: "APP_INITIALIZING" });
 
     try {
-      await this.rootStore.hydrate();
+      await Promise.all([this.rootStore.hydrate(), Asset.loadAsync(Object.values(CHAIN_LOGOS))]);
 
       this.initialized = true;
 

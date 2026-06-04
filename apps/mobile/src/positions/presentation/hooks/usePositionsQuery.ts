@@ -1,22 +1,14 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { container } from "core/di/container";
 import { queryKeys } from "core/query/keys";
+import type { IPositionsRepository } from "positions/data/positions.repository";
+import { POSITIONS_REPOSITORY } from "positions/di/tokens";
 
-import type { PositionsRepository } from "../../data/positions.repository";
-import { POSITIONS_REPOSITORY } from "../../di/tokens";
+export function usePositionsQuery() {
+  const repo = container.resolve<IPositionsRepository>(POSITIONS_REPOSITORY);
 
-const LIMIT = 50;
-
-export function usePositionsQuery(walletAddress: string) {
-  const repository = container.resolve<PositionsRepository>(POSITIONS_REPOSITORY);
-
-  return useInfiniteQuery({
-    queryKey: queryKeys.positions.list(walletAddress).queryKey,
-    queryFn: ({ pageParam }) => repository.getPositions({ walletAddress: walletAddress, limit: LIMIT, offset: pageParam }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, _allPages, lastPageParam) => (lastPage?.length === LIMIT ? lastPageParam + LIMIT : undefined),
-    select: (data) => data.pages.flat(),
-    refetchInterval: 1000 * 60 * 5, // 5 minutes
-    enabled: !!walletAddress,
+  return useQuery({
+    queryKey: queryKeys.positions.list("").queryKey,
+    queryFn: () => repo.getPositions({ walletAddress: "" }),
   });
 }

@@ -1,7 +1,6 @@
+import { Service } from "core/domain/base/service";
 import * as Linking from "expo-linking";
 import { injectable } from "tsyringe";
-
-import { Service } from "core/domain/base/service";
 
 import type { ExternalLinkEntity } from "../domain/entities/external-link.entity";
 import { LinkingError, LinkingErrorCode } from "../domain/errors/linking.error";

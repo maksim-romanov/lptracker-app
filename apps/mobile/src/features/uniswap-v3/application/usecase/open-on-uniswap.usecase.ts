@@ -3,7 +3,7 @@ import { UseCase } from "core/domain/base";
 import { OpenExternalLinkUseCase } from "core/linking";
 import { inject, injectable } from "tsyringe";
 
-const CHAIN_SLUGS: Record<ChainId, string> = {
+const CHAIN_SLUGS: Partial<Record<ChainId, string>> = {
   1: "ethereum",
   8453: "base",
   42161: "arbitrum",

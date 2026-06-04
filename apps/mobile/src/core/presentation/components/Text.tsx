@@ -6,82 +6,88 @@ import { StyleSheet, type UnistylesVariants } from "react-native-unistyles";
 type ComponentProps = UnistylesVariants<typeof styles>;
 export type TextProps = RNTextProps & ComponentProps;
 
-export function Text({ children, style, variant, color, bold, uppercase, center, ...props }: TextProps) {
-  styles.useVariants({ variant, color, bold, uppercase, center });
+export const Text = ({ children, style, variant, color, weight, uppercase, center, ...props }: TextProps) => {
+  styles.useVariants({ variant, color, weight, uppercase, center });
 
   return (
     <RNText style={[styles.text, style]} {...props}>
       {children}
     </RNText>
   );
-}
+};
 
 const styles = StyleSheet.create((theme) => ({
   text: {
     fontFamily: "Satoshi-Regular",
-    fontSize: { xs: 16, md: 18, lg: 20 },
-    lineHeight: { xs: 25.6, md: 28.8, lg: 32 },
-    letterSpacing: 0,
+    fontSize: 15,
+    lineHeight: 20,
     color: theme.onSurface,
 
     variants: {
       variant: {
-        body: {},
+        // 16/22 — iOS Callout / Material body. 1.38× ratio for paragraph reading.
+        body: { fontSize: 15, lineHeight: 21 },
 
+        // Hero / huge brand text (used sparingly — e.g., onboarding)
         display: {
           fontFamily: "Satoshi-Black",
-          fontSize: { xs: 32, md: 38, lg: 44 },
-          lineHeight: { xs: 38.4, md: 45.6, lg: 52.8 },
-          letterSpacing: 0,
+          fontSize: 34,
+          lineHeight: 40,
+          letterSpacing: -0.6,
         },
 
+        // Screen titles (sidebar/header)
         title: {
           fontFamily: "Satoshi-Bold",
-          fontSize: { xs: 22, md: 26, lg: 30 },
-          lineHeight: { xs: 30.8, md: 36.4, lg: 42 },
-          letterSpacing: 0,
+          fontSize: 22,
+          lineHeight: 28,
+          letterSpacing: -0.3,
         },
 
+        // Card titles, list section headers
         headline: {
           fontFamily: "Satoshi-Bold",
-          fontSize: { xs: 18, md: 21, lg: 24 },
-          lineHeight: { xs: 25.2, md: 29.4, lg: 33.6 },
-          letterSpacing: 0,
+          fontSize: 17,
+          lineHeight: 23,
+          letterSpacing: -0.1,
         },
 
+        // Secondary copy — 13pt is iOS Footnote; 1.46× for comfortable reading
         bodySmall: {
-          fontFamily: "Satoshi-Regular",
-          fontSize: { xs: 13, md: 15, lg: 16 },
-          lineHeight: { xs: 19.5, md: 22.5, lg: 24 },
-          letterSpacing: 0,
+          fontSize: 13,
+          lineHeight: 19,
         },
 
+        // Chips, tab labels, metadata. Caps text wants wider tracking.
         label: {
           fontFamily: "Satoshi-Medium",
-          fontSize: { xs: 12, md: 14, lg: 15 },
-          lineHeight: { xs: 19.6, md: 22.4, lg: 23.8 },
+          fontSize: 12,
+          lineHeight: 16,
           letterSpacing: 0.5,
+        },
+
+        // Numeric callouts (PnL, balances)
+        mono: {
+          fontFamily: "Menlo",
+          fontSize: 14,
+          lineHeight: 20,
         },
       },
 
       color: {
-        onSurfaceVariant: { color: theme.onSurfaceVariant },
         muted: { color: theme.onSurfaceVariant },
         primary: { color: theme.primary },
         onPrimary: { color: theme.onPrimary },
+        success: { color: theme.success },
         error: { color: theme.error },
+        warning: { color: theme.warning },
       },
 
-      bold: {
-        true: {
-          fontFamily: "Satoshi-Bold",
-        },
-      },
-
-      inverse: {
-        true: {
-          color: theme.inverseOnSurface,
-        },
+      weight: {
+        regular: { fontFamily: "Satoshi-Regular" },
+        medium: { fontFamily: "Satoshi-Medium" },
+        bold: { fontFamily: "Satoshi-Bold" },
+        black: { fontFamily: "Satoshi-Black" },
       },
 
       uppercase: {
@@ -92,15 +98,5 @@ const styles = StyleSheet.create((theme) => ({
         true: { textAlign: "center" },
       },
     },
-
-    compoundVariants: [
-      {
-        bold: true,
-        variant: "bodySmall",
-        styles: {
-          fontFamily: "Satoshi-Medium",
-        },
-      },
-    ],
   },
 }));

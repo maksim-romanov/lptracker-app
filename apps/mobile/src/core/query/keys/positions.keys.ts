@@ -4,4 +4,7 @@ export const positionsKeys = createQueryKeys("positions", {
   list: (walletAddress: string) => ({
     queryKey: [walletAddress],
   }),
+  byId: (id: string) => ({
+    queryKey: [id],
+  }),
 });

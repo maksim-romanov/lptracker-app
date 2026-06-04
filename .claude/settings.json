@@ -1,5 +1,14 @@
 {
   "enabledPlugins": {
     "react-native-best-practices@callstack-agent-skills": true
+  },
+  "permissions": {
+    "deny": [
+      "Read(./apps/server/src/features/*/data/gql/**)",
+      "Read(./apps/server/openapi/**)",
+      "Read(./apps/mobile/src/**/generated/**)",
+      "Read(./apps/subgraphs/*/generated/**)",
+      "Read(./apps/subgraphs/*/build/**)"
+    ]
   }
 }

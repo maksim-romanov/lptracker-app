@@ -5,6 +5,15 @@ import type { operations } from "core/api-client/generated/gateway";
 import { container } from "core/di/container";
 import { Repository } from "core/domain/base/repository";
 
+import type { PositionDetailVM } from "./fixtures/positions.fixtures";
+
+export type TPosition = PositionDetailVM;
+
+export interface IPositionsRepository {
+  getPositions(params: { walletAddress: string; limit?: number; offset?: number }): Promise<TPosition[]>;
+  getById(id: string): Promise<TPosition | null>;
+}
+
 type PositionsQuery = NonNullable<operations["getWallets:walletAddressPositions"]["parameters"]["query"]>;
 
 type GetPositionsParams = {
@@ -14,7 +23,11 @@ type GetPositionsParams = {
   chainIds?: PositionsQuery["chainIds"];
 };
 
-export class PositionsRepository extends Repository {
+// Gateway-backed implementation. Not registered yet — currently the mobile app
+// runs against MockPositionsRepository. The Gateway endpoint and DTOs (raw
+// `UniswapV3Position` schema) need a mapper into TPosition before this can
+// implement IPositionsRepository in full.
+export class GatewayPositionsRepository extends Repository {
   private readonly api = container.resolve<GatewayApiClient>(GATEWAY_API);
 
   async getPositions({ walletAddress, limit, offset, chainIds }: GetPositionsParams) {
