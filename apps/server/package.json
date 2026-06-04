@@ -8,8 +8,7 @@
     "codegen": "graphql-codegen --config codegen.ts && bun run scripts/generate-openapi.ts",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "typecheck": "tsc --noEmit",
-    "test": "bun test"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",
