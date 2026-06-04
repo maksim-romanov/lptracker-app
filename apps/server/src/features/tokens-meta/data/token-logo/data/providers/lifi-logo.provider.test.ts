@@ -1,8 +1,7 @@
 import "reflect-metadata";
 
-import { describe, expect, test } from "bun:test";
-
 import { LiFiLogo } from "./lifi-logo.provider";
+import { describe, expect, test } from "bun:test";
 
 class Testable extends LiFiLogo {
   public nextStatus = 200;
