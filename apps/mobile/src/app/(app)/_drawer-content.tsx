@@ -2,33 +2,20 @@ import { ScrollView, View } from "react-native";
 
 import type { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { Divider, type IconName, SidebarItem, Text, type TickerToken, TrendingTokensMarquee } from "core/presentation/components";
-import { useSegments } from "expo-router";
+import { type Href, useRouter, useSegments } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
-type NavTarget = {
-  /** Drawer screen name (matches `(app)/<name>` directory). */
-  drawer: "positions" | "wallets";
-  /** Nested stack screen name within the drawer screen's stack. */
-  screen: string;
-};
+type TAccentToken = "warning" | "success" | "error";
 
-type AccentToken = "warning" | "success" | "error";
-
-type NavEntry = {
+type TNavEntry = {
   key: string;
   label: string;
   icon: IconName;
   iconActive: IconName;
-  target: NavTarget;
-  /**
-   * Segment list (relative to the (app) group) used to detect the active entry.
-   * Matched as an exact tuple against the router segments after the (app) group.
-   */
+  href: Href;
   segments: string[];
-  /** Accent theme token for the active state (defaults to primary). */
-  accent?: AccentToken;
-  /** Add a colored shadow halo around the row when active. */
+  accent?: TAccentToken;
   glow?: boolean;
 };
 
@@ -43,13 +30,13 @@ const TRENDING_TOKENS: TickerToken[] = [
   { symbol: "PEPE", change: 12.5, chainId: 1, address: "0x6982508145454Ce325dDbE47a25d4ec3d2311933" },
 ];
 
-const PRIMARY_NAV: NavEntry[] = [
+const PRIMARY_NAV: TNavEntry[] = [
   {
     key: "positions",
     label: "Positions",
     icon: "stats-chart-outline",
     iconActive: "stats-chart",
-    target: { drawer: "positions", screen: "index" },
+    href: "/positions",
     segments: ["positions"],
   },
   {
@@ -57,32 +44,33 @@ const PRIMARY_NAV: NavEntry[] = [
     label: "Following",
     icon: "star-outline",
     iconActive: "star",
-    target: { drawer: "positions", screen: "following" },
+    href: "/positions/following",
     segments: ["positions", "following"],
     accent: "warning",
     glow: true,
   },
 ];
 
-const WALLETS_NAV: NavEntry = {
+const WALLETS_NAV: TNavEntry = {
   key: "wallets",
   label: "Wallets",
   icon: "wallet-outline",
   iconActive: "wallet",
-  target: { drawer: "wallets", screen: "index" },
+  href: "/wallets",
   segments: ["wallets"],
 };
 
 const arraysEqual = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((value, index) => value === b[index]);
 
-export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
+export const DrawerContent = function ({ navigation }: DrawerContentComponentProps) {
   const { theme } = useUnistyles();
+  const router = useRouter();
   const segments = useSegments();
 
   const relativeSegments = segments.filter((segment) => !segment.startsWith("("));
 
-  const navigate = (target: NavTarget) => {
-    navigation.navigate(target.drawer, { screen: target.screen });
+  const navigate = (href: Href) => {
+    router.navigate(href);
     navigation.closeDrawer();
   };
 
@@ -114,7 +102,7 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
               active={arraysEqual(entry.segments, relativeSegments)}
               accent={entry.accent ? theme[entry.accent] : undefined}
               glow={entry.glow}
-              onPress={() => navigate(entry.target)}
+              onPress={() => navigate(entry.href)}
             />
           ))}
         </View>
@@ -128,7 +116,7 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
           active={arraysEqual(WALLETS_NAV.segments, relativeSegments)}
           accent={WALLETS_NAV.accent ? theme[WALLETS_NAV.accent] : undefined}
           glow={WALLETS_NAV.glow}
-          onPress={() => navigate(WALLETS_NAV.target)}
+          onPress={() => navigate(WALLETS_NAV.href)}
         />
 
         <View style={styles.ticker}>
@@ -159,8 +147,6 @@ const styles = StyleSheet.create((theme) => ({
     paddingBottom: theme.spacing.sm,
   },
 
-  // Rotated primary-color square with a smaller surface-colored square punched
-  // through the middle — the literal "void" inside the brand mark.
   brandMark: {
     width: 26,
     height: 26,

@@ -1,6 +1,6 @@
 import { getAddress } from "viem";
 
-import type { LogoProvider } from "../../domain/logo-provider";
+import type { ILogoProvider, TLogoResult } from "../../domain/logo-provider";
 
 const CHAIN_NAMES: Record<number, string> = {
   1: "ethereum",
@@ -12,15 +12,18 @@ const CHAIN_NAMES: Record<number, string> = {
   43114: "avalanchec",
 };
 
-export class TrustWalletLogo implements LogoProvider {
+export class TrustWalletLogo implements ILogoProvider {
   constructor(
     private chainId: number,
     private address: string,
   ) {}
 
-  async resolve(): Promise<string | null> {
+  async resolve(): Promise<TLogoResult | null> {
     const chain = CHAIN_NAMES[this.chainId];
     if (!chain) return null;
-    return `https://assets-cdn.trustwallet.com/blockchains/${chain}/assets/${getAddress(this.address)}/logo.png`;
+    return {
+      url: `https://assets-cdn.trustwallet.com/blockchains/${chain}/assets/${getAddress(this.address)}/logo.png`,
+      verified: false,
+    };
   }
 }

@@ -2,24 +2,28 @@ import { UseCase } from "core/domain/base/usecase";
 import { inject, injectable } from "tsyringe";
 import type { WalletsRepository } from "wallets/data/wallets.repository";
 import { WALLETS_REPOSITORY } from "wallets/di/tokens";
-import { Wallet } from "wallets/domain/entities/wallet.entity";
+import { EWalletType, Wallet } from "wallets/domain/entities/wallet.entity";
 import type { TWalletDraft } from "wallets/domain/schemas/wallet.schema";
 
-type Input = TWalletDraft & { id?: string };
+type TInput = TWalletDraft & { id?: string };
+
+const normalizeAddress = (address: string, type: EWalletType): string =>
+  type === EWalletType.ERC20 ? address.toLowerCase() : address;
 
 @injectable()
-export class SaveWalletUseCase extends UseCase<boolean, Input> {
+export class SaveWalletUseCase extends UseCase<boolean, TInput> {
   constructor(@inject(WALLETS_REPOSITORY) private readonly repo: WalletsRepository) {
     super();
   }
 
-  async execute(input: Input): Promise<boolean> {
+  async execute(input: TInput): Promise<boolean> {
     if (input.id) return this.update(input.id, input);
     return this.create(input);
   }
 
   private create(input: TWalletDraft): boolean {
-    const exists = this.repo.getAll().some((w) => w.address.toLowerCase() === input.address.toLowerCase());
+    const target = normalizeAddress(input.address, input.type);
+    const exists = this.repo.getAll().some((w) => normalizeAddress(w.address, w.type) === target);
     if (exists) {
       this.alert.error("A wallet with this address already exists.", { title: "Duplicate wallet" });
       return false;
@@ -39,8 +43,10 @@ export class SaveWalletUseCase extends UseCase<boolean, Input> {
       return false;
     }
 
-    if (input.address.toLowerCase() !== existing.address.toLowerCase()) {
-      const dup = this.repo.getAll().some((w) => w.id !== id && w.address.toLowerCase() === input.address.toLowerCase());
+    const target = normalizeAddress(input.address, input.type);
+    const previous = normalizeAddress(existing.address, existing.type);
+    if (target !== previous) {
+      const dup = this.repo.getAll().some((w) => w.id !== id && normalizeAddress(w.address, w.type) === target);
       if (dup) {
         this.alert.error("Another wallet already uses this address.", { title: "Duplicate wallet" });
         return false;
@@ -51,7 +57,7 @@ export class SaveWalletUseCase extends UseCase<boolean, Input> {
       existing.id,
       input.name.length > 0 ? input.name : existing.name,
       input.address,
-      existing.type,
+      input.type,
       input.chainIds,
       existing.createdAt,
     );

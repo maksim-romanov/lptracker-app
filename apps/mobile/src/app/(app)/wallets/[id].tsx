@@ -17,7 +17,7 @@ const EditWalletScreen = observer(() => {
 
   useEffect(() => {
     if (wallet) container.resolve(WalletDraftStore).initFromWallet(wallet);
-  }, [wallet]);
+  }, [id]);
 
   if (!wallet) {
     return (

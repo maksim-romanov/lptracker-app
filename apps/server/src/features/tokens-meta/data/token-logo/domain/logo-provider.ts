@@ -1,3 +1,8 @@
-export interface LogoProvider {
-  resolve(): Promise<string | null>;
+export type TLogoResult = {
+  url: string;
+  verified: boolean;
+};
+
+export interface ILogoProvider {
+  resolve(): Promise<TLogoResult | null>;
 }

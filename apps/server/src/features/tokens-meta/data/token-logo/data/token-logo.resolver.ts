@@ -1,36 +1,36 @@
 import { singleton } from "tsyringe";
 
-import type { LogoProvider } from "../domain/logo-provider";
+import type { ILogoProvider } from "../domain/logo-provider";
 import type { TokenLogo } from "../domain/token-logo";
 import { LiFiLogo } from "./providers/lifi-logo.provider";
 import { OneInchLogo } from "./providers/oneinch-logo.provider";
 import { TrustWalletLogo } from "./providers/trustwallet-logo.provider";
 
-type LogoProviderConstructor = new (chainId: number, address: string) => LogoProvider;
+type TLogoProviderConstructor = new (chainId: number, address: string) => ILogoProvider;
 
-const PROVIDERS: LogoProviderConstructor[] = [TrustWalletLogo, OneInchLogo, LiFiLogo];
+const PROVIDERS: TLogoProviderConstructor[] = [TrustWalletLogo, OneInchLogo, LiFiLogo];
 const HEAD_TIMEOUT_MS = 3000;
 
 @singleton()
 export class TokenLogoResolver implements TokenLogo {
   async resolve(chainId: number, address: string): Promise<string | null> {
     for (const Provider of PROVIDERS) {
-      const url = await new Provider(chainId, address).resolve();
-      if (!url) continue;
+      const result = await new Provider(chainId, address).resolve();
+      if (!result) continue;
+      if (result.verified) return result.url;
       try {
-        const res = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(HEAD_TIMEOUT_MS) });
-        if (res.ok) return url;
+        const res = await fetch(result.url, { method: "HEAD", signal: AbortSignal.timeout(HEAD_TIMEOUT_MS) });
+        if (res.ok) return result.url;
       } catch {}
     }
     return null;
   }
 
   async resolveMany(tokens: { chainId: number; address: string }[]): Promise<Map<string, string | null>> {
-    const results = new Map<string, string | null>();
-    for (const t of tokens) {
-      results.set(cacheKey(t.chainId, t.address), await this.resolve(t.chainId, t.address));
-    }
-    return results;
+    const entries = await Promise.all(
+      tokens.map(async (t) => [cacheKey(t.chainId, t.address), await this.resolve(t.chainId, t.address)] as const),
+    );
+    return new Map(entries);
   }
 }
 

@@ -13,12 +13,12 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const FULL_SWIPE_AT = SCREEN_WIDTH * 0.55;
 const MIN_ACTION_WIDTH = 80;
 
-type Props = {
+type TProps = {
   wallet: WalletVM;
   onPress: () => void;
 };
 
-export const SwipeableWalletCard = ({ wallet, onPress }: Props) => {
+export const SwipeableWalletCard = function ({ wallet, onPress }: TProps) {
   const swipeRef = useRef<SwipeableMethods>(null);
   const { theme } = useUnistyles();
 
@@ -42,7 +42,7 @@ export const SwipeableWalletCard = ({ wallet, onPress }: Props) => {
   );
 };
 
-type RightActionProps = {
+type TRightActionProps = {
   translation: SharedValue<number>;
   swipeable: SwipeableMethods;
   onDelete: () => void;
@@ -50,7 +50,7 @@ type RightActionProps = {
   onColor: string;
 };
 
-const RightAction = ({ translation, swipeable, onDelete, color, onColor }: RightActionProps) => {
+const RightAction = function ({ translation, swipeable, onDelete, color, onColor }: TRightActionProps) {
   const fired = useRef(false);
 
   const triggerDelete = () => {
@@ -77,7 +77,7 @@ const RightAction = ({ translation, swipeable, onDelete, color, onColor }: Right
       <Pressable
         onPress={() => {
           swipeable.close();
-          onDelete();
+          triggerDelete();
         }}
         hitSlop={8}
         style={styles.tapZone}
