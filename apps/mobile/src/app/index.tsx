@@ -1,5 +1,8 @@
+import { container } from "core/di/container";
 import { type Href, Redirect } from "expo-router";
+import { WalletsStore } from "wallets/presentation/wallets.store";
 
 export default function Index() {
-  return <Redirect href={"/positions" as Href} />;
+  const store = container.resolve(WalletsStore);
+  return <Redirect href={(store.isEmpty ? "/onboarding" : "/positions") as Href} />;
 }

@@ -4,7 +4,7 @@ import { Stack } from "@grapp/stacks";
 import { CHAINS } from "core/config/chains";
 import { container } from "core/di/container";
 import { Button, Card, Icon, NetworkStack, Text, TextField } from "core/presentation/components";
-import { useRouter } from "expo-router";
+import { type Href, useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
@@ -14,9 +14,16 @@ import { WalletsStore } from "wallets/presentation/wallets.store";
 
 const TOTAL_CHAINS = Object.values(CHAINS).length;
 
+const DEFAULT_NETWORKS_HREF = "/wallets/networks" as Href;
+
 const ChevronIcon = withUnistyles(Icon, (theme) => ({ color: theme.onSurfaceVariant }));
 
-export const WalletForm = observer(() => {
+type Props = {
+  onSaved?: () => void;
+  networksHref?: Href;
+};
+
+export const WalletForm = observer(({ onSaved, networksHref = DEFAULT_NETWORKS_HREF }: Props) => {
   const router = useRouter();
   const draft = container.resolve(WalletDraftStore);
 
@@ -28,7 +35,8 @@ export const WalletForm = observer(() => {
     if (!saved) return;
 
     container.resolve(WalletsStore).hydrate();
-    router.back();
+    if (onSaved) onSaved();
+    else router.back();
   };
 
   const errors = draft.errors;
@@ -37,13 +45,14 @@ export const WalletForm = observer(() => {
 
   return (
     <KeyboardAwareScrollView
+      mode="layout"
       bottomOffset={20}
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="on-drag"
-      contentContainerStyle={[styles.scroll]}
+      contentContainerStyle={styles.scroll}
       showsVerticalScrollIndicator={false}
     >
-      <View style={styles.scrollInner}>
+      <View style={styles.fields}>
         <Stack space={6}>
           <Stack space={2}>
             <SectionLabel>Label · Optional</SectionLabel>
@@ -74,7 +83,7 @@ export const WalletForm = observer(() => {
 
           <Stack space={2}>
             <SectionLabel>Networks</SectionLabel>
-            <Card variant="outlined" padding="none" onPress={() => router.push("/wallets/networks")}>
+            <Card variant="outlined" padding="none" onPress={() => router.push(networksHref)}>
               <View style={styles.networkRow}>
                 <View style={styles.networkStack}>
                   <NetworkStack chainIds={draft.chainIds} size="xs" max={6} />
@@ -92,16 +101,16 @@ export const WalletForm = observer(() => {
             ) : null}
           </Stack>
         </Stack>
+      </View>
 
-        <View style={styles.footer}>
-          <Button
-            title={draft.isEdit ? "Save changes" : "Track wallet"}
-            variant="primary"
-            size="lg"
-            disabled={!draft.isValid}
-            onPress={onSubmit}
-          />
-        </View>
+      <View style={styles.footer}>
+        <Button
+          title={draft.isEdit ? "Save changes" : "Track wallet"}
+          variant="primary"
+          size="lg"
+          disabled={!draft.isValid}
+          onPress={onSubmit}
+        />
       </View>
     </KeyboardAwareScrollView>
   );
@@ -113,23 +122,16 @@ const SectionLabel = ({ children }: { children: string }) => (
   </Text>
 );
 
-const styles = StyleSheet.create((theme) => ({
-  root: {
-    flex: 1,
-  },
-
-  scrollOuter: {
-    flex: 1,
-  },
-
+const styles = StyleSheet.create((theme, rt) => ({
   scroll: {
     flexGrow: 1,
     paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.lg,
+    paddingBottom: Math.max(rt.insets.bottom, theme.spacing.md),
   },
 
-  scrollInner: {
+  fields: {
     flex: 1,
-    justifyContent: "space-between",
   },
 
   networkRow: {
@@ -147,6 +149,6 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   footer: {
-    paddingBottom: theme.spacing.md,
+    paddingTop: theme.spacing.md,
   },
 }));

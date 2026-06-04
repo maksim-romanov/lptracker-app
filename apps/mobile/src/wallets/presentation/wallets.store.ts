@@ -23,6 +23,7 @@ export class WalletsStore extends Store {
       name: "WalletsStore",
       properties: ["activeWalletId"],
     });
+    this.hydrate();
   }
 
   @computed
