@@ -5,7 +5,7 @@ import { Box, Stack } from "@grapp/stacks";
 import { CHAIN_BY_ID } from "core/config/chains";
 import { container } from "core/di/container";
 import { OpenExternalLinkUseCase } from "core/linking";
-import { Button, Card, Divider, ProtocolStrip, Text } from "core/presentation/components";
+import { Button, Card, Divider, ProtocolStrip, PullToRefreshScrollView, Text } from "core/presentation/components";
 import { formatUsd, truncateAddress } from "core/presentation/utils/format";
 import { PositionHeroCard } from "features/uniswap-v3/presentation/components/PositionHeroCard";
 import { PositionStickyPill } from "features/uniswap-v3/presentation/components/PositionStickyPill";
@@ -13,11 +13,14 @@ import type { PositionDetailVM } from "positions/data/fixtures/positions.fixture
 import { AiPredictCard } from "positions/presentation/components/AiPredictCard";
 import { StatRow } from "positions/presentation/components/StatRow";
 import { TokenAmountRow } from "positions/presentation/components/TokenAmountRow";
-import Animated, { useAnimatedRef, useScrollOffset, useSharedValue } from "react-native-reanimated";
+import type Animated from "react-native-reanimated";
+import { useAnimatedRef, useSharedValue } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 
 type TProps = {
   position: PositionDetailVM;
+  refreshing: boolean;
+  onRefresh: () => void;
 };
 
 const uniswapPositionUrl = (chainId: number, id: string): string | null => {
@@ -26,9 +29,9 @@ const uniswapPositionUrl = (chainId: number, id: string): string | null => {
   return `https://app.uniswap.org/positions/v3/${chain.key}/${id}`;
 };
 
-export const PositionDetailView = ({ position }: TProps) => {
+export const PositionDetailView = ({ position, refreshing, onRefresh }: TProps) => {
   const animatedRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollOffset = useScrollOffset(animatedRef);
+  const scrollOffset = useSharedValue(0);
   const heroEndY = useSharedValue(0);
 
   const onHeroLayout = (e: LayoutChangeEvent) => {
@@ -46,11 +49,13 @@ export const PositionDetailView = ({ position }: TProps) => {
 
   return (
     <View style={styles.root}>
-      <Animated.ScrollView
-        ref={animatedRef}
+      <PullToRefreshScrollView
+        scrollRef={animatedRef}
+        scrollOffset={scrollOffset}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         contentContainerStyle={styles.content}
         contentInsetAdjustmentBehavior="automatic"
-        scrollEventThrottle={16}
       >
         <View onLayout={onHeroLayout}>
           <PositionHeroCard position={position} />
@@ -99,7 +104,7 @@ export const PositionDetailView = ({ position }: TProps) => {
             />
           )}
         </Stack>
-      </Animated.ScrollView>
+      </PullToRefreshScrollView>
 
       <PositionStickyPill position={position} scrollOffset={scrollOffset} heroEndY={heroEndY} />
     </View>
