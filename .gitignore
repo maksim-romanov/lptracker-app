@@ -41,7 +41,7 @@ yarn-error.log*
 *.pem
 
 **/CLAUDE.md
-!.claude/CLAUDE.md
+!CLAUDE.md
 !apps/mobile/CLAUDE.md
 !apps/server/CLAUDE.md
 !apps/subgraphs/uniswap-v3/CLAUDE.md
