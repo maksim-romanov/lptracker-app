@@ -4,7 +4,6 @@ import * as apiClient from "core/api-client/di/register";
 import * as linking from "core/linking/di/register";
 import * as query from "core/query/di/register";
 import { AppInfoService, DeviceInfoService, ReactNativeAlerts, ReactNativeLogger } from "core/services";
-import * as uniswapV3 from "features/uniswap-v3/di/register";
 import * as positions from "positions/di/register";
 import * as wallets from "wallets/di/register";
 
@@ -24,9 +23,6 @@ function register() {
   // Entities
   positions.register();
   wallets.register();
-
-  // Features
-  uniswapV3.register();
 }
 
 // Auto-register on import
