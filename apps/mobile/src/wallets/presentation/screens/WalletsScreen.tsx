@@ -48,7 +48,6 @@ export const WalletsScreen = observer(() => {
         <EmptyState
           icon="wallet-outline"
           tint="primary"
-          dense
           title="No wallets yet"
           description="Add your first EVM address above to start tracking positions across chains."
           style={styles.empty}

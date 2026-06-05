@@ -18,7 +18,6 @@ type Props = {
   onAction?: () => void;
   secondaryActionLabel?: string;
   onSecondaryAction?: () => void;
-  dense?: boolean;
   style?: ViewStyle;
 };
 
@@ -34,13 +33,12 @@ export const EmptyState = ({
   onAction,
   secondaryActionLabel,
   onSecondaryAction,
-  dense,
   style,
 }: Props) => {
-  styles.useVariants({ tint, dense: !!dense });
+  styles.useVariants({ tint });
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.stack, style]}>
       {icon ? (
         <View style={styles.iconBubble}>
           <ThemedIcon name={icon} size="2xl" uniProps={(theme) => ({ color: theme[tint] })} />
@@ -65,24 +63,10 @@ export const EmptyState = ({
 };
 
 const styles = StyleSheet.create((theme) => ({
-  container: {
+  stack: {
     alignItems: "center",
-    justifyContent: "center",
     gap: theme.spacing.lg,
     paddingHorizontal: theme.spacing["3xl"],
-
-    variants: {
-      dense: {
-        true: {},
-        false: { flex: 1 },
-      },
-      tint: {
-        primary: {},
-        warning: {},
-        success: {},
-        error: {},
-      },
-    },
   },
 
   iconBubble: {

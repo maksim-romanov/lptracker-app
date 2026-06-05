@@ -1,9 +1,11 @@
 import { useEffect } from "react";
+import { View } from "react-native";
 
 import { container } from "core/di/container";
 import { EmptyState } from "core/presentation/components";
 import { type Href, useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
+import { StyleSheet } from "react-native-unistyles";
 import { WalletForm } from "wallets/presentation/components/WalletForm";
 import { WalletDraftStore } from "wallets/presentation/wallet-draft.store";
 import { WalletsStore } from "wallets/presentation/wallets.store";
@@ -26,17 +28,35 @@ export const WalletFormScreen = observer(({ walletId }: TProps) => {
 
   if (walletId && !wallet) {
     return (
-      <EmptyState
-        icon="wallet-outline"
-        tint="primary"
-        title="Wallet not found"
-        description="This wallet was removed or doesn't exist on this device."
-        actionLabel="Back to wallets"
-        actionIcon="chevron-back-outline"
-        onAction={() => router.replace("/wallets" as Href)}
-      />
+      <View style={styles.emptyRoot}>
+        <View style={styles.beforeStack} />
+        <EmptyState
+          icon="wallet-outline"
+          tint="primary"
+          title="Wallet not found"
+          description="This wallet was removed or doesn't exist on this device."
+          actionLabel="Back to wallets"
+          actionIcon="chevron-back-outline"
+          onAction={() => router.replace("/wallets" as Href)}
+        />
+        <View style={styles.afterStack} />
+      </View>
     );
   }
 
   return <WalletForm />;
 });
+
+const styles = StyleSheet.create(() => ({
+  emptyRoot: {
+    flex: 1,
+  },
+
+  beforeStack: {
+    flex: 30,
+  },
+
+  afterStack: {
+    flex: 70,
+  },
+}));

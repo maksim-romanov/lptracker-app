@@ -30,15 +30,19 @@ export const PositionDetailScreen = observer(({ id }: TProps) => {
 
   if (!position) {
     return (
-      <EmptyState
-        icon="search-outline"
-        tint="primary"
-        title="Position not found"
-        description="This position no longer exists or has been removed."
-        actionLabel="Back to positions"
-        actionIcon="chevron-back-outline"
-        onAction={() => router.replace("/positions" as Href)}
-      />
+      <View style={styles.emptyRoot}>
+        <View style={styles.beforeStack} />
+        <EmptyState
+          icon="search-outline"
+          tint="primary"
+          title="Position not found"
+          description="This position no longer exists or has been removed."
+          actionLabel="Back to positions"
+          actionIcon="chevron-back-outline"
+          onAction={() => router.replace("/positions" as Href)}
+        />
+        <View style={styles.afterStack} />
+      </View>
     );
   }
 
@@ -82,5 +86,17 @@ const styles = StyleSheet.create(() => ({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  emptyRoot: {
+    flex: 1,
+  },
+
+  beforeStack: {
+    flex: 30,
+  },
+
+  afterStack: {
+    flex: 70,
   },
 }));

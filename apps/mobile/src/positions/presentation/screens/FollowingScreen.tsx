@@ -34,17 +34,17 @@ export const FollowingScreen = observer(() => {
         showsVerticalScrollIndicator={false}
         scrollEnabled={false}
       >
-        <View style={styles.emptyBanner}>
+        <View style={styles.bannerSlot}>
           <WidgetBanner />
         </View>
-        <View style={styles.emptyBody}>
-          <EmptyState
-            icon="star-outline"
-            tint="warning"
-            title="Nothing followed yet"
-            description="Tap the star on any position to track it. Followed positions can be pinned to your home screen."
-          />
-        </View>
+        <View style={styles.beforeStack} />
+        <EmptyState
+          icon="star-outline"
+          tint="warning"
+          title="Nothing followed yet"
+          description="Tap the star on any position to track it. Followed positions can be pinned to your home screen."
+        />
+        <View style={styles.afterStack} />
       </ScrollView>
     );
   }
@@ -94,12 +94,16 @@ const styles = StyleSheet.create((theme) => ({
     flexGrow: 1,
   },
 
-  emptyBanner: {
+  bannerSlot: {
     paddingHorizontal: theme.spacing.xl,
     paddingTop: theme.spacing.lg,
   },
 
-  emptyBody: {
-    flex: 1,
+  beforeStack: {
+    flex: 25,
+  },
+
+  afterStack: {
+    flex: 75,
   },
 }));
