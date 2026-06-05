@@ -39,7 +39,8 @@
       "!apps/subgraphs/**/generated",
       "!apps/server/**/gql",
       "!apps/server/openapi",
-      "!apps/server/src/shared/clients/tokens-data/generated.ts",
+      "!apps/server/src/features/token-prices/data/tokens-data.generated.ts",
+      "!apps/mobile/src/core/tokens-data/generated.d.ts",
       "!apps/tokens-data/generated"
     ]
   },

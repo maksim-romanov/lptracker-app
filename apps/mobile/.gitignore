@@ -42,3 +42,4 @@ yarn-error.*
 
 # generated types (openapi-typescript)
 **/generated/
+**/generated.d.ts
