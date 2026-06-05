@@ -14,7 +14,6 @@ import {
   listResponseSchema,
   type Position,
 } from "shared/contracts";
-import { positionSchema } from "./schemas/position.schema";
 import { DomainError } from "shared/errors/base.error";
 import type { MapPositionResult } from "uniswap-v3/presentation/mappers/position.mapper";
 
@@ -22,6 +21,7 @@ import { isKnownChainId } from "../../app/networks/catalog";
 import { protocolRegistry } from "../../app/protocols/registry";
 import type { ProtocolEntry } from "../../app/protocols/types";
 import { badRequest, mapErrorToHttpResponse, notFound, validationHook } from "./error-mapper";
+import { positionSchema } from "./schemas/position.schema";
 import { parsePositionRef, positionRefParamSchema, positionsListQuerySchema, type WalletScopeEntry } from "./schemas/request.schemas";
 import { TokensMapBuilder } from "./utils/tokens-map";
 

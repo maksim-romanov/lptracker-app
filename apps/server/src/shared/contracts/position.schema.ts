@@ -1,7 +1,7 @@
 import * as v from "valibot";
 
-import { tokenAmountSchema } from "./token-amount.schema";
 import { tokenRefSchema } from "./token.schema";
+import { tokenAmountSchema } from "./token-amount.schema";
 
 export const containerSchema = v.pipe(
   v.object({
@@ -46,7 +46,10 @@ const positionBaseShape = {
  * Minimum interface a protocol's extension schema must satisfy:
  * a Valibot object schema whose `type` property is a literal string discriminator.
  */
-export type ExtensionVariantSchema = v.ObjectSchema<{ type: v.LiteralSchema<string, undefined> } & Record<string, v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>, undefined>;
+export type ExtensionVariantSchema = v.ObjectSchema<
+  { type: v.LiteralSchema<string, undefined> } & Record<string, v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>,
+  undefined
+>;
 
 /**
  * Forward-compat fallback for clients receiving an extension whose protocol they
