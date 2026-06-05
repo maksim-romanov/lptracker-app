@@ -12,7 +12,7 @@ export type TickerToken = {
   /** 24h percent change, e.g. +2.4 or -1.8. */
   change: number;
   address?: string;
-  chainId?: number | string;
+  chainId?: number;
 };
 
 type Props = {
