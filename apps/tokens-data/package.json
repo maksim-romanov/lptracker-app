@@ -2,6 +2,8 @@
   "name": "tokens-data",
   "scripts": {
     "dev": "bun run --watch src/index.ts",
+    "dev:ios": "bun run --watch src/index.ts",
+    "dev:android": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
     "codegen": "bun run codegen.ts",
     "lint": "biome check .",
