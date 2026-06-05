@@ -5,7 +5,7 @@ import type { PositionFeesCache } from "../data/position-fees.cache";
 import { PositionsRepository } from "../data/positions.repository";
 import { POSITION_FEES_CACHE } from "../di/tokens";
 import type { PositionEntity } from "../domain/entities/position.entity";
-import { PositionError } from "../domain/errors/position.error";
+import type { PositionError } from "../domain/errors/position.error";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
 import { type MapPositionResult, type MapperUnclaimedFees, mapV3PositionToContract } from "../presentation/mappers/position.mapper";
@@ -30,7 +30,7 @@ export class GetPositionUseCase {
     const dto = result.value;
 
     const poolStateResult = await this.positionsRepository.getPoolState(dto.pool.id);
-    if (poolStateResult.isErr()) return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+    if (poolStateResult.isErr()) return err(poolStateResult.error);
 
     const entity = dto.toDomain(poolStateResult.value);
 

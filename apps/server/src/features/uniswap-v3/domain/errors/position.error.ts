@@ -1,4 +1,4 @@
-import { DomainError } from "shared/errors/base.error";
+import { DomainError, type DomainErrorOpts } from "shared/errors/base.error";
 
 export enum PositionErrorCode {
   POSITION_NOT_FOUND = "POSITION_NOT_FOUND",
@@ -13,15 +13,26 @@ const errorMessages: Record<PositionErrorCode, string> = {
 };
 
 export class PositionError extends DomainError<PositionErrorCode> {
-  static readonly CODE = PositionErrorCode;
-  name = "PositionError";
+  static readonly CODES = PositionErrorCode;
 
-  constructor(code: PositionErrorCode, message?: string, context: Record<string, unknown> = {}) {
+  constructor(code: PositionErrorCode, message?: string, context?: Record<string, unknown>) {
     super(code, message ?? errorMessages[code], context);
   }
 
   get isNotFound(): boolean {
     return this.code === PositionErrorCode.POSITION_NOT_FOUND;
+  }
+
+  static POSITION_NOT_FOUND(opts?: DomainErrorOpts) {
+    return PositionError.create(PositionError.CODES.POSITION_NOT_FOUND, opts);
+  }
+
+  static GRAPHQL_ERROR(opts?: DomainErrorOpts) {
+    return PositionError.create(PositionError.CODES.GRAPHQL_ERROR, opts);
+  }
+
+  static UNEXPECTED_ERROR(opts?: DomainErrorOpts) {
+    return PositionError.create(PositionError.CODES.UNEXPECTED_ERROR, opts);
   }
 
   static isInstance(error: unknown): error is PositionError {
