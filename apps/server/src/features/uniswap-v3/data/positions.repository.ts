@@ -49,19 +49,19 @@ export class PositionsRepository extends BaseRepository {
       const result = await this.gql.request(getWalletPositionsQuery, { owner, ...pagination, ...filters });
       const positions = result.positions.map((p) => GraphQLPositionDto.fromGraphQL(p, this.chainContext.chain.id));
       return ok(positions);
-    } catch {
-      return err(new PositionError(PositionError.CODE.GRAPHQL_ERROR));
+    } catch (error) {
+      return err(PositionError.GRAPHQL_ERROR({ error, context: { owner, ...pagination } }));
     }
   }
 
   async getPosition(id: string) {
     try {
       const result = await this.gql.request(getPositionQuery, { id });
-      if (!result.position) return err(new PositionError(PositionError.CODE.POSITION_NOT_FOUND));
+      if (!result.position) return err(PositionError.POSITION_NOT_FOUND({ context: { id } }));
       const position = GraphQLPositionDto.fromGraphQL(result.position, this.chainContext.chain.id);
       return ok(position);
-    } catch {
-      return err(new PositionError(PositionError.CODE.GRAPHQL_ERROR));
+    } catch (error) {
+      return err(PositionError.GRAPHQL_ERROR({ error, context: { id } }));
     }
   }
 
@@ -69,7 +69,7 @@ export class PositionsRepository extends BaseRepository {
     const result = await this.getPoolStates([poolAddress]);
     if (result.isErr()) return err(result.error);
     const state = result.value.get(poolAddress);
-    if (!state) return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+    if (!state) return err(PositionError.UNEXPECTED_ERROR({ message: "Pool state missing after multicall", context: { poolAddress } }));
     return ok(state);
   }
 
@@ -87,8 +87,8 @@ export class PositionsRepository extends BaseRepository {
         if (address) map.set(address, { sqrtPriceX96: slot0[0], currentTick: slot0[1], liquidity });
       }
       return ok(map);
-    } catch {
-      return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+    } catch (error) {
+      return err(PositionError.UNEXPECTED_ERROR({ error, context: { poolAddresses: unique } }));
     }
   }
 
@@ -96,8 +96,8 @@ export class PositionsRepository extends BaseRepository {
     try {
       const results = await this.rpc.multicall({ contracts: this.buildFeeContracts(position) });
       return ok(parsePositionFeeResult(results));
-    } catch {
-      return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+    } catch (error) {
+      return err(PositionError.UNEXPECTED_ERROR({ error, context: { positionId: position.id } }));
     }
   }
 
@@ -113,8 +113,8 @@ export class PositionsRepository extends BaseRepository {
         feeDataMap.set(positions[i]!.id, parsePositionFeeResult(results.slice(i * 5, i * 5 + 5)));
       }
       return ok(feeDataMap);
-    } catch {
-      return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
+    } catch (error) {
+      return err(PositionError.UNEXPECTED_ERROR({ error, context: { positionCount: positions.length } }));
     }
   }
 
