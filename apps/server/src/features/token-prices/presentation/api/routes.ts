@@ -4,7 +4,7 @@ import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
 import { container } from "tsyringe";
 
-import { TokensDataClient } from "../../../../shared/clients/tokens-data/client";
+import { TokensDataClient } from "../../data/tokens-data-client";
 import { cacheKey } from "../../domain/types";
 import { type PriceParams, type PriceQuery, priceParamsSchema, priceQuerySchema } from "../schemas/request.schemas";
 

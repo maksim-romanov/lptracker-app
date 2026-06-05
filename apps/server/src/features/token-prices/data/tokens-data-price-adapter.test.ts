@@ -2,9 +2,9 @@ import "reflect-metadata";
 
 import { container } from "tsyringe";
 
-import type { TokenPriceQuery } from "../../../features/token-prices/domain/types";
-import { TokensDataClient } from "./client";
-import { TokensDataPriceAdapter } from "./price-adapter";
+import type { TokenPriceQuery } from "../domain/types";
+import { TokensDataClient } from "./tokens-data-client";
+import { TokensDataPriceAdapter } from "./tokens-data-price-adapter";
 import { beforeEach, describe, expect, test } from "bun:test";
 
 class FakeClient {

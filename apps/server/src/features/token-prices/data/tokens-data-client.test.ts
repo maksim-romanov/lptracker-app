@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { TokensDataClient, TokensDataError } from "./client";
+import { TokensDataClient, TokensDataError } from "./tokens-data-client";
 import { describe, expect, test } from "bun:test";
 
 class TestableClient extends TokensDataClient {
