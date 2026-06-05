@@ -5,7 +5,7 @@
     "dev:ios": "bun run --watch src/index.ts",
     "dev:android": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
-    "codegen": "graphql-codegen --config codegen.ts && bun run scripts/generate-openapi.ts",
+    "codegen": "graphql-codegen --config codegen.ts && bun run scripts/generate-openapi.ts && bun run scripts/generate-tokens-data-types.ts",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit"
