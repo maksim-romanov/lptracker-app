@@ -17,7 +17,7 @@ type TProps = {
 
 export const PositionDetailScreen = observer(({ id }: TProps) => {
   const router = useRouter();
-  const { data: position, isLoading } = usePositionByIdQuery(id);
+  const { data: position, isLoading, isRefetching, refetch } = usePositionByIdQuery(id);
   const followingStore = container.resolve(FollowingStore);
 
   if (isLoading) {
@@ -63,7 +63,15 @@ export const PositionDetailScreen = observer(({ id }: TProps) => {
       {(() => {
         switch (position.protocol) {
           case "uniswap-v3":
-            return <PositionDetailView position={position} />;
+            return (
+              <PositionDetailView
+                position={position}
+                refreshing={isRefetching}
+                onRefresh={() => {
+                  refetch();
+                }}
+              />
+            );
         }
       })()}
     </>
