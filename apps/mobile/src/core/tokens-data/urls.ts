@@ -1,5 +1,5 @@
-import { env } from "core/config/env";
+import { config } from "core/config";
 
 export const tokensDataUrls = {
-  logo: (chainId: number, address: string): string => `${env.tokensDataUrl}/v1/chains/${chainId}/tokens/${address}/logo.png`,
+  logo: (chainId: number, address: string): string => `${config.tokensDataUrl}/v1/chains/${chainId}/tokens/${address}/logo.png`,
 };
