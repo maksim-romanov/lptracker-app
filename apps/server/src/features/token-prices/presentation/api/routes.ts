@@ -4,23 +4,18 @@ import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
 import { container } from "tsyringe";
 
-import { TokenPriceCache } from "../../data/token-price.cache";
+import { TokensDataClient } from "../../../../shared/clients/tokens-data/client";
 import { cacheKey } from "../../domain/types";
 import { type PriceParams, type PriceQuery, priceParamsSchema, priceQuerySchema } from "../schemas/request.schemas";
-import { pricesResponseSchema } from "../schemas/response.schemas";
 
 export const routes = new Hono();
 
 routes.get(
   "/chains/:chainId/tokens",
   describeRoute({
-    tags: ["Token Prices"],
-    summary: "Get token prices",
-    description: "Fetches current USD prices for the specified tokens on a given chain",
-    responses: {
-      200: { description: "Token prices" },
-      400: { description: "Invalid parameters" },
-    },
+    tags: ["Token Prices (Deprecated)"],
+    summary: "[Deprecated] Get token prices — use tokens-data /v1/batch/prices",
+    responses: { 200: { description: "Token prices" }, 400: { description: "Invalid parameters" } },
   }),
   validator("param", priceParamsSchema),
   validator("query", priceQuerySchema),
@@ -28,16 +23,14 @@ routes.get(
     const { chainId } = c.req.valid("param") as PriceParams;
     const { addresses } = c.req.valid("query") as PriceQuery;
 
-    const service = container.resolve(TokenPriceCache);
-    const queries = addresses.map((address) => ({ chainId, address }));
-    const priceMap = await service.getPrices(queries);
+    const client = container.resolve(TokensDataClient);
+    const response = await client.batchPrices(addresses.map((address) => ({ chainId, address })));
 
     const prices: Record<string, { priceUSD: number; confidence: number } | null> = {};
-    for (const address of addresses) {
-      const key = cacheKey(chainId, address);
-      prices[address] = priceMap.get(key) ?? null;
-    }
+    for (const address of addresses) prices[address] = response.prices[cacheKey(chainId, address)] ?? null;
 
+    c.header("Deprecation", "true");
+    c.header("Link", `<${process.env.TOKENS_DATA_URL ?? "http://localhost:3100"}/v1/batch/prices>; rel="successor-version"`);
     return c.json({ prices });
   },
 );

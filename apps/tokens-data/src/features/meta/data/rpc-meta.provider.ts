@@ -1,7 +1,6 @@
+import { BaseExternalProvider, type ExternalProviderConfig } from "shared/providers/base-external-provider";
 import { singleton } from "tsyringe";
 import { type Address, createPublicClient, erc20Abi, http, type PublicClient } from "viem";
-
-import { BaseExternalProvider, type ExternalProviderConfig } from "shared/providers/base-external-provider";
 
 import type { TokenMeta, TokenMetaQuery } from "../domain/types";
 import { metaCacheKey } from "../domain/types";

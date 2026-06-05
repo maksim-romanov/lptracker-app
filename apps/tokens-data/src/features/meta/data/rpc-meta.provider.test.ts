@@ -1,8 +1,7 @@
 import "reflect-metadata";
 
-import { describe, expect, test } from "bun:test";
-
 import { RpcMetaProvider } from "./rpc-meta.provider";
+import { describe, expect, test } from "bun:test";
 
 class TestableRpcProvider extends RpcMetaProvider {
   public multicallCalls: Array<{ chainId: number; addresses: string[] }> = [];

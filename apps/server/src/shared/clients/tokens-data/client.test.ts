@@ -1,8 +1,7 @@
 import "reflect-metadata";
 
-import { describe, expect, test } from "bun:test";
-
 import { TokensDataClient, TokensDataError } from "./client";
+import { describe, expect, test } from "bun:test";
 
 class TestableClient extends TokensDataClient {
   public nextResponse: { status: number; body: unknown; headers?: Record<string, string> } = {
@@ -13,10 +12,10 @@ class TestableClient extends TokensDataClient {
 
   protected async doFetch(url: string, init?: RequestInit): Promise<Response> {
     this.lastRequest = { method: init?.method ?? "GET", url, body: init?.body as string | undefined };
-    return new Response(
-      this.nextResponse.body == null ? null : JSON.stringify(this.nextResponse.body),
-      { status: this.nextResponse.status, headers: this.nextResponse.headers ?? { "content-type": "application/json" } },
-    );
+    return new Response(this.nextResponse.body == null ? null : JSON.stringify(this.nextResponse.body), {
+      status: this.nextResponse.status,
+      headers: this.nextResponse.headers ?? { "content-type": "application/json" },
+    });
   }
 }
 

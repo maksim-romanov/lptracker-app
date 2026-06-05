@@ -21,10 +21,11 @@ export class TokensDataClient {
   }
 
   async getLogoUrl(chainId: number, address: string): Promise<string | null> {
-    const res = await this.doFetch(
-      `${this.baseUrl}/v1/chains/${chainId}/tokens/${address}/logo.png`,
-      { method: "GET", redirect: "manual", signal: AbortSignal.timeout(this.timeout) },
-    );
+    const res = await this.doFetch(`${this.baseUrl}/v1/chains/${chainId}/tokens/${address}/logo.png`, {
+      method: "GET",
+      redirect: "manual",
+      signal: AbortSignal.timeout(this.timeout),
+    });
     if (res.status === 302) return res.headers.get("location");
     if (res.status === 404) return null;
     throw new TokensDataError(res.status, await res.text());

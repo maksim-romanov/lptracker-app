@@ -1,8 +1,8 @@
 import { err, ok } from "neverthrow";
 import { inject, injectable } from "tsyringe";
 
-import type { TokenLogo } from "../domain/token-logo";
 import { TOKEN_LOGO_SERVICE } from "../di/tokens";
+import type { TokenLogo } from "../domain/token-logo";
 
 @injectable()
 export class ResolveLogoUseCase {

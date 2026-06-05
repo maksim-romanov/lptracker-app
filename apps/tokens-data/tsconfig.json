@@ -10,5 +10,6 @@
       "features/*": ["features/*"],
       "shared/*": ["shared/*"]
     }
-  }
+  },
+  "exclude": ["codegen.ts"]
 }

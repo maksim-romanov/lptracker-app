@@ -1,6 +1,5 @@
 import "reflect-metadata";
 
-import { beforeEach, describe, expect, test } from "bun:test";
 import { container } from "tsyringe";
 
 import { REDIS } from "../../../di/tokens";
@@ -8,6 +7,7 @@ import { FakeRedis } from "../../../shared/cache/fake-redis";
 import type { TokenMeta, TokenMetaQuery } from "../domain/types";
 import { RpcMetaProvider } from "./rpc-meta.provider";
 import { TokenMetaCache } from "./token-meta.cache";
+import { beforeEach, describe, expect, test } from "bun:test";
 
 class FakeProvider {
   callCount = 0;

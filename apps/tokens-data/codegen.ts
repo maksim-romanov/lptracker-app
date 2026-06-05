@@ -2,10 +2,10 @@ import "reflect-metadata";
 
 import { Hono } from "hono";
 import { openAPIRouteHandler } from "hono-openapi";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
 
 import { v1Routes } from "./src/presentation/api/routes";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 
 const OUTPUT = join(import.meta.dir, "generated", "openapi.json");
 

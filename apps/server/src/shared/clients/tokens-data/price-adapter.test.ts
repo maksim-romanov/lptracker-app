@@ -1,11 +1,11 @@
 import "reflect-metadata";
 
-import { beforeEach, describe, expect, test } from "bun:test";
 import { container } from "tsyringe";
 
 import type { TokenPriceQuery } from "../../../features/token-prices/domain/types";
 import { TokensDataClient } from "./client";
 import { TokensDataPriceAdapter } from "./price-adapter";
+import { beforeEach, describe, expect, test } from "bun:test";
 
 class FakeClient {
   next = { prices: {} as Record<string, { priceUSD: number; confidence: number } | null> };
