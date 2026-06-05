@@ -2,6 +2,7 @@ import "reflect-metadata";
 
 import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
+import { config } from "shared/config";
 import { container } from "tsyringe";
 import * as v from "valibot";
 
@@ -29,10 +30,7 @@ routes.get(
     if (!url) return c.json({ error: "Logo not found" }, 404);
 
     c.header("Deprecation", "true");
-    c.header(
-      "Link",
-      `<${process.env.TOKENS_DATA_URL ?? "http://localhost:3100"}/v1/chains/${chainId}/tokens/${address}/logo.png>; rel="successor-version"`,
-    );
+    c.header("Link", `<${config.api.tokensData.baseUrl}/v1/chains/${chainId}/tokens/${address}/logo.png>; rel="successor-version"`);
     return c.redirect(url, 302);
   },
 );

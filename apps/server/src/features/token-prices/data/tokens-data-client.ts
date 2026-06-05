@@ -1,3 +1,4 @@
+import { config } from "shared/config";
 import { singleton } from "tsyringe";
 
 type BatchPricesResponse = {
@@ -6,7 +7,7 @@ type BatchPricesResponse = {
 
 @singleton()
 export class TokensDataClient {
-  private readonly baseUrl = process.env.TOKENS_DATA_URL ?? "http://localhost:3100";
+  private readonly baseUrl = config.api.tokensData.baseUrl;
   private readonly timeout = 5000;
 
   async batchPrices(tokens: Array<{ chainId: number; address: string }>): Promise<BatchPricesResponse> {

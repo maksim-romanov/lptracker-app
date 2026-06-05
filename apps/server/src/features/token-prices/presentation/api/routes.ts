@@ -2,6 +2,7 @@ import "reflect-metadata";
 
 import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
+import { config } from "shared/config";
 import { container } from "tsyringe";
 
 import { TokensDataClient } from "../../data/tokens-data-client";
@@ -30,7 +31,7 @@ routes.get(
     for (const address of addresses) prices[address] = response.prices[cacheKey(chainId, address)] ?? null;
 
     c.header("Deprecation", "true");
-    c.header("Link", `<${process.env.TOKENS_DATA_URL ?? "http://localhost:3100"}/v1/batch/prices>; rel="successor-version"`);
+    c.header("Link", `<${config.api.tokensData.baseUrl}/v1/batch/prices>; rel="successor-version"`);
     return c.json({ prices });
   },
 );

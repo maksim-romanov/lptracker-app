@@ -1,3 +1,4 @@
+import { config as appConfig } from "shared/config";
 import { BaseExternalProvider, type ExternalProviderConfig } from "shared/providers/base-external-provider";
 import { singleton } from "tsyringe";
 import { type Address, createPublicClient, erc20Abi, http, type PublicClient } from "viem";
@@ -77,9 +78,7 @@ export class RpcMetaProvider extends BaseExternalProvider<TokenMetaQuery[], Map<
   private getClient(chainId: number): PublicClient {
     const existing = this.clients.get(chainId);
     if (existing) return existing;
-    const rpcUrl = process.env[`RPC_URL_${chainId}`];
-    if (!rpcUrl) throw new Error(`No RPC URL configured for chain ${chainId} (set RPC_URL_${chainId})`);
-    const client = createPublicClient({ transport: http(rpcUrl) }) as PublicClient;
+    const client = createPublicClient({ transport: http(appConfig.rpc.urlFor(chainId)) }) as PublicClient;
     this.clients.set(chainId, client);
     return client;
   }
