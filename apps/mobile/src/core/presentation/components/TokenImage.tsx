@@ -28,7 +28,7 @@ type TokensImagesProps = {
 const OVERLAP = 0.65;
 const DIAMETER: Record<TokenImageSize, number> = { sm: 32, md: 44, lg: 56 };
 
-const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
+const TOKENS_DATA_URL = process.env.EXPO_PUBLIC_TOKENS_DATA_URL ?? "http://localhost:3100";
 
 const hashSeed = (s: string): number => {
   let h = 0;
@@ -70,7 +70,7 @@ export const TokenImage = ({ token, chainId, imageUrl, size = "md", style }: Tok
   const [errored, setErrored] = useState(false);
 
   const remoteUrl =
-    imageUrl ?? (BASE_URL && chainId && token.address ? `${BASE_URL}/meta/v1/chains/${chainId}/tokens/${token.address}/logo.png` : undefined);
+    imageUrl ?? (chainId && token.address ? `${TOKENS_DATA_URL}/v1/chains/${chainId}/tokens/${token.address}/logo.png` : undefined);
 
   styles.useVariants({ size });
 
