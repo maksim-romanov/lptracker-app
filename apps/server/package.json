@@ -2,8 +2,6 @@
   "name": "server",
   "scripts": {
     "dev": "bun run --watch src/index.ts",
-    "dev:ios": "bun run --watch src/index.ts",
-    "dev:android": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
     "codegen": "graphql-codegen --config codegen.ts && bun run scripts/generate-openapi.ts && bunx openapi-typescript",
     "lint": "biome check .",

@@ -11,8 +11,8 @@
     "lint:fix": { "dependsOn": ["^lint:fix"] },
     "typecheck": { "dependsOn": ["^typecheck"] },
     "dev": { "cache": false, "persistent": true },
-    "dev:ios": { "cache": false, "persistent": true },
-    "dev:android": { "cache": false, "persistent": true },
+    "dev:ios": { "with": ["server#dev", "tokens-data#dev"], "cache": false, "persistent": true },
+    "dev:android": { "with": ["server#dev", "tokens-data#dev"], "cache": false, "persistent": true },
     "codegen": {
       "outputs": [
         "apps/server/openapi/**",
