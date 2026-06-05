@@ -1,0 +1,14 @@
+{
+  "extends": "@mars-909/typescript-config/base.json",
+  "compilerOptions": {
+    "types": ["bun", "reflect-metadata"],
+    "strict": true,
+    "baseUrl": "src",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "features/*": ["features/*"],
+      "shared/*": ["shared/*"]
+    }
+  }
+}
