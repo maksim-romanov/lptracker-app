@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "mars-909 Gateway API",
-    "description": "Gateway API for aggregating positions across all supported DeFi protocols",
+    "description": "Protocol-agnostic gateway API for DeFi position aggregation across wallets, chains, and protocols",
     "version": "1.0.0"
   },
   "servers": [
@@ -14,61 +14,29 @@
   "tags": [
     {
       "name": "Positions",
-      "description": "Multi-protocol position aggregation endpoints"
+      "description": "Multi-wallet, multi-chain, multi-protocol position endpoints"
+    },
+    {
+      "name": "Catalog",
+      "description": "Networks and protocols metadata"
     }
   ],
   "paths": {
-    "/wallets/{walletAddress}/positions": {
+    "/catalog": {
       "get": {
-        "operationId": "getWallets:walletAddressPositions",
+        "operationId": "getCatalog",
         "tags": [
-          "Positions"
+          "Catalog"
         ],
-        "summary": "List all wallet positions across protocols",
-        "description": "Retrieves all positions owned by a wallet address across all supported protocols and chains",
+        "summary": "Networks and protocols catalog",
+        "description": "Authoritative list of networks the backend knows about and protocols it supports.",
         "responses": {
           "200": {
-            "description": "Successfully retrieved positions",
+            "description": "Catalog",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "oneOf": [
-                      {
-                        "$ref": "#/components/schemas/UniswapV3Position"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "string"
-                    },
-                    "details": {
-                      "type": "object",
-                      "propertyNames": {
-                        "type": "string"
-                      },
-                      "additionalProperties": {}
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "code"
-                  ]
+                  "$ref": "#/components/schemas/Catalog"
                 }
               }
             }
@@ -78,26 +46,68 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/positions": {
+      "get": {
+        "operationId": "getPositions",
+        "tags": [
+          "Positions"
+        ],
+        "summary": "List positions across wallets, chains, and protocols",
+        "description": "Returns positions across the requested scope (per-wallet chain selection). Effective scope is the intersection of each wallet's chains and each protocol's supported chains.",
+        "responses": {
+          "200": {
+            "description": "Paginated list of positions",
+            "content": {
+              "application/json": {
+                "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string"
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Position"
+                      }
                     },
-                    "code": {
-                      "type": "string"
+                    "tokens": {
+                      "$ref": "#/components/schemas/TokensMap"
                     },
-                    "details": {
-                      "type": "object",
-                      "propertyNames": {
-                        "type": "string"
-                      },
-                      "additionalProperties": {}
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
                     }
                   },
                   "required": [
-                    "error",
-                    "code"
+                    "data",
+                    "tokens",
+                    "page"
                   ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -105,13 +115,43 @@
         },
         "parameters": [
           {
-            "in": "path",
-            "name": "walletAddress",
+            "in": "query",
+            "name": "wallets",
             "schema": {
-              "type": "string",
-              "pattern": "^0x[a-fA-F0-9]{40}$"
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^0x[a-fA-F0-9]{40}:\\d+(?:,\\d+)*$"
+              },
+              "minItems": 1
             },
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "protocols",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "enum": [
+                "open",
+                "closed",
+                "all"
+              ],
+              "default": "open"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "in": "query",
@@ -120,39 +160,83 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 100,
-              "default": "10"
+              "default": "25"
             }
-          },
-          {
-            "in": "query",
-            "name": "offset",
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": "0"
-            }
-          },
-          {
-            "in": "query",
-            "name": "closed",
-            "schema": {
-              "type": "boolean",
-              "default": "false"
-            }
-          },
-          {
-            "in": "query",
-            "name": "chainIds",
-            "schema": {
-              "type": "array",
-              "items": {
-                "enum": [
-                  1,
-                  8453,
-                  42161
-                ]
+          }
+        ]
+      }
+    },
+    "/positions/{ref}": {
+      "get": {
+        "operationId": "getPositions:ref",
+        "tags": [
+          "Positions"
+        ],
+        "summary": "Get a single position by ref",
+        "description": "Returns the full detail for one position. `ref` is opaque — obtain from list responses.",
+        "responses": {
+          "200": {
+            "description": "Position detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Position"
+                    },
+                    "tokens": {
+                      "$ref": "#/components/schemas/TokensMap"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "tokens"
+                  ]
+                }
               }
             }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Position not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+:\\d+:[A-Za-z0-9_-]+$"
+            },
+            "required": true
           }
         ]
       }
@@ -160,160 +244,435 @@
   },
   "components": {
     "schemas": {
-      "TokenAmount": {
+      "Network": {
         "type": "object",
         "properties": {
-          "value": {
-            "type": "number"
-          },
-          "USDValue": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "value",
-          "USDValue"
-        ]
-      },
-      "TokenPairAmount": {
-        "type": "object",
-        "properties": {
-          "token0": {
-            "$ref": "#/components/schemas/TokenAmount"
-          },
-          "token1": {
-            "$ref": "#/components/schemas/TokenAmount"
-          }
-        },
-        "required": [
-          "token0",
-          "token1"
-        ]
-      },
-      "UniswapV3Position": {
-        "type": "object",
-        "properties": {
-          "protocol": {
-            "const": "uniswap-v3"
-          },
           "chainId": {
-            "enum": [
-              1,
-              8453,
-              42161
-            ]
+            "type": "number"
           },
-          "data": {
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "shortName": {
+            "type": "string"
+          },
+          "nativeCurrency": {
             "type": "object",
             "properties": {
-              "id": {
+              "symbol": {
                 "type": "string"
               },
-              "tickLower": {
+              "name": {
+                "type": "string"
+              },
+              "decimals": {
                 "type": "number"
+              }
+            },
+            "required": [
+              "symbol",
+              "name",
+              "decimals"
+            ]
+          },
+          "iconUrl": {
+            "type": "string"
+          },
+          "explorerUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "chainId",
+          "slug",
+          "name",
+          "shortName",
+          "nativeCurrency",
+          "iconUrl",
+          "explorerUrl"
+        ]
+      },
+      "Protocol": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "supportedChainIds": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "extensionVersion": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "version",
+          "supportedChainIds",
+          "capabilities",
+          "extensionVersion"
+        ]
+      },
+      "Catalog": {
+        "type": "object",
+        "properties": {
+          "networks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Network"
+            }
+          },
+          "protocols": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Protocol"
+            }
+          }
+        },
+        "required": [
+          "networks",
+          "protocols"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
               },
-              "tickUpper": {
-                "type": "number"
+              "message": {
+                "type": "string"
               },
-              "liquidity": {
-                "$ref": "#/components/schemas/TokenPairAmount"
-              },
-              "unclaimedFees": {
+              "field": {
                 "anyOf": [
                   {
-                    "$ref": "#/components/schemas/TokenPairAmount"
+                    "type": "string"
                   },
                   {
                     "type": "null"
                   }
                 ]
               },
-              "pool": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "feeTier": {
-                    "type": "number"
-                  },
-                  "currentTick": {
-                    "type": "number"
-                  },
-                  "sqrtPriceX96": {
-                    "type": "string"
-                  },
-                  "token0": {
-                    "type": "object",
-                    "properties": {
-                      "address": {
-                        "type": "string"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "decimals": {
-                        "type": "number"
-                      }
-                    },
-                    "required": [
-                      "address",
-                      "symbol",
-                      "decimals"
-                    ]
-                  },
-                  "token1": {
-                    "type": "object",
-                    "properties": {
-                      "address": {
-                        "type": "string"
-                      },
-                      "symbol": {
-                        "type": "string"
-                      },
-                      "decimals": {
-                        "type": "number"
-                      }
-                    },
-                    "required": [
-                      "address",
-                      "symbol",
-                      "decimals"
-                    ]
-                  }
-                },
-                "required": [
-                  "id",
-                  "feeTier",
-                  "currentTick",
-                  "sqrtPriceX96",
-                  "token0",
-                  "token1"
-                ]
-              },
-              "isActive": {
-                "type": "boolean"
-              },
-              "isClosed": {
-                "type": "boolean"
+              "requestId": {
+                "type": "string"
               }
             },
             "required": [
-              "id",
-              "tickLower",
-              "tickUpper",
-              "liquidity",
-              "unclaimedFees",
-              "pool",
-              "isActive",
-              "isClosed"
+              "code",
+              "message",
+              "field"
             ]
           }
         },
         "required": [
-          "protocol",
+          "error"
+        ]
+      },
+      "PositionContainer": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref",
+          "label"
+        ]
+      },
+      "TokenRef": {
+        "type": "string",
+        "pattern": "^\\d+:0x[a-f0-9]{40}$"
+      },
+      "TokenAmount": {
+        "type": "object",
+        "properties": {
+          "raw": {
+            "type": "string",
+            "pattern": "^-?\\d+$"
+          },
+          "decimals": {
+            "type": "number"
+          },
+          "formatted": {
+            "type": "string"
+          },
+          "tokenRef": {
+            "$ref": "#/components/schemas/TokenRef"
+          }
+        },
+        "required": [
+          "raw",
+          "decimals",
+          "formatted",
+          "tokenRef"
+        ]
+      },
+      "PositionToken": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "tokenRef": {
+            "$ref": "#/components/schemas/TokenRef"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/TokenAmount"
+          }
+        },
+        "required": [
+          "role",
+          "tokenRef",
+          "balance"
+        ]
+      },
+      "PositionStatus": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string"
+          },
+          "stateDetail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "state",
+          "stateDetail"
+        ]
+      },
+      "UniswapV3Extension": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "uniswap-v3"
+          },
+          "version": {
+            "const": 1
+          },
+          "tickLower": {
+            "type": "number"
+          },
+          "tickUpper": {
+            "type": "number"
+          },
+          "liquidity": {
+            "type": "string"
+          },
+          "feeTier": {
+            "type": "number"
+          },
+          "feeTierLabel": {
+            "type": "string"
+          },
+          "nftTokenId": {
+            "type": "string"
+          },
+          "pool": {
+            "type": "object",
+            "properties": {
+              "address": {
+                "type": "string"
+              },
+              "currentTick": {
+                "type": "number"
+              },
+              "sqrtPriceX96": {
+                "type": "string"
+              },
+              "tickSpacing": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "address",
+              "currentTick",
+              "sqrtPriceX96"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "version",
+          "tickLower",
+          "tickUpper",
+          "liquidity",
+          "feeTier",
+          "feeTierLabel",
+          "nftTokenId",
+          "pool"
+        ]
+      },
+      "UnknownExtension": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "version"
+        ]
+      },
+      "Position": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "number"
+          },
+          "protocol": {
+            "type": "string"
+          },
+          "protocolVersion": {
+            "type": "string"
+          },
+          "container": {
+            "$ref": "#/components/schemas/PositionContainer"
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PositionToken"
+            }
+          },
+          "status": {
+            "$ref": "#/components/schemas/PositionStatus"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "extension": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UniswapV3Extension"
+              },
+              {
+                "$ref": "#/components/schemas/UnknownExtension"
+              }
+            ]
+          }
+        },
+        "required": [
+          "ref",
+          "address",
           "chainId",
-          "data"
+          "protocol",
+          "container",
+          "tokens",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "extension"
+        ]
+      },
+      "TokenMeta": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "decimals": {
+            "type": "number"
+          },
+          "iconUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "decimals",
+          "iconUrl"
+        ]
+      },
+      "TokensMap": {
+        "type": "object",
+        "propertyNames": {
+          "$ref": "#/components/schemas/TokenRef"
+        },
+        "additionalProperties": {
+          "$ref": "#/components/schemas/TokenMeta"
+        }
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "cursor",
+          "limit"
         ]
       }
     }

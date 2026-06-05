@@ -1,7 +1,4 @@
-import { err, ok } from "neverthrow";
-import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
-import type { TokenPriceService } from "token-prices/domain/token-price-service";
-import { cacheKey } from "token-prices/domain/types";
+import { err, ok, type Result } from "neverthrow";
 import { inject, injectable } from "tsyringe";
 
 import type { PositionFeesCache } from "../data/position-fees.cache";
@@ -11,16 +8,22 @@ import type { PositionEntity } from "../domain/entities/position.entity";
 import { PositionError } from "../domain/errors/position.error";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
+import { type MapPositionResult, type MapperUnclaimedFees, mapV3PositionToContract } from "../presentation/mappers/position.mapper";
+
+export interface GetPositionParams {
+  id: string;
+}
 
 @injectable()
 export class GetPositionUseCase {
   constructor(
     @inject(PositionsRepository) public readonly positionsRepository: PositionsRepository,
-    @inject(TOKEN_PRICE_SERVICE) private readonly priceService: TokenPriceService,
     @inject(POSITION_FEES_CACHE) private readonly feesCache: PositionFeesCache,
   ) {}
 
-  async execute(id: string) {
+  async execute({ id }: GetPositionParams): Promise<Result<MapPositionResult, PositionError>> {
+    const chainId = this.positionsRepository.chainContext.chain.id;
+
     const result = await this.positionsRepository.getPosition(id);
     if (result.isErr()) return err(result.error);
 
@@ -30,22 +33,14 @@ export class GetPositionUseCase {
     if (poolStateResult.isErr()) return err(new PositionError(PositionError.CODE.UNEXPECTED_ERROR));
 
     const entity = dto.toDomain(poolStateResult.value);
-    const { token0, token1 } = entity.pool;
 
-    // Run price and fee fetch in parallel
-    const [priceMap, fees] = await Promise.all([
-      this.priceService.getPrices([
-        { chainId: token0.chainId, address: token0.address },
-        { chainId: token1.chainId, address: token1.address },
-      ]),
-      this.fetchFees(token0.chainId, id, entity),
-    ]);
+    const fees = await this.fetchFees(chainId, id, entity);
 
     return ok(
-      entity.toResponse({
-        token0PriceUSD: priceMap.get(cacheKey(token0.chainId, token0.address))?.priceUSD ?? 0,
-        token1PriceUSD: priceMap.get(cacheKey(token1.chainId, token1.address))?.priceUSD ?? 0,
-        unclaimedFees: fees,
+      mapV3PositionToContract({
+        entity,
+        chainId,
+        unclaimedFees: toMapperFees(fees),
       }),
     );
   }
@@ -69,3 +64,6 @@ export class GetPositionUseCase {
     return fees;
   }
 }
+
+const toMapperFees = (fees: ComputedFees | null): MapperUnclaimedFees | null =>
+  fees ? { token0Raw: fees.token0Raw, token1Raw: fees.token1Raw } : null;

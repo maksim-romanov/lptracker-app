@@ -34,6 +34,10 @@ export interface PositionFeeRawData {
 export interface ComputedFees {
   token0: number;
   token1: number;
+  /** Raw fee amount for token0 as a base-10 integer string (BigInt-safe for cache serialization) */
+  token0Raw: string;
+  /** Raw fee amount for token1 as a base-10 integer string */
+  token1Raw: string;
 }
 
 export function computeUnclaimedFees(
@@ -71,5 +75,7 @@ export function computeUnclaimedFees(
   return {
     token0: Number(unclaimedFees0) / 10 ** decimals0,
     token1: Number(unclaimedFees1) / 10 ** decimals1,
+    token0Raw: unclaimedFees0.toString(),
+    token1Raw: unclaimedFees1.toString(),
   };
 }

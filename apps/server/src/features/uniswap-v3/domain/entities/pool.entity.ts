@@ -52,15 +52,4 @@ export class PoolEntity {
   get sdk(): Pool {
     return new Pool(this.token0.sdk, this.token1.sdk, this.feeTier, this.sqrtPriceX96, this.liquidity, this.currentTick);
   }
-
-  get response() {
-    return {
-      id: this.id,
-      feeTier: this.feeTier,
-      currentTick: this.currentTick,
-      sqrtPriceX96: this.sqrtPriceX96,
-      token0: this.token0.response,
-      token1: this.token1.response,
-    };
-  }
 }

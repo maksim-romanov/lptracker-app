@@ -592,7 +592,7 @@ export type PositionQueryVariables = Exact<{
 }>;
 
 
-export type PositionQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: any, feeTier: number, token0: { __typename?: 'Token', id: any, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: any, symbol: string, decimals: number } } | null } | null };
+export type PositionQuery = { __typename?: 'Query', position?: { __typename?: 'Position', id: string, owner: any, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: any, feeTier: number, token0: { __typename?: 'Token', id: any, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: any, symbol: string, decimals: number } } | null } | null };
 
 export type WalletPositionsQueryVariables = Exact<{
   owner: Scalars['Bytes']['input'];
@@ -604,7 +604,7 @@ export type WalletPositionsQueryVariables = Exact<{
 }>;
 
 
-export type WalletPositionsQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: any, feeTier: number, token0: { __typename?: 'Token', id: any, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: any, symbol: string, decimals: number } } | null }> };
+export type WalletPositionsQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, owner: any, liquidity: any, tickLower: number, tickUpper: number, pool?: { __typename?: 'Pool', id: any, feeTier: number, token0: { __typename?: 'Token', id: any, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: any, symbol: string, decimals: number } } | null }> };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -629,6 +629,7 @@ export const PositionDocument = new TypedDocumentString(`
     query Position($id: ID!) {
   position(id: $id) {
     id
+    owner
     liquidity
     tickLower
     tickUpper
@@ -659,6 +660,7 @@ export const WalletPositionsDocument = new TypedDocumentString(`
     orderDirection: $orderDirection
   ) {
     id
+    owner
     liquidity
     tickLower
     tickUpper

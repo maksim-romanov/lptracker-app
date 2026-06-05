@@ -1,22 +1,38 @@
 import "reflect-metadata";
 
+import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
+import { openAPIRouteHandler } from "hono-openapi";
 import { tokenPricesRoutes } from "token-prices/presentation/api";
 import { tokensMetaRoutes } from "tokens-meta/presentation/api";
-import { uniswapV3Routes } from "uniswap-v3/presentation/api";
 
 import { registerApp } from "./di/register";
-import { gatewayRoutes } from "./presentation/api";
+import { v1Routes } from "./presentation/v1";
 
 registerApp();
 
 const app = new Hono();
 
-// Gateway routes - aggregates all protocols
-app.route("/api", gatewayRoutes);
+app.route("/api/v1", v1Routes);
 
-// Feature-specific routes
-app.route("/api/uniswap-v3", uniswapV3Routes);
+const openApiDocumentation = {
+  openapi: "3.1.0",
+  info: {
+    title: "mars-909 Gateway API",
+    version: "1.0.0",
+    description: "Protocol-agnostic gateway API for DeFi position aggregation across wallets, chains, and protocols",
+  },
+  servers: [{ url: "/api/v1", description: "Gateway API v1" }],
+  tags: [
+    { name: "Positions", description: "Multi-wallet, multi-chain, multi-protocol position endpoints" },
+    { name: "Catalog", description: "Networks and protocols metadata" },
+  ],
+};
+
+app.get("/openapi.json", openAPIRouteHandler(v1Routes, { documentation: openApiDocumentation }));
+app.get("/docs", Scalar({ url: "/openapi.json", theme: "purple", pageTitle: "mars-909 API" }));
+
+// Deprecated tokens-data passthroughs (slated for removal once mobile stops calling them)
 app.route("/meta", tokensMetaRoutes);
 app.route("/prices", tokenPricesRoutes);
 

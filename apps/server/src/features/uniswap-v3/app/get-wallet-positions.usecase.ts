@@ -1,153 +1,104 @@
-import { ok } from "neverthrow";
-import { TOKEN_PRICE_SERVICE } from "token-prices/di/tokens";
-import type { TokenPriceService } from "token-prices/domain/token-price-service";
-import type { TokenPriceQuery } from "token-prices/domain/types";
-import { cacheKey } from "token-prices/domain/types";
+import { err, ok, type Result } from "neverthrow";
 import { inject, injectable } from "tsyringe";
-import type { Address } from "viem";
-import { arbitrum, base, mainnet } from "viem/chains";
 
-import type { GraphQLPositionDto } from "../data/dto/graphql-position.dto";
 import type { PositionFeesCache } from "../data/position-fees.cache";
 import { PositionsRepository } from "../data/positions.repository";
 import { getContainer } from "../di/containers";
 import { POSITION_FEES_CACHE } from "../di/tokens";
-import { UNISWAP_V3_PROTOCOL } from "../domain/constants/protocol";
 import type { PositionEntity } from "../domain/entities/position.entity";
-import type { PoolStateRpcData } from "../domain/types/pool-state";
+import type { PositionError } from "../domain/errors/position.error";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
-import type { SupportedChainId } from "../presentation/schemas/request.schemas";
-import type { UniswapV3WrappedPosition } from "../presentation/schemas/response.schemas";
+import { type MapPositionResult, type MapperUnclaimedFees, mapV3PositionToContract } from "../presentation/mappers/position.mapper";
 
 export interface GetWalletPositionsParams {
   owner: string;
-  chainIds?: SupportedChainId[];
+  chainId: number;
   pagination?: { limit: number; offset: number };
   filters?: { closed: boolean };
 }
 
 @injectable()
 export class GetWalletPositionsUseCase {
-  constructor(
-    @inject(TOKEN_PRICE_SERVICE) private readonly priceService: TokenPriceService,
-    @inject(POSITION_FEES_CACHE) private readonly feesCache: PositionFeesCache,
-  ) {}
+  constructor(@inject(POSITION_FEES_CACHE) private readonly feesCache: PositionFeesCache) {}
 
-  async execute(params: GetWalletPositionsParams) {
-    const { owner, chainIds = [mainnet.id, arbitrum.id, base.id], pagination, filters } = params;
+  async execute(params: GetWalletPositionsParams): Promise<Result<MapPositionResult[], PositionError>> {
+    const { owner, chainId, pagination, filters } = params;
 
-    const results = await Promise.all(
-      chainIds.map(async (chainId) => {
-        const repository = getContainer(chainId).resolve(PositionsRepository);
-        const result = await repository.getWalletPositions(
-          owner,
-          pagination ? { first: pagination.limit, skip: pagination.offset } : undefined,
-          filters,
-        );
+    const repository = getContainer(chainId).resolve(PositionsRepository);
 
-        return { chainId, repository, positions: result.isOk() ? result.value : ([] as GraphQLPositionDto[]) };
-      }),
+    const positionsResult = await repository.getWalletPositions(
+      owner,
+      pagination ? { first: pagination.limit, skip: pagination.offset } : undefined,
+      filters,
     );
+    if (positionsResult.isErr()) return err(positionsResult.error);
 
-    // Collect unique pool addresses and fetch pool states per chain (reusing repository instances)
-    const poolStatesByChain = new Map<SupportedChainId, Map<Address, PoolStateRpcData>>();
-    await Promise.all(
-      results.map(async ({ chainId, repository, positions }) => {
-        const addresses = [...new Set(positions.map((dto) => dto.pool.id))];
-        if (addresses.length === 0) return;
-        const stateResult = await repository.getPoolStates(addresses);
-        if (stateResult.isOk()) {
-          poolStatesByChain.set(chainId, stateResult.value);
-        }
-      }),
-    );
+    const positionDtos = positionsResult.value;
+    if (positionDtos.length === 0) return ok([]);
 
-    // Convert DTOs to entities with pool state from RPC
-    const entities = results.flatMap(({ chainId, positions }) => {
-      const poolStates = poolStatesByChain.get(chainId);
-      return positions
-        .map((dto) => {
-          const poolState = poolStates?.get(dto.pool.id);
-          if (!poolState) return null;
-          return { chainId, entity: dto.toDomain(poolState) };
-        })
-        .filter((e): e is { chainId: SupportedChainId; entity: PositionEntity } => e !== null);
-    });
+    const poolAddresses = [...new Set(positionDtos.map((dto) => dto.pool.id))];
+    const poolStatesResult = await repository.getPoolStates(poolAddresses);
+    if (poolStatesResult.isErr()) return err(poolStatesResult.error);
+    const poolStates = poolStatesResult.value;
 
-    // Collect unique tokens for batch price fetch
-    const tokenQueries = new Map<string, TokenPriceQuery>();
-    for (const { entity } of entities) {
-      const { token0, token1 } = entity.pool;
-      tokenQueries.set(cacheKey(token0.chainId, token0.address), { chainId: token0.chainId, address: token0.address });
-      tokenQueries.set(cacheKey(token1.chainId, token1.address), { chainId: token1.chainId, address: token1.address });
-    }
+    const entities = positionDtos
+      .map((dto) => {
+        const ps = poolStates.get(dto.pool.id);
+        return ps ? dto.toDomain(ps) : null;
+      })
+      .filter((e): e is PositionEntity => e !== null);
 
-    // Run price fetch and fee fetch in parallel
-    const [priceMap, feesMap] = await Promise.all([this.priceService.getPrices([...tokenQueries.values()]), this.fetchAllFees(entities)]);
+    const feesMap = await this.fetchAllFees(chainId, repository, entities);
 
-    const wrappedPositions: UniswapV3WrappedPosition[] = entities.map(({ chainId, entity }) => {
-      const { token0, token1 } = entity.pool;
-
-      return {
-        protocol: UNISWAP_V3_PROTOCOL,
-        chainId,
-        data: entity.toResponse({
-          token0PriceUSD: priceMap.get(cacheKey(token0.chainId, token0.address))?.priceUSD ?? 0,
-          token1PriceUSD: priceMap.get(cacheKey(token1.chainId, token1.address))?.priceUSD ?? 0,
-          unclaimedFees: feesMap.get(entity.id) ?? null,
+    return ok(
+      entities.map((entity) =>
+        mapV3PositionToContract({
+          entity,
+          chainId,
+          unclaimedFees: toMapperFees(feesMap.get(entity.id)),
         }),
-      };
-    });
-
-    return ok(wrappedPositions);
+      ),
+    );
   }
 
-  private async fetchAllFees(entries: { chainId: SupportedChainId; entity: PositionEntity }[]): Promise<Map<string, ComputedFees>> {
+  private async fetchAllFees(chainId: number, repository: PositionsRepository, entities: PositionEntity[]): Promise<Map<string, ComputedFees>> {
     const allFees = new Map<string, ComputedFees>();
+    if (entities.length === 0) return allFees;
 
-    const byChain = entries.reduce((map, { chainId, entity }) => {
-      const list = map.get(chainId);
-      list ? list.push(entity) : map.set(chainId, [entity]);
-      return map;
-    }, new Map<SupportedChainId, PositionEntity[]>());
+    const { cached, uncached } = await this.feesCache.partition(chainId, entities);
+    for (const [id, fees] of cached) allFees.set(id, fees);
 
-    await Promise.all(
-      Array.from(byChain.entries()).map(async ([chainId, positions]) => {
-        const { cached, uncached } = await this.feesCache.partition(chainId, positions);
+    if (uncached.length === 0) return allFees;
 
-        for (const [id, fees] of cached) allFees.set(id, fees);
+    try {
+      const result = await repository.getBatchPositionFees(uncached);
+      if (result.isErr()) return allFees;
 
-        if (uncached.length === 0) return;
+      const cacheWrites: Promise<void>[] = [];
+      for (const position of uncached) {
+        const raw = result.value.get(position.id);
+        if (!raw) continue;
 
-        try {
-          const repository = getContainer(chainId).resolve(PositionsRepository);
-          const result = await repository.getBatchPositionFees(uncached);
-          if (result.isErr()) return;
-
-          const cacheWrites: Promise<void>[] = [];
-          for (const position of uncached) {
-            const raw = result.value.get(position.id);
-            if (!raw) continue;
-
-            const fees = computeUnclaimedFees(
-              raw,
-              position.pool.currentTick,
-              position.tickLower,
-              position.tickUpper,
-              position.pool.token0.decimals,
-              position.pool.token1.decimals,
-            );
-            allFees.set(position.id, fees);
-            cacheWrites.push(this.feesCache.setFees(chainId, position.id, fees));
-          }
-          await Promise.all(cacheWrites);
-        } catch {
-          // RPC failure — positions without fees will get null
-        }
-      }),
-    );
+        const fees = computeUnclaimedFees(
+          raw,
+          position.pool.currentTick,
+          position.tickLower,
+          position.tickUpper,
+          position.pool.token0.decimals,
+          position.pool.token1.decimals,
+        );
+        allFees.set(position.id, fees);
+        cacheWrites.push(this.feesCache.setFees(chainId, position.id, fees));
+      }
+      await Promise.all(cacheWrites);
+    } catch {
+      // RPC failure — positions without fees will get null
+    }
 
     return allFees;
   }
 }
+
+const toMapperFees = (fees: ComputedFees | undefined): MapperUnclaimedFees | null =>
+  fees ? { token0Raw: fees.token0Raw, token1Raw: fees.token1Raw } : null;

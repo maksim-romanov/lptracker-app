@@ -3,10 +3,6 @@ apis:
     root: ../server/openapi/gateway.json
     x-openapi-ts:
       output: src/core/api-client/generated/gateway.d.ts
-  uniswap-v3@v1:
-    root: ../server/openapi/uniswap-v3.json
-    x-openapi-ts:
-      output: src/features/uniswap-v3/data/generated/uniswap-v3.d.ts
   tokens-data@v1:
     root: ../tokens-data/generated/openapi.json
     x-openapi-ts:

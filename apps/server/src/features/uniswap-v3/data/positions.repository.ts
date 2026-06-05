@@ -57,6 +57,7 @@ export class PositionsRepository extends BaseRepository {
   async getPosition(id: string) {
     try {
       const result = await this.gql.request(getPositionQuery, { id });
+      if (!result.position) return err(new PositionError(PositionError.CODE.POSITION_NOT_FOUND));
       const position = GraphQLPositionDto.fromGraphQL(result.position, this.chainContext.chain.id);
       return ok(position);
     } catch {
@@ -144,6 +145,7 @@ const getPositionQuery = graphql(`
   query Position($id: ID!) {
     position(id: $id) {
       id
+      owner
       liquidity
       tickLower
       tickUpper
@@ -175,6 +177,7 @@ const getWalletPositionsQuery = graphql(`
       orderDirection: $orderDirection
     ) {
       id
+      owner
       liquidity
       tickLower
       tickUpper
