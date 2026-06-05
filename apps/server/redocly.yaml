@@ -1,0 +1,5 @@
+apis:
+  tokens-data@v1:
+    root: ../tokens-data/generated/openapi.json
+    x-openapi-ts:
+      output: src/features/token-prices/data/tokens-data.generated.ts

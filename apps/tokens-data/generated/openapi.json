@@ -1,0 +1,245 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "tokens-data API",
+    "description": "Aggregator API for token logos, prices, and meta",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/v1",
+      "description": "tokens-data v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Token Logos",
+      "description": "Logo URL resolution with multi-provider fallback"
+    },
+    {
+      "name": "Token Prices",
+      "description": "USD prices across multiple providers"
+    },
+    {
+      "name": "Token Meta",
+      "description": "name/symbol/decimals via RPC multicall"
+    }
+  ],
+  "paths": {
+    "/chains/{chainId}/tokens/{address}/logo.png": {
+      "get": {
+        "operationId": "getChains:chainIdTokens:addressLogo.png",
+        "tags": [
+          "Tokens Meta"
+        ],
+        "summary": "Get token logo",
+        "description": "Resolves and redirects to the token logo image URL",
+        "responses": {
+          "302": {
+            "description": "Redirect to logo URL"
+          },
+          "404": {
+            "description": "Logo not found"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "chainId",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "address",
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{40}$"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/chains/{chainId}/tokens": {
+      "get": {
+        "operationId": "getChains:chainIdTokens",
+        "tags": [
+          "Token Prices"
+        ],
+        "summary": "Get token prices for a single chain",
+        "responses": {
+          "200": {
+            "description": "Token prices"
+          },
+          "400": {
+            "description": "Invalid parameters"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "chainId",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "addresses",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^0x[a-fA-F0-9]{40}$"
+              },
+              "minItems": 1,
+              "maxItems": 100
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/batch/prices": {
+      "post": {
+        "operationId": "postBatchPrices",
+        "tags": [
+          "Token Prices"
+        ],
+        "summary": "Get token prices across multiple chains in one batch",
+        "responses": {
+          "200": {
+            "description": "Prices keyed by chainId:address.lower()"
+          },
+          "400": {
+            "description": "Invalid body"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tokens": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "chainId": {
+                          "type": "number"
+                        },
+                        "address": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "chainId",
+                        "address"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "tokens"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chains/{chainId}/tokens/{address}/meta": {
+      "get": {
+        "operationId": "getChains:chainIdTokens:addressMeta",
+        "tags": [
+          "Token Meta"
+        ],
+        "summary": "Get name/symbol/decimals for a single token",
+        "responses": {
+          "200": {
+            "description": "Token meta"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "chainId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "address",
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{40}$"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/batch/meta": {
+      "post": {
+        "operationId": "postBatchMeta",
+        "tags": [
+          "Token Meta"
+        ],
+        "summary": "Batch meta lookup across chains",
+        "responses": {
+          "200": {
+            "description": "Meta keyed by chainId:address.lower()"
+          },
+          "400": {
+            "description": "Invalid body"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tokens": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "chainId": {
+                          "type": "number"
+                        },
+                        "address": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "chainId",
+                        "address"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "tokens"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}

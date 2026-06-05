@@ -1,3 +1,4 @@
+import { config } from "core/config";
 import { container } from "core/di/container";
 import createClient from "openapi-fetch";
 
@@ -6,9 +7,7 @@ import { errorMiddleware } from "../middleware/error.middleware";
 import { loggerMiddleware } from "../middleware/logger.middleware";
 import { GATEWAY_API } from "./tokens";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-
-const client = createClient<GatewayPaths>({ baseUrl: `${API_URL}/api/v1` });
+const client = createClient<GatewayPaths>({ baseUrl: `${config.api.gateway.baseUrl}/api/v1` });
 export type GatewayApiClient = typeof client;
 
 export function register() {

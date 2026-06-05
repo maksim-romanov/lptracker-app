@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { View, type ViewProps } from "react-native";
 
+import { tokensDataUrls } from "core/tokens-data/urls";
 import { Image } from "expo-image";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -13,7 +14,7 @@ type Token = { address?: string; symbol?: string };
 type TokenImageProps = {
   token: Token;
   /** Used to fetch the logo from the meta endpoint (optional — falls back to monogram). */
-  chainId?: number | string;
+  chainId?: number;
   /** Direct image URL — overrides chainId-based lookup. */
   imageUrl?: string;
   size?: TokenImageSize;
@@ -21,14 +22,12 @@ type TokenImageProps = {
 
 type TokensImagesProps = {
   tokens: Token[];
-  chainId?: number | string;
+  chainId?: number;
   size?: TokenImageSize;
 };
 
 const OVERLAP = 0.65;
 const DIAMETER: Record<TokenImageSize, number> = { sm: 32, md: 44, lg: 56 };
-
-const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
 const hashSeed = (s: string): number => {
   let h = 0;
@@ -69,8 +68,7 @@ export const TokenImage = ({ token, chainId, imageUrl, size = "md", style }: Tok
   const seed = (token.address || token.symbol || "?").toLowerCase();
   const [errored, setErrored] = useState(false);
 
-  const remoteUrl =
-    imageUrl ?? (BASE_URL && chainId && token.address ? `${BASE_URL}/meta/v1/chains/${chainId}/tokens/${token.address}/logo.png` : undefined);
+  const remoteUrl = imageUrl ?? (chainId && token.address ? tokensDataUrls.logo(chainId, token.address) : undefined);
 
   styles.useVariants({ size });
 

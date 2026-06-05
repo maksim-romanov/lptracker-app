@@ -7,46 +7,33 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", "build/**"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "lint:fix": {
-      "dependsOn": ["^lint:fix"]
-    },
-    "typecheck": {
-      "dependsOn": ["^typecheck"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "dev:ios": {
-      "cache": false,
-      "persistent": true
-    },
-    "dev:android": {
-      "cache": false,
-      "persistent": true
-    },
+    "lint": { "dependsOn": ["^lint"] },
+    "lint:fix": { "dependsOn": ["^lint:fix"] },
+    "typecheck": { "dependsOn": ["^typecheck"] },
+    "dev": { "cache": false, "persistent": true },
+    "dev:ios": { "cache": false, "persistent": true },
+    "dev:android": { "cache": false, "persistent": true },
     "codegen": {
-      "cache": false
+      "outputs": [
+        "apps/server/openapi/**",
+        "apps/server/src/features/uniswap-v3/data/gql/**",
+        "apps/server/src/features/token-prices/data/tokens-data.generated.ts",
+        "apps/tokens-data/generated/**",
+        "apps/mobile/src/core/api-client/generated/**",
+        "apps/mobile/src/features/uniswap-v3/data/generated/**",
+        "apps/mobile/src/core/tokens-data/generated.d.ts"
+      ],
+      "env": ["GRAPH_API_KEY"]
+    },
+    "server#codegen": {
+      "dependsOn": ["tokens-data#codegen"]
     },
     "mobile#codegen": {
-      "dependsOn": ["server#codegen"],
-      "cache": false
+      "dependsOn": ["server#codegen"]
     },
-    "test": {
-      "dependsOn": ["build"]
-    },
-    "deploy": {
-      "dependsOn": ["build", "test"],
-      "cache": false
-    },
-    "docker:up": {
-      "cache": false
-    },
-    "docker:down": {
-      "cache": false
-    }
+    "test": { "dependsOn": ["build"] },
+    "deploy": { "dependsOn": ["build", "test"], "cache": false },
+    "docker:up": { "cache": false },
+    "docker:down": { "cache": false }
   }
 }

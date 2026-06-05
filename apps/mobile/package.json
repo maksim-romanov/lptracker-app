@@ -7,7 +7,7 @@
     "dev": "expo start --dev-client",
     "dev:ios": "expo run:ios",
     "dev:android": "expo run:android",
-    "codegen": "bunx openapi-typescript ../server/openapi/gateway.json -o src/core/api-client/generated/gateway.d.ts && bunx openapi-typescript ../server/openapi/uniswap-v3.json -o src/features/uniswap-v3/data/generated/uniswap-v3.d.ts",
+    "codegen": "bunx openapi-typescript",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit",
