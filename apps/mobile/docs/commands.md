@@ -12,6 +12,12 @@ bun dev:ios
 # Run on Android emulator
 bun dev:android
 
+# Forward host dev-server ports to the Android device/emulator
+# (server: 3000, tokens-data: 3100 — required for API calls to reach
+# the Mac from inside the device)
+adb reverse tcp:3000 tcp:3000
+adb reverse tcp:3100 tcp:3100
+
 # Lint code
 bun lint
 
