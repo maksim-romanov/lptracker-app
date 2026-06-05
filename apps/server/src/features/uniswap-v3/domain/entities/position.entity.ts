@@ -4,6 +4,7 @@ import type { PoolEntity } from "./pool.entity";
 
 type PositionData = {
   id: string;
+  owner: string;
   tickLower: number;
   tickUpper: number;
   liquidity: string;
@@ -15,6 +16,10 @@ export class PositionEntity {
 
   get id(): string {
     return this.data.id;
+  }
+
+  get owner(): string {
+    return this.data.owner;
   }
 
   get tickLower(): number {
@@ -48,34 +53,5 @@ export class PositionEntity {
       tickLower: this.tickLower,
       tickUpper: this.tickUpper,
     });
-  }
-
-  toResponse(params?: { token0PriceUSD: number; token1PriceUSD: number; unclaimedFees?: { token0: number; token1: number } | null }) {
-    const sdk = this.sdk;
-    const amount0 = Number(sdk.amount0.toExact());
-    const amount1 = Number(sdk.amount1.toExact());
-
-    const token0PriceUSD = params?.token0PriceUSD ?? 0;
-    const token1PriceUSD = params?.token1PriceUSD ?? 0;
-    const fees = params?.unclaimedFees;
-
-    return {
-      id: this.id,
-      tickLower: this.tickLower,
-      tickUpper: this.tickUpper,
-      liquidity: {
-        token0: { value: amount0, USDValue: amount0 * token0PriceUSD },
-        token1: { value: amount1, USDValue: amount1 * token1PriceUSD },
-      },
-      unclaimedFees: fees
-        ? {
-            token0: { value: fees.token0, USDValue: fees.token0 * token0PriceUSD },
-            token1: { value: fees.token1, USDValue: fees.token1 * token1PriceUSD },
-          }
-        : (fees ?? null),
-      pool: this.pool.response,
-      isActive: this.isActive,
-      isClosed: this.isClosed,
-    };
   }
 }

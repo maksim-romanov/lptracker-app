@@ -62,6 +62,9 @@ export class GraphQLPositionDto {
   id!: string;
 
   @Expose()
+  owner!: string;
+
+  @Expose()
   tickLower!: number;
 
   @Expose()
@@ -80,6 +83,7 @@ export class GraphQLPositionDto {
   toDomain(poolState: PoolStateRpcData): PositionEntity {
     return new PositionEntity({
       id: this.id,
+      owner: this.owner,
       tickLower: this.tickLower,
       tickUpper: this.tickUpper,
       liquidity: this.liquidity,

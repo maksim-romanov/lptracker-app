@@ -29,12 +29,4 @@ export class TokenEntity {
   get sdk(): Token {
     return new Token(this.chainId, this.address, this.decimals, this.symbol);
   }
-
-  get response() {
-    return {
-      address: this.address,
-      symbol: this.symbol,
-      decimals: this.decimals,
-    };
-  }
 }
