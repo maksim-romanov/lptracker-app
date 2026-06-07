@@ -1,8 +1,10 @@
 import { useMemo } from "react";
+import { View } from "react-native";
 
 import { Box, Inline, Stack } from "@grapp/stacks";
 import { Card, NetworkBadge, Tag, Text, TokensImages } from "core/presentation/components";
 import type { TPositionByExt, TTokensMap } from "positions/domain/types";
+import { FavoriteStar } from "positions/presentation/components/FavoriteStar";
 import { StyleSheet } from "react-native-unistyles";
 
 import { mapToVm } from "../data/uniswap-v3.mapper";
@@ -35,8 +37,8 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
 
   return (
     <Card variant="outlined" padding="lg">
-      <Stack space={3}>
-        <Box direction="row" alignY="center" gap={2}>
+      <Stack space={4}>
+        <Box direction="row" alignY="center" gap={3}>
           <TokensImages tokens={pairTokens} chainId={position.chainId} size="md" />
           <Box flex="fluid">
             <Text variant="title" weight="bold" numberOfLines={1} style={styles.pair}>
@@ -47,9 +49,10 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
               {vm.pair.quote.symbol}
             </Text>
           </Box>
+          <FavoriteStar positionRef={position.ref} />
         </Box>
 
-        <Inline space={1} alignY="center">
+        <Inline space={2} alignY="center">
           <NetworkBadge chainId={position.chainId} size="sm" />
           <Tag tone="brand">V3</Tag>
           <Tag tone="neutral">{vm.feeTierLabel}</Tag>
@@ -62,14 +65,30 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
           tickUpper={position.extension.tickUpper}
         />
 
-        <Box direction="row" alignY="center">
+        <Box direction="row" alignY="top">
           <Box flex="fluid">
             <Text variant="label" color="muted" uppercase>
-              Current price
+              Min
             </Text>
-            <Text variant="mono" weight="bold">
-              {vm.priceRange.currentLabel} {vm.pair.quote.symbol}
+            <Text variant="headline" weight="bold">
+              {vm.priceRange.minLabel}
             </Text>
+            <Text variant="label" color="muted">
+              {vm.pair.quote.symbol}
+            </Text>
+          </Box>
+          <Box flex="fluid" alignX="right">
+            <View style={styles.valueRight}>
+              <Text variant="label" color="muted" uppercase>
+                Max
+              </Text>
+              <Text variant="headline" weight="bold">
+                {vm.priceRange.maxLabel}
+              </Text>
+              <Text variant="label" color="muted">
+                {vm.pair.quote.symbol}
+              </Text>
+            </View>
           </Box>
         </Box>
       </Stack>
@@ -86,5 +105,9 @@ const styles = StyleSheet.create((theme) => ({
   pairSlash: {
     color: theme.onSurfaceVariant,
     fontFamily: "Satoshi-Medium",
+  },
+
+  valueRight: {
+    alignItems: "flex-end",
   },
 }));
