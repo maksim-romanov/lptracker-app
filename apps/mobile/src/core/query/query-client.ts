@@ -2,7 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { experimental_createQueryPersister } from "@tanstack/react-query-persist-client";
 import { createMMKV } from "react-native-mmkv";
 
-const storage = createMMKV({ id: "react-query" });
+const storage = createMMKV({ id: "react-query:1" });
 
 export const mmkvPersister = experimental_createQueryPersister({
   storage: {
@@ -28,7 +28,7 @@ export const queryClient = new QueryClient({
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
-      // persister: mmkvPersister.persisterFn,
+      persister: mmkvPersister.persisterFn,
     },
   },
 });

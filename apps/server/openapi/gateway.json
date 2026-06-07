@@ -61,10 +61,10 @@
           "Positions"
         ],
         "summary": "List positions across wallets, chains, and protocols",
-        "description": "Returns positions across the requested scope (per-wallet chain selection). Effective scope is the intersection of each wallet's chains and each protocol's supported chains.",
+        "description": "Returns all positions across the requested scope, sorted by updatedAt desc. Each chain×protocol source is capped server-side. Effective scope is the intersection of each wallet's chains and each protocol's supported chains.",
         "responses": {
           "200": {
-            "description": "Paginated list of positions",
+            "description": "Merged list of positions",
             "content": {
               "application/json": {
                 "schema": {
@@ -78,15 +78,11 @@
                     },
                     "tokens": {
                       "$ref": "#/components/schemas/TokensMap"
-                    },
-                    "page": {
-                      "$ref": "#/components/schemas/Page"
                     }
                   },
                   "required": [
                     "data",
-                    "tokens",
-                    "page"
+                    "tokens"
                   ]
                 }
               }
@@ -144,23 +140,6 @@
                 "all"
               ],
               "default": "open"
-            }
-          },
-          {
-            "in": "query",
-            "name": "cursor",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": "25"
             }
           }
         ]
@@ -655,28 +634,6 @@
         "additionalProperties": {
           "$ref": "#/components/schemas/TokenMeta"
         }
-      },
-      "Page": {
-        "type": "object",
-        "properties": {
-          "cursor": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "limit": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "cursor",
-          "limit"
-        ]
       }
     }
   }

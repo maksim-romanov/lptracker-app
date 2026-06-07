@@ -5,10 +5,8 @@ import { describeRoute, resolver, validator } from "hono-openapi";
 import type { Result } from "neverthrow";
 import {
   type DetailResponse,
-  decodeCursor,
   detailResponseSchema,
   ERROR_CODES,
-  encodeCursor,
   errorResponseSchema,
   type ListResponse,
   listResponseSchema,
@@ -27,7 +25,10 @@ import { TokensMapBuilder } from "./utils/tokens-map";
 
 export const positionsRoutes = new Hono();
 
-const buildUpstreamPagination = (cursorOffset: number, limit: number) => ({ limit: cursorOffset + limit, offset: 0 });
+// Hard cap per upstream source. Wallets with >MAX_PER_SOURCE positions on a
+// single chain×protocol see only the most-recently-updated MAX_PER_SOURCE.
+// Revisit when real wallets approach this limit.
+const MAX_PER_SOURCE = 200;
 
 interface ResolvedTriple {
   wallet: WalletScopeEntry;
@@ -58,10 +59,10 @@ positionsRoutes.get(
     tags: ["Positions"],
     summary: "List positions across wallets, chains, and protocols",
     description:
-      "Returns positions across the requested scope (per-wallet chain selection). Effective scope is the intersection of each wallet's chains and each protocol's supported chains.",
+      "Returns all positions across the requested scope, sorted by updatedAt desc. Each chain×protocol source is capped server-side. Effective scope is the intersection of each wallet's chains and each protocol's supported chains.",
     responses: {
       200: {
-        description: "Paginated list of positions",
+        description: "Merged list of positions",
         content: {
           "application/json": {
             schema: resolver(listResponseSchema(positionSchema)),
@@ -89,12 +90,6 @@ positionsRoutes.get(
       }
     }
 
-    const cursorOffset = query.cursor ? decodeCursor(query.cursor)?.offset : 0;
-    if (cursorOffset === undefined) {
-      return badRequest(c, ERROR_CODES.INVALID_CURSOR, "Cursor is malformed", "cursor");
-    }
-
-    const limit = query.limit;
     const triples = resolveScope(query.wallets, query.protocols);
 
     const closed = query.status === "closed";
@@ -117,7 +112,7 @@ positionsRoutes.get(
           triple.protocol.listPositionsForChain({
             ownerAddress: triple.wallet.address,
             chainId: triple.chainId,
-            pagination: buildUpstreamPagination(cursorOffset, limit),
+            pagination: { limit: MAX_PER_SOURCE, offset: 0 },
             filters: upstreamFilter,
           }),
       ),
@@ -148,13 +143,9 @@ positionsRoutes.get(
 
     allPositions.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : a.updatedAt > b.updatedAt ? -1 : a.ref.localeCompare(b.ref)));
 
-    const page = allPositions.slice(cursorOffset, cursorOffset + limit);
-    const nextCursor = cursorOffset + limit < allPositions.length ? encodeCursor({ offset: cursorOffset + limit }) : null;
-
     const body: ListResponse<Position> = {
-      data: page,
+      data: allPositions,
       tokens: tokensBuilder.build(),
-      page: { cursor: nextCursor, limit },
     };
 
     c.header(

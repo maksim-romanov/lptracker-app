@@ -47,18 +47,6 @@ export const positionsListQuerySchema = v.object({
     ),
   ),
   status: v.optional(v.picklist(["open", "closed", "all"]), "open"),
-  cursor: v.optional(v.string()),
-  limit: v.optional(
-    v.pipe(
-      v.string(),
-      v.transform((val) => Number(val)),
-      v.number(),
-      v.integer(),
-      v.minValue(1),
-      v.maxValue(100),
-    ),
-    "25",
-  ),
 });
 
 export const positionRefParamSchema = v.object({

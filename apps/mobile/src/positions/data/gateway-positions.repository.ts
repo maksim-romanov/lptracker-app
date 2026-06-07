@@ -11,8 +11,6 @@ export interface TPositionsListParams {
   }>;
   readonly protocols?: ReadonlyArray<TKnownExtensionType>;
   readonly status?: "open" | "closed" | "all";
-  readonly cursor?: string;
-  readonly limit?: number;
 }
 
 export interface TPartialMeta {
@@ -23,7 +21,6 @@ export interface TPartialMeta {
 export interface TPositionsListResult {
   readonly data: ReadonlyArray<TGatewayPosition>;
   readonly tokens: TTokensMap;
-  readonly page?: { readonly nextCursor?: string };
   readonly meta: { readonly partial?: TPartialMeta };
 }
 
@@ -46,8 +43,6 @@ export class GatewayPositionsRepository extends Repository {
           wallets: [wallets],
           protocols: params.protocols?.join(","),
           status: params.status,
-          cursor: params.cursor,
-          limit: params.limit,
         },
       },
     });
@@ -57,7 +52,6 @@ export class GatewayPositionsRepository extends Repository {
     return {
       data: data.data,
       tokens: data.tokens,
-      page: data.page.cursor ? { nextCursor: data.page.cursor } : undefined,
       meta: { partial: this.readPartial(response) },
     };
   }

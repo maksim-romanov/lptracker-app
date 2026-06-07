@@ -25,7 +25,6 @@ export const PositionsScreen = observer(function PositionsScreen() {
   const router = useRouter();
 
   const handlePress = useCallback((ref: string) => router.push(positionRoutes.detail(ref)), [router]);
-  const handleEndReached = useCallback(() => query.fetchNextPage(), [query.fetchNextPage]);
 
   const tokens: TTokensMap = query.data?.tokens ?? {};
   const renderItem = useCallback<ListRenderItem<TGatewayPosition>>(
@@ -51,8 +50,6 @@ export const PositionsScreen = observer(function PositionsScreen() {
       contentInsetAdjustmentBehavior="automatic"
       ItemSeparatorComponent={Separator}
       renderItem={renderItem}
-      onEndReached={handleEndReached}
-      onEndReachedThreshold={0.5}
       initialNumToRender={8}
       maxToRenderPerBatch={4}
       windowSize={7}
