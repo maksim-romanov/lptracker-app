@@ -5,7 +5,6 @@ import * as apiClient from "core/api-client/di/register";
 import * as linking from "core/linking/di/register";
 import * as query from "core/query/di/register";
 import { AppInfoService, DeviceInfoService, ReactNativeAlerts, ReactNativeLogger } from "core/services";
-import { migrateFollowingV2ToV3 } from "positions/data/following.migration";
 import * as positions from "positions/di/register";
 import * as wallets from "wallets/di/register";
 
@@ -25,8 +24,6 @@ function register() {
   // Entities
   positions.register();
   wallets.register();
-
-  migrateFollowingV2ToV3();
 }
 
 // Auto-register on import

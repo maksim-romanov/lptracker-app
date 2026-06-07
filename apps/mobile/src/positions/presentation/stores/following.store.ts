@@ -27,10 +27,24 @@ export class FollowingStore extends Store {
   }
 
   @action
+  follow(ref: string): void {
+    this.repo.follow(ref);
+    this.refs.add(ref);
+  }
+
+  @action
+  unfollow(ref: string): void {
+    this.repo.unfollow(ref);
+    this.refs.delete(ref);
+  }
+
+  @action
   toggle(ref: string): boolean {
-    const result = this.repo.toggle(ref);
-    if (result) this.refs.add(ref);
-    else this.refs.delete(ref);
-    return result;
+    if (this.refs.has(ref)) {
+      this.unfollow(ref);
+      return false;
+    }
+    this.follow(ref);
+    return true;
   }
 }

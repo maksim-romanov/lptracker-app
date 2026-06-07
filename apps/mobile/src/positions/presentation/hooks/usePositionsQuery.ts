@@ -1,13 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { container } from "core/di/container";
 import { positionsKeys } from "core/query/keys/positions.keys";
-import type { IPositionsRepository, TPositionsListParams, TPositionsListResult } from "positions/data/positions.repository";
-import { POSITIONS_REPOSITORY } from "positions/di/tokens";
+import { GatewayPositionsRepository, type TPositionsListParams, type TPositionsListResult } from "positions/data/gateway-positions.repository";
 
 const mergeTokensMaps = (results: ReadonlyArray<TPositionsListResult>) => Object.assign({}, ...results.map((r) => r.tokens));
 
 export function usePositionsQuery(params: Omit<TPositionsListParams, "cursor">) {
-  const repo = container.resolve<IPositionsRepository>(POSITIONS_REPOSITORY);
+  const repo = container.resolve(GatewayPositionsRepository);
   return useInfiniteQuery({
     queryKey: positionsKeys.list(params).queryKey,
     queryFn: ({ pageParam }) => repo.list({ ...params, cursor: pageParam }),

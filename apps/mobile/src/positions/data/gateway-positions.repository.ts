@@ -1,18 +1,39 @@
 import type { GatewayApiClient } from "core/api-client/di/register";
 import { GATEWAY_API } from "core/api-client/di/tokens";
 import { Repository } from "core/domain/base/repository";
+import type { TGatewayPosition, TKnownExtensionType, TTokensMap } from "positions/domain/types";
 import { inject, injectable } from "tsyringe";
 
-import type {
-  IPositionsRepository,
-  TPartialMeta,
-  TPositionsDetailResult,
-  TPositionsListParams,
-  TPositionsListResult,
-} from "./positions.repository";
+export interface TPositionsListParams {
+  readonly wallets: ReadonlyArray<{
+    readonly address: string;
+    readonly chainIds: ReadonlyArray<number>;
+  }>;
+  readonly protocols?: ReadonlyArray<TKnownExtensionType>;
+  readonly status?: "open" | "closed" | "all";
+  readonly cursor?: string;
+  readonly limit?: number;
+}
+
+export interface TPartialMeta {
+  readonly failures: ReadonlyArray<{ address: string; chainId: number; protocol: string }>;
+  readonly warning: string | null;
+}
+
+export interface TPositionsListResult {
+  readonly data: ReadonlyArray<TGatewayPosition>;
+  readonly tokens: TTokensMap;
+  readonly page?: { readonly nextCursor?: string };
+  readonly meta: { readonly partial?: TPartialMeta };
+}
+
+export interface TPositionsDetailResult {
+  readonly data: TGatewayPosition;
+  readonly tokens: TTokensMap;
+}
 
 @injectable()
-export class GatewayPositionsRepository extends Repository implements IPositionsRepository {
+export class GatewayPositionsRepository extends Repository {
   constructor(@inject(GATEWAY_API) private readonly client: GatewayApiClient) {
     super();
   }
