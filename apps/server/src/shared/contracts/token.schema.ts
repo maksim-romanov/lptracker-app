@@ -12,6 +12,7 @@ export const tokenMetaSchema = v.pipe(
     name: v.optional(v.string()),
     decimals: v.number(),
     iconUrl: v.string(),
+    displayDecimals: v.optional(v.number()),
   }),
   v.metadata({ ref: "TokenMeta" }),
 );

@@ -1,6 +1,6 @@
 import type { TPositionByExt, TTokensMap } from "positions/domain/types";
 
-import { formatPrice, mapToVm } from "../uniswap-v3.mapper";
+import { formatPrice, formatTokenAmount, mapToVm } from "../uniswap-v3.mapper";
 import { describe, expect, it } from "bun:test";
 
 const fixture: TPositionByExt<"uniswap-v3"> = {
@@ -143,5 +143,30 @@ describe("formatPrice", () => {
     expect(formatPrice(-1)).toBe("—");
     expect(formatPrice(Number.NaN)).toBe("—");
     expect(formatPrice(Number.POSITIVE_INFINITY)).toBe("—");
+  });
+});
+
+describe("formatTokenAmount", () => {
+  it("uses 6 decimals by default and trims trailing zeros", () => {
+    expect(formatTokenAmount("1.0")).toBe("1");
+    expect(formatTokenAmount("1000")).toBe("1,000");
+    expect(formatTokenAmount("34.1231345")).toBe("34.123135");
+    expect(formatTokenAmount("0.01")).toBe("0.01");
+  });
+
+  it("honors server-emitted displayDecimals for stablecoins", () => {
+    expect(formatTokenAmount("1234.567890", 2)).toBe("1,234.57");
+    expect(formatTokenAmount("1000.0", 2)).toBe("1,000");
+    expect(formatTokenAmount("0.015", 2)).toBe("0.02");
+  });
+
+  it("returns '< threshold' for amounts below precision", () => {
+    expect(formatTokenAmount("0.0000001")).toBe("< 0.000001");
+    expect(formatTokenAmount("0.001", 2)).toBe("< 0.01");
+  });
+
+  it("returns '0' for zero / non-finite input", () => {
+    expect(formatTokenAmount("0")).toBe("0");
+    expect(formatTokenAmount("not-a-number")).toBe("0");
   });
 });

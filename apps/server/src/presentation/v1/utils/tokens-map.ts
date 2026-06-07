@@ -1,3 +1,4 @@
+import { getDisplayDecimals } from "shared/adapters/token-classification";
 import { buildTokenIconUrl } from "shared/adapters/tokens-data.urls";
 import { buildTokenRef, type TokenMeta, type TokenMetaInput, type TokensMap } from "shared/contracts";
 
@@ -12,6 +13,7 @@ export class TokensMapBuilder {
         symbol: input.symbol,
         decimals: input.decimals,
         iconUrl: buildTokenIconUrl(input.chainId, input.address),
+        displayDecimals: getDisplayDecimals(input.symbol),
       });
     }
   }

@@ -14,11 +14,14 @@ function deriveStatus(state: string): TUniswapV3RangeStatus {
   return STATUS_MAP[state] ?? "in-range";
 }
 
-export function formatTokenAmount(raw: string): string {
+const DEFAULT_MANTISSA = 6;
+
+export function formatTokenAmount(raw: string, displayDecimals?: number): string {
   const value = Number(raw);
   if (!Number.isFinite(value) || value === 0) return "0";
-  if (Math.abs(value) < 0.000001) return "< 0.000001";
-  return numbro(value).format({ thousandSeparated: true, mantissa: 6, trimMantissa: true });
+  const mantissa = displayDecimals ?? DEFAULT_MANTISSA;
+  if (Math.abs(value) < 10 ** -mantissa) return `< 0.${"0".repeat(mantissa - 1)}1`;
+  return numbro(value).format({ thousandSeparated: true, mantissa, trimMantissa: true });
 }
 
 function tokenSide(positionToken: TPositionByExt<"uniswap-v3">["tokens"][number], tokens: TTokensMap): TUniswapV3TokenSide {
@@ -26,7 +29,7 @@ function tokenSide(positionToken: TPositionByExt<"uniswap-v3">["tokens"][number]
   return {
     tokenRef: positionToken.tokenRef,
     symbol: meta?.symbol ?? positionToken.tokenRef,
-    formatted: formatTokenAmount(positionToken.balance.formatted),
+    formatted: formatTokenAmount(positionToken.balance.formatted, meta?.displayDecimals),
     iconUrl: meta?.iconUrl ?? "",
   };
 }

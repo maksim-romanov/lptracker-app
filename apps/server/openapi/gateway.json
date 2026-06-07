@@ -636,6 +636,9 @@
           },
           "iconUrl": {
             "type": "string"
+          },
+          "displayDecimals": {
+            "type": "number"
           }
         },
         "required": [
