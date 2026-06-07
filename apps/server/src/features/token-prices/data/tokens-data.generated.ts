@@ -92,6 +92,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/stables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List known stablecoin tokens across supported chains
+         * @description Returns a list of { chainId, address, symbol } triples sourced from CoinGecko and DefiLlama, served from a Redis cache with stale-while-revalidate semantics.
+         */
+        get: operations["getStables"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -250,6 +270,24 @@ export interface operations {
             };
             /** @description Invalid body */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getStables: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Stablecoin entries */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

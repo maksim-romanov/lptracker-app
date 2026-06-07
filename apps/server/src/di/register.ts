@@ -1,6 +1,7 @@
 import { redis } from "bun";
 import { container } from "tsyringe";
 
+import * as stables from "../features/stables/di/register";
 import * as tokenPrices from "../features/token-prices/di/register";
 import * as uniswapV3 from "../features/uniswap-v3/di/register";
 import { REDIS } from "./tokens";
@@ -10,4 +11,5 @@ export function registerApp() {
 
   tokenPrices.register();
   uniswapV3.register();
+  stables.register();
 }

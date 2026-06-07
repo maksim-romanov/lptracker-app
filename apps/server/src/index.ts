@@ -1,15 +1,23 @@
 import "reflect-metadata";
 
 import { Scalar } from "@scalar/hono-api-reference";
+import { StablesService } from "features/stables/app/stables.service";
 import { Hono } from "hono";
 import { openAPIRouteHandler } from "hono-openapi";
 import { tokenPricesRoutes } from "token-prices/presentation/api";
 import { tokensMetaRoutes } from "tokens-meta/presentation/api";
+import { container } from "tsyringe";
 
 import { registerApp } from "./di/register";
 import { v1Routes } from "./presentation/v1";
 
 registerApp();
+
+try {
+  await container.resolve(StablesService).hydrate();
+} catch (error) {
+  console.warn("[bootstrap] StablesService.hydrate() threw; starting server with empty stables cache", error);
+}
 
 const app = new Hono();
 

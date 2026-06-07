@@ -1,12 +1,13 @@
+import { StablesService } from "features/stables/app/stables.service";
 import { buildTokenIconUrl } from "shared/adapters/tokens-data.urls";
 import { buildTokenRef, type TokenMeta, type TokenMetaInput, type TokensMap } from "shared/contracts";
+import { inject, injectable } from "tsyringe";
 
-const STABLECOIN_SYMBOLS = new Set(["USDC", "USDT", "DAI", "FRAX", "TUSD", "BUSD", "USDP", "LUSD", "PYUSD", "USDE", "GUSD", "FDUSD", "USDD"]);
-
-const displayDecimalsForSymbol = (symbol: string): number | undefined => (STABLECOIN_SYMBOLS.has(symbol.toUpperCase()) ? 2 : undefined);
-
+@injectable()
 export class TokensMapBuilder {
   private readonly metas = new Map<string, TokenMeta>();
+
+  constructor(@inject(StablesService) private readonly stables: StablesService) {}
 
   add(inputs: TokenMetaInput[]): void {
     for (const input of inputs) {
@@ -16,7 +17,7 @@ export class TokensMapBuilder {
         symbol: input.symbol,
         decimals: input.decimals,
         iconUrl: buildTokenIconUrl(input.chainId, input.address),
-        displayDecimals: displayDecimalsForSymbol(input.symbol),
+        displayDecimals: this.stables.isStable(input.chainId, input.address) ? 2 : undefined,
       });
     }
   }

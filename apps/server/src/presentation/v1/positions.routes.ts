@@ -16,6 +16,7 @@ import {
   type Position,
 } from "shared/contracts";
 import { DomainError } from "shared/errors/base.error";
+import { container } from "tsyringe";
 
 import { isKnownChainId } from "../../app/networks/catalog";
 import { protocolRegistry } from "../../app/protocols/registry";
@@ -112,7 +113,7 @@ positionsRoutes.get(
       ),
     );
 
-    const tokensBuilder = new TokensMapBuilder();
+    const tokensBuilder = container.resolve(TokensMapBuilder);
     const allPositions: Position[] = [];
     const partialFailures: { protocol: string; chainId: number; message: string }[] = [];
 
@@ -196,7 +197,7 @@ positionsRoutes.get(
       if (result.isErr()) return mapErrorToHttpResponse(c, result.error);
 
       const mapped = result.value;
-      const tokensBuilder = new TokensMapBuilder();
+      const tokensBuilder = container.resolve(TokensMapBuilder);
       tokensBuilder.add(mapped.tokenMetaInputs);
 
       const body: DetailResponse<Position> = {

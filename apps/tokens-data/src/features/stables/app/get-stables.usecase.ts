@@ -3,16 +3,9 @@ import { inject, injectable } from "tsyringe";
 import { StablesCache } from "../data/stables.cache";
 import { StablesResolver } from "../data/stables.resolver";
 import type { TStableEntry } from "../domain/stables-set";
-import seed from "../seeds/stables.json";
 
 const FRESH_MS = 6 * 60 * 60 * 1000;
 const STALE_MS = 24 * 60 * 60 * 1000;
-
-type TStablesSeed = {
-  fetchedAt: string;
-  sources: string[];
-  stables: TStableEntry[];
-};
 
 @injectable()
 export class GetStablesUseCase {
@@ -35,8 +28,14 @@ export class GetStablesUseCase {
       }
     }
 
-    this.kickRefresh();
-    return (seed as TStablesSeed).stables;
+    try {
+      const entries = await this.resolver.resolve();
+      await this.cache.write(entries);
+      return entries;
+    } catch (error) {
+      console.error("[stables] resolver failed:", error);
+      return [];
+    }
   }
 
   private kickRefresh(): void {

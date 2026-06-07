@@ -14,7 +14,7 @@ routes.get(
     tags: ["Stables"],
     summary: "List known stablecoin tokens across supported chains",
     description:
-      "Returns a list of { chainId, address, symbol } triples sourced from CoinGecko and DefiLlama, served from cache or embedded seed.",
+      "Returns a list of { chainId, address, symbol } triples sourced from CoinGecko and DefiLlama, served from a Redis cache with stale-while-revalidate semantics.",
     responses: { 200: { description: "Stablecoin entries" } },
   }),
   async (c) => {
