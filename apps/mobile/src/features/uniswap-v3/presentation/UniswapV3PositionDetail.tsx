@@ -106,6 +106,7 @@ export const UniswapV3PositionDetail = function UniswapV3PositionDetail({ positi
                   tickLower={position.extension.tickLower}
                   tickUpper={position.extension.tickUpper}
                 />
+
                 <PriceLabels
                   minLabel={vm.priceRange.minLabel}
                   currentLabel={vm.priceRange.currentLabel}

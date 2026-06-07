@@ -3,10 +3,9 @@ import { ActivityIndicator, View } from "react-native";
 import { EmptyState } from "core/presentation/components";
 import { type Href, useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
+import { PositionDetailBody } from "positions/presentation/components/PositionDetailBody";
 import { usePositionByRefQuery } from "positions/presentation/hooks/usePositionByRefQuery";
 import { StyleSheet } from "react-native-unistyles";
-
-import { renderPositionDetail } from "../render-position-detail";
 
 type TProps = {
   positionRef: string;
@@ -43,7 +42,7 @@ export const PositionDetailScreen = observer(function PositionDetailScreen({ pos
   }
 
   const { data: position, tokens } = query.data;
-  return <>{renderPositionDetail(position, tokens)}</>;
+  return <PositionDetailBody position={position} tokens={tokens} />;
 });
 
 const styles = StyleSheet.create(() => ({

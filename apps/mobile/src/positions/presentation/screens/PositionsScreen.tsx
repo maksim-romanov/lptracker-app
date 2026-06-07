@@ -53,10 +53,9 @@ export const PositionsScreen = observer(function PositionsScreen() {
       renderItem={renderItem}
       onEndReached={handleEndReached}
       onEndReachedThreshold={0.5}
-      initialNumToRender={6}
+      initialNumToRender={8}
       maxToRenderPerBatch={4}
       windowSize={7}
-      removeClippedSubviews
     />
   );
 });

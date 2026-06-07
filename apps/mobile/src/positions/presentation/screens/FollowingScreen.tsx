@@ -95,10 +95,9 @@ export const FollowingScreen = observer(function FollowingScreen() {
       ListHeaderComponent={ListHeader}
       ItemSeparatorComponent={Separator}
       renderItem={renderItem}
-      initialNumToRender={6}
+      initialNumToRender={8}
       maxToRenderPerBatch={4}
       windowSize={7}
-      removeClippedSubviews
     />
   );
 });

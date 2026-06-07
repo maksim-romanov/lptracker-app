@@ -1,9 +1,10 @@
 import { memo } from "react";
 import { Pressable } from "react-native";
 
-import type { TGatewayPosition, TTokensMap } from "positions/domain/types";
+import { UniswapV3PositionCard } from "features/uniswap-v3";
+import { isPositionExt, type TGatewayPosition, type TTokensMap } from "positions/domain/types";
 
-import { renderPositionCard } from "../render-position-card";
+import { UnknownPositionBody } from "./UnknownPositionBody";
 
 interface Props {
   readonly position: TGatewayPosition;
@@ -12,5 +13,18 @@ interface Props {
 }
 
 export const PositionListItem = memo(function PositionListItem({ position, tokens, onPress }: Props) {
-  return <Pressable onPress={() => onPress(position.ref)}>{renderPositionCard(position, tokens)}</Pressable>;
+  const handlePress = () => onPress(position.ref);
+  if (isPositionExt(position, "uniswap-v3")) {
+    return (
+      <Pressable onPress={handlePress}>
+        <UniswapV3PositionCard position={position} tokens={tokens} />
+      </Pressable>
+    );
+  }
+
+  return (
+    <Pressable onPress={handlePress}>
+      <UnknownPositionBody position={position} />
+    </Pressable>
+  );
 });

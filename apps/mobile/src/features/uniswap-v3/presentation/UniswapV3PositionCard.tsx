@@ -28,7 +28,7 @@ const STATUS_LABEL: Record<TUniswapV3RangeStatus, string> = {
   closed: "Closed",
 };
 
-export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, tokens }: IProps) {
+export function UniswapV3PositionCard({ position, tokens }: IProps) {
   const vm = useMemo(() => mapToVm(position, tokens), [position, tokens]);
   const pairTokens = [
     { symbol: vm.pair.base.symbol, address: vm.pair.base.tokenRef.split(":")[1] },
@@ -40,6 +40,7 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
       <Stack space={4}>
         <Box direction="row" alignY="center" gap={3}>
           <TokensImages tokens={pairTokens} chainId={position.chainId} size="md" />
+
           <Box flex="fluid">
             <Text variant="title" weight="bold" numberOfLines={1} style={styles.pair}>
               {vm.pair.base.symbol}
@@ -49,6 +50,7 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
               {vm.pair.quote.symbol}
             </Text>
           </Box>
+
           <FavoriteStar positionRef={position.ref} />
         </Box>
 
@@ -67,6 +69,7 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
                   {vm.priceRange.minLabel} {vm.pair.quote.symbol}
                 </Text>
               </Box>
+
               <Box flex="fluid" alignX="right">
                 <Text variant="caption" color="muted">
                   {vm.priceRange.maxLabel} {vm.pair.quote.symbol}
@@ -86,15 +89,18 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
               <Text variant="label" color="muted" uppercase>
                 {vm.principal[0]?.symbol ?? "—"}
               </Text>
+
               <Text variant="headline" weight="bold">
                 {vm.principal[0]?.formatted ?? "—"}
               </Text>
             </Box>
+
             <Box flex="fluid" alignX="right">
               <View style={styles.valueRight}>
                 <Text variant="label" color="muted" uppercase>
                   {vm.principal[1]?.symbol ?? "—"}
                 </Text>
+
                 <Text variant="headline" weight="bold">
                   {vm.principal[1]?.formatted ?? "—"}
                 </Text>
@@ -105,7 +111,7 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
       </Stack>
     </Card>
   );
-};
+}
 
 const styles = StyleSheet.create((theme) => ({
   pair: {
