@@ -4,6 +4,7 @@
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
     "codegen": "bun run codegen.ts",
+    "fetch-stables": "bun scripts/fetch-stables.ts",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit"

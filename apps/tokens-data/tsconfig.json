@@ -11,5 +11,5 @@
       "shared/*": ["shared/*"]
     }
   },
-  "exclude": ["codegen.ts"]
+  "exclude": ["codegen.ts", "scripts"]
 }
