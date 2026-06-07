@@ -20,7 +20,27 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "features/uniswap-v3/data": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/data/uniswap-v3.mapper": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/domain": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/domain/uniswap-v3.vm": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/application": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/presentation": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/presentation/components/ListBody": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/presentation/components/DetailBody": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/presentation/components/Strip": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/presentation/components/PriceRangeBar": "Import from 'features/uniswap-v3' (façade) instead of internals.",
+              "features/uniswap-v3/plugin": "Import from 'features/uniswap-v3' (façade) instead of internals."
+            }
+          }
+        }
+      }
     }
   },
   "formatter": {
