@@ -15,6 +15,13 @@ export interface ProtocolDetailParams {
   protocolPositionId: string;
 }
 
+export interface MappedError {
+  readonly status: number;
+  readonly code: string;
+  readonly message: string;
+  readonly field?: string;
+}
+
 export interface ProtocolEntry {
   readonly slug: string;
   readonly version: string;
@@ -26,4 +33,7 @@ export interface ProtocolEntry {
 
   listPositionsForChain(params: ProtocolListParams): Promise<Result<MapPositionResult[], DomainError>>;
   getPositionByRef(params: ProtocolDetailParams): Promise<Result<MapPositionResult, DomainError>>;
+
+  /** Optional hook: map a domain error originating from this protocol into an HTTP response shape. */
+  mapError?(error: DomainError): MappedError | undefined;
 }
