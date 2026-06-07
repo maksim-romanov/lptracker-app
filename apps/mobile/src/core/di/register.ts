@@ -1,5 +1,4 @@
 import "core/presentation/configurePersistable";
-import "app/protocol-plugins";
 
 import * as apiClient from "core/api-client/di/register";
 import * as linking from "core/linking/di/register";

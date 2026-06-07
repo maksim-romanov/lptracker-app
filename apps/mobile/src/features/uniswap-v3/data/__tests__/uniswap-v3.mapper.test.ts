@@ -1,6 +1,6 @@
 import type { TPositionByExt, TTokensMap } from "positions/domain/types";
 
-import { mapToVm } from "../uniswap-v3.mapper";
+import { formatPrice, mapToVm } from "../uniswap-v3.mapper";
 import { describe, expect, it } from "bun:test";
 
 const fixture: TPositionByExt<"uniswap-v3"> = {
@@ -47,8 +47,8 @@ const fixture: TPositionByExt<"uniswap-v3"> = {
 };
 
 const tokens: TTokensMap = {
-  "1:0xweth": { symbol: "WETH", decimals: 18, iconUrl: "" },
-  "1:0xusdc": { symbol: "USDC", decimals: 6, iconUrl: "" },
+  "1:0xweth": { symbol: "WETH", decimals: 18, iconUrl: "https://example.com/weth.png" },
+  "1:0xusdc": { symbol: "USDC", decimals: 6, iconUrl: "https://example.com/usdc.png" },
 };
 
 describe("mapToVm (uniswap-v3)", () => {
@@ -65,8 +65,18 @@ describe("mapToVm (uniswap-v3)", () => {
   it("aggregates principal tokens by role", () => {
     const vm = mapToVm(fixture, tokens);
     expect(vm.principal).toHaveLength(2);
-    expect(vm.principal[0]).toEqual({ tokenRef: "1:0xweth", symbol: "WETH", formatted: "1.0" });
-    expect(vm.principal[1]).toEqual({ tokenRef: "1:0xusdc", symbol: "USDC", formatted: "1000.0" });
+    expect(vm.principal[0]).toEqual({
+      tokenRef: "1:0xweth",
+      symbol: "WETH",
+      formatted: "1.0",
+      iconUrl: "https://example.com/weth.png",
+    });
+    expect(vm.principal[1]).toEqual({
+      tokenRef: "1:0xusdc",
+      symbol: "USDC",
+      formatted: "1000.0",
+      iconUrl: "https://example.com/usdc.png",
+    });
   });
 
   it("aggregates fee tokens by role", () => {
@@ -74,6 +84,7 @@ describe("mapToVm (uniswap-v3)", () => {
     expect(vm.fees).toHaveLength(1);
     expect(vm.fees[0]?.symbol).toBe("WETH");
     expect(vm.fees[0]?.formatted).toBe("0.01");
+    expect(vm.fees[0]?.iconUrl).toBe("https://example.com/weth.png");
   });
 
   it("exposes nftTokenId from extension", () => {
@@ -84,5 +95,53 @@ describe("mapToVm (uniswap-v3)", () => {
   it("exposes pool address from extension.pool", () => {
     const vm = mapToVm(fixture, tokens);
     expect(vm.poolAddress).toBe("0xpool");
+  });
+
+  it("derives pair from first two principal tokens", () => {
+    const vm = mapToVm(fixture, tokens);
+    expect(vm.pair.base.symbol).toBe("WETH");
+    expect(vm.pair.base.iconUrl).toBe("https://example.com/weth.png");
+    expect(vm.pair.quote.symbol).toBe("USDC");
+    expect(vm.pair.quote.iconUrl).toBe("https://example.com/usdc.png");
+  });
+
+  it("formats price range labels in quote-per-base units", () => {
+    const vm = mapToVm(fixture, tokens);
+    expect(vm.priceRange.baseSymbol).toBe("WETH");
+    expect(vm.priceRange.quoteSymbol).toBe("USDC");
+    expect(vm.priceRange.minLabel).not.toBe("-887220");
+    expect(vm.priceRange.maxLabel).not.toBe("887220");
+    expect(vm.priceRange.currentLabel).toMatch(/^[\d,.]+$/);
+  });
+});
+
+describe("formatPrice", () => {
+  it("formats large numbers with thousand separators and 2 decimals", () => {
+    expect(formatPrice(3100)).toBe("3,100.00");
+    expect(formatPrice(2700.456)).toBe("2,700.46");
+  });
+
+  it("formats mid-range numbers with 4 decimals", () => {
+    expect(formatPrice(1.5)).toBe("1.5000");
+    expect(formatPrice(42.1234567)).toBe("42.1235");
+  });
+
+  it("formats small numbers with 6 decimals", () => {
+    expect(formatPrice(0.001234)).toBe("0.001234");
+  });
+
+  it("formats very small numbers with 8 decimals", () => {
+    expect(formatPrice(0.00000387)).toBe("0.00000387");
+  });
+
+  it("uses exponential for extremely small numbers", () => {
+    expect(formatPrice(1e-9)).toBe("1.00e-9");
+  });
+
+  it("returns em-dash for non-finite or non-positive input", () => {
+    expect(formatPrice(0)).toBe("—");
+    expect(formatPrice(-1)).toBe("—");
+    expect(formatPrice(Number.NaN)).toBe("—");
+    expect(formatPrice(Number.POSITIVE_INFINITY)).toBe("—");
   });
 });

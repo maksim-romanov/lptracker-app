@@ -183,3 +183,5 @@ const styles = StyleSheet.create((theme) => ({
     gap: 2,
   },
 }));
+
+export default DrawerContent;

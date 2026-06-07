@@ -1,4 +1,5 @@
 export { Avatar } from "./Avatar";
+export { BreakdownCard } from "./BreakdownCard";
 export { Button, type ButtonProps } from "./Button";
 export { Card } from "./Card";
 export { DashedBanner } from "./DashedBanner";
@@ -15,8 +16,10 @@ export { NetworkStack } from "./NetworkStack";
 export { SegmentedControl } from "./SegmentedControl";
 export { SidebarItem } from "./SidebarItem";
 export { Skeleton } from "./Skeleton";
+export { StatRow } from "./StatRow";
 export { Tag } from "./Tag";
 export { Text, type TextProps } from "./Text";
 export { TextField } from "./TextField";
+export { TokenAmountRow } from "./TokenAmountRow";
 export { TokenImage, type TokenImageSize, TokensImages } from "./TokenImage";
 export { type TickerToken, TrendingTokensMarquee } from "./TrendingTokensMarquee";
