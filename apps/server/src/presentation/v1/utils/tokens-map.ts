@@ -1,6 +1,9 @@
-import { getDisplayDecimals } from "shared/adapters/token-classification";
 import { buildTokenIconUrl } from "shared/adapters/tokens-data.urls";
 import { buildTokenRef, type TokenMeta, type TokenMetaInput, type TokensMap } from "shared/contracts";
+
+const STABLECOIN_SYMBOLS = new Set(["USDC", "USDT", "DAI", "FRAX", "TUSD", "BUSD", "USDP", "LUSD", "PYUSD", "USDE", "GUSD", "FDUSD", "USDD"]);
+
+const displayDecimalsForSymbol = (symbol: string): number | undefined => (STABLECOIN_SYMBOLS.has(symbol.toUpperCase()) ? 2 : undefined);
 
 export class TokensMapBuilder {
   private readonly metas = new Map<string, TokenMeta>();
@@ -13,7 +16,7 @@ export class TokensMapBuilder {
         symbol: input.symbol,
         decimals: input.decimals,
         iconUrl: buildTokenIconUrl(input.chainId, input.address),
-        displayDecimals: getDisplayDecimals(input.symbol),
+        displayDecimals: displayDecimalsForSymbol(input.symbol),
       });
     }
   }
