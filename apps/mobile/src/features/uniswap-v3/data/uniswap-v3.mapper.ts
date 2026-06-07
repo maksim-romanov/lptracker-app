@@ -14,12 +14,19 @@ function deriveStatus(state: string): TUniswapV3RangeStatus {
   return STATUS_MAP[state] ?? "in-range";
 }
 
+export function formatTokenAmount(raw: string): string {
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value === 0) return "0";
+  if (Math.abs(value) < 0.000001) return "< 0.000001";
+  return numbro(value).format({ thousandSeparated: true, mantissa: 6, trimMantissa: true });
+}
+
 function tokenSide(positionToken: TPositionByExt<"uniswap-v3">["tokens"][number], tokens: TTokensMap): TUniswapV3TokenSide {
   const meta = tokens[positionToken.tokenRef];
   return {
     tokenRef: positionToken.tokenRef,
     symbol: meta?.symbol ?? positionToken.tokenRef,
-    formatted: positionToken.balance.formatted,
+    formatted: formatTokenAmount(positionToken.balance.formatted),
     iconUrl: meta?.iconUrl ?? "",
   };
 }

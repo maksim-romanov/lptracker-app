@@ -68,13 +68,13 @@ describe("mapToVm (uniswap-v3)", () => {
     expect(vm.principal[0]).toEqual({
       tokenRef: "1:0xweth",
       symbol: "WETH",
-      formatted: "1.0",
+      formatted: "1",
       iconUrl: "https://example.com/weth.png",
     });
     expect(vm.principal[1]).toEqual({
       tokenRef: "1:0xusdc",
       symbol: "USDC",
-      formatted: "1000.0",
+      formatted: "1,000",
       iconUrl: "https://example.com/usdc.png",
     });
   });
