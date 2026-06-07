@@ -2,55 +2,48 @@ import { Repository } from "core/domain/base/repository";
 import { createMMKV } from "react-native-mmkv";
 import { injectable } from "tsyringe";
 
-const FOLLOWING_KEY = "following:v2";
-
-export type TFollowingPosition = {
-  protocol: string;
-  chainId: number;
-  id: string;
-};
+export const FOLLOWING_MMKV_KEY = "following:v3";
 
 @injectable()
 export class FollowingRepository extends Repository {
   private readonly storage = createMMKV({ id: "following" });
 
-  buildId(position: TFollowingPosition): string {
-    return `${position.protocol}:${position.chainId}:${position.id}`;
-  }
-
   getAll(): string[] {
-    const raw = this.storage.getString(FOLLOWING_KEY);
+    const raw = this.storage.getString(FOLLOWING_MMKV_KEY);
     if (!raw) return [];
-    return JSON.parse(raw) as string[];
-  }
-
-  isFollowing(position: TFollowingPosition): boolean {
-    return this.getAll().includes(this.buildId(position));
-  }
-
-  follow(position: TFollowingPosition): void {
-    const id = this.buildId(position);
-    const ids = this.getAll();
-    if (!ids.includes(id)) {
-      ids.push(id);
-      this.storage.set(FOLLOWING_KEY, JSON.stringify(ids));
-      this.logger.debug("Position followed", { id });
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+    } catch {
+      this.logger.warn("FollowingRepository: malformed payload, resetting");
+      this.storage.remove(FOLLOWING_MMKV_KEY);
+      return [];
     }
   }
 
-  unfollow(position: TFollowingPosition): void {
-    const id = this.buildId(position);
-    const ids = this.getAll().filter((i) => i !== id);
-    this.storage.set(FOLLOWING_KEY, JSON.stringify(ids));
-    this.logger.debug("Position unfollowed", { id });
+  isFollowing(ref: string): boolean {
+    return this.getAll().includes(ref);
   }
 
-  toggle(position: TFollowingPosition): boolean {
-    if (this.isFollowing(position)) {
-      this.unfollow(position);
+  follow(ref: string): void {
+    const refs = this.getAll();
+    if (!refs.includes(ref)) {
+      refs.push(ref);
+      this.storage.set(FOLLOWING_MMKV_KEY, JSON.stringify(refs));
+    }
+  }
+
+  unfollow(ref: string): void {
+    const refs = this.getAll().filter((r) => r !== ref);
+    this.storage.set(FOLLOWING_MMKV_KEY, JSON.stringify(refs));
+  }
+
+  toggle(ref: string): boolean {
+    if (this.isFollowing(ref)) {
+      this.unfollow(ref);
       return false;
     }
-    this.follow(position);
+    this.follow(ref);
     return true;
   }
 }

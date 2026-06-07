@@ -1,17 +1,21 @@
 import { ActivityIndicator, FlatList, View } from "react-native";
 
 import { container } from "core/di/container";
-import { useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
-import { PositionCard, type TPositionVM } from "positions/presentation/components/PositionCard";
+import { PositionListItem } from "positions/presentation/components/PositionListItem";
 import { usePositionsQuery } from "positions/presentation/hooks/usePositionsQuery";
-import { FollowingStore } from "positions/presentation/stores/following.store";
 import { StyleSheet } from "react-native-unistyles";
+import { WalletsStore } from "wallets/presentation/wallets.store";
 
-export const PositionsScreen = () => {
-  const { data, isLoading } = usePositionsQuery();
+export const PositionsScreen = observer(function PositionsScreen() {
+  const walletsStore = container.resolve(WalletsStore);
+  const wallets = walletsStore.wallets.map((w) => ({
+    address: w.address,
+    chainIds: [...w.chainIds],
+  }));
+  const query = usePositionsQuery({ wallets });
 
-  if (isLoading) {
+  if (query.isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator />
@@ -19,28 +23,19 @@ export const PositionsScreen = () => {
     );
   }
 
+  const positions = query.data?.positions ?? [];
+  const tokens = query.data?.tokens ?? {};
+
   return (
     <FlatList
-      data={data ?? []}
-      keyExtractor={(item) => item.id}
+      data={positions}
+      keyExtractor={(p) => p.ref}
       contentContainerStyle={styles.list}
       contentInsetAdjustmentBehavior="automatic"
       ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
-      renderItem={({ item }) => <PositionRow position={item} />}
-    />
-  );
-};
-
-const PositionRow = observer(({ position }: { position: TPositionVM }) => {
-  const router = useRouter();
-  const followingStore = container.resolve(FollowingStore);
-
-  return (
-    <PositionCard
-      position={position}
-      favorite={followingStore.isFollowing(position)}
-      onToggleFavorite={() => followingStore.toggle(position)}
-      onPress={() => router.push(`/positions/${position.id}`)}
+      renderItem={({ item }) => <PositionListItem position={item} tokens={tokens} />}
+      onEndReached={() => query.fetchNextPage()}
+      onEndReachedThreshold={0.5}
     />
   );
 });

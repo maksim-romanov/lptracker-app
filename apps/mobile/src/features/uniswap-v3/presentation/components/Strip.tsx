@@ -1,7 +1,6 @@
 import { StyleSheet as RNStyleSheet, View } from "react-native";
 
 import { PROTOCOLS_META } from "@mars-909/catalog";
-import { PROTOCOL_LOGOS } from "core/config/protocol-logos";
 import { Text } from "core/presentation/components";
 import { Image } from "expo-image";
 import { observer } from "mobx-react-lite";
@@ -15,19 +14,14 @@ interface IProps {
 
 const META = PROTOCOLS_META["uniswap-v3"];
 const PATTERN = require("assets/protocols/uniswap-pattern.png");
+const LOGO = require("assets/uniswap_uni_logo.png");
 
 export const Strip = observer(function Strip(_props: IProps) {
   return (
     <View style={styles.container}>
       <Image source={PATTERN} style={[RNStyleSheet.absoluteFill, styles.pattern]} contentFit="cover" tintColor={META.brandColor} />
 
-      <Image
-        source={PROTOCOL_LOGOS["uniswap-v3"]}
-        style={styles.watermark}
-        contentFit="contain"
-        tintColor={META.brandColor}
-        pointerEvents="none"
-      />
+      <Image source={LOGO} style={styles.watermark} contentFit="contain" tintColor={META.brandColor} pointerEvents="none" />
 
       <View style={styles.content}>
         <Text style={styles.label}>{META.label}</Text>

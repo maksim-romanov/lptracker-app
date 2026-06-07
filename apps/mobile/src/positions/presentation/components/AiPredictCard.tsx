@@ -12,40 +12,43 @@ const GradientFill = withUnistyles(LinearGradient, (theme) => ({
   colors: [`${theme.primary}26`, `${theme.primary}08`, "transparent"] as const,
 }));
 
-export const AiPredictCard = () => (
-  <View style={styles.outer}>
-    <View style={styles.border}>
-      <GradientFill locations={[0, 0.6, 1]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.inner}>
-        <Stack space={4}>
-          <Box direction="row" alignY="center">
-            <View style={styles.sparkleBubble}>
-              <SparkleIcon name="sparkles" size="lg" />
-            </View>
-            <Box flex="fluid" />
-            <View style={styles.lockChip}>
-              <LockIcon name="lock-closed" size="xs" />
-              <Text variant="label" color="primary" weight="bold" uppercase style={styles.lockLabel}>
-                Soon
-              </Text>
-            </View>
-          </Box>
+export const AiPredictCard = function AiPredictCard() {
+  if (!__DEV__) return null;
+  return (
+    <View style={styles.outer}>
+      <View style={styles.border}>
+        <GradientFill locations={[0, 0.6, 1]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.inner}>
+          <Stack space={4}>
+            <Box direction="row" alignY="center">
+              <View style={styles.sparkleBubble}>
+                <SparkleIcon name="sparkles" size="lg" />
+              </View>
+              <Box flex="fluid" />
+              <View style={styles.lockChip}>
+                <LockIcon name="lock-closed" size="xs" />
+                <Text variant="label" color="primary" weight="bold" uppercase style={styles.lockLabel}>
+                  Soon
+                </Text>
+              </View>
+            </Box>
 
-          <Stack space={2}>
-            <Text variant="label" color="primary" weight="bold" uppercase style={styles.eyebrow}>
-              AI Predict
-            </Text>
-            <Text variant="display" weight="black" style={styles.hook}>
-              Tomorrow's range,{"\n"}today.
-            </Text>
-            <Text variant="bodySmall" color="muted">
-              On-chain signals + ML — coming soon.
-            </Text>
+            <Stack space={2}>
+              <Text variant="label" color="primary" weight="bold" uppercase style={styles.eyebrow}>
+                AI Predict
+              </Text>
+              <Text variant="display" weight="black" style={styles.hook}>
+                Tomorrow's range,{"\n"}today.
+              </Text>
+              <Text variant="bodySmall" color="muted">
+                On-chain signals + ML — coming soon.
+              </Text>
+            </Stack>
           </Stack>
-        </Stack>
-      </GradientFill>
+        </GradientFill>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create((theme) => ({
   outer: {

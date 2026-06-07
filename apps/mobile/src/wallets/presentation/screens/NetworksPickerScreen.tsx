@@ -1,6 +1,6 @@
 import { FlatList, Pressable, View } from "react-native";
 
-import { CHAINS } from "core/config/chains";
+import { NETWORKS } from "@mars-909/catalog";
 import { container } from "core/di/container";
 import { Icon, NetworkIcon, Text } from "core/presentation/components";
 import { Stack as NavStack } from "expo-router";
@@ -8,7 +8,7 @@ import { observer } from "mobx-react-lite";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { WalletDraftStore } from "wallets/presentation/wallet-draft.store";
 
-const CHAIN_LIST = Object.values(CHAINS);
+const CHAIN_LIST = NETWORKS;
 
 const CheckIcon = withUnistyles(Icon, (theme) => ({ color: theme.onPrimary }));
 
@@ -20,27 +20,27 @@ export const NetworksPickerScreen = observer(() => {
       <NavStack.Screen options={{ title: `Networks · ${draft.chainIds.length} of ${CHAIN_LIST.length}` }} />
       <FlatList
         data={CHAIN_LIST}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => item.slug}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => {
-          const selected = draft.chainIds.includes(item.id);
+          const selected = draft.chainIds.includes(item.chainId);
           return (
             <Pressable
-              onPress={() => draft.toggleChain(item.id)}
+              onPress={() => draft.toggleChain(item.chainId)}
               style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: selected }}
-              accessibilityLabel={item.fullName}
+              accessibilityLabel={item.name}
             >
-              <NetworkIcon chainId={item.id} size="md" />
+              <NetworkIcon chainId={item.chainId} size="md" />
               <View style={styles.body}>
                 <Text variant="body" weight="bold">
-                  {item.fullName}
+                  {item.name}
                 </Text>
                 <Text variant="bodySmall" color="muted">
-                  {item.label}
+                  {item.shortName}
                 </Text>
               </View>
               <View style={[styles.check, selected ? styles.checkSelected : styles.checkIdle]}>

@@ -1,10 +1,11 @@
 import { createQueryKeys } from "@lukemorales/query-key-factory";
+import type { TPositionsListParams } from "positions/data/positions.repository";
 
 export const positionsKeys = createQueryKeys("positions", {
-  list: (walletAddress: string) => ({
-    queryKey: [walletAddress],
+  list: (params: Omit<TPositionsListParams, "cursor">) => ({
+    queryKey: [{ ...params }],
   }),
-  byId: (id: string) => ({
-    queryKey: [id],
+  byRef: (ref: string) => ({
+    queryKey: [ref],
   }),
 });

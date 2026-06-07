@@ -1,17 +1,23 @@
 import { Pressable } from "react-native";
 
+import { container } from "core/di/container";
 import { Icon } from "core/presentation/components";
+import { observer } from "mobx-react-lite";
+import { useFollow } from "positions/presentation/hooks/useFollow";
+import { FollowingStore } from "positions/presentation/stores/following.store";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import { withUnistyles } from "react-native-unistyles";
 
 const ThemedIcon = withUnistyles(Icon);
 
 type TProps = {
-  favorite: boolean;
-  onToggle: () => void;
+  positionRef: string;
 };
 
-export const FavoriteStar = ({ favorite, onToggle }: TProps) => {
+export const FavoriteStar = observer(function FavoriteStar({ positionRef }: TProps) {
+  const store = container.resolve(FollowingStore);
+  const follow = useFollow(positionRef);
+  const favorite = store.isFollowing(positionRef);
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -26,9 +32,11 @@ export const FavoriteStar = ({ favorite, onToggle }: TProps) => {
     scale.value = withSpring(1, { damping: 8, stiffness: 320, mass: 0.5 });
   };
 
+  const handlePress = () => follow.mutate(!favorite);
+
   return (
     <Pressable
-      onPress={onToggle}
+      onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       hitSlop={16}
@@ -45,4 +53,4 @@ export const FavoriteStar = ({ favorite, onToggle }: TProps) => {
       </Animated.View>
     </Pressable>
   );
-};
+});

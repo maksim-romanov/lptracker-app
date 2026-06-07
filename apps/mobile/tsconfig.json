@@ -6,6 +6,7 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
+      "app/*": ["./src/app/*"],
       "core/*": ["./src/core/*"],
       "positions/*": ["./src/positions/*"],
       "wallets/*": ["./src/wallets/*"],

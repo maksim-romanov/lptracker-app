@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
 import { Stack } from "@grapp/stacks";
-import { CHAINS } from "core/config/chains";
+import { NETWORKS } from "@mars-909/catalog";
 import { container } from "core/di/container";
 import { Button, Card, Icon, NetworkStack, Text, TextField } from "core/presentation/components";
 import { type Href, useRouter } from "expo-router";
@@ -12,7 +12,7 @@ import { SaveWalletUseCase } from "wallets/application/usecases/save-wallet.usec
 import { WalletDraftStore } from "wallets/presentation/wallet-draft.store";
 import { WalletsStore } from "wallets/presentation/wallets.store";
 
-const TOTAL_CHAINS = Object.values(CHAINS).length;
+const TOTAL_CHAINS = NETWORKS.length;
 
 const DEFAULT_NETWORKS_HREF = "/wallets/networks" as Href;
 

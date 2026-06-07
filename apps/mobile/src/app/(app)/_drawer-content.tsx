@@ -1,7 +1,7 @@
 import { ScrollView, View } from "react-native";
 
 import type { DrawerContentComponentProps } from "@react-navigation/drawer";
-import { Divider, type IconName, SidebarItem, Text, type TickerToken, TrendingTokensMarquee } from "core/presentation/components";
+import { Divider, type IconName, SidebarItem, Text } from "core/presentation/components";
 import { type Href, useRouter, useSegments } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
@@ -18,17 +18,6 @@ type TNavEntry = {
   accent?: TAccentToken;
   glow?: boolean;
 };
-
-const TRENDING_TOKENS: TickerToken[] = [
-  { symbol: "WETH", change: 2.4, chainId: 1, address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
-  { symbol: "USDC", change: 0.0, chainId: 1, address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
-  { symbol: "WBTC", change: -1.2, chainId: 1, address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599" },
-  { symbol: "ARB", change: 5.8, chainId: 42161, address: "0x912CE59144191C1204E64559FE8253a0e49E6548" },
-  { symbol: "UNI", change: -2.3, chainId: 1, address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984" },
-  { symbol: "LINK", change: 1.7, chainId: 1, address: "0x514910771AF9Ca656af840dff83E8264EcF986CA" },
-  { symbol: "AAVE", change: 4.2, chainId: 1, address: "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9" },
-  { symbol: "PEPE", change: 12.5, chainId: 1, address: "0x6982508145454Ce325dDbE47a25d4ec3d2311933" },
-];
 
 const PRIMARY_NAV: TNavEntry[] = [
   {
@@ -117,13 +106,6 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
           glow={WALLETS_NAV.glow}
           onPress={() => navigate(WALLETS_NAV.href)}
         />
-
-        <View style={styles.ticker}>
-          <Text variant="label" color="muted" uppercase style={styles.tickerHeading}>
-            Trending
-          </Text>
-          <TrendingTokensMarquee tokens={TRENDING_TOKENS} />
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -192,16 +174,6 @@ const styles = StyleSheet.create((theme) => ({
   nav: {
     paddingHorizontal: theme.spacing.md,
     gap: 2,
-  },
-
-  ticker: {
-    marginTop: theme.spacing.xl,
-    gap: theme.spacing.sm,
-  },
-
-  tickerHeading: {
-    paddingHorizontal: theme.spacing.xl,
-    letterSpacing: 1.2,
   },
 
   footer: {

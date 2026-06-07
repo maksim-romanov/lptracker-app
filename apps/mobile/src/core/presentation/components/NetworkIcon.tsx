@@ -1,10 +1,12 @@
 import { View, type ViewStyle } from "react-native";
 
-import { networkColors } from "@mars-909/theme";
+import { NETWORKS } from "@mars-909/catalog";
+import { type NetworkKey, networkColors } from "@mars-909/theme";
 import { CHAIN_LOGOS } from "core/config/chain-logos";
-import { CHAIN_BY_ID } from "core/config/chains";
 import { Image } from "expo-image";
 import { StyleSheet, type UnistylesVariants, useUnistyles } from "react-native-unistyles";
+
+const CHAIN_BY_ID = new Map<number, { key: NetworkKey }>(NETWORKS.map((n) => [n.chainId, { key: n.slug as NetworkKey }]));
 
 type Variants = UnistylesVariants<typeof styles>;
 
