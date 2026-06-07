@@ -1,9 +1,10 @@
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 
 import { EmptyState } from "core/presentation/components";
 import { type Href, useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
 import { PositionDetailBody } from "positions/presentation/components/PositionDetailBody";
+import { PositionDetailSkeleton } from "positions/presentation/components/PositionDetailSkeleton";
 import { usePositionByRefQuery } from "positions/presentation/hooks/usePositionByRefQuery";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -15,13 +16,7 @@ export const PositionDetailScreen = observer(function PositionDetailScreen({ pos
   const router = useRouter();
   const query = usePositionByRefQuery(positionRef);
 
-  if (query.isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
+  if (query.isLoading) return <PositionDetailSkeleton />;
 
   if (query.error || !query.data) {
     return (
@@ -46,7 +41,6 @@ export const PositionDetailScreen = observer(function PositionDetailScreen({ pos
 });
 
 const styles = StyleSheet.create(() => ({
-  center: { flex: 1, alignItems: "center", justifyContent: "center" },
   emptyRoot: { flex: 1 },
   beforeStack: { flex: 30 },
   afterStack: { flex: 70 },

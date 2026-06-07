@@ -52,7 +52,9 @@ export type IconName =
   | "sparkles-outline"
   | "sparkles"
   | "lock-closed-outline"
-  | "lock-closed";
+  | "lock-closed"
+  | "time-outline"
+  | "information-circle-outline";
 
 export type IconSize = keyof typeof SIZE;
 
