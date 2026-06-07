@@ -43,6 +43,17 @@ const deriveStatusState = (
   return { state: "out-of-range", stateDetail: `tick ${currentTick} outside [${tickLower}, ${tickUpper})` };
 };
 
+const subgraphTimestampToIso = (positionId: string, field: string, timestamp: string): string => {
+  if (!timestamp) {
+    throw new Error(`V3 mapper: missing ${field} on position ${positionId}`);
+  }
+  const seconds = Number(timestamp);
+  if (!Number.isFinite(seconds)) {
+    throw new Error(`V3 mapper: non-finite ${field} '${timestamp}' on position ${positionId}`);
+  }
+  return new Date(seconds * 1000).toISOString();
+};
+
 export const mapV3PositionToContract = ({ entity, chainId, unclaimedFees }: MapPositionInput): MapPositionResult => {
   const pool = entity.pool;
   const token0 = pool.token0;
@@ -138,8 +149,8 @@ export const mapV3PositionToContract = ({ entity, chainId, unclaimedFees }: MapP
     },
     tokens: positionTokens,
     status: { state, stateDetail },
-    createdAt: null,
-    updatedAt: new Date().toISOString(),
+    createdAt: subgraphTimestampToIso(entity.id, "createdAtTimestamp", entity.createdAtTimestamp),
+    updatedAt: subgraphTimestampToIso(entity.id, "updatedAtTimestamp", entity.updatedAtTimestamp),
     extension,
   };
 

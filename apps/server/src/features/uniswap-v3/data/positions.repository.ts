@@ -149,6 +149,8 @@ const getPositionQuery = graphql(`
       liquidity
       tickLower
       tickUpper
+      createdAtTimestamp
+      updatedAtTimestamp
 
       pool {
         id
@@ -181,6 +183,8 @@ const getWalletPositionsQuery = graphql(`
       liquidity
       tickLower
       tickUpper
+      createdAtTimestamp
+      updatedAtTimestamp
       pool {
         id
         feeTier
