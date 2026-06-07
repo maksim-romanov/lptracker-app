@@ -13,7 +13,6 @@ const GradientFill = withUnistyles(LinearGradient, (theme) => ({
 }));
 
 export const AiPredictCard = function AiPredictCard() {
-  if (!__DEV__) return null;
   return (
     <View style={styles.outer}>
       <View style={styles.border}>

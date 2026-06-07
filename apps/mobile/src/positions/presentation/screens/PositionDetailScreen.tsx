@@ -1,4 +1,4 @@
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 import { EmptyState } from "core/presentation/components";
 import { type Href, useRouter } from "expo-router";
@@ -43,21 +43,11 @@ export const PositionDetailScreen = observer(function PositionDetailScreen({ pos
   }
 
   const { data: position, tokens } = query.data;
-
-  return (
-    <ScrollView contentContainerStyle={styles.content} contentInsetAdjustmentBehavior="automatic">
-      {renderPositionDetail(position, tokens)}
-    </ScrollView>
-  );
+  return <>{renderPositionDetail(position, tokens)}</>;
 });
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create(() => ({
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
-  content: {
-    paddingHorizontal: theme.spacing.xl,
-    paddingTop: theme.spacing.lg,
-    paddingBottom: theme.spacing["3xl"],
-  },
   emptyRoot: { flex: 1 },
   beforeStack: { flex: 30 },
   afterStack: { flex: 70 },
