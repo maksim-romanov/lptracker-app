@@ -1,4 +1,5 @@
 import { UseCase } from "core/domain/base/usecase";
+import { MembershipStore } from "membership/presentation/membership.store";
 import { inject, injectable } from "tsyringe";
 import type { WalletsRepository } from "wallets/data/wallets.repository";
 import { WALLETS_REPOSITORY } from "wallets/di/tokens";
@@ -11,7 +12,10 @@ const normalizeAddress = (address: string, type: EWalletType): string => (type =
 
 @injectable()
 export class SaveWalletUseCase extends UseCase<boolean, TInput> {
-  constructor(@inject(WALLETS_REPOSITORY) private readonly repo: WalletsRepository) {
+  constructor(
+    @inject(WALLETS_REPOSITORY) private readonly repo: WalletsRepository,
+    @inject(MembershipStore) private readonly membership: MembershipStore,
+  ) {
     super();
   }
 
@@ -21,6 +25,13 @@ export class SaveWalletUseCase extends UseCase<boolean, TInput> {
   }
 
   private create(input: TWalletDraft): boolean {
+    const currentCount = this.repo.getAll().length;
+    if (!this.membership.canAddWallet(currentCount)) {
+      const max = this.membership.current.limits.maxWallets;
+      this.alert.error(`Your plan allows ${max} wallets.`, { title: "Wallet limit reached" });
+      return false;
+    }
+
     const target = normalizeAddress(input.address, input.type);
     const exists = this.repo.getAll().some((w) => normalizeAddress(w.address, w.type) === target);
     if (exists) {

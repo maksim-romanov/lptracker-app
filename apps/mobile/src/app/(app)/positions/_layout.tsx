@@ -26,7 +26,7 @@ export default function PositionsLayout() {
         </Stack.Toolbar>
       </Stack.Screen>
       <Stack.Screen
-        name="[id]"
+        name="[ref]"
         options={{
           title: "Position",
           headerLargeTitle: false,

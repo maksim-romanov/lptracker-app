@@ -1,17 +1,9 @@
-import { config } from "shared/config";
-import { buildTokenRef, type Position } from "shared/contracts";
+import { buildTokenRef, type MapPositionResult, type Position, type TokenMetaInput } from "shared/contracts";
 import { formatUnits } from "viem";
 
 import type { PositionEntity } from "../../domain/entities/position.entity";
 import type { TokenEntity } from "../../domain/entities/token.entity";
 import { UNISWAP_V3_EXTENSION_TYPE, type UniswapV3Extension } from "../schemas/extension.schema";
-
-export interface MapperTokenMetaInput {
-  chainId: number;
-  address: string;
-  symbol: string;
-  decimals: number;
-}
 
 export interface MapperUnclaimedFees {
   /** Raw fee amount for token0 as a base-10 integer string */
@@ -26,11 +18,6 @@ export interface MapPositionInput {
   unclaimedFees: MapperUnclaimedFees | null;
 }
 
-export interface MapPositionResult {
-  position: Position;
-  tokenMetaInputs: MapperTokenMetaInput[];
-}
-
 const formatFeeTierLabel = (feeTier: number): string => {
   const pct = feeTier / 10000;
   return `${pct < 0.01 ? pct.toFixed(4) : pct < 1 ? pct.toFixed(2) : pct.toFixed(2)}%`;
@@ -38,9 +25,6 @@ const formatFeeTierLabel = (feeTier: number): string => {
 
 const buildPoolLabel = (token0: TokenEntity, token1: TokenEntity, feeTier: number): string =>
   `${token0.symbol}/${token1.symbol} ${formatFeeTierLabel(feeTier)}`;
-
-const buildIconUrl = (chainId: number, address: string): string =>
-  `${config.api.tokensData.baseUrl}/v1/chains/${chainId}/tokens/${address.toLowerCase()}/logo.png`;
 
 const buildPositionRef = (chainId: number, nftTokenId: string): string => `uniswap-v3:${chainId}:${nftTokenId}`;
 
@@ -57,6 +41,17 @@ const deriveStatusState = (
     return { state: "in-range", stateDetail: `tick ${currentTick} ∈ [${tickLower}, ${tickUpper})` };
   }
   return { state: "out-of-range", stateDetail: `tick ${currentTick} outside [${tickLower}, ${tickUpper})` };
+};
+
+const subgraphTimestampToIso = (positionId: string, field: string, timestamp: string): string => {
+  if (!timestamp) {
+    throw new Error(`V3 mapper: missing ${field} on position ${positionId}`);
+  }
+  const seconds = Number(timestamp);
+  if (!Number.isFinite(seconds)) {
+    throw new Error(`V3 mapper: non-finite ${field} '${timestamp}' on position ${positionId}`);
+  }
+  return new Date(seconds * 1000).toISOString();
 };
 
 export const mapV3PositionToContract = ({ entity, chainId, unclaimedFees }: MapPositionInput): MapPositionResult => {
@@ -154,17 +149,15 @@ export const mapV3PositionToContract = ({ entity, chainId, unclaimedFees }: MapP
     },
     tokens: positionTokens,
     status: { state, stateDetail },
-    createdAt: null,
-    updatedAt: new Date().toISOString(),
+    createdAt: subgraphTimestampToIso(entity.id, "createdAtTimestamp", entity.createdAtTimestamp),
+    updatedAt: subgraphTimestampToIso(entity.id, "updatedAtTimestamp", entity.updatedAtTimestamp),
     extension,
   };
 
-  const tokenMetaInputs: MapperTokenMetaInput[] = [
+  const tokenMetaInputs: TokenMetaInput[] = [
     { chainId, address: token0.address, symbol: token0.symbol, decimals: token0.decimals },
     { chainId, address: token1.address, symbol: token1.symbol, decimals: token1.decimals },
   ];
 
   return { position, tokenMetaInputs };
 };
-
-export const buildTokenMetaIconUrl = buildIconUrl;

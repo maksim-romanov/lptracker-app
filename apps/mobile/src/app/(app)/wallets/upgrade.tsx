@@ -1,1 +1,1 @@
-export { UpgradeScreen as default } from "wallets/presentation/screens/UpgradeScreen";
+export { UpgradeScreen as default } from "membership/presentation/screens/UpgradeScreen";

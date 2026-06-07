@@ -1,30 +1,38 @@
+import { useMemo } from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
 
 import { container } from "core/di/container";
 import { EmptyState } from "core/presentation/components";
-import { useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
-import { PositionCard } from "positions/presentation/components/PositionCard";
+import { PositionListItem } from "positions/presentation/components/PositionListItem";
 import { WidgetBanner } from "positions/presentation/components/WidgetBanner";
 import { usePositionsQuery } from "positions/presentation/hooks/usePositionsQuery";
 import { FollowingStore } from "positions/presentation/stores/following.store";
 import Animated, { FadeOut, LinearTransition } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
+import { WalletsStore } from "wallets/presentation/wallets.store";
 
-export const FollowingScreen = observer(() => {
-  const router = useRouter();
-  const { data, isLoading } = usePositionsQuery();
+export const FollowingScreen = observer(function FollowingScreen() {
+  const walletsStore = container.resolve(WalletsStore);
   const followingStore = container.resolve(FollowingStore);
+  const wallets = walletsStore.wallets.map((w) => ({
+    address: w.address,
+    chainIds: [...w.chainIds],
+  }));
+  const query = usePositionsQuery({ wallets });
 
-  if (isLoading) {
+  const positions = query.data?.positions ?? [];
+  const tokens = query.data?.tokens ?? {};
+  const refs = Array.from(followingStore.refs);
+  const followed = useMemo(() => positions.filter((p) => refs.includes(p.ref)), [positions, refs]);
+
+  if (query.isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator />
       </View>
     );
   }
-
-  const followed = (data ?? []).filter((p) => followingStore.isFollowing(p));
 
   if (followed.length === 0) {
     return (
@@ -52,7 +60,7 @@ export const FollowingScreen = observer(() => {
   return (
     <Animated.FlatList
       data={followed}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(p) => p.ref}
       contentContainerStyle={styles.list}
       contentInsetAdjustmentBehavior="automatic"
       itemLayoutAnimation={LinearTransition.duration(220)}
@@ -64,12 +72,7 @@ export const FollowingScreen = observer(() => {
       ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
       renderItem={({ item }) => (
         <Animated.View exiting={FadeOut.duration(180)}>
-          <PositionCard
-            position={item}
-            favorite
-            onToggleFavorite={() => followingStore.toggle(item)}
-            onPress={() => router.push(`/positions/${item.id}`)}
-          />
+          <PositionListItem position={item} tokens={tokens} />
         </Animated.View>
       )}
     />
@@ -88,6 +91,8 @@ const styles = StyleSheet.create((theme) => ({
 
   center: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   emptyRoot: {

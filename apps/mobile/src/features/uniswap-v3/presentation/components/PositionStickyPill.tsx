@@ -2,24 +2,40 @@ import { View } from "react-native";
 
 import { Box, Inline, Stack } from "@grapp/stacks";
 import { NetworkBadge, Tag, Text, TokensImages } from "core/presentation/components";
-import { formatUsd } from "core/presentation/utils/format";
 import { BlurView } from "expo-blur";
-import type { PositionDetailVM } from "positions/data/fixtures/positions.fixtures";
 import Animated, { Extrapolation, interpolate, type SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 import tinycolor from "tinycolor2";
 
-type TProps = {
-  position: PositionDetailVM;
-  scrollOffset: SharedValue<number>;
-  heroEndY: SharedValue<number>;
-};
+import type { TUniswapV3RangeStatus, TUniswapV3VM } from "../../domain/uniswap-v3.vm";
+
+interface IProps {
+  readonly vm: TUniswapV3VM;
+  readonly chainId: number;
+  readonly scrollOffset: SharedValue<number>;
+  readonly heroEndY: SharedValue<number>;
+}
 
 const PILL_HEIGHT = 84;
 const REVEAL_DISTANCE = 80;
 
-export const PositionStickyPill = ({ position, scrollOffset, heroEndY }: TProps) => {
-  const inRange = position.currentTick >= position.tickLower && position.currentTick <= position.tickUpper;
+const STATUS_TONE: Record<TUniswapV3RangeStatus, "success" | "warning" | "neutral"> = {
+  "in-range": "success",
+  "out-of-range": "warning",
+  closed: "neutral",
+};
+
+const STATUS_LABEL: Record<TUniswapV3RangeStatus, string> = {
+  "in-range": "In range",
+  "out-of-range": "Out of range",
+  closed: "Closed",
+};
+
+export const PositionStickyPill = function PositionStickyPill({ vm, chainId, scrollOffset, heroEndY }: IProps) {
+  const pairTokens = [
+    { symbol: vm.pair.base.symbol, address: vm.pair.base.tokenRef.split(":")[1] },
+    { symbol: vm.pair.quote.symbol, address: vm.pair.quote.tokenRef.split(":")[1] },
+  ];
 
   const animatedStyle = useAnimatedStyle(() => {
     if (!heroEndY.value) return { transform: [{ translateY: -PILL_HEIGHT }] };
@@ -36,25 +52,25 @@ export const PositionStickyPill = ({ position, scrollOffset, heroEndY }: TProps)
       <View style={styles.content}>
         <Stack space={2}>
           <Box direction="row" alignY="center" gap={2}>
-            <TokensImages tokens={[position.pair.token0, position.pair.token1]} chainId={position.chainId} size="sm" />
+            <TokensImages tokens={pairTokens} chainId={chainId} size="sm" />
             <Box flex="fluid">
               <Text variant="body" weight="bold" numberOfLines={1} style={styles.pair}>
-                {position.pair.token0.symbol}
+                {vm.pair.base.symbol}
                 <Text variant="body" style={styles.pairSlash}>
                   {" / "}
                 </Text>
-                {position.pair.token1.symbol}
+                {vm.pair.quote.symbol}
               </Text>
             </Box>
             <Text variant="mono" weight="bold">
-              {formatUsd(position.positionValueUsd)}
+              {vm.priceRange.currentLabel}
             </Text>
           </Box>
           <Inline space={1} alignY="center">
-            <NetworkBadge chainId={position.chainId} size="sm" />
+            <NetworkBadge chainId={chainId} size="sm" />
             <Tag tone="brand">V3</Tag>
-            <Tag tone="neutral">{(position.feeBps / 100).toFixed(2)}%</Tag>
-            <Tag tone={inRange ? "success" : "warning"}>{inRange ? "In range" : "Out of range"}</Tag>
+            <Tag tone="neutral">{vm.feeTierLabel}</Tag>
+            <Tag tone={STATUS_TONE[vm.status]}>{STATUS_LABEL[vm.status]}</Tag>
           </Inline>
         </Stack>
       </View>

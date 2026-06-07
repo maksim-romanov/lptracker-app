@@ -23,6 +23,10 @@
     {
       "name": "Token Meta",
       "description": "name/symbol/decimals via RPC multicall"
+    },
+    {
+      "name": "Stables",
+      "description": "Stablecoin classification list (chainId+address+symbol)"
     }
   ],
   "paths": {
@@ -236,6 +240,21 @@
                 ]
               }
             }
+          }
+        }
+      }
+    },
+    "/stables": {
+      "get": {
+        "operationId": "getStables",
+        "tags": [
+          "Stables"
+        ],
+        "summary": "List known stablecoin tokens across supported chains",
+        "description": "Returns a list of { chainId, address, symbol } triples sourced from CoinGecko and DefiLlama, served from a Redis cache with stale-while-revalidate semantics.",
+        "responses": {
+          "200": {
+            "description": "Stablecoin entries"
           }
         }
       }

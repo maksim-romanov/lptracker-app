@@ -21,6 +21,7 @@ const spec = {
     { name: "Token Logos", description: "Logo URL resolution with multi-provider fallback" },
     { name: "Token Prices", description: "USD prices across multiple providers" },
     { name: "Token Meta", description: "name/symbol/decimals via RPC multicall" },
+    { name: "Stables", description: "Stablecoin classification list (chainId+address+symbol)" },
   ],
 };
 

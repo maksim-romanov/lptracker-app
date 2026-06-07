@@ -1,7 +1,7 @@
 import { View, type ViewStyle } from "react-native";
 
-import { networkColors } from "@mars-909/theme";
-import { CHAIN_BY_ID } from "core/config/chains";
+import { NETWORKS } from "@mars-909/catalog";
+import { type NetworkKey, networkColors } from "@mars-909/theme";
 import { StyleSheet, type UnistylesVariants } from "react-native-unistyles";
 
 import { Text } from "./Text";
@@ -14,6 +14,10 @@ type Props = Variants & {
   dot?: boolean;
   style?: ViewStyle;
 };
+
+const CHAIN_BY_ID = new Map<number, { key: NetworkKey; label: string }>(
+  NETWORKS.map((n) => [n.chainId, { key: n.slug as NetworkKey, label: n.shortName }]),
+);
 
 export const NetworkBadge = ({ chainId, dot, size = "md", style }: Props) => {
   styles.useVariants({ size });

@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import "core/di/register";
-
 import "core/presentation/theme/unistyles";
+
+import "core/di/register";
 import "expo-router/entry";
