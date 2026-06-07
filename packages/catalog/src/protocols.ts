@@ -1,4 +1,4 @@
-import type { IProtocolMeta } from "./types.js";
+import type { IProtocolMeta } from "./types";
 
 export const PROTOCOLS_META = {
   "uniswap-v3": {

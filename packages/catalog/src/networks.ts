@@ -1,4 +1,4 @@
-import type { INetworkEntry } from "./types.js";
+import type { INetworkEntry } from "./types";
 
 export const NETWORKS = [
   {

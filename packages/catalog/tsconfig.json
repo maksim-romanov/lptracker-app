@@ -1,8 +1,10 @@
 {
   "extends": "@mars-909/typescript-config/base.json",
-  "include": ["src/**/*.ts"],
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "rootDir": "src",
     "outDir": "dist"
-  }
+  },
+  "include": ["src"]
 }
