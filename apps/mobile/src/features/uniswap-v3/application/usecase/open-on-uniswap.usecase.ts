@@ -1,35 +1,31 @@
-import type { ChainId } from "core/config/chains";
+import { NETWORKS } from "@mars-909/catalog";
 import { UseCase } from "core/domain/base";
 import { OpenExternalLinkUseCase } from "core/linking";
 import { inject, injectable } from "tsyringe";
 
-const CHAIN_SLUGS: Partial<Record<ChainId, string>> = {
-  1: "ethereum",
-  8453: "base",
-  42161: "arbitrum",
-};
+export interface IOpenOnUniswapInput {
+  readonly chainId: number;
+  readonly nftTokenId: string;
+}
 
-type TInput = {
-  chainId: ChainId;
-  positionId: string;
-};
+const slugByChainId = new Map<number, string>(NETWORKS.map((n) => [n.chainId, n.slug]));
 
 @injectable()
-export class OpenOnUniswapUseCase extends UseCase<void, TInput> {
+export class OpenOnUniswapUseCase extends UseCase<void, IOpenOnUniswapInput> {
   constructor(@inject(OpenExternalLinkUseCase) private readonly openExternalLink: OpenExternalLinkUseCase) {
     super();
   }
 
-  async execute(input: TInput): Promise<void> {
-    const chainSlug = CHAIN_SLUGS[input.chainId];
+  async execute({ chainId, nftTokenId }: IOpenOnUniswapInput): Promise<void> {
+    const slug = slugByChainId.get(chainId);
 
     try {
-      if (!chainSlug) {
+      if (!slug) {
         this.alert.error("Unsupported chain");
         return;
       }
 
-      const url = `https://app.uniswap.org/positions/v3/${chainSlug}/${input.positionId}`;
+      const url = `https://app.uniswap.org/positions/v3/${slug}/${nftTokenId}`;
 
       await this.openExternalLink.execute({ url });
     } catch {
