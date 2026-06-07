@@ -59,34 +59,7 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
           <Tag tone={STATUS_TONE[vm.status]}>{STATUS_LABEL[vm.status]}</Tag>
         </Inline>
 
-        <Stack space={2}>
-          <Box direction="row" alignY="top">
-            <Box flex="fluid">
-              <Text variant="label" color="muted" uppercase>
-                {vm.principal[0]?.symbol ?? "—"}
-              </Text>
-              <Text variant="headline" weight="bold">
-                {vm.principal[0]?.formatted ?? "—"}
-              </Text>
-            </Box>
-            <Box flex="fluid" alignX="right">
-              <View style={styles.valueRight}>
-                <Text variant="label" color="muted" uppercase>
-                  {vm.principal[1]?.symbol ?? "—"}
-                </Text>
-                <Text variant="headline" weight="bold">
-                  {vm.principal[1]?.formatted ?? "—"}
-                </Text>
-              </View>
-            </Box>
-          </Box>
-
-          <PriceRangeBar
-            currentTick={position.extension.pool.currentTick}
-            tickLower={position.extension.tickLower}
-            tickUpper={position.extension.tickUpper}
-          />
-
+        <Stack space={1}>
           <Box direction="row" alignY="top">
             <Box flex="fluid">
               <Text variant="label" color="muted">
@@ -99,7 +72,34 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
               </Text>
             </Box>
           </Box>
+
+          <PriceRangeBar
+            currentTick={position.extension.pool.currentTick}
+            tickLower={position.extension.tickLower}
+            tickUpper={position.extension.tickUpper}
+          />
         </Stack>
+
+        <Box direction="row" alignY="top">
+          <Box flex="fluid">
+            <Text variant="label" color="muted" uppercase>
+              {vm.principal[0]?.symbol ?? "—"}
+            </Text>
+            <Text variant="headline" weight="bold">
+              {vm.principal[0]?.formatted ?? "—"}
+            </Text>
+          </Box>
+          <Box flex="fluid" alignX="right">
+            <View style={styles.valueRight}>
+              <Text variant="label" color="muted" uppercase>
+                {vm.principal[1]?.symbol ?? "—"}
+              </Text>
+              <Text variant="headline" weight="bold">
+                {vm.principal[1]?.formatted ?? "—"}
+              </Text>
+            </View>
+          </Box>
+        </Box>
       </Stack>
     </Card>
   );
