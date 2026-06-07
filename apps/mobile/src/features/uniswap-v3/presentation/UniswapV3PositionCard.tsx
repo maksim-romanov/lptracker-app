@@ -59,34 +59,33 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
           <Tag tone={STATUS_TONE[vm.status]}>{STATUS_LABEL[vm.status]}</Tag>
         </Inline>
 
-        <PriceRangeBar
-          currentTick={position.extension.pool.currentTick}
-          tickLower={position.extension.tickLower}
-          tickUpper={position.extension.tickUpper}
-        />
+        <Stack space={1}>
+          <PriceRangeBar
+            currentTick={position.extension.pool.currentTick}
+            tickLower={position.extension.tickLower}
+            tickUpper={position.extension.tickUpper}
+          />
+          <Text variant="label" color="muted">
+            {vm.priceRange.minLabel} ↔ {vm.priceRange.maxLabel} {vm.pair.quote.symbol}
+          </Text>
+        </Stack>
 
         <Box direction="row" alignY="top">
           <Box flex="fluid">
             <Text variant="label" color="muted" uppercase>
-              Min
+              {vm.principal[0]?.symbol ?? "—"}
             </Text>
             <Text variant="headline" weight="bold">
-              {vm.priceRange.minLabel}
-            </Text>
-            <Text variant="label" color="muted">
-              {vm.pair.quote.symbol}
+              {vm.principal[0]?.formatted ?? "—"}
             </Text>
           </Box>
           <Box flex="fluid" alignX="right">
             <View style={styles.valueRight}>
               <Text variant="label" color="muted" uppercase>
-                Max
+                {vm.principal[1]?.symbol ?? "—"}
               </Text>
               <Text variant="headline" weight="bold">
-                {vm.priceRange.maxLabel}
-              </Text>
-              <Text variant="label" color="muted">
-                {vm.pair.quote.symbol}
+                {vm.principal[1]?.formatted ?? "—"}
               </Text>
             </View>
           </Box>
