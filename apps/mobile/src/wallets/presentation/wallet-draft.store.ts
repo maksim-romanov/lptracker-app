@@ -1,11 +1,11 @@
-import { CHAINS } from "core/config/chains";
+import { NETWORKS } from "@mars-909/catalog";
 import { action, computed, makeObservable, observable } from "mobx";
 import { singleton } from "tsyringe";
 import * as v from "valibot";
 import { EWalletType, type Wallet } from "wallets/domain/entities/wallet.entity";
 import { type TWalletDraft, WalletDraftSchema } from "wallets/domain/schemas/wallet.schema";
 
-const DEFAULT_CHAIN_IDS = Object.values(CHAINS).map((c) => c.id);
+const DEFAULT_CHAIN_IDS = NETWORKS.map((n) => n.chainId);
 
 export type WalletDraftError = Partial<Record<keyof TWalletDraft, string>>;
 

@@ -66,6 +66,12 @@ const styles = StyleSheet.create((theme) => ({
           letterSpacing: 0.5,
         },
 
+        // Tertiary fine print — axis labels, helper hints, supplementary numbers
+        caption: {
+          fontSize: 11,
+          lineHeight: 14,
+        },
+
         // Numeric callouts (PnL, balances)
         mono: {
           fontFamily: "Menlo",

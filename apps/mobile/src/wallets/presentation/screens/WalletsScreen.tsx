@@ -4,14 +4,13 @@ import { Box } from "@grapp/stacks";
 import { container } from "core/di/container";
 import { DashedBanner, EmptyState, Icon, Text } from "core/presentation/components";
 import { useRouter } from "expo-router";
+import { MembershipStore } from "membership/presentation/membership.store";
 import { observer } from "mobx-react-lite";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import type { Wallet } from "wallets/domain/entities/wallet.entity";
 import { SwipeableWalletCard } from "wallets/presentation/components/SwipeableWalletCard";
 import type { WalletVM } from "wallets/presentation/components/WalletCard";
 import { WalletsStore } from "wallets/presentation/wallets.store";
-
-const WALLET_LIMIT = 2;
 
 const NeutralAddIcon = withUnistyles(Icon, (theme) => ({ color: theme.onSurface }));
 const PrimaryAddIcon = withUnistyles(Icon, (theme) => ({ color: theme.primary }));
@@ -26,8 +25,10 @@ const toVM = (wallet: Wallet): WalletVM => ({
 export const WalletsScreen = observer(() => {
   const router = useRouter();
   const store = container.resolve(WalletsStore);
+  const membership = container.resolve(MembershipStore);
   const wallets = store.wallets.map(toVM);
-  const atLimit = wallets.length >= WALLET_LIMIT;
+  const atLimit = !membership.canAddWallet(wallets.length);
+  const maxWallets = membership.current.limits.maxWallets;
 
   return (
     <FlatList
@@ -38,9 +39,9 @@ export const WalletsScreen = observer(() => {
       ListHeaderComponent={
         <View style={styles.header}>
           {atLimit ? (
-            <UpgradeSlot onPress={() => router.push("/wallets/upgrade")} />
+            <UpgradeSlot maxWallets={maxWallets} onPress={() => router.push("/wallets/upgrade")} />
           ) : (
-            <AddWalletSlot onPress={() => router.push("/wallets/new")} />
+            <AddWalletSlot maxWallets={maxWallets} onPress={() => router.push("/wallets/new")} />
           )}
         </View>
       }
@@ -59,7 +60,9 @@ export const WalletsScreen = observer(() => {
   );
 });
 
-const AddWalletSlot = ({ onPress }: { onPress: () => void }) => (
+type SlotProps = { maxWallets: number; onPress: () => void };
+
+const AddWalletSlot = ({ maxWallets, onPress }: SlotProps) => (
   <DashedBanner onPress={onPress}>
     <Box direction="row" alignY="center" gap={3}>
       <View style={styles.iconBubble}>
@@ -70,14 +73,14 @@ const AddWalletSlot = ({ onPress }: { onPress: () => void }) => (
           Add wallet
         </Text>
         <Text variant="bodySmall" color="muted">
-          Track any address — up to {WALLET_LIMIT} on the free tier.
+          Track any address — up to {maxWallets} on the free tier.
         </Text>
       </Box>
     </Box>
   </DashedBanner>
 );
 
-const UpgradeSlot = ({ onPress }: { onPress: () => void }) => (
+const UpgradeSlot = ({ maxWallets, onPress }: SlotProps) => (
   <DashedBanner onPress={onPress}>
     <Box direction="row" alignY="center" gap={3}>
       <View style={styles.iconBubblePrimary}>
@@ -88,7 +91,7 @@ const UpgradeSlot = ({ onPress }: { onPress: () => void }) => (
           Add more wallets
         </Text>
         <Text variant="bodySmall" color="muted">
-          Free tier is limited to {WALLET_LIMIT} wallets. Upgrade to track unlimited addresses.
+          Free tier is limited to {maxWallets} wallets. Upgrade to track unlimited addresses.
         </Text>
       </Box>
     </Box>

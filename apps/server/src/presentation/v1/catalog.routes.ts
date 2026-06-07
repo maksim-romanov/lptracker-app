@@ -1,5 +1,6 @@
 import "reflect-metadata";
 
+import { PROTOCOLS_META } from "@mars-909/catalog";
 import { Hono } from "hono";
 import { describeRoute, resolver } from "hono-openapi";
 import { type CatalogResponse, catalogResponseSchema, errorResponseSchema } from "shared/contracts";
@@ -35,14 +36,17 @@ catalogRoutes.get(
     },
   }),
   (c) => {
-    const protocols = protocolRegistry.all().map((entry) => ({
-      slug: entry.slug,
-      name: entry.slug,
-      version: entry.version,
-      supportedChainIds: entry.supportedChainIds,
-      capabilities: entry.capabilities,
-      extensionVersion: entry.extensionVersion,
-    }));
+    const protocols = protocolRegistry.all().map((entry) => {
+      const meta = (PROTOCOLS_META as Record<string, { label: string }>)[entry.slug];
+      return {
+        slug: entry.slug,
+        name: meta?.label ?? entry.slug,
+        version: entry.version,
+        supportedChainIds: entry.supportedChainIds,
+        capabilities: entry.capabilities,
+        extensionVersion: entry.extensionVersion,
+      };
+    });
 
     const body: CatalogResponse = {
       networks: networkCatalog,

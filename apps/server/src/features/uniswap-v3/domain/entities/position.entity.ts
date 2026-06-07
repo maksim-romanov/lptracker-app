@@ -9,6 +9,8 @@ type PositionData = {
   tickUpper: number;
   liquidity: string;
   pool: PoolEntity;
+  createdAtTimestamp: string;
+  updatedAtTimestamp: string;
 };
 
 export class PositionEntity {
@@ -36,6 +38,14 @@ export class PositionEntity {
 
   get pool(): PoolEntity {
     return this.data.pool;
+  }
+
+  get createdAtTimestamp(): string {
+    return this.data.createdAtTimestamp;
+  }
+
+  get updatedAtTimestamp(): string {
+    return this.data.updatedAtTimestamp;
   }
 
   get isActive(): boolean {

@@ -1,17 +1,19 @@
 import { Pressable } from "react-native";
 
 import { Box } from "@grapp/stacks";
-import { Icon, Text } from "core/presentation/components";
 import { StyleSheet } from "react-native-unistyles";
+
+import { Icon, type IconName } from "./Icon";
+import { Text } from "./Text";
 
 type Props = {
   label: string;
   value: string;
   onPress?: () => void;
-  trailingIcon?: "open-outline";
+  trailingIcon?: IconName;
 };
 
-export const StatRow = ({ label, value, onPress, trailingIcon }: Props) => {
+export const StatRow = function StatRow({ label, value, onPress, trailingIcon }: Props) {
   const content = (
     <Box direction="row" alignY="center" gap={3} paddingY={2}>
       <Box flex="fluid">

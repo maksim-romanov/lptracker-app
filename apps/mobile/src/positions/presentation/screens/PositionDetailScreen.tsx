@@ -1,26 +1,21 @@
 import { ActivityIndicator, View } from "react-native";
 
-import { container } from "core/di/container";
-import { EmptyState, IconButton } from "core/presentation/components";
-import { type Href, Stack as RouterStack, useRouter } from "expo-router";
-import { PositionDetailView } from "features/uniswap-v3/presentation/components/PositionDetailView";
+import { EmptyState } from "core/presentation/components";
+import { type Href, useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
-import { usePositionByIdQuery } from "positions/presentation/hooks/usePositionByIdQuery";
-import { FollowingStore } from "positions/presentation/stores/following.store";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
-
-const ThemedIconButton = withUnistyles(IconButton);
+import { PositionDetailBody } from "positions/presentation/components/PositionDetailBody";
+import { usePositionByRefQuery } from "positions/presentation/hooks/usePositionByRefQuery";
+import { StyleSheet } from "react-native-unistyles";
 
 type TProps = {
-  id: string;
+  positionRef: string;
 };
 
-export const PositionDetailScreen = observer(({ id }: TProps) => {
+export const PositionDetailScreen = observer(function PositionDetailScreen({ positionRef }: TProps) {
   const router = useRouter();
-  const { data: position, isLoading } = usePositionByIdQuery(id);
-  const followingStore = container.resolve(FollowingStore);
+  const query = usePositionByRefQuery(positionRef);
 
-  if (isLoading) {
+  if (query.isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator />
@@ -28,7 +23,7 @@ export const PositionDetailScreen = observer(({ id }: TProps) => {
     );
   }
 
-  if (!position) {
+  if (query.error || !query.data) {
     return (
       <View style={styles.emptyRoot}>
         <View style={styles.beforeStack} />
@@ -46,57 +41,13 @@ export const PositionDetailScreen = observer(({ id }: TProps) => {
     );
   }
 
-  const isFollowing = followingStore.isFollowing(position);
-
-  const handleToggleFollow = () => {
-    followingStore.toggle(position);
-  };
-
-  return (
-    <>
-      <RouterStack.Screen
-        options={{
-          headerRight: () => <FollowHeaderButton isFollowing={isFollowing} onPress={handleToggleFollow} />,
-        }}
-      />
-
-      {(() => {
-        switch (position.protocol) {
-          case "uniswap-v3":
-            return <PositionDetailView position={position} />;
-        }
-      })()}
-    </>
-  );
+  const { data: position, tokens } = query.data;
+  return <PositionDetailBody position={position} tokens={tokens} />;
 });
 
-const FollowHeaderButton = observer(({ isFollowing, onPress }: { isFollowing: boolean; onPress: () => void }) => (
-  <ThemedIconButton
-    name={isFollowing ? "star" : "star-outline"}
-    iconSize="md"
-    uniProps={(theme) => ({ color: isFollowing ? theme.warning : theme.onSurface })}
-    onPress={onPress}
-    size="sm"
-    accessibilityLabel={isFollowing ? "Unfollow position" : "Follow position"}
-  />
-));
-
 const styles = StyleSheet.create(() => ({
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  emptyRoot: {
-    flex: 1,
-  },
-
-  beforeStack: {
-    flex: 30,
-  },
-
-  afterStack: {
-    flex: 70,
-  },
+  center: { flex: 1, alignItems: "center", justifyContent: "center" },
+  emptyRoot: { flex: 1 },
+  beforeStack: { flex: 30 },
+  afterStack: { flex: 70 },
 }));

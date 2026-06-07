@@ -1,25 +1,25 @@
 import { StyleSheet as RNStyleSheet, View } from "react-native";
 
-import { PROTOCOL_LOGOS } from "core/config/protocol-logos";
+import { PROTOCOLS_META } from "@mars-909/catalog";
+import { Text } from "core/presentation/components";
 import { Image } from "expo-image";
 import { StyleSheet } from "react-native-unistyles";
 
-import { Text } from "./Text";
-
-const PINK = "#FF007A";
 const PATTERN = require("assets/protocols/uniswap-pattern.png");
+const LOGO = require("assets/uniswap_uni_logo.png");
+const META = PROTOCOLS_META["uniswap-v3"];
 
-export const UniswapV3Strip = () => (
-  <View style={styles.container}>
-    <Image source={PATTERN} style={[RNStyleSheet.absoluteFill, styles.pattern]} contentFit="cover" tintColor={PINK} />
-
-    <Image source={PROTOCOL_LOGOS["uniswap-v3"]} style={styles.watermark} contentFit="contain" tintColor={PINK} pointerEvents="none" />
-
-    <View style={styles.content}>
-      <Text style={styles.label}>Uniswap V3</Text>
+export const Strip = function Strip() {
+  return (
+    <View style={styles.container}>
+      <Image source={PATTERN} style={[RNStyleSheet.absoluteFill, styles.pattern]} contentFit="cover" tintColor={META.brandColor} />
+      <Image source={LOGO} style={styles.watermark} contentFit="contain" tintColor={META.brandColor} pointerEvents="none" />
+      <View style={styles.content}>
+        <Text style={styles.label}>{META.label}</Text>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create((theme) => ({
   container: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create((theme) => ({
   label: {
     fontFamily: "Satoshi-Bold",
     fontSize: 15,
-    color: PINK,
+    color: META.brandColor,
     letterSpacing: -0.1,
   },
 

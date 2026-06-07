@@ -1,14 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { container } from "core/di/container";
-import { queryKeys } from "core/query/keys";
-import type { IPositionsRepository } from "positions/data/positions.repository";
-import { POSITIONS_REPOSITORY } from "positions/di/tokens";
+import { positionsKeys } from "core/query/keys/positions.keys";
+import { GatewayPositionsRepository, type TPositionsListParams } from "positions/data/gateway-positions.repository";
 
-export function usePositionsQuery() {
-  const repo = container.resolve<IPositionsRepository>(POSITIONS_REPOSITORY);
-
+export function usePositionsQuery(params: TPositionsListParams) {
+  const repo = container.resolve(GatewayPositionsRepository);
   return useQuery({
-    queryKey: queryKeys.positions.list("").queryKey,
-    queryFn: () => repo.getPositions({ walletAddress: "" }),
+    queryKey: positionsKeys.list(params).queryKey,
+    queryFn: () => repo.list(params),
+    enabled: params.wallets.length > 0,
+    select: (data) => ({
+      positions: data.data,
+      tokens: data.tokens,
+      hasPartial: data.meta.partial !== undefined,
+    }),
   });
 }

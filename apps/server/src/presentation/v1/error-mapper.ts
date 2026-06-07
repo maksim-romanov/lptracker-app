@@ -1,42 +1,41 @@
 import type { Context } from "hono";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ERROR_CODES, type ErrorCode, type ErrorResponse } from "shared/contracts";
 import { DomainError } from "shared/errors/base.error";
-import { PositionError, PositionErrorCode } from "uniswap-v3/domain/errors/position.error";
+
+import { protocolRegistry } from "../../app/protocols/registry";
 
 interface ValidationIssue {
   message: string;
   path?: readonly (PropertyKey | { key: PropertyKey })[];
 }
 
-interface MappedError {
-  status: 400 | 404 | 502 | 504 | 500;
+interface MappedHttpError {
+  status: number;
   body: ErrorResponse;
 }
 
-const buildBody = (code: ErrorCode, message: string, field: string | null = null): ErrorResponse => ({
+const buildBody = (code: ErrorCode | string, message: string, field: string | null = null): ErrorResponse => ({
   error: { code, message, field },
 });
 
-const mapPositionError = (error: PositionError): MappedError => {
-  switch (error.code) {
-    case PositionErrorCode.POSITION_NOT_FOUND:
-      return { status: 404, body: buildBody(ERROR_CODES.POSITION_NOT_FOUND, error.message) };
-    case PositionErrorCode.GRAPHQL_ERROR:
-      return { status: 502, body: buildBody(ERROR_CODES.UPSTREAM_UNAVAILABLE, error.message) };
-    default:
-      return { status: 500, body: buildBody(ERROR_CODES.INTERNAL_ERROR, error.message) };
+export const mapDomainErrorToResponse = (error: DomainError): MappedHttpError => {
+  for (const entry of protocolRegistry.all()) {
+    const mapped = entry.mapError?.(error);
+    if (mapped) {
+      return {
+        status: mapped.status,
+        body: buildBody(mapped.code, mapped.message, mapped.field ?? null),
+      };
+    }
   }
-};
-
-const mapDomainError = (error: DomainError): MappedError => {
-  if (PositionError.isInstance(error)) return mapPositionError(error);
   return { status: 500, body: buildBody(ERROR_CODES.INTERNAL_ERROR, error.message) };
 };
 
 export const mapErrorToHttpResponse = (c: Context, error: unknown) => {
   if (DomainError.isInstance(error)) {
-    const { status, body } = mapDomainError(error);
-    return c.json(body, status);
+    const { status, body } = mapDomainErrorToResponse(error);
+    return c.json(body, status as ContentfulStatusCode);
   }
 
   console.error("Unexpected error:", error);

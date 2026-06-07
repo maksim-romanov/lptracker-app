@@ -1,5 +1,6 @@
 import { DrawerActions } from "@react-navigation/native";
 import { Stack, useNavigation } from "expo-router";
+import { FavoriteStar } from "positions/presentation/components/FavoriteStar";
 import { useUnistyles } from "react-native-unistyles";
 
 export default function PositionsLayout() {
@@ -26,11 +27,16 @@ export default function PositionsLayout() {
         </Stack.Toolbar>
       </Stack.Screen>
       <Stack.Screen
-        name="[id]"
-        options={{
-          title: "Position",
-          headerLargeTitle: false,
-          headerBackTitle: "Positions",
+        name="[ref]"
+        options={({ route }) => {
+          const ref = (route.params as { ref?: string })?.ref;
+          const positionRef = ref ? decodeURIComponent(ref) : "";
+          return {
+            title: "Position",
+            headerLargeTitle: false,
+            headerBackTitle: "Positions",
+            headerRight: positionRef ? () => <FavoriteStar positionRef={positionRef} /> : undefined,
+          };
         }}
       />
     </Stack>

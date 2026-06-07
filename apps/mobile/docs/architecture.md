@@ -118,3 +118,26 @@ Configured in `tsconfig.json`:
   }
 }
 ```
+
+## Multi-protocol plugin pattern
+
+Position-related modules use a shell + plugin layout:
+
+- **`positions/` (shell)** owns the protocol-agnostic surface: `IProtocolPlugin<T>` contract,
+  `lookupPlugin` helper, `GatewayPositionsRepository`, routing, query keys, shell components
+  (`PositionShell`, `PositionListItem`, `PositionDetailShell`, `UnknownPositionBody`),
+  and the `FollowingStore` / `FollowingRepository`.
+- **`features/<protocol>/` (plugin)** exposes a single `index.ts` exporting a
+  `<protocol>Plugin: IProtocolPlugin<T>` object. Each plugin owns its internal VM,
+  DTO→VM mapper, presentation components (`ListBody`, `DetailBody`, optional `Strip`),
+  and protocol-specific UseCases. Strictly typed against `TPositionByExt<T>`.
+- **`app/protocol-plugins.ts`** is a const-object registry keyed by extension type
+  and constrained exhaustively against `TKnownProtocolSlug` (from `@mars-909/catalog`)
+  via TypeScript `satisfies`. Adding a protocol to the catalog without registering a
+  mobile plugin produces a compile error.
+
+External consumers must import plugin modules via the façade `features/<protocol>`;
+deep imports are forbidden by the Biome `noRestrictedImports` rule in the root
+`biome.json`.
+
+See `packages/catalog/README.md` for the "adding a protocol" walkthrough.

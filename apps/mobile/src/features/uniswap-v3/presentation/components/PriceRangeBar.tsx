@@ -10,48 +10,55 @@ export type TPriceRangeBarProps = {
   tickUpper: number;
 } & Pick<ViewProps, "style">;
 
-// Concentrated-liquidity range visualization. The track is a *context window* —
-// wider than the position itself, so out-of-range drift reads as space between
-// the liquidity segment and the thumb. MIN_LIQ_PCT keeps the liquidity bar from
-// shrinking below a readable fraction of the width.
+const INFINITE_TICK_THRESHOLD = 800_000;
+// Weibull saturating function maps tick distance to half-bar fraction:
+//   h(d) = MAX_HALF * (1 - exp(-(d/SCALE)^ALPHA))
+// SCALE — characteristic tick distance (~2.7x price ratio at SCALE=10K).
+// ALPHA<1 makes the curve sub-linear near zero → tight positions stay visible.
+// MAX_HALF<0.5 guarantees the segment never touches the bar edge.
+const SCALE_TICKS = 10_000;
+const SHAPE_ALPHA = 0.5;
+const MAX_HALF = 0.49;
+
+function halfSide(distance: number, isInfinite: boolean): number {
+  if (isInfinite) return MAX_HALF;
+  if (distance <= 0) return 0;
+  return MAX_HALF * (1 - Math.exp(-((distance / SCALE_TICKS) ** SHAPE_ALPHA)));
+}
+
+// Signed half-width: positive when the bound sits on its expected side of
+// current (lower-bound left of current, upper-bound right). Negative when the
+// position is out of range — the bound has crossed past current and the
+// segment must shift to that side of the thumb.
+function signedLeftHalf(currentTick: number, tickLower: number, infiniteLower: boolean): number {
+  const d = currentTick - tickLower;
+  return d >= 0 ? halfSide(d, infiniteLower) : -halfSide(-d, false);
+}
+
+function signedRightHalf(currentTick: number, tickUpper: number, infiniteUpper: boolean): number {
+  const d = tickUpper - currentTick;
+  return d >= 0 ? halfSide(d, infiniteUpper) : -halfSide(-d, false);
+}
+
+// Thumb is anchored at the bar center (current price). Signed half-widths
+// encode the position relative to current — in-range, out-of-range either
+// side, partial-infinite, and full-range all collapse to the same formula.
 export const PriceRangeBar = ({ currentTick, tickLower, tickUpper, style }: TPriceRangeBarProps) => {
   const { liquidityLeftPct, liquidityWidthPct, thumbPct, inRange } = useMemo(() => {
-    const span = tickUpper - tickLower;
-    if (span <= 0) {
-      return { liquidityLeftPct: 0, liquidityWidthPct: 0, thumbPct: 0.5, inRange: false };
-    }
+    const infiniteUpper = tickUpper >= INFINITE_TICK_THRESHOLD;
+    const infiniteLower = tickLower <= -INFINITE_TICK_THRESHOLD;
 
-    const basePad = span * 0.3;
-    const MIN_LIQ_PCT = 0.32;
-    const maxViewSpan = span / MIN_LIQ_PCT;
+    const leftHalf = signedLeftHalf(currentTick, tickLower, infiniteLower);
+    const rightHalf = signedRightHalf(currentTick, tickUpper, infiniteUpper);
 
-    let padLow = basePad;
-    let padHigh = basePad;
-
-    if (currentTick < tickLower) {
-      padLow = Math.max(basePad, (tickLower - currentTick) * 1.3);
-    } else if (currentTick > tickUpper) {
-      padHigh = Math.max(basePad, (currentTick - tickUpper) * 1.3);
-    }
-
-    if (span + padLow + padHigh > maxViewSpan) {
-      if (currentTick < tickLower) {
-        padHigh = basePad;
-        padLow = maxViewSpan - span - basePad;
-      } else {
-        padLow = basePad;
-        padHigh = maxViewSpan - span - basePad;
-      }
-    }
-
-    const viewLower = tickLower - padLow;
-    const viewSpan = span + padLow + padHigh;
+    const leftPct = 0.5 - leftHalf;
+    const rightPct = 0.5 + rightHalf;
 
     return {
-      liquidityLeftPct: (tickLower - viewLower) / viewSpan,
-      liquidityWidthPct: span / viewSpan,
-      thumbPct: Math.max(0.01, Math.min(0.99, (currentTick - viewLower) / viewSpan)),
-      inRange: currentTick >= tickLower && currentTick <= tickUpper,
+      liquidityLeftPct: Math.min(leftPct, rightPct),
+      liquidityWidthPct: Math.max(0, rightPct - leftPct),
+      thumbPct: 0.5,
+      inRange: leftHalf > 0 && rightHalf > 0,
     };
   }, [currentTick, tickLower, tickUpper]);
 

@@ -48,8 +48,12 @@ export class PositionsRepository extends BaseRepository {
     try {
       const result = await this.gql.request(getWalletPositionsQuery, { owner, ...pagination, ...filters });
       const positions = result.positions.map((p) => GraphQLPositionDto.fromGraphQL(p, this.chainContext.chain.id));
+      console.log(
+        `[v3.repo] getWalletPositions chainId=${this.chainContext.chain.id} owner=${owner} closed=${filters.closed} -> ${positions.length} positions`,
+      );
       return ok(positions);
     } catch (error) {
+      console.error(`[v3.repo] getWalletPositions FAILED chainId=${this.chainContext.chain.id} owner=${owner}`, error);
       return err(PositionError.GRAPHQL_ERROR({ error, context: { owner, ...pagination } }));
     }
   }
@@ -80,14 +84,24 @@ export class PositionsRepository extends BaseRepository {
       const results = await this.rpc.multicall({ contracts });
 
       const map = new Map<Address, PoolStateRpcData>();
+      const skipped: { address: Address; reason: string }[] = [];
       for (let i = 0; i < unique.length; i++) {
         const address = unique[i];
-        const slot0 = results[i * 2]?.result as Slot0Data;
-        const liquidity = results[i * 2 + 1]?.result as bigint;
-        if (address) map.set(address, { sqrtPriceX96: slot0[0], currentTick: slot0[1], liquidity });
+        if (!address) continue;
+        const slot0 = results[i * 2]?.result as Slot0Data | undefined;
+        const liquidity = results[i * 2 + 1]?.result as bigint | undefined;
+        if (!slot0 || liquidity === undefined) {
+          skipped.push({ address, reason: !slot0 ? "slot0 call failed/reverted" : "liquidity call failed/reverted" });
+          continue;
+        }
+        map.set(address, { sqrtPriceX96: slot0[0], currentTick: slot0[1], liquidity });
+      }
+      if (skipped.length > 0) {
+        console.warn(`[v3.repo] getPoolStates chainId=${this.chainContext.chain.id} skipped ${skipped.length}/${unique.length} pools`, skipped);
       }
       return ok(map);
     } catch (error) {
+      console.error(`[v3.repo] getPoolStates FAILED chainId=${this.chainContext.chain.id} pools=${unique.length}`, error);
       return err(PositionError.UNEXPECTED_ERROR({ error, context: { poolAddresses: unique } }));
     }
   }
@@ -114,6 +128,7 @@ export class PositionsRepository extends BaseRepository {
       }
       return ok(feeDataMap);
     } catch (error) {
+      console.error(`[v3.repo] getBatchPositionFees FAILED chainId=${this.chainContext.chain.id} positions=${positions.length}`, error);
       return err(PositionError.UNEXPECTED_ERROR({ error, context: { positionCount: positions.length } }));
     }
   }
@@ -149,6 +164,8 @@ const getPositionQuery = graphql(`
       liquidity
       tickLower
       tickUpper
+      createdAtTimestamp
+      updatedAtTimestamp
 
       pool {
         id
@@ -181,6 +198,8 @@ const getWalletPositionsQuery = graphql(`
       liquidity
       tickLower
       tickUpper
+      createdAtTimestamp
+      updatedAtTimestamp
       pool {
         id
         feeTier

@@ -75,6 +75,14 @@ export class GraphQLPositionDto {
   liquidity!: string;
 
   @Expose()
+  @Transform(({ obj }) => obj.createdAtTimestamp.toString())
+  createdAtTimestamp!: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.updatedAtTimestamp.toString())
+  updatedAtTimestamp!: string;
+
+  @Expose()
   @Type(() => GraphQLPoolDto)
   pool!: GraphQLPoolDto;
 
@@ -88,6 +96,8 @@ export class GraphQLPositionDto {
       tickUpper: this.tickUpper,
       liquidity: this.liquidity,
       pool: this.pool.toDomain(poolState),
+      createdAtTimestamp: this.createdAtTimestamp,
+      updatedAtTimestamp: this.updatedAtTimestamp,
     });
   }
 
