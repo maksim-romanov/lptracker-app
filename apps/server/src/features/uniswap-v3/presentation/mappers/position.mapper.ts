@@ -1,17 +1,10 @@
 import { config } from "shared/config";
-import { buildTokenRef, type Position } from "shared/contracts";
+import { buildTokenRef, type MapPositionResult, type Position, type TokenMetaInput } from "shared/contracts";
 import { formatUnits } from "viem";
 
 import type { PositionEntity } from "../../domain/entities/position.entity";
 import type { TokenEntity } from "../../domain/entities/token.entity";
 import { UNISWAP_V3_EXTENSION_TYPE, type UniswapV3Extension } from "../schemas/extension.schema";
-
-export interface MapperTokenMetaInput {
-  chainId: number;
-  address: string;
-  symbol: string;
-  decimals: number;
-}
 
 export interface MapperUnclaimedFees {
   /** Raw fee amount for token0 as a base-10 integer string */
@@ -24,11 +17,6 @@ export interface MapPositionInput {
   entity: PositionEntity;
   chainId: number;
   unclaimedFees: MapperUnclaimedFees | null;
-}
-
-export interface MapPositionResult {
-  position: Position;
-  tokenMetaInputs: MapperTokenMetaInput[];
 }
 
 const formatFeeTierLabel = (feeTier: number): string => {
@@ -159,7 +147,7 @@ export const mapV3PositionToContract = ({ entity, chainId, unclaimedFees }: MapP
     extension,
   };
 
-  const tokenMetaInputs: MapperTokenMetaInput[] = [
+  const tokenMetaInputs: TokenMetaInput[] = [
     { chainId, address: token0.address, symbol: token0.symbol, decimals: token0.decimals },
     { chainId, address: token1.address, symbol: token1.symbol, decimals: token1.decimals },
   ];

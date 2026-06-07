@@ -1,10 +1,10 @@
-import { buildTokenRef, type TokenMeta, type TokensMap } from "shared/contracts";
-import { buildTokenMetaIconUrl, type MapperTokenMetaInput } from "uniswap-v3/presentation/mappers/position.mapper";
+import { buildTokenRef, type TokenMeta, type TokenMetaInput, type TokensMap } from "shared/contracts";
+import { buildTokenMetaIconUrl } from "uniswap-v3/presentation/mappers/position.mapper";
 
 export class TokensMapBuilder {
   private readonly metas = new Map<string, TokenMeta>();
 
-  add(inputs: MapperTokenMetaInput[]): void {
+  add(inputs: TokenMetaInput[]): void {
     for (const input of inputs) {
       const key = buildTokenRef(input.chainId, input.address);
       if (this.metas.has(key)) continue;

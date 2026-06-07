@@ -1,7 +1,6 @@
 import type { Result } from "neverthrow";
-import type { ExtensionVariantSchema } from "shared/contracts";
+import type { ExtensionVariantSchema, MapPositionResult } from "shared/contracts";
 import type { DomainError } from "shared/errors/base.error";
-import type { MapPositionResult } from "uniswap-v3/presentation/mappers/position.mapper";
 
 export interface ProtocolListParams {
   ownerAddress: string;

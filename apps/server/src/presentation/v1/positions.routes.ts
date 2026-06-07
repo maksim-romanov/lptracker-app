@@ -12,10 +12,10 @@ import {
   errorResponseSchema,
   type ListResponse,
   listResponseSchema,
+  type MapPositionResult,
   type Position,
 } from "shared/contracts";
 import { DomainError } from "shared/errors/base.error";
-import type { MapPositionResult } from "uniswap-v3/presentation/mappers/position.mapper";
 
 import { isKnownChainId } from "../../app/networks/catalog";
 import { protocolRegistry } from "../../app/protocols/registry";
