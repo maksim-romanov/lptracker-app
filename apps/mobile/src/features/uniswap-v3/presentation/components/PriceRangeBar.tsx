@@ -10,12 +10,29 @@ export type TPriceRangeBarProps = {
   tickUpper: number;
 } & Pick<ViewProps, "style">;
 
+const INFINITE_TICK_THRESHOLD = 800_000;
+
 // Concentrated-liquidity range visualization. The track is a *context window* —
 // wider than the position itself, so out-of-range drift reads as space between
 // the liquidity segment and the thumb. MIN_LIQ_PCT keeps the liquidity bar from
 // shrinking below a readable fraction of the width.
 export const PriceRangeBar = ({ currentTick, tickLower, tickUpper, style }: TPriceRangeBarProps) => {
   const { liquidityLeftPct, liquidityWidthPct, thumbPct, inRange } = useMemo(() => {
+    const infiniteUpperBound = tickUpper >= INFINITE_TICK_THRESHOLD;
+    const infiniteLowerBound = tickLower <= -INFINITE_TICK_THRESHOLD;
+
+    // Full-range positions: bar IS the position, no meaningful "outside". Fill 100%.
+    if (infiniteUpperBound && infiniteLowerBound) {
+      const VISIBLE_HALF = 200_000;
+      const symbolicThumb = Math.max(0.02, Math.min(0.98, (currentTick + VISIBLE_HALF) / (VISIBLE_HALF * 2)));
+      return {
+        liquidityLeftPct: 0,
+        liquidityWidthPct: 1,
+        thumbPct: symbolicThumb,
+        inRange: true,
+      };
+    }
+
     const span = tickUpper - tickLower;
     if (span <= 0) {
       return { liquidityLeftPct: 0, liquidityWidthPct: 0, thumbPct: 0.5, inRange: false };
@@ -46,10 +63,13 @@ export const PriceRangeBar = ({ currentTick, tickLower, tickUpper, style }: TPri
 
     const viewLower = tickLower - padLow;
     const viewSpan = span + padLow + padHigh;
+    const leftPct = (tickLower - viewLower) / viewSpan;
+    const widthPct = span / viewSpan;
 
     return {
-      liquidityLeftPct: (tickLower - viewLower) / viewSpan,
-      liquidityWidthPct: span / viewSpan,
+      // When only one bound is "infinite", visually extend liquidity bar to that edge.
+      liquidityLeftPct: infiniteLowerBound ? 0 : leftPct,
+      liquidityWidthPct: infiniteLowerBound ? leftPct + widthPct : infiniteUpperBound ? 1 - leftPct : widthPct,
       thumbPct: Math.max(0.01, Math.min(0.99, (currentTick - viewLower) / viewSpan)),
       inRange: currentTick >= tickLower && currentTick <= tickUpper,
     };

@@ -100,6 +100,17 @@ positionsRoutes.get(
     const closed = query.status === "closed";
     const upstreamFilter = query.status === "all" ? undefined : { closed };
 
+    console.log(
+      "[positions.list] scope",
+      JSON.stringify({
+        walletCount: query.wallets.length,
+        wallets: query.wallets.map((w) => ({ address: w.address, chainIds: w.chainIds })),
+        protocols: query.protocols ?? "all",
+        status: query.status,
+        triples: triples.map((t) => ({ address: t.wallet.address, chainId: t.chainId, protocol: t.protocol.slug })),
+      }),
+    );
+
     const results = await Promise.all(
       triples.map(
         async (triple): Promise<Result<MapPositionResult[], DomainError>> =>
@@ -120,8 +131,15 @@ positionsRoutes.get(
       const triple = triples[i]!;
       if (res.isErr()) {
         partialFailures.push({ protocol: triple.protocol.slug, chainId: triple.chainId, message: res.error.message });
+        console.error(
+          `[positions.list] source failed protocol=${triple.protocol.slug} chainId=${triple.chainId} wallet=${triple.wallet.address}`,
+          res.error,
+        );
         continue;
       }
+      console.log(
+        `[positions.list] source ok protocol=${triple.protocol.slug} chainId=${triple.chainId} wallet=${triple.wallet.address} positions=${res.value.length}`,
+      );
       for (const mapped of res.value) {
         allPositions.push(mapped.position);
         tokensBuilder.add(mapped.tokenMetaInputs);

@@ -43,12 +43,24 @@ export class GetWalletPositionsUseCase {
     if (poolStatesResult.isErr()) return err(poolStatesResult.error);
     const poolStates = poolStatesResult.value;
 
+    const droppedForMissingPoolState: { positionId: string; poolId: string }[] = [];
     const entities = positionDtos
       .map((dto) => {
         const ps = poolStates.get(dto.pool.id);
-        return ps ? dto.toDomain(ps) : null;
+        if (!ps) {
+          droppedForMissingPoolState.push({ positionId: dto.id, poolId: dto.pool.id });
+          return null;
+        }
+        return dto.toDomain(ps);
       })
       .filter((e): e is PositionEntity => e !== null);
+
+    if (droppedForMissingPoolState.length > 0) {
+      console.warn(
+        `[v3.usecase] dropped ${droppedForMissingPoolState.length}/${positionDtos.length} positions (no pool state) chainId=${chainId} owner=${owner}`,
+        droppedForMissingPoolState,
+      );
+    }
 
     const feesMap = await this.fetchAllFees(chainId, repository, entities);
 
@@ -93,8 +105,8 @@ export class GetWalletPositionsUseCase {
         cacheWrites.push(this.feesCache.setFees(chainId, position.id, fees));
       }
       await Promise.all(cacheWrites);
-    } catch {
-      // RPC failure — positions without fees will get null
+    } catch (error) {
+      console.error(`[v3.usecase] fee fetch failed chainId=${chainId} positions=${uncached.length}`, error);
     }
 
     return allFees;

@@ -28,7 +28,7 @@ export const queryClient = new QueryClient({
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
-      persister: mmkvPersister.persisterFn,
+      // persister: mmkvPersister.persisterFn,
     },
   },
 });

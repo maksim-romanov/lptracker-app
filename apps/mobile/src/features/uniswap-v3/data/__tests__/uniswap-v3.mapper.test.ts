@@ -111,7 +111,7 @@ describe("mapToVm (uniswap-v3)", () => {
     expect(vm.priceRange.quoteSymbol).toBe("USDC");
     expect(vm.priceRange.minLabel).not.toBe("-887220");
     expect(vm.priceRange.maxLabel).not.toBe("887220");
-    expect(vm.priceRange.currentLabel).toMatch(/^[\d,.]+$/);
+    expect(vm.priceRange.currentLabel).toMatch(/^([\d,.]+[KMBT]?|∞|0)$/);
   });
 });
 
@@ -134,8 +134,24 @@ describe("formatPrice", () => {
     expect(formatPrice(0.00000387)).toBe("0.00000387");
   });
 
-  it("uses exponential for extremely small numbers", () => {
+  it("uses exponential for very small numbers", () => {
     expect(formatPrice(1e-9)).toBe("1.00e-9");
+  });
+
+  it("collapses to 0 for prices below the practical minimum", () => {
+    expect(formatPrice(1e-16)).toBe("0");
+    expect(formatPrice(3.4e-39)).toBe("0");
+  });
+
+  it("collapses to ∞ for prices above the practical maximum (V3 full-range)", () => {
+    expect(formatPrice(3.4e38)).toBe("∞");
+    expect(formatPrice(1e15)).toBe("∞");
+  });
+
+  it("uses compact (K/M/B/T) for huge but finite prices", () => {
+    expect(formatPrice(1_500_000)).toBe("1.5M");
+    expect(formatPrice(12_345_678)).toBe("12.35M");
+    expect(formatPrice(340_256_786_833_063)).toBe("340.26T");
   });
 
   it("returns em-dash for non-finite or non-positive input", () => {
@@ -168,5 +184,12 @@ describe("formatTokenAmount", () => {
   it("returns '0' for zero / non-finite input", () => {
     expect(formatTokenAmount("0")).toBe("0");
     expect(formatTokenAmount("not-a-number")).toBe("0");
+  });
+
+  it("uses compact (K/M/B/T) for amounts above 1M to fit the card", () => {
+    expect(formatTokenAmount("1500000")).toBe("1.5M");
+    expect(formatTokenAmount("499876954.71")).toBe("499.88M");
+    expect(formatTokenAmount("500000000")).toBe("500M");
+    expect(formatTokenAmount("12345678901")).toBe("12.35B");
   });
 });
