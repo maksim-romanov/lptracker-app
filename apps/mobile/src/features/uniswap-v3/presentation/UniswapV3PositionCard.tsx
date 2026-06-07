@@ -62,12 +62,12 @@ export const UniswapV3PositionCard = function UniswapV3PositionCard({ position, 
         <Stack space={1}>
           <Box direction="row" alignY="top">
             <Box flex="fluid">
-              <Text variant="label" color="muted">
+              <Text variant="label" color="muted" style={styles.rangeLabel}>
                 {vm.priceRange.minLabel} {vm.pair.quote.symbol}
               </Text>
             </Box>
             <Box flex="fluid" alignX="right">
-              <Text variant="label" color="muted">
+              <Text variant="label" color="muted" style={styles.rangeLabel}>
                 {vm.priceRange.maxLabel} {vm.pair.quote.symbol}
               </Text>
             </Box>
@@ -118,5 +118,10 @@ const styles = StyleSheet.create((theme) => ({
 
   valueRight: {
     alignItems: "flex-end",
+  },
+
+  rangeLabel: {
+    fontSize: 11,
+    lineHeight: 14,
   },
 }));
