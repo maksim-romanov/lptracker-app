@@ -1,5 +1,6 @@
 import "reflect-metadata";
 
+import { getLogger } from "@mars-909/logger";
 import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import type { Result } from "neverthrow";
@@ -22,6 +23,8 @@ import { badRequest, mapErrorToHttpResponse, notFound, validationHook } from "./
 import { positionSchema } from "./schemas/position.schema";
 import { parsePositionRef, positionRefParamSchema, positionsListQuerySchema, type WalletScopeEntry } from "./schemas/request.schemas";
 import { TokensMapBuilder } from "./utils/tokens-map";
+
+const logger = getLogger(["server", "positions"]);
 
 export const positionsRoutes = new Hono();
 
@@ -95,16 +98,13 @@ positionsRoutes.get(
     const closed = query.status === "closed";
     const upstreamFilter = query.status === "all" ? undefined : { closed };
 
-    console.log(
-      "[positions.list] scope",
-      JSON.stringify({
-        walletCount: query.wallets.length,
-        wallets: query.wallets.map((w) => ({ address: w.address, chainIds: w.chainIds })),
-        protocols: query.protocols ?? "all",
-        status: query.status,
-        triples: triples.map((t) => ({ address: t.wallet.address, chainId: t.chainId, protocol: t.protocol.slug })),
-      }),
-    );
+    logger.info("list start", {
+      walletCount: query.wallets.length,
+      wallets: query.wallets.map((w) => ({ address: w.address, chainIds: w.chainIds })),
+      protocols: query.protocols ?? "all",
+      status: query.status,
+      triples: triples.map((t) => ({ address: t.wallet.address, chainId: t.chainId, protocol: t.protocol.slug })),
+    });
 
     const results = await Promise.all(
       triples.map(
@@ -126,15 +126,20 @@ positionsRoutes.get(
       const triple = triples[i]!;
       if (res.isErr()) {
         partialFailures.push({ protocol: triple.protocol.slug, chainId: triple.chainId, message: res.error.message });
-        console.error(
-          `[positions.list] source failed protocol=${triple.protocol.slug} chainId=${triple.chainId} wallet=${triple.wallet.address}`,
-          res.error,
-        );
+        logger.error("source failed", {
+          protocol: triple.protocol.slug,
+          chainId: triple.chainId,
+          wallet: triple.wallet.address,
+          error: res.error,
+        });
         continue;
       }
-      console.log(
-        `[positions.list] source ok protocol=${triple.protocol.slug} chainId=${triple.chainId} wallet=${triple.wallet.address} positions=${res.value.length}`,
-      );
+      logger.info("source ok", {
+        protocol: triple.protocol.slug,
+        chainId: triple.chainId,
+        wallet: triple.wallet.address,
+        count: res.value.length,
+      });
       for (const mapped of res.value) {
         allPositions.push(mapped.position);
         tokensBuilder.add(mapped.tokenMetaInputs);

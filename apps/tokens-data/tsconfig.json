@@ -3,6 +3,8 @@
   "compilerOptions": {
     "types": ["bun", "reflect-metadata"],
     "strict": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "baseUrl": "src",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

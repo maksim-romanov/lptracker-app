@@ -11,6 +11,7 @@
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",
     "@mars-909/catalog": "workspace:*",
+    "@mars-909/logger": "workspace:*",
     "@scalar/hono-api-reference": "^0.10.20",
     "@uniswap/v3-core": "^1.0.1",
     "@uniswap/v3-periphery": "^1.4.4",
