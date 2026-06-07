@@ -1,8 +1,6 @@
 import { NETWORKS } from "@mars-909/catalog";
-import { config } from "shared/config";
+import { buildNetworkIconUrl } from "shared/adapters/tokens-data.urls";
 import type { Network } from "shared/contracts";
-
-const buildNetworkIconUrl = (chainId: number): string => `${config.api.tokensData.baseUrl}/v1/chains/${chainId}/icon.png`;
 
 export const networkCatalog: Network[] = NETWORKS.map((seed) => ({
   ...seed,

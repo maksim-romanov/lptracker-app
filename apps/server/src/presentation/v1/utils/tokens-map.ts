@@ -1,5 +1,5 @@
+import { buildTokenIconUrl } from "shared/adapters/tokens-data.urls";
 import { buildTokenRef, type TokenMeta, type TokenMetaInput, type TokensMap } from "shared/contracts";
-import { buildTokenMetaIconUrl } from "uniswap-v3/presentation/mappers/position.mapper";
 
 export class TokensMapBuilder {
   private readonly metas = new Map<string, TokenMeta>();
@@ -11,7 +11,7 @@ export class TokensMapBuilder {
       this.metas.set(key, {
         symbol: input.symbol,
         decimals: input.decimals,
-        iconUrl: buildTokenMetaIconUrl(input.chainId, input.address),
+        iconUrl: buildTokenIconUrl(input.chainId, input.address),
       });
     }
   }

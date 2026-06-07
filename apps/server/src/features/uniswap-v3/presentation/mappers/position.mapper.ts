@@ -1,4 +1,3 @@
-import { config } from "shared/config";
 import { buildTokenRef, type MapPositionResult, type Position, type TokenMetaInput } from "shared/contracts";
 import { formatUnits } from "viem";
 
@@ -26,9 +25,6 @@ const formatFeeTierLabel = (feeTier: number): string => {
 
 const buildPoolLabel = (token0: TokenEntity, token1: TokenEntity, feeTier: number): string =>
   `${token0.symbol}/${token1.symbol} ${formatFeeTierLabel(feeTier)}`;
-
-const buildIconUrl = (chainId: number, address: string): string =>
-  `${config.api.tokensData.baseUrl}/v1/chains/${chainId}/tokens/${address.toLowerCase()}/logo.png`;
 
 const buildPositionRef = (chainId: number, nftTokenId: string): string => `uniswap-v3:${chainId}:${nftTokenId}`;
 
@@ -154,5 +150,3 @@ export const mapV3PositionToContract = ({ entity, chainId, unclaimedFees }: MapP
 
   return { position, tokenMetaInputs };
 };
-
-export const buildTokenMetaIconUrl = buildIconUrl;
