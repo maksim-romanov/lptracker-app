@@ -1,20 +1,30 @@
-import { View, type ViewStyle } from "react-native";
+import type { ReactElement } from "react";
+import type { DimensionValue } from "react-native";
 
-import { StyleSheet } from "react-native-unistyles";
+import { Skeleton as MotiSkeleton } from "moti/skeleton";
+import { useUnistyles } from "react-native-unistyles";
 
 type Props = {
-  width?: ViewStyle["width"];
-  height?: ViewStyle["height"];
-  radius?: number;
-  style?: ViewStyle;
+  width?: DimensionValue;
+  height?: DimensionValue;
+  radius?: number | "round" | "square";
+  children?: ReactElement;
+  show?: boolean;
 };
 
-export const Skeleton = ({ width = "100%", height = 16, radius = 8, style }: Props) => (
-  <View style={[styles.box, { width, height, borderRadius: radius }, style]} />
-);
+const SkeletonBase = ({ width = "100%", height = 16, radius = 8, children, show }: Props) => {
+  const { theme } = useUnistyles();
+  return (
+    <MotiSkeleton
+      width={width}
+      height={height}
+      radius={radius}
+      show={show}
+      colors={[theme.surfaceContainer, theme.surfaceVariant, theme.surfaceContainer]}
+    >
+      {children}
+    </MotiSkeleton>
+  );
+};
 
-const styles = StyleSheet.create((theme) => ({
-  box: {
-    backgroundColor: theme.surfaceVariant,
-  },
-}));
+export const Skeleton = Object.assign(SkeletonBase, { Group: MotiSkeleton.Group });

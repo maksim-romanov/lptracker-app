@@ -51,6 +51,7 @@
     "mobx": "^6.15.0",
     "mobx-persist-store": "^1.1.8",
     "mobx-react-lite": "^4.1.1",
+    "moti": "^0.30.0",
     "numbro": "*",
     "openapi-fetch": "^0.15.0",
     "react": "19.2.0",

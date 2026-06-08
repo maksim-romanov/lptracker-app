@@ -2,9 +2,13 @@ import { useMemo } from "react";
 import { View } from "react-native";
 
 import { Box, Inline, Stack } from "@grapp/stacks";
+import { container } from "core/di/container";
 import { Card, NetworkBadge, Tag, Text, TokensImages } from "core/presentation/components";
+import { observer } from "mobx-react-lite";
 import type { TPositionByExt, TTokensMap } from "positions/domain/types";
 import { FavoriteStar } from "positions/presentation/components/FavoriteStar";
+import { InvertPairButton } from "positions/presentation/components/InvertPairButton";
+import { PositionViewPrefsStore } from "positions/presentation/stores/position-view-prefs.store";
 import { StyleSheet } from "react-native-unistyles";
 
 import { mapToVm } from "../data/uniswap-v3.mapper";
@@ -28,8 +32,10 @@ const STATUS_LABEL: Record<TUniswapV3RangeStatus, string> = {
   closed: "Closed",
 };
 
-export function UniswapV3PositionCard({ position, tokens }: IProps) {
-  const vm = useMemo(() => mapToVm(position, tokens), [position, tokens]);
+export const UniswapV3PositionCard = observer(function UniswapV3PositionCard({ position, tokens }: IProps) {
+  const viewPrefs = container.resolve(PositionViewPrefsStore);
+  const inverted = viewPrefs.isInverted(position.ref);
+  const vm = useMemo(() => mapToVm(position, tokens, inverted), [position, tokens, inverted]);
   const pairTokens = [
     { symbol: vm.pair.base.symbol, address: vm.pair.base.tokenRef.split(":")[1] },
     { symbol: vm.pair.quote.symbol, address: vm.pair.quote.tokenRef.split(":")[1] },
@@ -42,13 +48,16 @@ export function UniswapV3PositionCard({ position, tokens }: IProps) {
           <TokensImages tokens={pairTokens} chainId={position.chainId} size="md" />
 
           <Box flex="fluid">
-            <Text variant="title" weight="bold" numberOfLines={1} style={styles.pair}>
-              {vm.pair.base.symbol}
-              <Text variant="title" style={styles.pairSlash}>
-                {" / "}
+            <Box direction="row" alignY="center" gap={2}>
+              <Text variant="title" weight="bold" numberOfLines={1} style={styles.pair}>
+                {vm.pair.base.symbol}
+                <Text variant="title" style={styles.pairSlash}>
+                  {" / "}
+                </Text>
+                {vm.pair.quote.symbol}
               </Text>
-              {vm.pair.quote.symbol}
-            </Text>
+              <InvertPairButton positionRef={position.ref} />
+            </Box>
           </Box>
 
           <FavoriteStar positionRef={position.ref} />
@@ -111,7 +120,7 @@ export function UniswapV3PositionCard({ position, tokens }: IProps) {
       </Stack>
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create((theme) => ({
   pair: {

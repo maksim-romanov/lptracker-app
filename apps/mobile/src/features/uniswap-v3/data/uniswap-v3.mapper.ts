@@ -61,10 +61,10 @@ export function formatPrice(price: number): string {
   return price.toExponential(2);
 }
 
-function derivePair(position: TPositionByExt<"uniswap-v3">, tokens: TTokensMap): TUniswapV3Pair {
+function derivePair(position: TPositionByExt<"uniswap-v3">, tokens: TTokensMap, inverted: boolean): TUniswapV3Pair {
   const principals = position.tokens.filter((t) => t.role === "principal");
-  const baseRef = principals[0]?.tokenRef ?? "";
-  const quoteRef = principals[1]?.tokenRef ?? "";
+  const baseRef = principals[inverted ? 1 : 0]?.tokenRef ?? "";
+  const quoteRef = principals[inverted ? 0 : 1]?.tokenRef ?? "";
   const baseMeta = tokens[baseRef];
   const quoteMeta = tokens[quoteRef];
   return {
@@ -73,7 +73,7 @@ function derivePair(position: TPositionByExt<"uniswap-v3">, tokens: TTokensMap):
   };
 }
 
-function derivePriceRange(position: TPositionByExt<"uniswap-v3">, tokens: TTokensMap): TUniswapV3PriceRange {
+function derivePriceRange(position: TPositionByExt<"uniswap-v3">, tokens: TTokensMap, inverted: boolean): TUniswapV3PriceRange {
   const principals = position.tokens.filter((t) => t.role === "principal");
   const baseRef = principals[0]?.tokenRef ?? "";
   const quoteRef = principals[1]?.tokenRef ?? "";
@@ -81,28 +81,38 @@ function derivePriceRange(position: TPositionByExt<"uniswap-v3">, tokens: TToken
   const baseDecimals = tokens[baseRef]?.decimals ?? 18;
   const quoteDecimals = tokens[quoteRef]?.decimals ?? 18;
 
-  const minPrice = tickToPrice(position.extension.tickLower, baseDecimals, quoteDecimals);
+  const lowerPrice = tickToPrice(position.extension.tickLower, baseDecimals, quoteDecimals);
   const currentPrice = tickToPrice(position.extension.pool.currentTick, baseDecimals, quoteDecimals);
-  const maxPrice = tickToPrice(position.extension.tickUpper, baseDecimals, quoteDecimals);
+  const upperPrice = tickToPrice(position.extension.tickUpper, baseDecimals, quoteDecimals);
+
+  const minPrice = inverted ? 1 / upperPrice : lowerPrice;
+  const maxPrice = inverted ? 1 / lowerPrice : upperPrice;
+  const midPrice = inverted ? 1 / currentPrice : currentPrice;
+
+  const displayQuoteRef = inverted ? baseRef : quoteRef;
+  const displayBaseRef = inverted ? quoteRef : baseRef;
 
   return {
     minLabel: formatPrice(minPrice),
-    currentLabel: formatPrice(currentPrice),
+    currentLabel: formatPrice(midPrice),
     maxLabel: formatPrice(maxPrice),
-    quoteSymbol: tokens[quoteRef]?.symbol ?? quoteRef,
-    baseSymbol: tokens[baseRef]?.symbol ?? baseRef,
+    quoteSymbol: tokens[displayQuoteRef]?.symbol ?? displayQuoteRef,
+    baseSymbol: tokens[displayBaseRef]?.symbol ?? displayBaseRef,
   };
 }
 
-export function mapToVm(position: TPositionByExt<"uniswap-v3">, tokens: TTokensMap): TUniswapV3VM {
+export function mapToVm(position: TPositionByExt<"uniswap-v3">, tokens: TTokensMap, inverted: boolean = false): TUniswapV3VM {
+  const principals = position.tokens.filter((t) => t.role === "principal");
+  const orderedPrincipals = inverted ? [principals[1], principals[0]].filter((t): t is (typeof principals)[number] => Boolean(t)) : principals;
+
   return {
     nftTokenId: position.extension.nftTokenId,
     feeTierLabel: position.extension.feeTierLabel,
     status: deriveStatus(position.status.state),
-    pair: derivePair(position, tokens),
-    principal: position.tokens.filter((t) => t.role === "principal").map((t) => tokenSide(t, tokens)),
+    pair: derivePair(position, tokens, inverted),
+    principal: orderedPrincipals.map((t) => tokenSide(t, tokens)),
     fees: position.tokens.filter((t) => t.role === "fee").map((t) => tokenSide(t, tokens)),
-    priceRange: derivePriceRange(position, tokens),
+    priceRange: derivePriceRange(position, tokens, inverted),
     poolAddress: position.extension.pool.address,
   };
 }

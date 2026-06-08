@@ -16,8 +16,11 @@ import {
   TokensImages,
 } from "core/presentation/components";
 import { truncateAddress } from "core/presentation/utils/format";
+import { observer } from "mobx-react-lite";
 import type { TPositionByExt, TTokensMap } from "positions/domain/types";
 import { AiPredictCard } from "positions/presentation/components/AiPredictCard";
+import { InvertPairButton } from "positions/presentation/components/InvertPairButton";
+import { PositionViewPrefsStore } from "positions/presentation/stores/position-view-prefs.store";
 import Animated, { useAnimatedRef, useScrollOffset, useSharedValue } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -45,8 +48,10 @@ const STATUS_LABEL: Record<TUniswapV3RangeStatus, string> = {
   closed: "Closed",
 };
 
-export const UniswapV3PositionDetail = function UniswapV3PositionDetail({ position, tokens }: IProps) {
-  const vm = useMemo(() => mapToVm(position, tokens), [position, tokens]);
+export const UniswapV3PositionDetail = observer(function UniswapV3PositionDetail({ position, tokens }: IProps) {
+  const viewPrefs = container.resolve(PositionViewPrefsStore);
+  const inverted = viewPrefs.isInverted(position.ref);
+  const vm = useMemo(() => mapToVm(position, tokens, inverted), [position, tokens, inverted]);
 
   const animatedRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollOffset(animatedRef);
@@ -83,13 +88,16 @@ export const UniswapV3PositionDetail = function UniswapV3PositionDetail({ positi
               <Box direction="row" alignY="center" gap={3}>
                 <TokensImages tokens={pairTokens} chainId={position.chainId} size="lg" />
                 <Box flex="fluid">
-                  <Text variant="title" weight="bold" numberOfLines={1} style={styles.pair}>
-                    {vm.pair.base.symbol}
-                    <Text variant="title" style={styles.pairSlash}>
-                      {" / "}
+                  <Box direction="row" alignY="center" gap={2}>
+                    <Text variant="title" weight="bold" numberOfLines={1} style={styles.pair}>
+                      {vm.pair.base.symbol}
+                      <Text variant="title" style={styles.pairSlash}>
+                        {" / "}
+                      </Text>
+                      {vm.pair.quote.symbol}
                     </Text>
-                    {vm.pair.quote.symbol}
-                  </Text>
+                    <InvertPairButton positionRef={position.ref} size={20} />
+                  </Box>
                 </Box>
               </Box>
 
@@ -174,7 +182,7 @@ export const UniswapV3PositionDetail = function UniswapV3PositionDetail({ positi
       <PositionStickyPill vm={vm} chainId={position.chainId} scrollOffset={scrollOffset} heroEndY={heroEndY} />
     </View>
   );
-};
+});
 
 const PriceLabels = function PriceLabels({
   minLabel,
