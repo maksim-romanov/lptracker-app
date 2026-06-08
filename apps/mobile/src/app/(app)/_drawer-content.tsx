@@ -68,14 +68,9 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
         {/* Brand */}
         <View style={styles.brand}>
           <View style={styles.brandMark} />
-          <View style={styles.brandText}>
-            <View style={styles.wordmarkRow}>
-              <Text style={styles.wordmark}>depthly</Text>
-              <View style={styles.wordmarkDot} />
-            </View>
-            <Text variant="label" color="muted" uppercase style={styles.tagline}>
-              defi insights
-            </Text>
+          <View style={styles.wordmarkRow}>
+            <Text style={styles.wordmark}>depthly</Text>
+            <View style={styles.wordmarkDot} />
           </View>
         </View>
 
@@ -139,10 +134,6 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.outlineVariant,
   },
 
-  brandText: {
-    flex: 1,
-  },
-
   wordmarkRow: {
     flexDirection: "row",
     alignItems: "flex-end",
@@ -160,14 +151,9 @@ const styles = StyleSheet.create((theme) => ({
     width: 5,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: "#FF007A",
+    backgroundColor: theme.primary,
     marginLeft: 3,
     marginBottom: 3,
-  },
-
-  tagline: {
-    marginTop: 2,
-    letterSpacing: 1.4,
   },
 
   divider: {

@@ -1,1 +1,1 @@
-export { neonDark, neonLight } from "./neon";
+export { depthlyDark, depthlyLight } from "./depthly";

@@ -1,28 +1,16 @@
 import { View } from "react-native";
 
 import { Button, Text } from "core/presentation/components";
-import { LinearGradient } from "expo-linear-gradient";
 import { type Href, useRouter } from "expo-router";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
-
-const AMBIENT_COLORS = ["#FF007A33", "#FF007A0A", "transparent"] as const;
 
 export const OnboardingScreen = () => {
   const router = useRouter();
 
   return (
     <View style={styles.root}>
-      <LinearGradient
-        colors={AMBIENT_COLORS}
-        locations={[0, 0.45, 1]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={styles.ambient}
-        pointerEvents="none"
-      />
-
       <SafeAreaView style={styles.introRoot} edges={["top", "bottom"]}>
         <View style={styles.introInner}>
           <View style={styles.hero}>
@@ -68,14 +56,6 @@ const styles = StyleSheet.create((theme) => ({
   root: {
     flex: 1,
     backgroundColor: theme.surface,
-  },
-
-  ambient: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: "60%",
   },
 
   introRoot: {
@@ -124,7 +104,7 @@ const styles = StyleSheet.create((theme) => ({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: "#FF007A",
+    backgroundColor: theme.primary,
     marginLeft: 5,
     marginBottom: 6,
   },

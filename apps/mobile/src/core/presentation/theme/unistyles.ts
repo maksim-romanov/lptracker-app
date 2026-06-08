@@ -1,4 +1,4 @@
-import { type ColorTokens, neonDark, neonLight, radius, spacing, typography } from "@depthly/theme";
+import { type ColorTokens, depthlyDark, depthlyLight, radius, spacing, typography } from "@depthly/theme";
 import { StyleSheet } from "react-native-unistyles";
 
 /**
@@ -34,8 +34,8 @@ const createTheme = (colors: ColorTokens): AppTheme => ({
  * All available themes
  */
 export const themes = {
-  neonLight: createTheme(neonLight),
-  neonDark: createTheme(neonDark),
+  depthlyLight: createTheme(depthlyLight),
+  depthlyDark: createTheme(depthlyDark),
 } as const;
 
 export type ThemeName = keyof typeof themes;
@@ -71,7 +71,7 @@ StyleSheet.configure({
   themes,
   breakpoints,
   settings: {
-    initialTheme: "neonDark",
+    initialTheme: "depthlyDark",
   },
 });
 

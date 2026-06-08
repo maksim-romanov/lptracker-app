@@ -36,18 +36,18 @@ const hashSeed = (input: string) => {
   return hash >>> 0;
 };
 
-const hueAt = (hash: number, offset: number) => Math.abs((hash >>> (offset * 4)) % 360);
+const valueAt = (hash: number, offset: number) => Math.abs((hash >>> (offset * 4)) % 100);
 
-export const IdentityAvatar = ({ seed = "void", size = "md", ring, onPress, style }: Props) => {
+export const IdentityAvatar = ({ seed = "depthly", size = "md", ring, onPress, style }: Props) => {
   const dim = SIZE[size];
   const h = hashSeed(seed);
-  const hueA = hueAt(h, 0);
-  const hueB = (hueAt(h, 2) + 90) % 360;
-  const hueC = (hueAt(h, 4) + 180) % 360;
+  const lightA = 35 + (valueAt(h, 0) % 45);
+  const lightB = 30 + (valueAt(h, 2) % 50);
+  const lightC = 25 + (valueAt(h, 4) % 50);
 
-  const colorA = `hsl(${hueA}, 85%, 65%)`;
-  const colorB = `hsl(${hueB}, 80%, 55%)`;
-  const colorC = `hsl(${hueC}, 75%, 45%)`;
+  const colorA = `hsl(0, 0%, ${lightA}%)`;
+  const colorB = `hsl(0, 0%, ${lightB}%)`;
+  const colorC = `hsl(0, 0%, ${lightC}%)`;
 
   const blob1Top = (h % 40) - 10;
   const blob1Left = ((h >>> 6) % 40) - 10;
