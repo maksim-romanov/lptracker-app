@@ -1,3 +1,4 @@
+import { getLogger } from "@mars-909/logger";
 import { err, ok, type Result } from "neverthrow";
 import type { MapPositionResult } from "shared/contracts";
 import { inject, injectable } from "tsyringe";
@@ -11,6 +12,8 @@ import type { PositionError } from "../domain/errors/position.error";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
 import { type MapperUnclaimedFees, mapV3PositionToContract } from "../presentation/mappers/position.mapper";
+
+const logger = getLogger(["server", "v3", "usecase"]);
 
 export interface GetWalletPositionsParams {
   owner: string;
@@ -56,10 +59,13 @@ export class GetWalletPositionsUseCase {
       .filter((e): e is PositionEntity => e !== null);
 
     if (droppedForMissingPoolState.length > 0) {
-      console.warn(
-        `[v3.usecase] dropped ${droppedForMissingPoolState.length}/${positionDtos.length} positions (no pool state) chainId=${chainId} owner=${owner}`,
-        droppedForMissingPoolState,
-      );
+      logger.warning("dropped positions (no pool state)", {
+        chainId,
+        owner,
+        dropped: droppedForMissingPoolState.length,
+        total: positionDtos.length,
+        droppedIds: droppedForMissingPoolState,
+      });
     }
 
     const feesMap = await this.fetchAllFees(chainId, repository, entities);
@@ -106,7 +112,11 @@ export class GetWalletPositionsUseCase {
       }
       await Promise.all(cacheWrites);
     } catch (error) {
-      console.error(`[v3.usecase] fee fetch failed chainId=${chainId} positions=${uncached.length}`, error);
+      logger.error("fee fetch failed", {
+        chainId,
+        count: uncached.length,
+        error,
+      });
     }
 
     return allFees;

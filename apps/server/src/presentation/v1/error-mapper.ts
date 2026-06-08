@@ -1,9 +1,12 @@
+import { getLogger } from "@mars-909/logger";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ERROR_CODES, type ErrorCode, type ErrorResponse } from "shared/contracts";
 import { DomainError } from "shared/errors/base.error";
 
 import { protocolRegistry } from "../../app/protocols/registry";
+
+const logger = getLogger(["server", "http"]);
 
 interface ValidationIssue {
   message: string;
@@ -38,7 +41,7 @@ export const mapErrorToHttpResponse = (c: Context, error: unknown) => {
     return c.json(body, status as ContentfulStatusCode);
   }
 
-  console.error("Unexpected error:", error);
+  logger.error("unhandled error", { error });
   return c.json(buildBody(ERROR_CODES.INTERNAL_ERROR, "Internal server error"), 500);
 };
 

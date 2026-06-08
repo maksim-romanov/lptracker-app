@@ -1,5 +1,6 @@
 import "reflect-metadata";
 
+import { installLogger, requestLogger } from "@mars-909/logger";
 import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
 import { openAPIRouteHandler } from "hono-openapi";
@@ -9,9 +10,12 @@ import { tokensMetaRoutes } from "tokens-meta/presentation/api";
 import { registerApp } from "./di/register";
 import { v1Routes } from "./presentation/v1";
 
+await installLogger({ app: "server" });
 registerApp();
 
 const app = new Hono();
+
+app.use("*", requestLogger({ app: "server" }));
 
 app.route("/api/v1", v1Routes);
 
@@ -32,7 +36,6 @@ const openApiDocumentation = {
 app.get("/openapi.json", openAPIRouteHandler(v1Routes, { documentation: openApiDocumentation }));
 app.get("/docs", Scalar({ url: "/openapi.json", theme: "purple", pageTitle: "mars-909 API" }));
 
-// Deprecated tokens-data passthroughs (slated for removal once mobile stops calling them)
 app.route("/meta", tokensMetaRoutes);
 app.route("/prices", tokenPricesRoutes);
 

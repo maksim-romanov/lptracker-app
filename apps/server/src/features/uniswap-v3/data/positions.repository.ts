@@ -1,3 +1,4 @@
+import { getLogger } from "@mars-909/logger";
 import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 import NonfungiblePositionManagerABI from "@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json";
 import { err, ok } from "neverthrow";
@@ -11,6 +12,8 @@ import type { PositionFeeRawData } from "../domain/utils/fee-math";
 import { BaseRepository } from "./base/base.repository";
 import { GraphQLPositionDto } from "./dto/graphql-position.dto";
 import { graphql } from "./gql";
+
+const logger = getLogger(["server", "v3", "repo"]);
 
 const poolAbi = IUniswapV3PoolABI.abi as Abi;
 const npmAbi = NonfungiblePositionManagerABI.abi as Abi;
@@ -48,12 +51,19 @@ export class PositionsRepository extends BaseRepository {
     try {
       const result = await this.gql.request(getWalletPositionsQuery, { owner, ...pagination, ...filters });
       const positions = result.positions.map((p) => GraphQLPositionDto.fromGraphQL(p, this.chainContext.chain.id));
-      console.log(
-        `[v3.repo] getWalletPositions chainId=${this.chainContext.chain.id} owner=${owner} closed=${filters.closed} -> ${positions.length} positions`,
-      );
+      logger.info("getWalletPositions", {
+        chainId: this.chainContext.chain.id,
+        owner,
+        closed: filters.closed,
+        count: positions.length,
+      });
       return ok(positions);
     } catch (error) {
-      console.error(`[v3.repo] getWalletPositions FAILED chainId=${this.chainContext.chain.id} owner=${owner}`, error);
+      logger.error("getWalletPositions failed", {
+        chainId: this.chainContext.chain.id,
+        owner,
+        error,
+      });
       return err(PositionError.GRAPHQL_ERROR({ error, context: { owner, ...pagination } }));
     }
   }
@@ -97,11 +107,20 @@ export class PositionsRepository extends BaseRepository {
         map.set(address, { sqrtPriceX96: slot0[0], currentTick: slot0[1], liquidity });
       }
       if (skipped.length > 0) {
-        console.warn(`[v3.repo] getPoolStates chainId=${this.chainContext.chain.id} skipped ${skipped.length}/${unique.length} pools`, skipped);
+        logger.warning("getPoolStates skipped pools", {
+          chainId: this.chainContext.chain.id,
+          count: skipped.length,
+          total: unique.length,
+          skipped,
+        });
       }
       return ok(map);
     } catch (error) {
-      console.error(`[v3.repo] getPoolStates FAILED chainId=${this.chainContext.chain.id} pools=${unique.length}`, error);
+      logger.error("getPoolStates failed", {
+        chainId: this.chainContext.chain.id,
+        count: unique.length,
+        error,
+      });
       return err(PositionError.UNEXPECTED_ERROR({ error, context: { poolAddresses: unique } }));
     }
   }
@@ -128,7 +147,11 @@ export class PositionsRepository extends BaseRepository {
       }
       return ok(feeDataMap);
     } catch (error) {
-      console.error(`[v3.repo] getBatchPositionFees FAILED chainId=${this.chainContext.chain.id} positions=${positions.length}`, error);
+      logger.error("getBatchPositionFees failed", {
+        chainId: this.chainContext.chain.id,
+        count: positions.length,
+        error,
+      });
       return err(PositionError.UNEXPECTED_ERROR({ error, context: { positionCount: positions.length } }));
     }
   }
