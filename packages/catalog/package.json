@@ -1,5 +1,5 @@
 {
-  "name": "@mars-909/catalog",
+  "name": "@depthly/catalog",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -17,6 +17,6 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@mars-909/typescript-config": "workspace:*"
+    "@depthly/typescript-config": "workspace:*"
   }
 }

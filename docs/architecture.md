@@ -52,6 +52,6 @@ Mobile App (presentation)
 ## Package Dependencies
 
 ```
-@mars-909/theme ← apps/mobile
-@mars-909/typescript-config ← all packages
+@depthly/theme ← apps/mobile
+@depthly/typescript-config ← all packages
 ```

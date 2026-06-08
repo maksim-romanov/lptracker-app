@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { installLogger, requestLogger } from "@mars-909/logger";
+import { installLogger, requestLogger } from "@depthly/logger";
 import { Hono } from "hono";
 
 import { registerApp } from "./di/register";

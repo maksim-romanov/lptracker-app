@@ -1,4 +1,4 @@
-import type { TKnownProtocolSlug } from "@mars-909/catalog";
+import type { TKnownProtocolSlug } from "@depthly/catalog";
 import type { components } from "core/api-client/generated/gateway";
 
 export type TGatewayPosition = components["schemas"]["Position"];

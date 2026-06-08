@@ -1,4 +1,4 @@
-import { getLogger } from "@mars-909/logger";
+import { getLogger } from "@depthly/logger";
 import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 import NonfungiblePositionManagerABI from "@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json";
 import { err, ok } from "neverthrow";

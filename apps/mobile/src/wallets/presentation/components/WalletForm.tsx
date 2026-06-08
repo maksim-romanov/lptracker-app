@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
+import { NETWORKS } from "@depthly/catalog";
 import { Stack } from "@grapp/stacks";
-import { NETWORKS } from "@mars-909/catalog";
 import { container } from "core/di/container";
 import { Button, Card, Icon, NetworkStack, Text, TextField } from "core/presentation/components";
 import { type Href, useRouter } from "expo-router";

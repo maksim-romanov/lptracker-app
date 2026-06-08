@@ -1,7 +1,7 @@
 import { View, type ViewStyle } from "react-native";
 
-import { NETWORKS } from "@mars-909/catalog";
-import { type NetworkKey, networkColors } from "@mars-909/theme";
+import { NETWORKS } from "@depthly/catalog";
+import { type NetworkKey, networkColors } from "@depthly/theme";
 import { CHAIN_LOGOS } from "core/config/chain-logos";
 import { Image } from "expo-image";
 import { StyleSheet, type UnistylesVariants, useUnistyles } from "react-native-unistyles";

@@ -5,28 +5,34 @@ import { LinearGradient } from "expo-linear-gradient";
 import { type Href, useRouter } from "expo-router";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, withUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
-const AmbientGlow = withUnistyles(LinearGradient, (theme) => ({
-  colors: [`${theme.primary}33`, `${theme.primary}0A`, "transparent"] as const,
-}));
+const AMBIENT_COLORS = ["#FF007A33", "#FF007A0A", "transparent"] as const;
 
 export const OnboardingScreen = () => {
   const router = useRouter();
 
   return (
     <View style={styles.root}>
-      <AmbientGlow locations={[0, 0.45, 1]} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} style={styles.ambient} pointerEvents="none" />
+      <LinearGradient
+        colors={AMBIENT_COLORS}
+        locations={[0, 0.45, 1]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.ambient}
+        pointerEvents="none"
+      />
 
       <SafeAreaView style={styles.introRoot} edges={["top", "bottom"]}>
         <View style={styles.introInner}>
           <View style={styles.hero}>
-            <Animated.View entering={FadeInUp.duration(520)} style={styles.brandMark}>
-              <View style={styles.brandMarkVoid} />
-            </Animated.View>
+            <Animated.View entering={FadeInUp.duration(520)} style={styles.brandMark} />
 
             <Animated.View entering={FadeInUp.duration(520).delay(120)} style={styles.titleBlock}>
-              <Text style={styles.wordmark}>void</Text>
+              <View style={styles.wordmarkRow}>
+                <Text style={styles.wordmark}>depthly</Text>
+                <View style={styles.wordmarkDot} />
+              </View>
               <Text variant="label" color="muted" uppercase style={styles.tagline}>
                 defi insights
               </Text>
@@ -92,28 +98,18 @@ const styles = StyleSheet.create((theme) => ({
   brandMark: {
     width: 64,
     height: 64,
-    borderRadius: 14,
-    transform: [{ rotate: "45deg" }],
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: theme.primary,
-    shadowColor: theme.primary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.7,
-    shadowRadius: 24,
-    elevation: 12,
-  },
-
-  brandMarkVoid: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    backgroundColor: theme.surface,
+    borderRadius: 16,
+    backgroundColor: theme.outlineVariant,
   },
 
   titleBlock: {
     alignItems: "center",
     gap: theme.spacing.xs,
+  },
+
+  wordmarkRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
   },
 
   wordmark: {
@@ -122,6 +118,15 @@ const styles = StyleSheet.create((theme) => ({
     lineHeight: 60,
     letterSpacing: -2,
     color: theme.onSurface,
+  },
+
+  wordmarkDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#FF007A",
+    marginLeft: 5,
+    marginBottom: 6,
   },
 
   tagline: {

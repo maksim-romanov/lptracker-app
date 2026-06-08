@@ -1,5 +1,5 @@
 {
-  "name": "mars-909",
+  "name": "depthly",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -10,10 +10,10 @@
     "lint:fix": "turbo run lint:fix",
     "typecheck": "turbo run typecheck",
     "codegen": "dotenv -- turbo run codegen --ui=stream",
-    "graph:up": "turbo run docker:up --filter=@mars-909/subgraph-*",
-    "graph:down": "turbo run docker:down --filter=@mars-909/subgraph-*",
-    "graph:build": "turbo run build --filter=@mars-909/subgraph-*",
-    "graph:test": "turbo run test --filter=@mars-909/subgraph-*"
+    "graph:up": "turbo run docker:up --filter=@depthly/subgraph-*",
+    "graph:down": "turbo run docker:down --filter=@depthly/subgraph-*",
+    "graph:build": "turbo run build --filter=@depthly/subgraph-*",
+    "graph:test": "turbo run test --filter=@depthly/subgraph-*"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",

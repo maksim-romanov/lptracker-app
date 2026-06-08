@@ -1,5 +1,5 @@
 {
-  "name": "@mars-909/logger",
+  "name": "@depthly/logger",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -23,7 +23,7 @@
     "hono": "^4.11.5"
   },
   "devDependencies": {
-    "@mars-909/typescript-config": "workspace:*",
+    "@depthly/typescript-config": "workspace:*",
     "@types/bun": "latest"
   }
 }

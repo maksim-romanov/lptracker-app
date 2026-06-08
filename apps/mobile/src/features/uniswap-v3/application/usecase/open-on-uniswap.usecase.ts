@@ -1,4 +1,4 @@
-import { NETWORKS } from "@mars-909/catalog";
+import { NETWORKS } from "@depthly/catalog";
 import { UseCase } from "core/domain/base";
 import { OpenExternalLinkUseCase } from "core/linking";
 import { inject, injectable } from "tsyringe";

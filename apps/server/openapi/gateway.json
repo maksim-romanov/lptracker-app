@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "mars-909 Gateway API",
+    "title": "depthly Gateway API",
     "description": "Protocol-agnostic gateway API for DeFi position aggregation across wallets, chains, and protocols",
     "version": "1.0.0"
   },

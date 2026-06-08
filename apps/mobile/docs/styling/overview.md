@@ -4,7 +4,7 @@
 
 The mobile app uses a layered theming system:
 
-1. **@mars-909/theme** - Shared design tokens (colors, spacing, typography)
+1. **@depthly/theme** - Shared design tokens (colors, spacing, typography)
 2. **react-native-unistyles** - Runtime styling with theme access
 3. **@grapp/stacks** - Layout components (Box, Stack, Columns)
 

@@ -1,4 +1,4 @@
-import { NETWORKS } from "@mars-909/catalog";
+import { NETWORKS } from "@depthly/catalog";
 import { buildNetworkIconUrl } from "shared/adapters/tokens-data.urls";
 import type { Network } from "shared/contracts";
 

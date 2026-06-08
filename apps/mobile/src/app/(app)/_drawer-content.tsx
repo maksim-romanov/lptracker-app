@@ -67,11 +67,12 @@ export const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {/* Brand */}
         <View style={styles.brand}>
-          <View style={styles.brandMark}>
-            <View style={styles.brandMarkVoid} />
-          </View>
+          <View style={styles.brandMark} />
           <View style={styles.brandText}>
-            <Text style={styles.wordmark}>void</Text>
+            <View style={styles.wordmarkRow}>
+              <Text style={styles.wordmark}>depthly</Text>
+              <View style={styles.wordmarkDot} />
+            </View>
             <Text variant="label" color="muted" uppercase style={styles.tagline}>
               defi insights
             </Text>
@@ -132,24 +133,19 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   brandMark: {
-    width: 26,
-    height: 26,
+    width: 24,
+    height: 24,
     borderRadius: 6,
-    transform: [{ rotate: "45deg" }],
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: theme.primary,
-  },
-
-  brandMarkVoid: {
-    width: 9,
-    height: 9,
-    borderRadius: 2,
-    backgroundColor: theme.surface,
+    backgroundColor: theme.outlineVariant,
   },
 
   brandText: {
     flex: 1,
+  },
+
+  wordmarkRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
   },
 
   wordmark: {
@@ -158,6 +154,15 @@ const styles = StyleSheet.create((theme) => ({
     lineHeight: 30,
     letterSpacing: -1,
     color: theme.onSurface,
+  },
+
+  wordmarkDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: "#FF007A",
+    marginLeft: 3,
+    marginBottom: 3,
   },
 
   tagline: {

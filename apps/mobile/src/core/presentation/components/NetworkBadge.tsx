@@ -1,7 +1,7 @@
 import { View, type ViewStyle } from "react-native";
 
-import { NETWORKS } from "@mars-909/catalog";
-import { type NetworkKey, networkColors } from "@mars-909/theme";
+import { NETWORKS } from "@depthly/catalog";
+import { type NetworkKey, networkColors } from "@depthly/theme";
 import { StyleSheet, type UnistylesVariants } from "react-native-unistyles";
 
 import { Text } from "./Text";

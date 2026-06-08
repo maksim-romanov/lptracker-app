@@ -1,4 +1,4 @@
-import { getLogger } from "@mars-909/logger";
+import { getLogger } from "@depthly/logger";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ERROR_CODES, type ErrorCode, type ErrorResponse } from "shared/contracts";

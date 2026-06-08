@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { installLogger, requestLogger } from "@mars-909/logger";
+import { installLogger, requestLogger } from "@depthly/logger";
 import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
 import { openAPIRouteHandler } from "hono-openapi";
@@ -22,7 +22,7 @@ app.route("/api/v1", v1Routes);
 const openApiDocumentation = {
   openapi: "3.1.0",
   info: {
-    title: "mars-909 Gateway API",
+    title: "Depthly Gateway API",
     version: "1.0.0",
     description: "Protocol-agnostic gateway API for DeFi position aggregation across wallets, chains, and protocols",
   },
@@ -34,7 +34,7 @@ const openApiDocumentation = {
 };
 
 app.get("/openapi.json", openAPIRouteHandler(v1Routes, { documentation: openApiDocumentation }));
-app.get("/docs", Scalar({ url: "/openapi.json", theme: "purple", pageTitle: "mars-909 API" }));
+app.get("/docs", Scalar({ url: "/openapi.json", theme: "purple", pageTitle: "Depthly API" }));
 
 app.route("/meta", tokensMetaRoutes);
 app.route("/prices", tokenPricesRoutes);
