@@ -15,6 +15,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@bacons/apple-targets": "^4.0.7",
     "@depthly/catalog": "workspace:*",
     "@depthly/theme": "workspace:*",
     "@expo/ui": "~55.0.1",

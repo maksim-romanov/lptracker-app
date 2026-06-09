@@ -15,7 +15,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.depthly.app"
+      "bundleIdentifier": "com.depthly.app",
+      "entitlements": {
+        "com.apple.security.application-groups": ["group.com.depthly.app.shared"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +35,7 @@
         }
       ],
       "expo-localization",
+      "@bacons/apple-targets",
       [
         "expo-font",
         {
