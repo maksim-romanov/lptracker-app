@@ -74,6 +74,7 @@
     "tsyringe": "^4.8.0",
     "valibot": "^1.2.0",
     "viem": "^2.45.1",
+    "widget-bridge": "file:./modules/widget-bridge",
     "zeego": "^3.0.6"
   },
   "devDependencies": {
