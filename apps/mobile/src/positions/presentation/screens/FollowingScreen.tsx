@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { ActivityIndicator, type ListRenderItem, ScrollView, View } from "react-native";
+import { ActivityIndicator, type ListRenderItem, RefreshControl, ScrollView, View } from "react-native";
 
 import { container } from "core/di/container";
 import { EmptyState } from "core/presentation/components";
@@ -12,8 +12,13 @@ import { usePositionsQuery } from "positions/presentation/hooks/usePositionsQuer
 import { positionRoutes } from "positions/presentation/lib/routes";
 import { FollowingStore } from "positions/presentation/stores/following.store";
 import Animated, { FadeOut, LinearTransition } from "react-native-reanimated";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { WalletsStore } from "wallets/presentation/wallets.store";
+
+const BrandRefreshControl = withUnistyles(RefreshControl, (theme) => ({
+  tintColor: theme.primary,
+  colors: [theme.primary],
+}));
 
 const Separator = () => <View style={styles.separator} />;
 
@@ -53,6 +58,8 @@ export const FollowingScreen = observer(function FollowingScreen() {
     ),
     [tokens, handlePress],
   );
+
+  const refreshControl = <BrandRefreshControl refreshing={query.isRefetching} onRefresh={query.refetch} />;
 
   if (query.isLoading) {
     return (
@@ -95,6 +102,7 @@ export const FollowingScreen = observer(function FollowingScreen() {
       ListHeaderComponent={ListHeader}
       ItemSeparatorComponent={Separator}
       renderItem={renderItem}
+      refreshControl={refreshControl}
       initialNumToRender={8}
       maxToRenderPerBatch={4}
       windowSize={7}

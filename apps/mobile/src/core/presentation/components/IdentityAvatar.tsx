@@ -1,6 +1,7 @@
+import { useMemo } from "react";
 import { Pressable, View, type ViewStyle } from "react-native";
 
-import { LinearGradient } from "expo-linear-gradient";
+import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
 import { StyleSheet } from "react-native-unistyles";
 
 const SIZE = {
@@ -18,15 +19,14 @@ type Props = {
   seed?: string;
   size?: Size;
   onPress?: () => void;
-  /** Decorative ring around the avatar (Twitter/X premium feel). */
+  /** Decorative ring around the avatar. */
   ring?: boolean;
   style?: ViewStyle;
 };
 
-/**
- * Hash a string into a stable 32-bit integer (FNV-1a flavor).
- * Used as the source of all pattern variation so the same seed → same avatar.
- */
+const VIEWBOX = 100;
+const BLOB_COUNT = 4;
+
 const hashSeed = (input: string) => {
   let hash = 2166136261;
   for (let i = 0; i < input.length; i += 1) {
@@ -36,62 +36,58 @@ const hashSeed = (input: string) => {
   return hash >>> 0;
 };
 
-const valueAt = (hash: number, offset: number) => Math.abs((hash >>> (offset * 4)) % 100);
+const at = (hash: number, shift: number, mod: number) => Math.abs((hash >>> shift) % mod);
+
+type Blob = { id: string; hue: number; cx: number; cy: number; r: number; lightness: number };
+type Mesh = { id: string; baseHue: number; baseLightness: number; blobs: Blob[] };
+
+// Hue range: pink (340) ← magenta ← purple ← indigo ← blue → cyan (200).
+// Anchored to the brand pink (#FF007A ≈ 332°) and spans the cool/magenta half.
+const HUE_MIN = 200;
+const HUE_SPAN = 140;
+const hueAt = (hash: number, shift: number) => HUE_MIN + at(hash, shift, HUE_SPAN);
+
+const buildMesh = (seed: string): Mesh => {
+  const h = hashSeed(seed);
+  const id = h.toString(36);
+  const baseHue = hueAt(h, 0);
+
+  const blobs: Blob[] = Array.from({ length: BLOB_COUNT }, (_, i) => ({
+    id: `${id}_${i}`,
+    hue: hueAt(h, 3 + i * 4),
+    cx: 15 + at(h, 4 + i * 5, 70),
+    cy: 15 + at(h, 7 + i * 5, 70),
+    r: 45 + at(h, 11 + i * 4, 35),
+    lightness: 55 + at(h, 14 + i * 4, 20),
+  }));
+
+  return { id, baseHue, baseLightness: 35 + at(h, 17, 12), blobs };
+};
 
 export const IdentityAvatar = ({ seed = "depthly", size = "md", ring, onPress, style }: Props) => {
   const dim = SIZE[size];
-  const h = hashSeed(seed);
-  const lightA = 35 + (valueAt(h, 0) % 45);
-  const lightB = 30 + (valueAt(h, 2) % 50);
-  const lightC = 25 + (valueAt(h, 4) % 50);
-
-  const colorA = `hsl(0, 0%, ${lightA}%)`;
-  const colorB = `hsl(0, 0%, ${lightB}%)`;
-  const colorC = `hsl(0, 0%, ${lightC}%)`;
-
-  const blob1Top = (h % 40) - 10;
-  const blob1Left = ((h >>> 6) % 40) - 10;
-  const blob2Top = ((h >>> 10) % 50) + dim * 0.3;
-  const blob2Left = ((h >>> 14) % 50) + dim * 0.25;
+  const mesh = useMemo(() => buildMesh(seed), [seed]);
 
   const ringPad = ring ? 2 : 0;
   const totalDim = dim + ringPad * 2;
 
   const content = (
     <View style={[styles.outer(totalDim), ring && styles.ring(totalDim), style]}>
-      <View style={[styles.clip(dim)]}>
-        <LinearGradient
-          colors={[colorA, colorB, colorC] as unknown as readonly [string, string, ...string[]]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFillObject}
-        />
-        <View
-          style={[
-            styles.blob,
-            {
-              top: blob1Top,
-              left: blob1Left,
-              width: dim * 0.7,
-              height: dim * 0.7,
-              backgroundColor: colorC,
-              opacity: 0.65,
-            },
-          ]}
-        />
-        <View
-          style={[
-            styles.blob,
-            {
-              top: blob2Top,
-              left: blob2Left,
-              width: dim * 0.55,
-              height: dim * 0.55,
-              backgroundColor: colorA,
-              opacity: 0.55,
-            },
-          ]}
-        />
+      <View style={styles.clip(dim)}>
+        <Svg width={dim} height={dim} viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}>
+          <Defs>
+            {mesh.blobs.map((blob) => (
+              <RadialGradient key={blob.id} id={blob.id} cx={blob.cx} cy={blob.cy} r={blob.r} gradientUnits="userSpaceOnUse">
+                <Stop offset="0" stopColor={`hsl(${blob.hue}, 95%, ${blob.lightness}%)`} stopOpacity={1} />
+                <Stop offset="1" stopColor={`hsl(${blob.hue}, 95%, ${blob.lightness}%)`} stopOpacity={0} />
+              </RadialGradient>
+            ))}
+          </Defs>
+          <Rect x="0" y="0" width={VIEWBOX} height={VIEWBOX} fill={`hsl(${mesh.baseHue}, 80%, ${mesh.baseLightness}%)`} />
+          {mesh.blobs.map((blob) => (
+            <Rect key={blob.id} x="0" y="0" width={VIEWBOX} height={VIEWBOX} fill={`url(#${blob.id})`} />
+          ))}
+        </Svg>
       </View>
     </View>
   );
@@ -130,9 +126,4 @@ const styles = StyleSheet.create((theme) => ({
     overflow: "hidden",
     backgroundColor: theme.surfaceVariant,
   }),
-
-  blob: {
-    position: "absolute",
-    borderRadius: 9999,
-  },
 }));
