@@ -1,6 +1,7 @@
-import { describe, expect, it } from "bun:test";
 import type { TPositionByExt, TTokensMap } from "positions/domain/types";
+
 import { buildWidgetSnapshot } from "../widget-snapshot.builder";
+import { describe, expect, it } from "bun:test";
 
 const wethPosition: TPositionByExt<"uniswap-v3"> = {
   ref: "uniswap-v3:1:12345",
@@ -71,9 +72,7 @@ describe("buildWidgetSnapshot", () => {
       { symbol: "WETH", iconUrl: "https://example.com/weth.png", formatted: "1.0" },
       { symbol: "USDC", iconUrl: "https://example.com/usdc.png", formatted: "1000.0" },
     ]);
-    expect(p.fees).toEqual([
-      { symbol: "WETH", iconUrl: "https://example.com/weth.png", formatted: "0.01" },
-    ]);
+    expect(p.fees).toEqual([{ symbol: "WETH", iconUrl: "https://example.com/weth.png", formatted: "0.01" }]);
   });
 
   it("derives pair.sym0/sym1 from the first two principal tokens", () => {
