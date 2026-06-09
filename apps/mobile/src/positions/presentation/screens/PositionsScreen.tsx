@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { FlatList, type ListRenderItem, ScrollView, View } from "react-native";
+import { FlatList, type ListRenderItem, RefreshControl, ScrollView, View } from "react-native";
 
 import { container } from "core/di/container";
 import { EmptyState } from "core/presentation/components";
@@ -11,8 +11,13 @@ import { PositionsListSkeleton } from "positions/presentation/components/Positio
 import { SyncTipBanner } from "positions/presentation/components/SyncTipBanner";
 import { usePositionsQuery } from "positions/presentation/hooks/usePositionsQuery";
 import { positionRoutes } from "positions/presentation/lib/routes";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { WalletsStore } from "wallets/presentation/wallets.store";
+
+const BrandRefreshControl = withUnistyles(RefreshControl, (theme) => ({
+  tintColor: theme.primary,
+  colors: [theme.primary],
+}));
 
 const Separator = () => <View style={styles.separator} />;
 
@@ -41,6 +46,8 @@ export const PositionsScreen = observer(function PositionsScreen() {
     ({ item }) => <PositionListItem position={item} tokens={tokens} onPress={handlePress} />,
     [tokens, handlePress],
   );
+
+  const refreshControl = <BrandRefreshControl refreshing={query.isRefetching} onRefresh={query.refetch} />;
 
   if (wallets.length === 0) {
     return (
@@ -72,7 +79,7 @@ export const PositionsScreen = observer(function PositionsScreen() {
 
   if (positions.length === 0) {
     return (
-      <ScrollView contentContainerStyle={styles.emptyRoot} contentInsetAdjustmentBehavior="automatic" scrollEnabled={false}>
+      <ScrollView contentContainerStyle={styles.emptyRoot} contentInsetAdjustmentBehavior="automatic" refreshControl={refreshControl}>
         <View style={styles.bannerSlot}>
           <SyncTipBanner />
         </View>
@@ -100,6 +107,7 @@ export const PositionsScreen = observer(function PositionsScreen() {
       ItemSeparatorComponent={Separator}
       ListFooterComponent={ListFooter}
       renderItem={renderItem}
+      refreshControl={refreshControl}
       initialNumToRender={8}
       maxToRenderPerBatch={4}
       windowSize={7}

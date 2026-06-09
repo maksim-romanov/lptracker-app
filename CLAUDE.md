@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Codename:** `mars-909`. All workspace package scopes use `@mars-909/*`.
+> **Brand:** `Depthly`. All workspace package scopes use `@depthly/*`.
 
 ## Big Picture
 
@@ -68,4 +68,4 @@ bun run graph:build      # AssemblyScript compile
 bun run graph:test
 ```
 
-Filter Turbo to one workspace: `turbo run <task> --filter=server` (or `--filter=@mars-909/subgraph-uniswap-v3`, etc.).
+Filter Turbo to one workspace: `turbo run <task> --filter=server` (or `--filter=@depthly/subgraph-uniswap-v3`, etc.).

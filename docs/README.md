@@ -1,6 +1,6 @@
 # Documentation
 
-> **Codename:** `mars-909`. All package scopes and references in docs use `@mars-909/`.
+> **Brand:** `Depthly`. All package scopes and references in docs use `@depthly/`.
 
 ## Project
 - [Getting Started](getting-started.md) - Setup, requirements, commands

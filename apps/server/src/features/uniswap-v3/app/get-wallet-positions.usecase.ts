@@ -1,4 +1,4 @@
-import { getLogger } from "@mars-909/logger";
+import { getLogger } from "@depthly/logger";
 import { err, ok, type Result } from "neverthrow";
 import type { MapPositionResult } from "shared/contracts";
 import { inject, injectable } from "tsyringe";

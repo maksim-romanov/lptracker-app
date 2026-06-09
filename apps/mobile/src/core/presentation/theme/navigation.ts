@@ -1,4 +1,4 @@
-import { fontFamily } from "@mars-909/theme";
+import { fontFamily } from "@depthly/theme";
 import type { Theme } from "@react-navigation/native";
 
 import type { AppTheme } from "./unistyles";

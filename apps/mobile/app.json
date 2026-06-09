@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "mars-909",
-    "slug": "mars-909",
+    "name": "Depthly",
+    "slug": "depthly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "mars-909",
+    "scheme": "depthly",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.maksimromanov.mars909"
+      "bundleIdentifier": "com.maksimromanov.depthly"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0F1A"
       },
-      "package": "com.maksimromanov.mars909"
+      "package": "com.maksimromanov.depthly"
     },
     "plugins": [
       [

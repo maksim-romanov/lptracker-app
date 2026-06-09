@@ -77,7 +77,7 @@ constructor(
 
 ## Theme System
 
-The app uses `@mars-909/theme` package with Material Design 3 color tokens:
+The app uses `@depthly/theme` package with Material Design 3 color tokens:
 
 - **5 theme variants**: Ocean, Nebula, Mint, Sunset, Midnight
 - **Light/Dark modes** for each variant
@@ -132,7 +132,7 @@ Position-related modules use a shell + plugin layout:
   DTO→VM mapper, presentation components (`ListBody`, `DetailBody`, optional `Strip`),
   and protocol-specific UseCases. Strictly typed against `TPositionByExt<T>`.
 - **`app/protocol-plugins.ts`** is a const-object registry keyed by extension type
-  and constrained exhaustively against `TKnownProtocolSlug` (from `@mars-909/catalog`)
+  and constrained exhaustively against `TKnownProtocolSlug` (from `@depthly/catalog`)
   via TypeScript `satisfies`. Adding a protocol to the catalog without registering a
   mobile plugin produces a compile error.
 

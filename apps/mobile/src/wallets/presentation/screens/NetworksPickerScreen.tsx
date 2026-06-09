@@ -1,6 +1,6 @@
 import { FlatList, Pressable, View } from "react-native";
 
-import { NETWORKS } from "@mars-909/catalog";
+import { NETWORKS } from "@depthly/catalog";
 import { container } from "core/di/container";
 import { Icon, NetworkIcon, Text } from "core/presentation/components";
 import { Stack as NavStack } from "expo-router";

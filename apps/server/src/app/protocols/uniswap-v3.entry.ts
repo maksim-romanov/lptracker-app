@@ -1,4 +1,4 @@
-import { PROTOCOLS_META } from "@mars-909/catalog";
+import { PROTOCOLS_META } from "@depthly/catalog";
 import type { ExtensionVariantSchema } from "shared/contracts";
 import { container } from "tsyringe";
 import { GetPositionUseCase } from "uniswap-v3/app/get-position.usecase";

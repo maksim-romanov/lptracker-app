@@ -1,5 +1,5 @@
 {
-  "name": "@mars-909/theme",
+  "name": "@depthly/theme",
   "version": "0.0.1",
   "private": true,
   "main": "./src/index.ts",
@@ -17,6 +17,6 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@mars-909/typescript-config": "workspace:*"
+    "@depthly/typescript-config": "workspace:*"
   }
 }

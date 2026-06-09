@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { getLogger } from "@mars-909/logger";
+import { getLogger } from "@depthly/logger";
 import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
 import type { Result } from "neverthrow";

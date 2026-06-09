@@ -1,6 +1,6 @@
 import { StyleSheet as RNStyleSheet, View } from "react-native";
 
-import { PROTOCOLS_META } from "@mars-909/catalog";
+import { PROTOCOLS_META } from "@depthly/catalog";
 import { Text } from "core/presentation/components";
 import { Image } from "expo-image";
 import { StyleSheet } from "react-native-unistyles";

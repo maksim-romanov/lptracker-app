@@ -1,4 +1,4 @@
-import type { NetworkKey } from "@mars-909/theme";
+import type { NetworkKey } from "@depthly/theme";
 
 export const CHAIN_LOGOS: Record<NetworkKey, number> = {
   ethereum: require("assets/chains/ethereum.png"),

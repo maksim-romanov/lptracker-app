@@ -56,5 +56,5 @@ Filter to a specific subgraph:
 
 ```bash
 # Build only uniswap-v3 subgraph
-turbo run build --filter=@mars-909/subgraph-uniswap-v3
+turbo run build --filter=@depthly/subgraph-uniswap-v3
 ```

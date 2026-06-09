@@ -5,15 +5,15 @@ export { type NetworkColor, type NetworkKey, networkColors } from "./networks";
 // Spacing
 export { type RadiusKey, type RadiusValue, radius, type SpacingKey, type SpacingValue, spacing } from "./spacing";
 // Theme variants
-export { neonDark, neonLight } from "./themes/neon";
+export { depthlyDark, depthlyLight } from "./themes/depthly";
 // Typography
 export { type FontWeight, fontFamily, letterSpacing, lineHeight, type TypographyTokens, typography } from "./typography";
 
 // All themes as a single object for convenience
 export const themes = {
-  neon: {
-    light: () => import("./themes/neon").then((m) => m.neonLight),
-    dark: () => import("./themes/neon").then((m) => m.neonDark),
+  depthly: {
+    light: () => import("./themes/depthly").then((m) => m.depthlyLight),
+    dark: () => import("./themes/depthly").then((m) => m.depthlyDark),
   },
 } as const;
 

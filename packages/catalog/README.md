@@ -1,4 +1,4 @@
-# @mars-909/catalog
+# @depthly/catalog
 
 Source of truth for supported networks and protocols, shared between server and mobile.
 

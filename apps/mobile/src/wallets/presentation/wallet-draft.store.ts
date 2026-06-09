@@ -1,4 +1,4 @@
-import { NETWORKS } from "@mars-909/catalog";
+import { NETWORKS } from "@depthly/catalog";
 import { action, computed, makeObservable, observable } from "mobx";
 import { singleton } from "tsyringe";
 import * as v from "valibot";

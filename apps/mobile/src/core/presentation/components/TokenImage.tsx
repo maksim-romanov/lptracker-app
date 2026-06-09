@@ -40,16 +40,18 @@ const monogram = (symbol?: string): string => (symbol ? symbol.charAt(0).toUpper
 type FallbackProps = { seed: string; size: TokenImageSize; symbol?: string };
 
 /**
- * Typography-first fallback: a hue-derived dark surface with a lighter
- * monogram of the same hue. Coherent stamp, no patterns competing with the
- * rest of the UI.
+ * Typography-first fallback: a seed-derived dark grayscale surface with a
+ * lighter grayscale monogram. Coherent stamp, no color competing with the
+ * rest of the wireframe UI.
  */
 const TokenFallback = ({ seed, size, symbol }: FallbackProps) => {
   const palette = useMemo(() => {
-    const hue = Math.abs(hashSeed(seed)) % 360;
+    const value = Math.abs(hashSeed(seed)) % 100;
+    const surfaceLightness = 14 + (value % 12);
+    const inkLightness = 70 + ((value >> 3) % 18);
     return {
-      surface: `hsl(${hue}, 26%, 22%)`,
-      ink: `hsl(${hue}, 70%, 78%)`,
+      surface: `hsl(0, 0%, ${surfaceLightness}%)`,
+      ink: `hsl(0, 0%, ${inkLightness}%)`,
     };
   }, [seed]);
 

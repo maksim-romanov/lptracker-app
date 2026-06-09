@@ -1,5 +1,5 @@
 {
-  "name": "@mars-909/typescript-config",
+  "name": "@depthly/typescript-config",
   "version": "0.0.1",
   "private": true,
   "exports": {

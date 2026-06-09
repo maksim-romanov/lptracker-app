@@ -1,11 +1,11 @@
-import { type ColorTokens, neonDark, neonLight, radius, spacing, typography } from "@mars-909/theme";
+import { type ColorTokens, depthlyDark, depthlyLight, radius, spacing, typography } from "@depthly/theme";
 import { StyleSheet } from "react-native-unistyles";
 
 /**
  * Stacks layout configuration
  */
 const stacks = {
-  spacing: 4, // Base unit matching @mars-909/theme (4px)
+  spacing: 4, // Base unit matching @depthly/theme (4px)
   debug: false,
 };
 
@@ -34,8 +34,8 @@ const createTheme = (colors: ColorTokens): AppTheme => ({
  * All available themes
  */
 export const themes = {
-  neonLight: createTheme(neonLight),
-  neonDark: createTheme(neonDark),
+  depthlyLight: createTheme(depthlyLight),
+  depthlyDark: createTheme(depthlyDark),
 } as const;
 
 export type ThemeName = keyof typeof themes;
@@ -71,7 +71,7 @@ StyleSheet.configure({
   themes,
   breakpoints,
   settings: {
-    initialTheme: "neonDark",
+    initialTheme: "depthlyDark",
   },
 });
 

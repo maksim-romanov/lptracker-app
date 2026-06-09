@@ -12,7 +12,7 @@ const OUTPUT_DIR = join(import.meta.dir, "..", "openapi");
 const gatewaySpec = {
   openapi: "3.1.0",
   info: {
-    title: "mars-909 Gateway API",
+    title: "Depthly Gateway API",
     version: "1.0.0",
     description: "Protocol-agnostic gateway API for DeFi position aggregation across wallets, chains, and protocols",
   },

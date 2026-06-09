@@ -1,10 +1,12 @@
 import type React from "react";
 import { Pressable, View, type ViewStyle } from "react-native";
 
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, withUnistyles } from "react-native-unistyles";
 
 import { Icon } from "./Icon";
 import { Text } from "./Text";
+
+const ChevronIcon = withUnistyles(Icon, (theme) => ({ color: theme.onSurfaceVariant }));
 
 type Props = {
   title: string;
@@ -30,7 +32,7 @@ export const ListItem = ({ title, description, leading, trailing, onPress, destr
           </Text>
         )}
       </View>
-      <View style={styles.trailing}>{trailing ?? (onPress ? <Icon name="chevron-forward-outline" size="sm" color="#71767B" /> : null)}</View>
+      <View style={styles.trailing}>{trailing ?? (onPress ? <ChevronIcon name="chevron-forward-outline" size="sm" /> : null)}</View>
     </>
   );
 
