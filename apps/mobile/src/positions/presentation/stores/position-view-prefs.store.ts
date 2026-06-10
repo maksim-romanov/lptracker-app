@@ -30,4 +30,11 @@ export class PositionViewPrefsStore extends Store {
     this.repo.setInverted(ref, next);
     return next;
   }
+
+  @action
+  pruneInverted(validRefs: ReadonlySet<string>): void {
+    if (this.invertedRefs.size === 0) return;
+    const kept = this.repo.pruneInverted(validRefs);
+    this.invertedRefs.replace(kept);
+  }
 }

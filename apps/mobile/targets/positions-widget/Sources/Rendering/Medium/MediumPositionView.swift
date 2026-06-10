@@ -8,7 +8,7 @@ struct MediumPositionView: View {
     if let position = entry.position {
       content(position: position)
     } else {
-      EmptyStateView()
+      EmptyStateView(reason: entry.emptyReason ?? .notConfigured)
     }
   }
 
@@ -41,7 +41,7 @@ struct MediumPositionView: View {
   private func pairRow(position: WidgetPosition) -> some View {
     HStack(alignment: .center, spacing: 8) {
       Text("\(position.pair.sym0)/\(position.pair.sym1)")
-        .font(.satoshi(.black, size: 28))
+        .font(.satoshi(.black, size: 23))
         .foregroundStyle(Color.textPrimary)
         .lineLimit(1)
         .minimumScaleFactor(0.4)

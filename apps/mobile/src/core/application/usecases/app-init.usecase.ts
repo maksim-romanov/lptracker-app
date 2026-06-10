@@ -3,6 +3,8 @@ import { UseCase } from "core/domain/base";
 import { RootStore } from "core/presentation/root.store";
 import { Asset } from "expo-asset";
 import { inject, injectable } from "tsyringe";
+import { registerWidgetBackgroundRefresh } from "widgets/application/background-refresh.task";
+import { WidgetSnapshotService } from "widgets/data/widget-snapshot.service";
 
 import { AppEvents } from "../events/app.events";
 
@@ -13,6 +15,7 @@ export class AppInitUseCase extends UseCase {
   constructor(
     @inject(AppEvents) private readonly appEvents: AppEvents,
     @inject(RootStore) private readonly rootStore: RootStore,
+    @inject(WidgetSnapshotService) private readonly widgetSnapshot: WidgetSnapshotService,
   ) {
     super();
   }
@@ -28,7 +31,13 @@ export class AppInitUseCase extends UseCase {
     try {
       await Promise.all([this.rootStore.hydrate(), Asset.loadAsync(Object.values(CHAIN_LOGOS))]);
 
+      this.widgetSnapshot.initialize();
+
       this.initialized = true;
+
+      void registerWidgetBackgroundRefresh().catch((error) => {
+        this.logger.warn("Widget background refresh registration failed", { error });
+      });
 
       this.appEvents.emit({ type: "APP_INITIALIZED" });
     } catch (error) {

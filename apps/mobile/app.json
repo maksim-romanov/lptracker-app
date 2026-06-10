@@ -17,7 +17,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.depthly.app",
       "entitlements": {
-        "com.apple.security.application-groups": ["group.com.depthly.app.shared"]
+        "com.apple.security.application-groups": [
+          "group.com.depthly.app.shared"
+        ]
       }
     },
     "android": {
@@ -50,11 +52,14 @@
       [
         "expo-asset",
         {
-          "assets": ["./assets/uniswap_uni_logo.png"]
+          "assets": [
+            "./assets/uniswap_uni_logo.png"
+          ]
         }
       ],
       "expo-asset",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-background-task"
     ],
     "experiments": {
       "typedRoutes": true

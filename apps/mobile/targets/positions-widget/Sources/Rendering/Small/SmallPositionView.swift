@@ -8,7 +8,7 @@ struct SmallPositionView: View {
     if let position = entry.position {
       content(position: position)
     } else {
-      EmptyStateView()
+      EmptyStateView(reason: entry.emptyReason ?? .notConfigured)
     }
   }
 
@@ -206,12 +206,28 @@ struct ChainTag: View {
 }
 
 struct EmptyStateView: View {
+  let reason: EmptyReason
+
+  private var icon: String {
+    switch reason {
+    case .notConfigured: return "rectangle.on.rectangle.angled"
+    case .configuredMissing: return "exclamationmark.triangle"
+    }
+  }
+
+  private var message: String {
+    switch reason {
+    case .notConfigured: return "Long-press to pick a position"
+    case .configuredMissing: return "This position is no longer available. Long-press to pick another."
+    }
+  }
+
   var body: some View {
     VStack(spacing: Spacing.sm) {
-      Image(systemName: "rectangle.on.rectangle.angled")
+      Image(systemName: icon)
         .font(.system(size: 22, weight: .medium))
         .foregroundStyle(Color.textMuted)
-      Text("Tap and hold to pick a position")
+      Text(message)
         .font(.satoshi(.medium, size: 11))
         .foregroundStyle(Color.textMuted)
         .multilineTextAlignment(.center)
