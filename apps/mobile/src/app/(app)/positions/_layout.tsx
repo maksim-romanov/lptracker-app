@@ -3,6 +3,10 @@ import { Stack, useNavigation } from "expo-router";
 import { FavoriteStar } from "positions/presentation/components/FavoriteStar";
 import { useUnistyles } from "react-native-unistyles";
 
+export const unstable_settings = {
+  initialRouteName: "index",
+};
+
 export default function PositionsLayout() {
   const { theme } = useUnistyles();
   const navigation = useNavigation();

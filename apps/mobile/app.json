@@ -15,14 +15,17 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.maksimromanov.depthly"
+      "bundleIdentifier": "com.depthly.app",
+      "entitlements": {
+        "com.apple.security.application-groups": ["group.com.depthly.app.shared"]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0F1A"
       },
-      "package": "com.maksimromanov.depthly"
+      "package": "com.depthly.app"
     },
     "plugins": [
       [
@@ -32,6 +35,7 @@
         }
       ],
       "expo-localization",
+      "@bacons/apple-targets",
       [
         "expo-font",
         {
@@ -50,7 +54,8 @@
         }
       ],
       "expo-asset",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-background-task"
     ],
     "experiments": {
       "typedRoutes": true

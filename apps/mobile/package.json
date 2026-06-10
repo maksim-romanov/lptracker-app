@@ -15,6 +15,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@bacons/apple-targets": "^4.0.7",
     "@depthly/catalog": "workspace:*",
     "@depthly/theme": "workspace:*",
     "@expo/ui": "~55.0.1",
@@ -32,6 +33,7 @@
     "babel-plugin-transform-typescript-metadata": "^0.4.0",
     "expo": "^55.0.4",
     "expo-asset": "~55.0.8",
+    "expo-background-task": "~55.0.18",
     "expo-blur": "~55.0.14",
     "expo-constants": "~55.0.7",
     "expo-crypto": "~55.0.8",
@@ -45,6 +47,7 @@
     "expo-router": "~55.0.3",
     "expo-status-bar": "~55.0.4",
     "expo-system-ui": "~55.0.18",
+    "expo-task-manager": "~55.0.16",
     "expo-web-browser": "~55.0.9",
     "fp-ts": "^2.16.0",
     "lottie-react-native": "~7.3.4",
@@ -74,6 +77,7 @@
     "tsyringe": "^4.8.0",
     "valibot": "^1.2.0",
     "viem": "^2.45.1",
+    "widget-bridge": "file:./modules/widget-bridge",
     "zeego": "^3.0.6"
   },
   "devDependencies": {

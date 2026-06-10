@@ -27,4 +27,12 @@ export class PositionViewPrefsRepository extends Repository {
     else refs.delete(ref);
     this.storage.set(POSITION_VIEW_PREFS_INVERTED_KEY, JSON.stringify([...refs]));
   }
+
+  pruneInverted(validRefs: ReadonlySet<string>): string[] {
+    const refs = this.getInvertedRefs();
+    const kept = refs.filter((r) => validRefs.has(r));
+    if (kept.length === refs.length) return kept;
+    this.storage.set(POSITION_VIEW_PREFS_INVERTED_KEY, JSON.stringify(kept));
+    return kept;
+  }
 }

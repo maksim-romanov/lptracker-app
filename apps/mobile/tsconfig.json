@@ -14,6 +14,7 @@
       "onboarding/*": ["./src/onboarding/*"],
       "types/*": ["./src/types/*"],
       "features/*": ["./src/features/*"],
+      "widgets/*": ["./src/widgets/*"],
       "assets/*": ["./assets/*"]
     }
   },

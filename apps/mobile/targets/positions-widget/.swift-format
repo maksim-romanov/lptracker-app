@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "indentation": { "spaces": 2 },
+  "lineLength": 110,
+  "respectsExistingLineBreaks": true,
+  "lineBreakBeforeControlFlowKeywords": false,
+  "lineBreakBeforeEachArgument": true,
+  "rules": {
+    "AlwaysUseLowerCamelCase": true,
+    "TypeNamesShouldBeCapitalized": true,
+    "NoLeadingUnderscores": true,
+    "FileScopedDeclarationPrivacy": true,
+    "OrderedImports": true,
+    "UseShorthandTypeNames": true,
+    "ValidateDocumentationComments": false
+  }
+}

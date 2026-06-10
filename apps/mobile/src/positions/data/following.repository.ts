@@ -46,4 +46,12 @@ export class FollowingRepository extends Repository {
     this.follow(ref);
     return true;
   }
+
+  prune(validRefs: ReadonlySet<string>): string[] {
+    const refs = this.getAll();
+    const kept = refs.filter((r) => validRefs.has(r));
+    if (kept.length === refs.length) return kept;
+    this.storage.set(FOLLOWING_MMKV_KEY, JSON.stringify(kept));
+    return kept;
+  }
 }

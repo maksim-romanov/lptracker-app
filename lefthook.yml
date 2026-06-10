@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: true
+  commands:
+    swift-format:
+      glob: "apps/mobile/targets/**/*.swift"
+      run: xcrun swift-format lint --strict {staged_files}
+    swiftlint:
+      glob: "apps/mobile/targets/**/*.swift"
+      run: swiftlint lint --quiet --strict {staged_files}
+    biome:
+      glob: "**/*.{ts,tsx,js,jsx,json}"
+      run: bunx biome check --no-errors-on-unmatched {staged_files}

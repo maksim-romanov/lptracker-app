@@ -47,4 +47,11 @@ export class FollowingStore extends Store {
     this.follow(ref);
     return true;
   }
+
+  @action
+  prune(validRefs: ReadonlySet<string>): void {
+    if (this.refs.size === 0) return;
+    const kept = this.repo.prune(validRefs);
+    this.refs.replace(kept);
+  }
 }

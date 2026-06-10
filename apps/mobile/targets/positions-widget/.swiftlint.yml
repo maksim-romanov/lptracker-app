@@ -1,0 +1,25 @@
+included:
+  - Sources
+  - Tests
+
+opt_in_rules:
+  - file_name
+  - file_name_no_space
+  - explicit_init
+  - sorted_imports
+  - prefer_self_type_over_type_of_self
+  - redundant_type_annotation
+
+disabled_rules:
+  - todo
+
+type_name:
+  min_length: 3
+  max_length:
+    warning: 50
+    error: 60
+
+identifier_name:
+  min_length:
+    error: 2
+  excluded: [id, to, in, at, URL, x, y]
