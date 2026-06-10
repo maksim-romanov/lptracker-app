@@ -1,8 +1,8 @@
-import { describe, expect, it, mock } from "bun:test";
 import { observable } from "mobx";
 import type { TGatewayPosition, TTokensMap } from "positions/domain/types";
 
 import { buildWidgetSnapshot } from "../widget-snapshot.builder";
+import { describe, expect, it, mock } from "bun:test";
 
 // Plain re-implementation of WidgetSnapshotService.doRefresh that we can test
 // without dragging in the Service base class (which transitively imports RN).

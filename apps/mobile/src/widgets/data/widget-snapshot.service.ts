@@ -7,9 +7,9 @@ import { PositionViewPrefsStore } from "positions/presentation/stores/position-v
 import { inject, injectable, singleton } from "tsyringe";
 import { WalletsStore } from "wallets/presentation/wallets.store";
 
+import { WIDGET_SNAPSHOT_REPOSITORY } from "../di/tokens";
 import { buildWidgetSnapshot } from "./widget-snapshot.builder";
 import type { WidgetSnapshotRepository } from "./widget-snapshot.repository";
-import { WIDGET_SNAPSHOT_REPOSITORY } from "../di/tokens";
 
 /**
  * Widget snapshot orchestrator. Owns the end-to-end refresh pipeline:

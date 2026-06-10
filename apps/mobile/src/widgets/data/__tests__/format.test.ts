@@ -1,6 +1,5 @@
-import { describe, expect, it } from "bun:test";
-
 import { formatWidgetAmount } from "../format";
+import { describe, expect, it } from "bun:test";
 
 describe("formatWidgetAmount", () => {
   it("preserves 0 and tiny values", () => {
