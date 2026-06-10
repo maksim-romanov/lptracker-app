@@ -18,9 +18,12 @@ struct PositionsProvider: AppIntentTimelineProvider {
 
   private func buildEntry(for configuration: SelectPositionIntent) -> PositionsEntry {
     let snapshot = SnapshotStore.shared.load()
-    let position =
+    let base =
       snapshot?.positions.first { $0.ref == configuration.position?.id }
       ?? snapshot?.positions.first
+    let position = base.map { p in
+      InvertedStore.shared.isInverted(ref: p.ref) ? p.inverted() : p
+    }
     let age = snapshot.map { Date.now.timeIntervalSince($0.writtenAt) }
     return PositionsEntry(date: .now, position: position, snapshotAge: age)
   }

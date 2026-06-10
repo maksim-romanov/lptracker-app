@@ -27,4 +27,20 @@ struct WidgetPosition: Codable, Sendable, Hashable, Identifiable {
     case protocolSlug = "protocol"
     case widgetExtension = "extension"
   }
+
+  func inverted() -> WidgetPosition {
+    WidgetPosition(
+      ref: ref,
+      chainId: chainId,
+      protocolSlug: protocolSlug,
+      protocolLabel: protocolLabel,
+      brandColor: brandColor,
+      containerLabel: containerLabel,
+      status: status,
+      pair: WidgetPair(sym0: pair.sym1, sym1: pair.sym0, icon0: pair.icon1, icon1: pair.icon0),
+      principals: Array(principals.reversed()),
+      fees: Array(fees.reversed()),
+      widgetExtension: widgetExtension.inverted()
+    )
+  }
 }

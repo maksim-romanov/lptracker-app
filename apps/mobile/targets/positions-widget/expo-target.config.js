@@ -7,12 +7,6 @@ module.exports = (config) => ({
   entitlements: {
     "com.apple.security.application-groups": ["group.com.depthly.app.shared"],
   },
-  resources: [
-    "../../assets/fonts/Satoshi-Regular.otf",
-    "../../assets/fonts/Satoshi-Medium.otf",
-    "../../assets/fonts/Satoshi-Bold.otf",
-    "../../assets/fonts/Satoshi-Black.otf",
-  ],
   colors: {
     bgPrimary:       { light: "#FFFFFF", dark: "#000000" },
     bgSurface:       { light: "#F7F9F9", dark: "#16181C" },
