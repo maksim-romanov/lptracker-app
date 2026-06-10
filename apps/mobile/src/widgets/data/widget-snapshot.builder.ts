@@ -81,6 +81,11 @@ function mapExtension(position: TGatewayPosition): TWidgetExtension | null {
         type: "uniswap-v3",
         feeTierLabel: ext.feeTierLabel,
         nftTokenId: ext.nftTokenId,
+        range: {
+          tickLower: ext.tickLower,
+          tickUpper: ext.tickUpper,
+          currentTick: ext.pool.currentTick,
+        },
       };
     }
     default:

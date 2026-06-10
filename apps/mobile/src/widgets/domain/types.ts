@@ -13,8 +13,14 @@ export type TWidgetPair = {
   icon1: string;
 };
 
+export type TWidgetTickRange = {
+  tickLower: number;
+  tickUpper: number;
+  currentTick: number;
+};
+
 export type TWidgetExtension =
-  | { type: "uniswap-v3"; feeTierLabel: string; nftTokenId: string }
+  | { type: "uniswap-v3"; feeTierLabel: string; nftTokenId: string; range: TWidgetTickRange }
   | { type: "uniswap-v4"; feeTierLabel: string; poolId: string }
   | { type: "aerodrome"; feeTierLabel: string; positionId: string }
   | { type: "velodrome"; feeTierLabel: string; positionId: string };

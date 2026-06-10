@@ -15,11 +15,18 @@ const Pair = v.object({
   icon1: v.string(),
 });
 
+const TickRange = v.object({
+  tickLower: v.number(),
+  tickUpper: v.number(),
+  currentTick: v.number(),
+});
+
 const Extension = v.variant("type", [
   v.object({
     type: v.literal("uniswap-v3"),
     feeTierLabel: v.string(),
     nftTokenId: v.string(),
+    range: TickRange,
   }),
   v.object({
     type: v.literal("uniswap-v4"),

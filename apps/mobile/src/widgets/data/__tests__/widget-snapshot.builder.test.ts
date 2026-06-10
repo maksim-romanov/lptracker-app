@@ -130,6 +130,7 @@ describe("buildWidgetSnapshot", () => {
       type: "uniswap-v3",
       feeTierLabel: "0.30%",
       nftTokenId: "12345",
+      range: { tickLower: -887220, tickUpper: 887220, currentTick: 0 },
     });
   });
 

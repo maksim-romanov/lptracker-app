@@ -6,57 +6,76 @@ struct MediumPositionView: View {
 
   var body: some View {
     if let position = entry.position {
-      HStack(alignment: .top, spacing: Spacing.md) {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-          PairHeaderView(
-            pair: position.pair,
-            protocolLabel: position.protocolLabel,
-            brandColor: position.brandColor
-          )
-          HStack(spacing: Spacing.sm) {
-            ChainBadgeView(chainID: position.chainId)
-            StatusBadgeView(status: position.status)
-          }
-          Spacer()
-          feesRow(fees: position.fees)
-        }
-        Spacer()
-        tail(for: position.widgetExtension, status: position.status)
-          .frame(maxWidth: 140)
-      }
-      .padding(Spacing.md)
+      content(position: position)
     } else {
       EmptyStateView()
     }
   }
 
   @ViewBuilder
-  private func tail(for ext: WidgetExtension, status: WidgetStatus) -> some View {
-    switch ext {
-    case .uniswapV3(let payload):
-      UniswapV3TailView(payload: payload, status: status)
-    case .unknown:
-      Text("Unsupported")
-        .font(TypeScale.bodySmall)
-        .foregroundStyle(Color.textMuted)
+  private func content(position: WidgetPosition) -> some View {
+    VStack(alignment: .leading, spacing: 8) {
+      header(position: position)
+
+      rangeBlock(position: position)
+
+      Spacer(minLength: 0)
+
+      HStack(alignment: .top, spacing: Spacing.lg) {
+        AmountsBlock(title: "Position", tokens: position.principals)
+          .frame(maxWidth: .infinity, alignment: .leading)
+        AmountsBlock(title: "Unclaimed fees", tokens: position.fees, accent: .brandPrimary, prefix: "+")
+          .frame(maxWidth: .infinity, alignment: .leading)
+      }
+    }
+    .padding(Spacing.md)
+  }
+
+  @ViewBuilder
+  private func header(position: WidgetPosition) -> some View {
+    HStack(spacing: Spacing.sm) {
+      PairHeaderView(
+        pair: position.pair,
+        protocolLabel: position.protocolLabel,
+        brandColor: position.brandColor,
+        iconSize: 26,
+        showProtocol: false
+      )
+      Spacer(minLength: 0)
+      HStack(spacing: 6) {
+        Circle()
+          .fill(Color.chain(position.chainId))
+          .frame(width: 8, height: 8)
+        Text(position.protocolLabel)
+          .font(.satoshi(.medium, size: 11))
+          .foregroundStyle(Color(hex: position.brandColor))
+          .lineLimit(1)
+        if case .uniswapV3(let payload) = position.widgetExtension {
+          Text("·")
+            .font(.satoshi(.regular, size: 11))
+            .foregroundStyle(Color.textMuted)
+          Text(payload.feeTierLabel)
+            .font(.satoshi(.medium, size: 11))
+            .foregroundStyle(Color.textMuted)
+        }
+      }
     }
   }
 
   @ViewBuilder
-  private func feesRow(fees: [WidgetToken]) -> some View {
-    if fees.isEmpty {
-      Text("No unclaimed fees")
-        .font(TypeScale.bodySmall)
-        .foregroundStyle(Color.textMuted)
-    } else {
-      VStack(alignment: .leading, spacing: 2) {
-        Text("Unclaimed fees")
-          .font(TypeScale.bodySmall)
-          .foregroundStyle(Color.textMuted)
-        Text(fees.map { "\($0.formatted) \($0.symbol)" }.joined(separator: " · "))
-          .font(TypeScale.label)
-          .foregroundStyle(Color.textPrimary)
+  private func rangeBlock(position: WidgetPosition) -> some View {
+    switch position.widgetExtension {
+    case .uniswapV3(let payload):
+      VStack(alignment: .leading, spacing: 4) {
+        if let range = payload.range {
+          RangeBarView(range: range, trackHeight: 5, thumbSize: 11)
+        }
+        StatusLabel(status: position.status)
       }
+    case .unknown:
+      Text("Unsupported protocol")
+        .font(.satoshi(.medium, size: 11))
+        .foregroundStyle(Color.textMuted)
     }
   }
 }
