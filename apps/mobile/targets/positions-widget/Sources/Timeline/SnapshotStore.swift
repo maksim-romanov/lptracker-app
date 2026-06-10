@@ -15,9 +15,11 @@ final class SnapshotStore: Sendable {
   static let shared = SnapshotStore()
 
   func load() -> WidgetSnapshot? {
-    guard let container = FileManager.default.containerURL(
-      forSecurityApplicationGroupIdentifier: Self.appGroup
-    ) else {
+    guard
+      let container = FileManager.default.containerURL(
+        forSecurityApplicationGroupIdentifier: Self.appGroup
+      )
+    else {
       logger.warning("App Group container unavailable")
       return nil
     }

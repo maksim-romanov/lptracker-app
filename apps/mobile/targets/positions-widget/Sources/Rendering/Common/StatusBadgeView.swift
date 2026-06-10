@@ -10,17 +10,17 @@ struct StatusBadgeView: View {
 
   private var text: String {
     switch status {
-    case .inRange:    return "In range"
+    case .inRange: return "In range"
     case .outOfRange: return "Out of range"
-    case .closed:     return "Closed"
+    case .closed: return "Closed"
     }
   }
 
   private var tone: TagTone {
     switch status {
-    case .inRange:    return .success
+    case .inRange: return .success
     case .outOfRange: return .warning
-    case .closed:     return .neutral
+    case .closed: return .neutral
     }
   }
 }

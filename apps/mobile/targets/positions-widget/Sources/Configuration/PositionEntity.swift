@@ -7,7 +7,8 @@ struct PositionEntity: Identifiable, Hashable, Sendable {
 
   init(from position: WidgetPosition) {
     self.id = position.ref
-    self.displayPair = "\(position.pair.sym0)/\(position.pair.sym1) · \(extensionLabel(position.widgetExtension))"
+    self.displayPair =
+      "\(position.pair.sym0)/\(position.pair.sym1) · \(extensionLabel(position.widgetExtension))"
     self.protocolLabel = position.protocolLabel
   }
 }

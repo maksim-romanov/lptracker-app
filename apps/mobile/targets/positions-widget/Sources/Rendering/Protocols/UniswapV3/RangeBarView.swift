@@ -5,9 +5,9 @@ struct RangeBarView: View {
 
   private var fill: Color {
     switch status {
-    case .inRange:    return .statusInRange
+    case .inRange: return .statusInRange
     case .outOfRange: return .statusOutOfRange
-    case .closed:     return .textMuted
+    case .closed: return .textMuted
     }
   }
 

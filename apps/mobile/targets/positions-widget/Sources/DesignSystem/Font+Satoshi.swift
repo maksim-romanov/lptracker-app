@@ -6,9 +6,9 @@ enum SatoshiWeight {
   var fontName: String {
     switch self {
     case .regular: return "Satoshi-Regular"
-    case .medium:  return "Satoshi-Medium"
-    case .bold:    return "Satoshi-Bold"
-    case .black:   return "Satoshi-Black"
+    case .medium: return "Satoshi-Medium"
+    case .bold: return "Satoshi-Bold"
+    case .black: return "Satoshi-Black"
     }
   }
 }
@@ -20,9 +20,9 @@ extension Font {
 }
 
 enum TypeScale {
-  static let title     = Font.satoshi(.bold,   size: 22)
-  static let headline  = Font.satoshi(.bold,   size: 18)
-  static let body      = Font.satoshi(.regular, size: 16)
+  static let title = Font.satoshi(.bold, size: 22)
+  static let headline = Font.satoshi(.bold, size: 18)
+  static let body = Font.satoshi(.regular, size: 16)
   static let bodySmall = Font.satoshi(.regular, size: 13)
-  static let label     = Font.satoshi(.medium,  size: 14)
+  static let label = Font.satoshi(.medium, size: 14)
 }
