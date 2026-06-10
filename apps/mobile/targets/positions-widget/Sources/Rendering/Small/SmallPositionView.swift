@@ -14,140 +14,98 @@ struct SmallPositionView: View {
 
   @ViewBuilder
   private func content(position: WidgetPosition) -> some View {
-    VStack(alignment: .leading, spacing: 6) {
-      header(position: position)
-
-      rangeRow(position: position)
-
-      Divider().background(Color.textPrimary.opacity(0.08))
-
-      AmountsBlock(title: "Position", tokens: position.principals)
-
-      AmountsBlock(title: "Fees", tokens: position.fees, accent: .brandPrimary, prefix: "+")
+    VStack(alignment: .center, spacing: 10) {
+      pairRow(position: position)
+      rangeBar(position: position)
+      amountsRow(position: position)
+      feesRow(position: position)
     }
-    .padding(10)
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
   }
 
   @ViewBuilder
-  private func header(position: WidgetPosition) -> some View {
-    HStack(spacing: Spacing.sm) {
-      PairHeaderView(
-        pair: position.pair,
-        protocolLabel: position.protocolLabel,
-        brandColor: position.brandColor,
-        iconSize: 20,
-        showProtocol: false
-      )
-      Spacer(minLength: 0)
-      Circle()
-        .fill(Color.chain(position.chainId))
-        .frame(width: 8, height: 8)
-    }
-  }
-
-  @ViewBuilder
-  private func rangeRow(position: WidgetPosition) -> some View {
-    switch position.widgetExtension {
-    case .uniswapV3(let payload):
-      VStack(alignment: .leading, spacing: 4) {
-        HStack(spacing: 6) {
-          Text(payload.feeTierLabel)
-            .font(.satoshi(.medium, size: 10))
-            .foregroundStyle(Color.textMuted)
-          Text("·")
-            .font(.satoshi(.regular, size: 10))
-            .foregroundStyle(Color.textMuted)
-          StatusLabel(status: position.status)
-        }
-        if let range = payload.range {
-          RangeBarView(range: range, trackHeight: 4, thumbSize: 9)
-        }
-      }
-    case .unknown:
-      Text(position.protocolLabel)
-        .font(.satoshi(.medium, size: 11))
-        .foregroundStyle(Color.textMuted)
-    }
-  }
-}
-
-struct StatusLabel: View {
-  let status: WidgetStatus
-
-  private var dot: Color {
-    switch status {
-    case .inRange: return .statusInRange
-    case .outOfRange: return .statusOutOfRange
-    case .closed: return .textMuted
-    }
-  }
-
-  private var text: String {
-    switch status {
-    case .inRange: return "In range"
-    case .outOfRange: return "Out of range"
-    case .closed: return "Closed"
-    }
-  }
-
-  var body: some View {
-    HStack(spacing: 4) {
-      Circle().fill(dot).frame(width: 6, height: 6)
-      Text(text)
-        .font(.satoshi(.medium, size: 10))
-        .foregroundStyle(Color.textMuted)
+  private func pairRow(position: WidgetPosition) -> some View {
+    HStack(spacing: 6) {
+      PairIconsView(pair: position.pair, iconSize: 22)
+      Text("\(position.pair.sym0)/\(position.pair.sym1)")
+        .font(.satoshi(.black, size: 17))
+        .foregroundStyle(Color.textPrimary)
         .lineLimit(1)
+        .minimumScaleFactor(0.4)
     }
   }
-}
 
-struct AmountsBlock: View {
-  let title: String
-  let tokens: [WidgetToken]
-  var accent: Color = .textPrimary
-  var prefix: String = ""
-
-  var body: some View {
-    VStack(alignment: .leading, spacing: 2) {
-      Text(title)
-        .font(.satoshi(.medium, size: 9))
-        .foregroundStyle(Color.textMuted)
-        .textCase(.uppercase)
-        .tracking(0.5)
-
-      if tokens.isEmpty {
-        Text("—")
-          .font(.satoshi(.medium, size: 12))
-          .foregroundStyle(Color.textMuted)
-      } else {
-        ForEach(tokens, id: \.symbol) { token in
-          HStack(spacing: 4) {
-            Text(token.symbol)
-              .font(.satoshi(.medium, size: 10))
-              .foregroundStyle(Color.textMuted)
-              .frame(width: 36, alignment: .leading)
-            Text("\(prefix)\(token.formatted)")
-              .font(.satoshi(.bold, size: 12))
-              .foregroundStyle(accent)
-              .lineLimit(1)
-              .minimumScaleFactor(0.7)
-          }
-        }
-      }
+  @ViewBuilder
+  private func rangeBar(position: WidgetPosition) -> some View {
+    if case .uniswapV3(let payload) = position.widgetExtension, let range = payload.range {
+      RangeBarView(range: range, trackHeight: 6, thumbSize: 14)
     }
+  }
+
+  @ViewBuilder
+  private func amountsRow(position: WidgetPosition) -> some View {
+    HStack(alignment: .firstTextBaseline, spacing: Spacing.sm) {
+      amountCell(token: position.principals.first, alignment: .leading)
+      amountCell(token: position.principals.dropFirst().first, alignment: .trailing)
+    }
+  }
+
+  @ViewBuilder
+  private func amountCell(token: WidgetToken?, alignment: HorizontalAlignment) -> some View {
+    let frameAlignment: Alignment = alignment == .leading ? .leading : .trailing
+    Text(token.map { "\($0.formatted) \($0.symbol)" } ?? "—")
+      .font(.satoshi(.bold, size: 14))
+      .foregroundStyle(Color.textPrimary)
+      .lineLimit(1)
+      .minimumScaleFactor(0.4)
+      .frame(maxWidth: .infinity, alignment: frameAlignment)
+  }
+
+  @ViewBuilder
+  private func feesRow(position: WidgetPosition) -> some View {
+    HStack(alignment: .firstTextBaseline, spacing: Spacing.sm) {
+      feeCell(
+        principal: position.principals.first,
+        fees: position.fees,
+        alignment: .leading
+      )
+      feeCell(
+        principal: position.principals.dropFirst().first,
+        fees: position.fees,
+        alignment: .trailing
+      )
+    }
+  }
+
+  @ViewBuilder
+  private func feeCell(
+    principal: WidgetToken?,
+    fees: [WidgetToken],
+    alignment: HorizontalAlignment
+  ) -> some View {
+    let frameAlignment: Alignment = alignment == .leading ? .leading : .trailing
+    let feeStr = principal.flatMap { TokenStatHelper.feeString(for: $0.symbol, in: fees) }
+    Text(feeStr ?? "—")
+      .font(.satoshi(.medium, size: 11))
+      .foregroundStyle(feeStr == nil ? Color.textMuted.opacity(0.5) : Color.brandPrimary)
+      .lineLimit(1)
+      .minimumScaleFactor(0.5)
+      .frame(maxWidth: .infinity, alignment: frameAlignment)
   }
 }
 
 struct EmptyStateView: View {
   var body: some View {
     VStack(spacing: Spacing.sm) {
-      Image(systemName: "list.bullet.rectangle")
-        .font(.system(size: 24))
+      Image(systemName: "rectangle.on.rectangle.angled")
+        .font(.system(size: 22, weight: .medium))
         .foregroundStyle(Color.textMuted)
-      Text("No position")
-        .font(.satoshi(.medium, size: 13))
+      Text("Tap and hold to pick a position")
+        .font(.satoshi(.medium, size: 11))
         .foregroundStyle(Color.textMuted)
+        .multilineTextAlignment(.center)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .padding(Spacing.md)
   }
 }

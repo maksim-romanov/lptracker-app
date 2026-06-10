@@ -2,6 +2,7 @@ import { PROTOCOLS_META } from "@depthly/catalog";
 import type { TGatewayPosition, TPositionByExt, TTokensMap } from "positions/domain/types";
 
 import type { TWidgetExtension, TWidgetPair, TWidgetPosition, TWidgetSnapshot, TWidgetStatus, TWidgetToken } from "../domain/types";
+import { formatWidgetAmount } from "./format";
 
 type BuildArgs = {
   positions: readonly TGatewayPosition[];
@@ -54,7 +55,7 @@ function toWidgetToken(tokenRef: string, formatted: string, tokens: TTokensMap):
   return {
     symbol: meta?.symbol ?? tokenRef,
     iconUrl: meta?.iconUrl ?? "",
-    formatted,
+    formatted: formatWidgetAmount(formatted),
   };
 }
 

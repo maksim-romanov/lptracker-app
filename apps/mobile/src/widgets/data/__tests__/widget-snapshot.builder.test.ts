@@ -69,8 +69,8 @@ describe("buildWidgetSnapshot", () => {
     });
     const [p] = snapshot.positions;
     expect(p.principals).toEqual([
-      { symbol: "WETH", iconUrl: "https://example.com/weth.png", formatted: "1.0" },
-      { symbol: "USDC", iconUrl: "https://example.com/usdc.png", formatted: "1000.0" },
+      { symbol: "WETH", iconUrl: "https://example.com/weth.png", formatted: "1" },
+      { symbol: "USDC", iconUrl: "https://example.com/usdc.png", formatted: "1K" },
     ]);
     expect(p.fees).toEqual([{ symbol: "WETH", iconUrl: "https://example.com/weth.png", formatted: "0.01" }]);
   });

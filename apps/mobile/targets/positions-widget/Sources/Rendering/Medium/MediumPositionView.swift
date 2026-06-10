@@ -14,68 +14,74 @@ struct MediumPositionView: View {
 
   @ViewBuilder
   private func content(position: WidgetPosition) -> some View {
-    VStack(alignment: .leading, spacing: 8) {
+    VStack(alignment: .leading, spacing: 10) {
       header(position: position)
-
-      rangeBlock(position: position)
-
+      rangeBar(position: position)
       Spacer(minLength: 0)
-
-      HStack(alignment: .top, spacing: Spacing.lg) {
-        AmountsBlock(title: "Position", tokens: position.principals)
-          .frame(maxWidth: .infinity, alignment: .leading)
-        AmountsBlock(title: "Unclaimed fees", tokens: position.fees, accent: .brandPrimary, prefix: "+")
-          .frame(maxWidth: .infinity, alignment: .leading)
-      }
+      tokens(position: position)
     }
-    .padding(Spacing.md)
   }
 
   @ViewBuilder
   private func header(position: WidgetPosition) -> some View {
-    HStack(spacing: Spacing.sm) {
-      PairHeaderView(
-        pair: position.pair,
-        protocolLabel: position.protocolLabel,
-        brandColor: position.brandColor,
-        iconSize: 26,
-        showProtocol: false
-      )
+    HStack(alignment: .center, spacing: Spacing.md) {
+      PairIconsView(pair: position.pair, iconSize: 26)
+      Text("\(position.pair.sym0) / \(position.pair.sym1)")
+        .font(.satoshi(.black, size: 20))
+        .foregroundStyle(Color.textPrimary)
+        .lineLimit(1)
+        .minimumScaleFactor(0.55)
       Spacer(minLength: 0)
-      HStack(spacing: 6) {
-        Circle()
-          .fill(Color.chain(position.chainId))
-          .frame(width: 8, height: 8)
-        Text(position.protocolLabel)
-          .font(.satoshi(.medium, size: 11))
-          .foregroundStyle(Color(hex: position.brandColor))
-          .lineLimit(1)
-        if case .uniswapV3(let payload) = position.widgetExtension {
-          Text("·")
-            .font(.satoshi(.regular, size: 11))
-            .foregroundStyle(Color.textMuted)
-          Text(payload.feeTierLabel)
-            .font(.satoshi(.medium, size: 11))
-            .foregroundStyle(Color.textMuted)
-        }
-      }
+      StatusPill(status: position.status, size: .medium)
     }
   }
 
   @ViewBuilder
-  private func rangeBlock(position: WidgetPosition) -> some View {
-    switch position.widgetExtension {
-    case .uniswapV3(let payload):
-      VStack(alignment: .leading, spacing: 4) {
-        if let range = payload.range {
-          RangeBarView(range: range, trackHeight: 5, thumbSize: 11)
-        }
-        StatusLabel(status: position.status)
-      }
-    case .unknown:
-      Text("Unsupported protocol")
-        .font(.satoshi(.medium, size: 11))
-        .foregroundStyle(Color.textMuted)
+  private func rangeBar(position: WidgetPosition) -> some View {
+    if case .uniswapV3(let payload) = position.widgetExtension, let range = payload.range {
+      RangeBarView(range: range, trackHeight: 9, thumbSize: 18)
+    }
+  }
+
+  @ViewBuilder
+  private func tokens(position: WidgetPosition) -> some View {
+    HStack(alignment: .top, spacing: Spacing.lg) {
+      tokenStat(
+        index: 0,
+        principals: position.principals,
+        fees: position.fees,
+        alignment: .leading
+      )
+      Rectangle()
+        .fill(Color.textPrimary.opacity(0.08))
+        .frame(width: 1)
+      tokenStat(
+        index: 1,
+        principals: position.principals,
+        fees: position.fees,
+        alignment: .trailing
+      )
+    }
+  }
+
+  @ViewBuilder
+  private func tokenStat(
+    index: Int,
+    principals: [WidgetToken],
+    fees: [WidgetToken],
+    alignment: HorizontalAlignment
+  ) -> some View {
+    if index < principals.count {
+      let token = principals[index]
+      TokenStat(
+        symbol: token.symbol,
+        principal: token.formatted,
+        fee: TokenStatHelper.feeString(for: token.symbol, in: fees),
+        symbolSize: 28,
+        amountSize: 22,
+        feeSize: 14,
+        alignment: alignment
+      )
     }
   }
 }
