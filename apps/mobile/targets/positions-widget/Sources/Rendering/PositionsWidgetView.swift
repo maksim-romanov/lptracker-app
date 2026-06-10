@@ -13,6 +13,7 @@ struct PositionsWidgetView: View {
       default: SmallPositionView(entry: entry)
       }
     }
+    .widgetURL(entry.position.flatMap { WidgetDeepLink.forPosition(ref: $0.ref) })
     .containerBackground(Color.bgPrimary, for: .widget)
   }
 }
