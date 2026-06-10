@@ -20,7 +20,7 @@ enum ChainCatalog {
     case 8453: return "Base"
     case 42161: return "ARB"
     case 10: return "OP"
-    case 137: return "MATIC"
+    case 137: return "POL"
     case 56: return "BNB"
     case 43114: return "AVAX"
     default: return "\(chainID)"

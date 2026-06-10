@@ -14,14 +14,14 @@ struct MediumPositionView: View {
 
   @ViewBuilder
   private func content(position: WidgetPosition) -> some View {
-    HStack(alignment: .top, spacing: 14) {
+    HStack(alignment: .top, spacing: Spacing.xl) {
       leftColumn(position: position)
         .frame(maxWidth: .infinity, alignment: .leading)
       Rectangle()
-        .fill(Color.textPrimary.opacity(0.08))
-        .frame(width: 1)
+        .fill(Color.textPrimary.opacity(Opacity.strokeMuted))
+        .frame(width: Sizing.Divider.thin)
       rightColumn(position: position)
-        .frame(width: 105, alignment: .leading)
+        .layoutPriority(1)
     }
   }
 
@@ -29,152 +29,69 @@ struct MediumPositionView: View {
 
   @ViewBuilder
   private func leftColumn(position: WidgetPosition) -> some View {
-    VStack(alignment: .leading, spacing: 8) {
+    VStack(alignment: .leading, spacing: Spacing.md) {
       pairRow(position: position)
       tagsRow(position: position)
       Spacer(minLength: 0)
-      rangeBlock(position: position)
+      if case .uniswapV3(let payload) = position.widgetExtension, let range = payload.range {
+        PriceRangeView(range: range)
+      }
     }
   }
 
   @ViewBuilder
   private func pairRow(position: WidgetPosition) -> some View {
-    HStack(alignment: .center, spacing: 8) {
+    HStack(alignment: .center, spacing: Spacing.xs) {
       Text("\(position.pair.sym0)/\(position.pair.sym1)")
-        .font(.satoshi(.black, size: 23))
-        .foregroundStyle(Color.textPrimary)
-        .lineLimit(1)
-        .minimumScaleFactor(0.4)
-      Spacer(minLength: 4)
-      reverseButton(ref: position.ref)
+        .widgetStyle(TypeScale.pairMd, scale: TextScale.aggressive)
+        .accessibilityLabel("\(position.pair.sym0) \(position.pair.sym1) pair")
+      Spacer(minLength: Spacing.md)
+      ReverseButton(ref: position.ref, kind: .medium)
     }
-  }
-
-  @ViewBuilder
-  private func reverseButton(ref: String) -> some View {
-    Button(intent: ToggleInversionIntent(ref: ref)) {
-      Image(systemName: "arrow.left.arrow.right")
-        .font(.system(size: 10, weight: .bold))
-        .foregroundStyle(Color.textMuted)
-        .frame(width: 20, height: 20)
-        .background(Circle().fill(Color.textPrimary.opacity(0.06)))
-    }
-    .buttonStyle(.plain)
   }
 
   @ViewBuilder
   private func tagsRow(position: WidgetPosition) -> some View {
-    if case .uniswapV3(let payload) = position.widgetExtension {
-      HStack(spacing: 5) {
-        ChainTag(chainID: position.chainId)
+    HStack(spacing: Spacing.xs) {
+      ChainTag(chainID: position.chainId)
+      if case .uniswapV3(let payload) = position.widgetExtension {
         MetaTag(text: payload.feeTierLabel)
-        StatusTag(status: position.status)
-        Spacer(minLength: 0)
       }
+      StatusTag(status: position.status)
+      Spacer(minLength: 0)
     }
-  }
-
-  @ViewBuilder
-  private func rangeBlock(position: WidgetPosition) -> some View {
-    if case .uniswapV3(let payload) = position.widgetExtension, let range = payload.range {
-      let lower = priceLabel(range.tickLower, delta: range.decimalsDelta)
-      let upper = priceLabel(range.tickUpper, delta: range.decimalsDelta)
-      let current = priceLabel(range.currentTick, delta: range.decimalsDelta)
-      VStack(alignment: .leading, spacing: 4) {
-        HStack(spacing: 0) {
-          Text(lower)
-            .frame(maxWidth: .infinity, alignment: .leading)
-          Text(upper)
-            .frame(maxWidth: .infinity, alignment: .trailing)
-        }
-        .font(.satoshi(.medium, size: 11))
-        .foregroundStyle(Color.textMuted)
-        .lineLimit(1)
-        .minimumScaleFactor(0.7)
-
-        RangeBarView(range: range, trackHeight: 8, thumbSize: 16)
-
-        Text(current)
-          .font(.satoshi(.bold, size: 12))
-          .foregroundStyle(Color.textPrimary)
-          .frame(maxWidth: .infinity, alignment: .center)
-          .lineLimit(1)
-          .minimumScaleFactor(0.7)
-      }
-    }
-  }
-
-  private func priceLabel(_ tick: Int, delta: Int) -> String {
-    PriceMath.format(PriceMath.tickToPrice(tick: tick, decimalsDelta: delta))
+    .accessibilityElement(children: .combine)
   }
 
   // MARK: - Right (value + fees)
 
   @ViewBuilder
   private func rightColumn(position: WidgetPosition) -> some View {
-    let t0sym = position.principals.first?.symbol
-    let t1sym = position.principals.dropFirst().first?.symbol
-    VStack(alignment: .leading, spacing: 10) {
-      statBlock(
+    let primary = position.primaryPrincipal
+    let secondary = position.secondaryPrincipal
+    VStack(alignment: .leading, spacing: Spacing.lg) {
+      StatBlock(
         label: "Value",
         accent: .textPrimary,
-        primarySize: 20,
-        secondarySize: 14,
-        left: position.principals.first?.formatted,
-        leftSymbol: t0sym,
-        right: position.principals.dropFirst().first?.formatted,
-        rightSymbol: t1sym
+        primary: TokenAmount(value: primary?.formatted, symbol: primary?.symbol),
+        secondary: TokenAmount(value: secondary?.formatted, symbol: secondary?.symbol),
+        density: .display
       )
-      statBlock(
+      StatBlock(
         label: "Fees",
         accent: .brandPrimary,
-        primarySize: 16,
-        secondarySize: 12,
-        left: feeText(symbol: t0sym, fees: position.fees),
-        leftSymbol: t0sym,
-        right: feeText(symbol: t1sym, fees: position.fees),
-        rightSymbol: t1sym
+        primary: TokenAmount(
+          value: feeText(symbol: primary?.symbol, fees: position.fees),
+          symbol: primary?.symbol
+        ),
+        secondary: TokenAmount(
+          value: feeText(symbol: secondary?.symbol, fees: position.fees),
+          symbol: secondary?.symbol
+        ),
+        density: .compact
       )
       Spacer(minLength: 0)
     }
-  }
-
-  @ViewBuilder
-  private func statBlock(
-    label: String,
-    accent: Color,
-    primarySize: CGFloat,
-    secondarySize: CGFloat,
-    left: String?,
-    leftSymbol: String?,
-    right: String?,
-    rightSymbol: String?
-  ) -> some View {
-    VStack(alignment: .leading, spacing: 2) {
-      Text(label)
-        .font(.satoshi(.medium, size: 11))
-        .foregroundStyle(Color.textMuted)
-      statLine(value: left, symbol: leftSymbol, accent: accent, size: primarySize)
-      statLine(value: right, symbol: rightSymbol, accent: accent, size: secondarySize)
-    }
-  }
-
-  @ViewBuilder
-  private func statLine(value: String?, symbol: String?, accent: Color, size: CGFloat) -> some View {
-    let isEmpty = value == nil
-    let text = value ?? "—"
-    HStack(alignment: .firstTextBaseline, spacing: 3) {
-      Text(text)
-        .font(.satoshi(.bold, size: size))
-        .foregroundStyle(isEmpty ? Color.textMuted.opacity(0.5) : accent)
-      if let symbol, !isEmpty {
-        Text(symbol)
-          .font(.satoshi(.medium, size: max(9, size - 8)))
-          .foregroundStyle(Color.textMuted)
-      }
-    }
-    .lineLimit(1)
-    .minimumScaleFactor(0.45)
   }
 
   private func feeText(symbol: String?, fees: [WidgetToken]) -> String? {
@@ -182,3 +99,65 @@ struct MediumPositionView: View {
     return TokenStatHelper.feeString(for: symbol, in: fees)
   }
 }
+
+#if DEBUG
+  #Preview("Medium — in range", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.inRange
+  }
+
+  #Preview("Medium — out of range", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.outOfRange
+  }
+
+  #Preview("Medium — edge left", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.edgeLeft
+  }
+
+  #Preview("Medium — empty", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.empty
+  }
+
+  #Preview("Medium — missing", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.missing
+  }
+
+  #Preview("Medium — tight stable (±50)", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.tightStable
+  }
+
+  #Preview("Medium — wide (±5000)", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.wideRange
+  }
+
+  #Preview("Medium — very wide (±20000)", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.veryWide
+  }
+
+  #Preview("Medium — far out above", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.farOutAbove
+  }
+
+  #Preview("Medium — far out below", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.farOutBelow
+  }
+#endif

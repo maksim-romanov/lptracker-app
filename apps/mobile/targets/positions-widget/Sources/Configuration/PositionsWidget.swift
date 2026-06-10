@@ -2,7 +2,7 @@ import SwiftUI
 import WidgetKit
 
 struct PositionsWidget: Widget {
-  static let kind = "depthly.position"
+  nonisolated static let kind = "depthly.position"
 
   var body: some WidgetConfiguration {
     AppIntentConfiguration(
@@ -15,5 +15,6 @@ struct PositionsWidget: Widget {
     .configurationDisplayName("Position")
     .description("Track a single LP position.")
     .supportedFamilies([.systemSmall, .systemMedium])
+    .contentMarginsDisabled()
   }
 }

@@ -10,6 +10,22 @@ cd apps/mobile && bun expo run:ios
 
 Widgets do not work in Expo Go — only in a dev client build.
 
+## SwiftUI Previews (UI iteration)
+
+SwiftUI canvas previews **hang on "loading" in the normal Expo project** — a known limitation of `@bacons/apple-targets`: React Native ships uncompiled, so Xcode's preview process can't resolve the dependency graph in time. For tight visual iteration on the widget, regenerate `ios/` with an RN-free template:
+
+```bash
+# UI iteration mode — RN is gone, previews work
+bun expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean
+
+# Restore normal app for integration testing
+bun expo prebuild --platform ios --clean
+```
+
+In iteration mode `Depthly` (main app) won't run — only the widget extension exists. Use it for visual work in `#Preview` canvases. Switch back to the normal prebuild before testing the widget with real snapshot data from the app.
+
+Source: [bacons/apple-targets — Troubleshooting](https://github.com/EvanBacon/expo-apple-targets).
+
 ## Configuration
 
 User adds widget → taps it → "Edit Widget" → picks a Following position. The picker (`PositionQuery`) reads the snapshot file from the App Group container.

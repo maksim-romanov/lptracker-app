@@ -6,6 +6,7 @@ final class InvertedStore: Sendable {
   static let filename = "widget-inverted.json"
 
   private let logger = Logger(subsystem: "com.depthly.app.widget", category: "inverted")
+  private let writeLock = NSLock()
 
   static let shared = InvertedStore()
 
@@ -20,7 +21,16 @@ final class InvertedStore: Sendable {
   }
 
   func loadRefs() -> Set<String> {
-    guard let url = fileURL(), let data = try? Data(contentsOf: url) else { return [] }
+    guard let url = fileURL() else { return [] }
+    let data: Data
+    do {
+      data = try Data(contentsOf: url)
+    } catch CocoaError.fileReadNoSuchFile {
+      return []
+    } catch {
+      logger.error("Inverted read failed: \(error.localizedDescription, privacy: .public)")
+      return []
+    }
     do {
       return Set(try JSONDecoder().decode(Payload.self, from: data).refs)
     } catch {
@@ -30,6 +40,8 @@ final class InvertedStore: Sendable {
   }
 
   func toggle(ref: String) {
+    writeLock.lock()
+    defer { writeLock.unlock() }
     var refs = loadRefs()
     if refs.contains(ref) {
       refs.remove(ref)

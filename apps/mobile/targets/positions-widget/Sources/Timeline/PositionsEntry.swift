@@ -10,11 +10,6 @@ struct PositionsEntry: TimelineEntry, Sendable {
   let position: WidgetPosition?
   let snapshotAge: TimeInterval?
   let emptyReason: EmptyReason?
-
-  var isStale: Bool {
-    guard let age = snapshotAge else { return true }
-    return age > 60 * 60
-  }
 }
 
 extension PositionsEntry {

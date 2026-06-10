@@ -5,7 +5,11 @@ struct RangeBarView: View {
   let trackHeight: CGFloat
   let thumbSize: CGFloat
 
-  init(range: WidgetTickRange, trackHeight: CGFloat = 8, thumbSize: CGFloat = 16) {
+  init(
+    range: WidgetTickRange,
+    trackHeight: CGFloat = Sizing.RangeBar.track,
+    thumbSize: CGFloat = Sizing.RangeBar.thumb
+  ) {
     self.range = range
     self.trackHeight = trackHeight
     self.thumbSize = thumbSize
@@ -28,14 +32,14 @@ struct RangeBarView: View {
     GeometryReader { geo in
       ZStack(alignment: .leading) {
         Capsule()
-          .fill(Color.textPrimary.opacity(0.10))
+          .fill(Color.textPrimary.opacity(Opacity.strokeStrong))
           .frame(height: trackHeight)
           .frame(maxWidth: .infinity, alignment: .leading)
 
         Capsule()
           .fill(
             LinearGradient(
-              colors: [fill.opacity(0.85), fill],
+              colors: [fill.opacity(Opacity.gradientStart), fill],
               startPoint: .leading,
               endPoint: .trailing
             )
@@ -49,12 +53,20 @@ struct RangeBarView: View {
         Circle()
           .fill(fill)
           .frame(width: thumbSize, height: thumbSize)
-          .overlay(Circle().stroke(Color.bgPrimary, lineWidth: 2.5))
-          .shadow(color: fill.opacity(0.55), radius: 6, x: 0, y: 0)
+          .overlay(Circle().stroke(Color.bgPrimary, lineWidth: Sizing.RangeBar.thumbStroke))
+          .shadow(color: fill.opacity(Opacity.glow), radius: Sizing.RangeBar.thumbShadowRadius, x: 0, y: 0)
           .offset(x: geo.size.width * positions.thumbPct - thumbSize / 2)
       }
       .frame(height: max(thumbSize, trackHeight), alignment: .center)
     }
     .frame(height: max(thumbSize, trackHeight))
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel(accessibilityDescription)
+  }
+
+  private var accessibilityDescription: String {
+    bar.inRange
+      ? "Price \(range.currentLabel), in range \(range.lowerLabel) to \(range.upperLabel)"
+      : "Price \(range.currentLabel), out of range. Bounds \(range.lowerLabel) to \(range.upperLabel)"
   }
 }

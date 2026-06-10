@@ -10,9 +10,11 @@ struct PositionsWidgetView: View {
       switch family {
       case .systemSmall: SmallPositionView(entry: entry)
       case .systemMedium: MediumPositionView(entry: entry)
-      default: SmallPositionView(entry: entry)
+      @unknown default: EmptyView()
       }
     }
+    .padding(WidgetMetrics.ContentMargin.all)
+    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     .widgetURL(entry.position.flatMap { WidgetDeepLink.forPosition(ref: $0.ref) })
     .containerBackground(Color.bgPrimary, for: .widget)
   }

@@ -9,5 +9,5 @@ extension PositionEntity: AppEntity {
     DisplayRepresentation(title: "\(displayPair)", subtitle: "\(subtitle)")
   }
 
-  static var defaultQuery = PositionQuery()
+  static var defaultQuery: PositionQuery { PositionQuery() }
 }

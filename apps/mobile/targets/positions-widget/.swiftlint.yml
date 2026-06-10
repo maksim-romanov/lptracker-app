@@ -21,5 +21,6 @@ type_name:
 
 identifier_name:
   min_length:
+    warning: 2
     error: 2
   excluded: [id, to, in, at, URL, x, y]

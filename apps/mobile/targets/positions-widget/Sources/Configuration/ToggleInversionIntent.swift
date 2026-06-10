@@ -2,8 +2,10 @@ import AppIntents
 import WidgetKit
 
 struct ToggleInversionIntent: AppIntent {
-  static var title: LocalizedStringResource = "Reverse Pair"
-  static var description = IntentDescription("Swap base and quote tokens for this position.")
+  static var title: LocalizedStringResource { "Reverse Pair" }
+  static var description: IntentDescription {
+    IntentDescription("Swap base and quote tokens for this position.")
+  }
 
   @Parameter(title: "Position ref") var ref: String
 

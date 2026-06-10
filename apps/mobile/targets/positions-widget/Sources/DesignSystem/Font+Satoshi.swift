@@ -14,15 +14,11 @@ enum SatoshiWeight {
 }
 
 extension Font {
-  static func satoshi(_ weight: SatoshiWeight, size: CGFloat) -> Font {
-    .custom(weight.fontName, size: size)
+  static func satoshi(
+    _ weight: SatoshiWeight,
+    size: CGFloat,
+    relativeTo style: Font.TextStyle = .body
+  ) -> Font {
+    .custom(weight.fontName, size: size, relativeTo: style)
   }
-}
-
-enum TypeScale {
-  static let title = Font.satoshi(.bold, size: 22)
-  static let headline = Font.satoshi(.bold, size: 18)
-  static let body = Font.satoshi(.regular, size: 16)
-  static let bodySmall = Font.satoshi(.regular, size: 13)
-  static let label = Font.satoshi(.medium, size: 14)
 }

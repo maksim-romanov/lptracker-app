@@ -2,8 +2,10 @@ import AppIntents
 import WidgetKit
 
 struct SelectPositionIntent: AppIntent, WidgetConfigurationIntent {
-  static var title: LocalizedStringResource = "Select Position"
-  static var description = IntentDescription("Pick one of your followed LP positions.")
+  static var title: LocalizedStringResource { "Select Position" }
+  static var description: IntentDescription {
+    IntentDescription("Pick one of your followed LP positions.")
+  }
 
   @Parameter(title: "Position") var position: PositionEntity?
 

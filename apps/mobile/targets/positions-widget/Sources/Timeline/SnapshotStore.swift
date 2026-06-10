@@ -1,11 +1,6 @@
 import Foundation
 import OSLog
 
-enum SnapshotStoreError: Error {
-  case appGroupUnavailable
-  case fileMissing
-}
-
 final class SnapshotStore: Sendable {
   static let appGroup = "group.com.depthly.app.shared"
   static let filename = "widget-snapshot.json"
@@ -24,8 +19,14 @@ final class SnapshotStore: Sendable {
       return nil
     }
     let url = container.appendingPathComponent(Self.filename)
-    guard let data = try? Data(contentsOf: url) else {
+    let data: Data
+    do {
+      data = try Data(contentsOf: url)
+    } catch CocoaError.fileReadNoSuchFile {
       logger.notice("No snapshot file at \(url.lastPathComponent, privacy: .public)")
+      return nil
+    } catch {
+      logger.error("Snapshot read failed: \(error.localizedDescription, privacy: .public)")
       return nil
     }
     do {

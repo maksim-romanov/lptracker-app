@@ -5,6 +5,7 @@
   "respectsExistingLineBreaks": true,
   "lineBreakBeforeControlFlowKeywords": false,
   "lineBreakBeforeEachArgument": true,
+  "multiElementCollectionTrailingCommas": false,
   "rules": {
     "AlwaysUseLowerCamelCase": true,
     "TypeNamesShouldBeCapitalized": true,
