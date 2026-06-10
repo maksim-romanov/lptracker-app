@@ -6,7 +6,7 @@ extension PositionEntity: AppEntity {
   }
 
   var displayRepresentation: DisplayRepresentation {
-    DisplayRepresentation(title: "\(displayPair)", subtitle: "\(protocolLabel)")
+    DisplayRepresentation(title: "\(displayPair)", subtitle: "\(subtitle)")
   }
 
   static var defaultQuery = PositionQuery()

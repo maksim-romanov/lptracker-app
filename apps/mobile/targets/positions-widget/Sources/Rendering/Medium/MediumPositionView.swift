@@ -66,6 +66,7 @@ struct MediumPositionView: View {
   private func tagsRow(position: WidgetPosition) -> some View {
     if case .uniswapV3(let payload) = position.widgetExtension {
       HStack(spacing: 5) {
+        ChainTag(chainID: position.chainId)
         MetaTag(text: payload.feeTierLabel)
         StatusTag(status: position.status)
         Spacer(minLength: 0)

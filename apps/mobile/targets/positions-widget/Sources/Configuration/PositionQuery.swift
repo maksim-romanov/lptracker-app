@@ -9,7 +9,7 @@ struct PositionQuery: EntityStringQuery {
     let needle = string.lowercased()
     return loadEntities().filter {
       $0.displayPair.lowercased().contains(needle)
-        || $0.protocolLabel.lowercased().contains(needle)
+        || $0.subtitle.lowercased().contains(needle)
     }
   }
 

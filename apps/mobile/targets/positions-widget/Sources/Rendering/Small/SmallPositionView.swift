@@ -78,9 +78,9 @@ struct SmallPositionView: View {
   @ViewBuilder
   private func tagsRow(position: WidgetPosition) -> some View {
     if case .uniswapV3(let payload) = position.widgetExtension {
-      HStack(spacing: 5) {
-        MetaTag(text: payload.feeTierLabel)
-        StatusTag(status: position.status)
+      HStack(spacing: 4) {
+        ChainTag(chainID: position.chainId, size: .compact)
+        MetaTag(text: payload.feeTierLabel, size: .compact)
         Spacer(minLength: 0)
       }
     }
@@ -126,21 +126,34 @@ struct SmallPositionView: View {
   }
 }
 
+enum TagSize {
+  case compact, large
+
+  var font: CGFloat { self == .compact ? 10 : 11 }
+  var hPad: CGFloat { self == .compact ? 6 : 7 }
+  var vPad: CGFloat { self == .compact ? 3 : 3 }
+  var dot: CGFloat { self == .compact ? 5 : 6 }
+}
+
 struct MetaTag: View {
   let text: String
+  var size: TagSize = .large
 
   var body: some View {
     Text(text)
-      .font(.satoshi(.medium, size: 11))
+      .font(.satoshi(.medium, size: size.font))
       .foregroundStyle(Color.textMuted)
-      .padding(.horizontal, 7)
-      .padding(.vertical, 3)
+      .lineLimit(1)
+      .fixedSize(horizontal: true, vertical: false)
+      .padding(.horizontal, size.hPad)
+      .padding(.vertical, size.vPad)
       .background(Capsule().fill(Color.textPrimary.opacity(0.06)))
   }
 }
 
 struct StatusTag: View {
   let status: WidgetStatus
+  var size: TagSize = .large
 
   private var tint: Color {
     switch status {
@@ -160,14 +173,35 @@ struct StatusTag: View {
 
   var body: some View {
     HStack(spacing: 4) {
-      Circle().fill(tint).frame(width: 6, height: 6)
+      Circle().fill(tint).frame(width: size.dot, height: size.dot)
       Text(text)
-        .font(.satoshi(.medium, size: 11))
+        .font(.satoshi(.medium, size: size.font))
         .foregroundStyle(tint)
+        .lineLimit(1)
+        .fixedSize(horizontal: true, vertical: false)
     }
-    .padding(.horizontal, 7)
-    .padding(.vertical, 3)
+    .padding(.horizontal, size.hPad)
+    .padding(.vertical, size.vPad)
     .background(Capsule().fill(tint.opacity(0.12)))
+  }
+}
+
+struct ChainTag: View {
+  let chainID: Int
+  var size: TagSize = .large
+
+  var body: some View {
+    HStack(spacing: 4) {
+      Circle().fill(Color.chain(chainID)).frame(width: size.dot, height: size.dot)
+      Text(ChainCatalog.shortName(for: chainID))
+        .font(.satoshi(.medium, size: size.font))
+        .foregroundStyle(Color.textMuted)
+        .lineLimit(1)
+        .fixedSize(horizontal: true, vertical: false)
+    }
+    .padding(.horizontal, size.hPad)
+    .padding(.vertical, size.vPad)
+    .background(Capsule().fill(Color.textPrimary.opacity(0.06)))
   }
 }
 
