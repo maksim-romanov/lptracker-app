@@ -1,12 +1,27 @@
+assert_lefthook_installed: true
+
 pre-commit:
   parallel: true
-  commands:
-    swift-format:
+  jobs:
+    - name: biome
+      glob: "**/*.{ts,tsx,js,jsx,json,jsonc}"
+      run: bunx biome check --no-errors-on-unmatched {staged_files}
+      skip:
+        - merge
+        - rebase
+
+    - name: swift-format
+      tags: [mobile, swift]
       glob: "apps/mobile/targets/**/*.swift"
       run: xcrun swift-format lint --strict {staged_files}
-    swiftlint:
+      skip:
+        - merge
+        - rebase
+
+    - name: swiftlint
+      tags: [mobile, swift]
       glob: "apps/mobile/targets/**/*.swift"
       run: swiftlint lint --quiet --strict {staged_files}
-    biome:
-      glob: "**/*.{ts,tsx,js,jsx,json}"
-      run: bunx biome check --no-errors-on-unmatched {staged_files}
+      skip:
+        - merge
+        - rebase

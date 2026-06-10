@@ -40,6 +40,9 @@ yarn-error.log*
 .DS_Store
 *.pem
 
+# Lefthook local overrides
+lefthook-local.yml
+
 **/CLAUDE.md
 !CLAUDE.md
 !apps/mobile/CLAUDE.md

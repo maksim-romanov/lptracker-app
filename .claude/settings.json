@@ -1,7 +1,4 @@
 {
-  "enabledPlugins": {
-    "react-native-best-practices@callstack-agent-skills": true
-  },
   "permissions": {
     "deny": [
       "Read(./apps/server/src/features/*/data/gql/**)",
@@ -10,5 +7,23 @@
       "Read(./apps/subgraphs/*/generated/**)",
       "Read(./apps/subgraphs/*/build/**)"
     ]
+  },
+  "enabledPlugins": {
+    "react-native-best-practices@callstack-agent-skills": true,
+    "swiftui-expert@swiftui-expert-skill": true
+  },
+  "extraKnownMarketplaces": {
+    "callstack-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "callstackincubator/agent-skills"
+      }
+    },
+    "swiftui-expert-skill": {
+      "source": {
+        "source": "github",
+        "repo": "AvdLee/SwiftUI-Agent-Skill"
+      }
+    }
   }
 }
