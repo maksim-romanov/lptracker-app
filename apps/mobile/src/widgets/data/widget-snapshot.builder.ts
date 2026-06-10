@@ -28,7 +28,7 @@ export function buildWidgetSnapshot(args: BuildArgs): TWidgetSnapshot {
 }
 
 function buildPosition(position: TGatewayPosition, inverted: boolean, tokens: TTokensMap): TWidgetPosition | null {
-  const ext = mapExtension(position);
+  const ext = mapExtension(position, tokens);
   if (ext === null) return null;
 
   const meta = PROTOCOLS_META[position.protocol as keyof typeof PROTOCOLS_META];
@@ -74,10 +74,13 @@ function buildPair(principals: TWidgetToken[], inverted: boolean): TWidgetPair {
     : { sym0: a.symbol, sym1: b.symbol, icon0: a.iconUrl, icon1: b.iconUrl };
 }
 
-function mapExtension(position: TGatewayPosition): TWidgetExtension | null {
+function mapExtension(position: TGatewayPosition, tokens: TTokensMap): TWidgetExtension | null {
   switch (position.extension.type) {
     case "uniswap-v3": {
       const ext = (position as TPositionByExt<"uniswap-v3">).extension;
+      const principals = position.tokens.filter((t) => t.role === "principal");
+      const baseDecimals = tokens[principals[0]?.tokenRef ?? ""]?.decimals ?? 18;
+      const quoteDecimals = tokens[principals[1]?.tokenRef ?? ""]?.decimals ?? 18;
       return {
         type: "uniswap-v3",
         feeTierLabel: ext.feeTierLabel,
@@ -86,6 +89,7 @@ function mapExtension(position: TGatewayPosition): TWidgetExtension | null {
           tickLower: ext.tickLower,
           tickUpper: ext.tickUpper,
           currentTick: ext.pool.currentTick,
+          decimalsDelta: baseDecimals - quoteDecimals,
         },
       };
     }

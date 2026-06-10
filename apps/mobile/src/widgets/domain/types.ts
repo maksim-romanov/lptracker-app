@@ -17,6 +17,7 @@ export type TWidgetTickRange = {
   tickLower: number;
   tickUpper: number;
   currentTick: number;
+  decimalsDelta: number;
 };
 
 export type TWidgetExtension =

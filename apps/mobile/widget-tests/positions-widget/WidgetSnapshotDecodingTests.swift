@@ -27,7 +27,7 @@ struct WidgetSnapshotDecodingTests {
           "pair": { "sym0": "WETH", "sym1": "USDC", "icon0": "x", "icon1": "y" },
           "principals": [{ "symbol": "WETH", "iconUrl": "x", "formatted": "1.0" }],
           "fees": [],
-          "extension": { "type": "uniswap-v3", "feeTierLabel": "0.30%", "nftTokenId": "12345", "range": { "tickLower": -887220, "tickUpper": 887220, "currentTick": 0 } }
+          "extension": { "type": "uniswap-v3", "feeTierLabel": "0.30%", "nftTokenId": "12345", "range": { "tickLower": -887220, "tickUpper": 887220, "currentTick": 0, "decimalsDelta": 12 } }
         }]
       }
       """.data(using: .utf8)!

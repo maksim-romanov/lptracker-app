@@ -40,7 +40,8 @@ enum WidgetExtension: Codable, Sendable, Hashable {
       let inv = WidgetTickRange(
         tickLower: -range.tickUpper,
         tickUpper: -range.tickLower,
-        currentTick: -range.currentTick
+        currentTick: -range.currentTick,
+        decimalsDelta: -range.decimalsDelta
       )
       return .uniswapV3(UniswapV3Payload(
         feeTierLabel: payload.feeTierLabel,

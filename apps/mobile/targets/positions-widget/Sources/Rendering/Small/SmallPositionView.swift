@@ -153,7 +153,7 @@ struct StatusTag: View {
   private var text: String {
     switch status {
     case .inRange: return "In range"
-    case .outOfRange: return "Out"
+    case .outOfRange: return "Out of range"
     case .closed: return "Closed"
     }
   }

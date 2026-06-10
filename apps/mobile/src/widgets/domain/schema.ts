@@ -19,6 +19,7 @@ const TickRange = v.object({
   tickLower: v.number(),
   tickUpper: v.number(),
   currentTick: v.number(),
+  decimalsDelta: v.number(),
 });
 
 const Extension = v.variant("type", [
