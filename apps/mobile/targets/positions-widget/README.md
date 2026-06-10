@@ -34,8 +34,10 @@ See [Swift conventions doc](../../docs/swift-conventions.md) for naming, structu
 
 ## Tooling
 
+Swift code is checked by `swift-format` and `swiftlint`:
+
 ```bash
-brew install swift-format swiftlint lefthook
+brew install swift-format swiftlint
 ```
 
-Hooks installed via `lefthook install` at the repo root.
+Both are wired into the repo's pre-commit hooks.
