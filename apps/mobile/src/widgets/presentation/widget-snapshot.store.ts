@@ -23,7 +23,7 @@ export class WidgetSnapshotStore extends Store {
   hydrate(): void {}
 
   @action
-  async refresh(positions: TGatewayPosition[], tokens: TTokensMap): Promise<void> {
+  async refresh(positions: readonly TGatewayPosition[], tokens: TTokensMap): Promise<void> {
     const snapshot = buildWidgetSnapshot({
       positions,
       following: new Set(this.following.refs),

@@ -4,7 +4,7 @@ import type { TGatewayPosition, TPositionByExt, TTokensMap } from "positions/dom
 import type { TWidgetExtension, TWidgetPair, TWidgetPosition, TWidgetSnapshot, TWidgetStatus, TWidgetToken } from "../domain/types";
 
 type BuildArgs = {
-  positions: TGatewayPosition[];
+  positions: readonly TGatewayPosition[];
   following: Set<string>;
   invertedRefs: Set<string>;
   tokens: TTokensMap;
