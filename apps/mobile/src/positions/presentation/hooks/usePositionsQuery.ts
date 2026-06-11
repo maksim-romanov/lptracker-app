@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { container } from "core/di/container";
 import { positionsKeys } from "core/query/keys/positions.keys";
 import { GatewayPositionsRepository, type TPositionsListParams } from "positions/data/gateway-positions.repository";
-import type { WidgetSnapshotService } from "widgets/data/widget-snapshot.service";
-import { WIDGET_SNAPSHOT_SERVICE } from "widgets/di";
+import type { WidgetSnapshotService } from "widgets/application/widget-snapshot.service";
+import { WIDGET_SNAPSHOT_SERVICE } from "widgets/di/tokens";
 
 export function usePositionsQuery(params: TPositionsListParams) {
   const repo = container.resolve(GatewayPositionsRepository);
@@ -23,7 +23,7 @@ export function usePositionsQuery(params: TPositionsListParams) {
   useEffect(() => {
     if (!query.data) return;
     const service = container.resolve<WidgetSnapshotService>(WIDGET_SNAPSHOT_SERVICE);
-    void service.refresh(query.data.positions, query.data.tokens);
+    void service.revalidateWith(query.data.positions, query.data.tokens);
   }, [query.data]);
 
   return query;

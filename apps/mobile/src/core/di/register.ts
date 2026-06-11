@@ -7,7 +7,7 @@ import { AppInfoService, DeviceInfoService, ReactNativeAlerts, ReactNativeLogger
 import * as membership from "membership/di/register";
 import * as positions from "positions/di/register";
 import * as wallets from "wallets/di/register";
-import { registerWidgetsModule } from "widgets/di";
+import * as widgets from "widgets/di/register";
 
 import { container } from "./container";
 import { ALERTS, APP_INFO, DEVICE_INFO, LOGGER } from "./tokens";
@@ -25,7 +25,7 @@ function register() {
   wallets.register();
   membership.register();
 
-  registerWidgetsModule();
+  widgets.register();
 }
 
 register();

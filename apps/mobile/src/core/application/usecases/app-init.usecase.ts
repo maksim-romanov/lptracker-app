@@ -4,7 +4,8 @@ import { RootStore } from "core/presentation/root.store";
 import { Asset } from "expo-asset";
 import { inject, injectable } from "tsyringe";
 import { registerWidgetBackgroundRefresh } from "widgets/application/background-refresh.task";
-import { WidgetSnapshotService } from "widgets/data/widget-snapshot.service";
+import type { WidgetSnapshotService } from "widgets/application/widget-snapshot.service";
+import { WIDGET_SNAPSHOT_SERVICE } from "widgets/di/tokens";
 
 import { AppEvents } from "../events/app.events";
 
@@ -15,7 +16,7 @@ export class AppInitUseCase extends UseCase {
   constructor(
     @inject(AppEvents) private readonly appEvents: AppEvents,
     @inject(RootStore) private readonly rootStore: RootStore,
-    @inject(WidgetSnapshotService) private readonly widgetSnapshot: WidgetSnapshotService,
+    @inject(WIDGET_SNAPSHOT_SERVICE) private readonly widgetSnapshot: WidgetSnapshotService,
   ) {
     super();
   }
@@ -31,9 +32,11 @@ export class AppInitUseCase extends UseCase {
     try {
       await Promise.all([this.rootStore.hydrate(), Asset.loadAsync(Object.values(CHAIN_LOGOS))]);
 
-      this.widgetSnapshot.initialize();
-
       this.initialized = true;
+
+      void this.widgetSnapshot.revalidate().catch((error) => {
+        this.logger.warn("Widget startup revalidation failed", { error });
+      });
 
       void registerWidgetBackgroundRefresh().catch((error) => {
         this.logger.warn("Widget background refresh registration failed", { error });

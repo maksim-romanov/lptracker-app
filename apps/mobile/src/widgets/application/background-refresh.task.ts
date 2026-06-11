@@ -5,8 +5,8 @@ import type { Logger } from "core/services";
 import * as BackgroundTask from "expo-background-task";
 import * as TaskManager from "expo-task-manager";
 
-import type { WidgetSnapshotService } from "../data/widget-snapshot.service";
 import { WIDGET_SNAPSHOT_SERVICE } from "../di/tokens";
+import type { WidgetSnapshotService } from "./widget-snapshot.service";
 
 const TASK_NAME = "depthly.widget.refresh";
 
@@ -18,7 +18,7 @@ TaskManager.defineTask(TASK_NAME, async () => {
     logger.debug("BG refresh task fired");
     await container.resolve(RootStore).hydrate();
     const service = container.resolve<WidgetSnapshotService>(WIDGET_SNAPSHOT_SERVICE);
-    await service.refreshFromCurrentWallets();
+    await service.revalidate();
     return BackgroundTask.BackgroundTaskResult.Success;
   } catch (error) {
     logger.error("Widget BG refresh failed", { error });

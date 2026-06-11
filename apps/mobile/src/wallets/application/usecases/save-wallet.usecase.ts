@@ -5,6 +5,8 @@ import type { WalletsRepository } from "wallets/data/wallets.repository";
 import { WALLETS_REPOSITORY } from "wallets/di/tokens";
 import { EWalletType, Wallet } from "wallets/domain/entities/wallet.entity";
 import type { TWalletDraft } from "wallets/domain/schemas/wallet.schema";
+import type { WidgetSnapshotService } from "widgets/application/widget-snapshot.service";
+import { WIDGET_SNAPSHOT_SERVICE } from "widgets/di/tokens";
 
 type TInput = TWalletDraft & { id?: string };
 
@@ -15,13 +17,19 @@ export class SaveWalletUseCase extends UseCase<boolean, TInput> {
   constructor(
     @inject(WALLETS_REPOSITORY) private readonly repo: WalletsRepository,
     @inject(MembershipStore) private readonly membership: MembershipStore,
+    @inject(WIDGET_SNAPSHOT_SERVICE) private readonly widgetSnapshot: WidgetSnapshotService,
   ) {
     super();
   }
 
   async execute(input: TInput): Promise<boolean> {
-    if (input.id) return this.update(input.id, input);
-    return this.create(input);
+    const ok = input.id ? this.update(input.id, input) : this.create(input);
+    if (ok) {
+      void this.widgetSnapshot.revalidate().catch((error) => {
+        this.logger.warn("Widget revalidation after wallet save failed", { error });
+      });
+    }
+    return ok;
   }
 
   private create(input: TWalletDraft): boolean {
