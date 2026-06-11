@@ -113,6 +113,7 @@ export const UniswapV3PositionDetail = observer(function UniswapV3PositionDetail
                   currentTick={position.extension.pool.currentTick}
                   tickLower={position.extension.tickLower}
                   tickUpper={position.extension.tickUpper}
+                  inverted={inverted}
                 />
 
                 <PriceLabels

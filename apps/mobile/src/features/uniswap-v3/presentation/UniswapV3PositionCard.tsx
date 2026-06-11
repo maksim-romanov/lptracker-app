@@ -90,6 +90,7 @@ export const UniswapV3PositionCard = observer(function UniswapV3PositionCard({ p
               currentTick={position.extension.pool.currentTick}
               tickLower={position.extension.tickLower}
               tickUpper={position.extension.tickUpper}
+              inverted={inverted}
             />
           </Stack>
 

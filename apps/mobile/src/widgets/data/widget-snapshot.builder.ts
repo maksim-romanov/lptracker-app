@@ -7,7 +7,6 @@ import { formatWidgetAmount } from "./format";
 type BuildArgs = {
   positions: readonly TGatewayPosition[];
   following: Set<string>;
-  invertedRefs: Set<string>;
   tokens: TTokensMap;
   now: number;
 };
@@ -21,13 +20,13 @@ const STATUS_MAP: Record<string, TWidgetStatus> = {
 export function buildWidgetSnapshot(args: BuildArgs): TWidgetSnapshot {
   const positions = args.positions
     .filter((p) => args.following.has(p.ref))
-    .map((p) => buildPosition(p, args.invertedRefs.has(p.ref), args.tokens))
+    .map((p) => buildPosition(p, args.tokens))
     .filter((p): p is TWidgetPosition => p !== null);
 
   return { v: 1, writtenAt: args.now, positions };
 }
 
-function buildPosition(position: TGatewayPosition, inverted: boolean, tokens: TTokensMap): TWidgetPosition | null {
+function buildPosition(position: TGatewayPosition, tokens: TTokensMap): TWidgetPosition | null {
   const ext = mapExtension(position, tokens);
   if (ext === null) return null;
 
@@ -43,7 +42,7 @@ function buildPosition(position: TGatewayPosition, inverted: boolean, tokens: TT
     brandColor: meta?.brandColor ?? "#888888",
     containerLabel: position.container.label,
     status: STATUS_MAP[position.status.state] ?? "closed",
-    pair: buildPair(principals, inverted),
+    pair: buildPair(principals),
     principals,
     fees,
     extension: ext,
@@ -59,19 +58,14 @@ function toWidgetToken(tokenRef: string, formatted: string, tokens: TTokensMap):
   };
 }
 
-function buildPair(principals: TWidgetToken[], inverted: boolean): TWidgetPair {
+function buildPair(principals: TWidgetToken[]): TWidgetPair {
   const [a, b] = principals;
-  if (!a || !b) {
-    return {
-      sym0: a?.symbol ?? "?",
-      sym1: b?.symbol ?? "?",
-      icon0: a?.iconUrl ?? "",
-      icon1: b?.iconUrl ?? "",
-    };
-  }
-  return inverted
-    ? { sym0: b.symbol, sym1: a.symbol, icon0: b.iconUrl, icon1: a.iconUrl }
-    : { sym0: a.symbol, sym1: b.symbol, icon0: a.iconUrl, icon1: b.iconUrl };
+  return {
+    sym0: a?.symbol ?? "?",
+    sym1: b?.symbol ?? "?",
+    icon0: a?.iconUrl ?? "",
+    icon1: b?.iconUrl ?? "",
+  };
 }
 
 function mapExtension(position: TGatewayPosition, tokens: TTokensMap): TWidgetExtension | null {

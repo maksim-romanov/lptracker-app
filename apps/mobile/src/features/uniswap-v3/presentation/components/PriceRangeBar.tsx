@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { View, type ViewProps } from "react-native";
 
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";
 import tinycolor from "tinycolor2";
 
@@ -8,67 +9,104 @@ export type TPriceRangeBarProps = {
   currentTick: number;
   tickLower: number;
   tickUpper: number;
+  inverted?: boolean;
 } & Pick<ViewProps, "style">;
 
-const INFINITE_TICK_THRESHOLD = 800_000;
-// Weibull saturating function maps tick distance to half-bar fraction:
-//   h(d) = MAX_HALF * (1 - exp(-(d/SCALE)^ALPHA))
-// SCALE — characteristic tick distance (~2.7x price ratio at SCALE=10K).
-// ALPHA<1 makes the curve sub-linear near zero → tight positions stay visible.
-// MAX_HALF<0.5 guarantees the segment never touches the bar edge.
-const SCALE_TICKS = 10_000;
-const SHAPE_ALPHA = 0.5;
-const MAX_HALF = 0.49;
+// Band-width clamps. Floor keeps the band visible against the thumb on
+// micro-ranges; ceiling leaves bar margin for out-of-range overshoot.
+const MIN_BAND_WIDTH = 0.2;
+const MAX_BAND_WIDTH = 0.7;
 
-function halfSide(distance: number, isInfinite: boolean): number {
-  if (isInfinite) return MAX_HALF;
-  if (distance <= 0) return 0;
-  return MAX_HALF * (1 - Math.exp(-((distance / SCALE_TICKS) ** SHAPE_ALPHA)));
+// Sigmoid in `log10(tickWidth)` — center anchored at log10(1000)
+// (≈ ±5% price band, a typical concentrated LP range). Wider position →
+// wider band, monotonic, no hard plateau.
+const BAND_LOG_CENTER = 3.0;
+const BAND_LOG_SPREAD = 1.0;
+
+// Overshoot compression. As `|current - bound| / rangeWidth` grows the
+// thumb travels through the side margin, asymptotically against the edge.
+const OVERSHOOT_SCALE = 1.5;
+
+function bandWidthFor(tickWidth: number): number {
+  const logTicks = Math.log10(Math.max(1, tickWidth));
+  const normalized = (logTicks - BAND_LOG_CENTER) / BAND_LOG_SPREAD;
+  const sigmoid = 1 / (1 + Math.exp(-normalized));
+  return MIN_BAND_WIDTH + sigmoid * (MAX_BAND_WIDTH - MIN_BAND_WIDTH);
 }
 
-// Signed half-width: positive when the bound sits on its expected side of
-// current (lower-bound left of current, upper-bound right). Negative when the
-// position is out of range — the bound has crossed past current and the
-// segment must shift to that side of the thumb.
-function signedLeftHalf(currentTick: number, tickLower: number, infiniteLower: boolean): number {
-  const d = currentTick - tickLower;
-  return d >= 0 ? halfSide(d, infiniteLower) : -halfSide(-d, false);
+type TLayout = {
+  liquidityLeftPct: number;
+  liquidityWidthPct: number;
+  thumbPct: number;
+  inRange: boolean;
+};
+
+function computeLayout(currentTick: number, tickLower: number, tickUpper: number, inverted: boolean): TLayout {
+  // Inversion = reciprocal price = negated tick; lower↔upper swap.
+  const cur = inverted ? -currentTick : currentTick;
+  const lower = inverted ? -tickUpper : tickLower;
+  const upper = inverted ? -tickLower : tickUpper;
+
+  const rangeWidth = Math.max(1, upper - lower);
+  const bandWidth = bandWidthFor(rangeWidth);
+  const bandLeftPct = (1 - bandWidth) / 2;
+  const bandRightPct = bandLeftPct + bandWidth;
+
+  const currentPos = (cur - lower) / rangeWidth;
+  const inRange = currentPos >= 0 && currentPos <= 1;
+
+  let thumbPct: number;
+  if (inRange) {
+    thumbPct = bandLeftPct + currentPos * bandWidth;
+  } else if (currentPos < 0) {
+    const overshoot = -currentPos;
+    const traveled = bandLeftPct * (1 - Math.exp(-overshoot / OVERSHOOT_SCALE));
+    thumbPct = bandLeftPct - traveled;
+  } else {
+    const overshoot = currentPos - 1;
+    const traveled = (1 - bandRightPct) * (1 - Math.exp(-overshoot / OVERSHOOT_SCALE));
+    thumbPct = bandRightPct + traveled;
+  }
+
+  return {
+    liquidityLeftPct: bandLeftPct,
+    liquidityWidthPct: bandWidth,
+    thumbPct,
+    inRange,
+  };
 }
 
-function signedRightHalf(currentTick: number, tickUpper: number, infiniteUpper: boolean): number {
-  const d = tickUpper - currentTick;
-  return d >= 0 ? halfSide(d, infiniteUpper) : -halfSide(-d, false);
-}
+const TIMING = { duration: 320, easing: Easing.inOut(Easing.cubic) };
 
-// Thumb is anchored at the bar center (current price). Signed half-widths
-// encode the position relative to current — in-range, out-of-range either
-// side, partial-infinite, and full-range all collapse to the same formula.
-export const PriceRangeBar = ({ currentTick, tickLower, tickUpper, style }: TPriceRangeBarProps) => {
-  const { liquidityLeftPct, liquidityWidthPct, thumbPct, inRange } = useMemo(() => {
-    const infiniteUpper = tickUpper >= INFINITE_TICK_THRESHOLD;
-    const infiniteLower = tickLower <= -INFINITE_TICK_THRESHOLD;
+export const PriceRangeBar = ({ currentTick, tickLower, tickUpper, inverted = false, style }: TPriceRangeBarProps) => {
+  const layout = computeLayout(currentTick, tickLower, tickUpper, inverted);
 
-    const leftHalf = signedLeftHalf(currentTick, tickLower, infiniteLower);
-    const rightHalf = signedRightHalf(currentTick, tickUpper, infiniteUpper);
+  const leftSV = useSharedValue(layout.liquidityLeftPct);
+  const widthSV = useSharedValue(layout.liquidityWidthPct);
+  const thumbSV = useSharedValue(layout.thumbPct);
 
-    const leftPct = 0.5 - leftHalf;
-    const rightPct = 0.5 + rightHalf;
+  useEffect(() => {
+    leftSV.value = withTiming(layout.liquidityLeftPct, TIMING);
+    widthSV.value = withTiming(layout.liquidityWidthPct, TIMING);
+    thumbSV.value = withTiming(layout.thumbPct, TIMING);
+  }, [layout.liquidityLeftPct, layout.liquidityWidthPct, layout.thumbPct, leftSV, widthSV, thumbSV]);
 
-    return {
-      liquidityLeftPct: Math.min(leftPct, rightPct),
-      liquidityWidthPct: Math.max(0, rightPct - leftPct),
-      thumbPct: 0.5,
-      inRange: leftHalf > 0 && rightHalf > 0,
-    };
-  }, [currentTick, tickLower, tickUpper]);
+  const animatedLiquidityStyle = useAnimatedStyle(() => ({
+    left: `${leftSV.value * 100}%`,
+    width: `${widthSV.value * 100}%`,
+  }));
 
-  styles.useVariants({ inRange });
+  const animatedThumbStyle = useAnimatedStyle(() => ({
+    left: `${thumbSV.value * 100}%`,
+  }));
+
+  styles.useVariants({ inRange: layout.inRange });
 
   return (
     <View style={[styles.container, style]}>
       <View style={styles.track}>
-        <View style={[styles.liquidity, { left: `${liquidityLeftPct * 100}%`, width: `${liquidityWidthPct * 100}%` }]} />
-        <View style={[styles.thumb, { left: `${thumbPct * 100}%` }]} />
+        <Animated.View style={[styles.liquidity, animatedLiquidityStyle]} />
+        <Animated.View style={[styles.thumb, animatedThumbStyle]} />
       </View>
     </View>
   );
@@ -98,7 +136,6 @@ const styles = StyleSheet.create((theme) => ({
 
     variants: {
       inRange: {
-        // Nearly opaque — kills the mustard-blend artifact of low-alpha-on-dark.
         true: { backgroundColor: tinycolor(theme.success).setAlpha(0.9).toRgbString() },
         false: { backgroundColor: tinycolor(theme.warning).setAlpha(0.9).toRgbString() },
       },

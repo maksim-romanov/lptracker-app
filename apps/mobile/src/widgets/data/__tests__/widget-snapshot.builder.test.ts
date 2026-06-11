@@ -52,7 +52,6 @@ describe("buildWidgetSnapshot", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [wethPosition],
       following: new Set(["uniswap-v3:1:99999"]),
-      invertedRefs: new Set(),
       tokens,
       now: 1000,
     });
@@ -63,7 +62,6 @@ describe("buildWidgetSnapshot", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [wethPosition],
       following: new Set([wethPosition.ref]),
-      invertedRefs: new Set(),
       tokens,
       now: 1000,
     });
@@ -79,7 +77,6 @@ describe("buildWidgetSnapshot", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [wethPosition],
       following: new Set([wethPosition.ref]),
-      invertedRefs: new Set(),
       tokens,
       now: 1000,
     });
@@ -91,27 +88,10 @@ describe("buildWidgetSnapshot", () => {
     });
   });
 
-  it("swaps pair when ref is in invertedRefs", () => {
-    const snapshot = buildWidgetSnapshot({
-      positions: [wethPosition],
-      following: new Set([wethPosition.ref]),
-      invertedRefs: new Set([wethPosition.ref]),
-      tokens,
-      now: 1000,
-    });
-    expect(snapshot.positions[0].pair).toEqual({
-      sym0: "USDC",
-      sym1: "WETH",
-      icon0: "https://example.com/usdc.png",
-      icon1: "https://example.com/weth.png",
-    });
-  });
-
   it("maps server status enum to widget status", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [wethPosition],
       following: new Set([wethPosition.ref]),
-      invertedRefs: new Set(),
       tokens,
       now: 1000,
     });
@@ -122,7 +102,6 @@ describe("buildWidgetSnapshot", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [wethPosition],
       following: new Set([wethPosition.ref]),
-      invertedRefs: new Set(),
       tokens,
       now: 1000,
     });
@@ -138,7 +117,6 @@ describe("buildWidgetSnapshot", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [wethPosition],
       following: new Set([wethPosition.ref]),
-      invertedRefs: new Set(),
       tokens,
       now: 1717000000000,
     });
@@ -162,7 +140,6 @@ describe("buildWidgetSnapshot", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [orphan],
       following: new Set([orphan.ref]),
-      invertedRefs: new Set(),
       tokens,
       now: 1000,
     });
