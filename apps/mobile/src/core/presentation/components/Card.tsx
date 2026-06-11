@@ -33,17 +33,14 @@ const styles = StyleSheet.create((theme) => ({
 
     variants: {
       variant: {
-        // Lifted dark card on pure-black bg
         elevated: {
           backgroundColor: theme.surfaceContainer,
         },
-        // Transparent fill, defined border — sits directly on the page surface (X-style).
         outlined: {
           backgroundColor: "transparent",
           borderWidth: 1.5,
           borderColor: theme.outline,
         },
-        // Flat, no border, no fill — for stacked rows
         flat: {
           backgroundColor: "transparent",
         },

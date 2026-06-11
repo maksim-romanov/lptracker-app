@@ -1,30 +1,10 @@
-# CLAUDE.md
+# CLAUDE.md — apps/server
 
-This file provides guidance to Claude Code when working with the server codebase.
+See [docs/architecture.md](docs/architecture.md) for feature modules, child-container DI, and Q128 fee math.
 
-## Documentation
+## Rules specific to this app
 
-- [docs/architecture.md](docs/architecture.md) - Clean Architecture, DI, feature modules
-- [docs/api.md](docs/api.md) - Endpoints, validation, error handling
-
-## Key Principles
-
-### Clean Architecture Layers
-Domain → Data → Application → Presentation. Dependencies point inward.
-
-### Result Types
-All use cases return `Result<T, DomainError>` via neverthrow. Never throw in business logic.
-
-### DI Patterns
-
-```typescript
-// Symbol tokens for replaceable dependencies
-export const POSITIONS_REPOSITORY = Symbol("POSITIONS_REPOSITORY");
-container.register(POSITIONS_REPOSITORY, { useClass: PositionsRepository });
-
-// Child containers for chain-specific isolation
-const chainContainer = container.createChildContainer();
-```
-
-### Resilience
-External providers use opossum circuit breakers + rate-limiter-flexible. Caching via Redis with request deduplication.
+- **Use cases return `Result<T, DomainError>` (neverthrow).** Throwing in business logic is a bug — routes do `result.match(...)` and let `error-mapper.ts` translate to HTTP.
+- **One error class per feature.** Never reuse another feature's error type. Cross-feature failures go through the gateway use case in `src/app/`.
+- **External providers are wrapped** in opossum circuit breakers + `rate-limiter-flexible` + Redis cache before the call site. New providers must follow `shared/providers/BaseExternalProvider`.
+- **Route schemas live in `presentation/`** as Valibot — they are the source of truth for OpenAPI (`bun run codegen` regenerates `openapi/`). The hand-written `docs/api.md` is gone on purpose; consume `openapi/openapi.json` directly.

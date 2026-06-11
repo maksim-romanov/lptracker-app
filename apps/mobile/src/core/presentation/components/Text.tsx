@@ -25,10 +25,8 @@ const styles = StyleSheet.create((theme) => ({
 
     variants: {
       variant: {
-        // 16/22 — iOS Callout / Material body. 1.38× ratio for paragraph reading.
         body: { fontSize: 15, lineHeight: 21 },
 
-        // Hero / huge brand text (used sparingly — e.g., onboarding)
         display: {
           fontFamily: "Satoshi-Black",
           fontSize: 34,
@@ -36,7 +34,6 @@ const styles = StyleSheet.create((theme) => ({
           letterSpacing: -0.6,
         },
 
-        // Screen titles (sidebar/header)
         title: {
           fontFamily: "Satoshi-Bold",
           fontSize: 22,
@@ -44,7 +41,6 @@ const styles = StyleSheet.create((theme) => ({
           letterSpacing: -0.3,
         },
 
-        // Card titles, list section headers
         headline: {
           fontFamily: "Satoshi-Bold",
           fontSize: 17,
@@ -52,13 +48,11 @@ const styles = StyleSheet.create((theme) => ({
           letterSpacing: -0.1,
         },
 
-        // Secondary copy — 13pt is iOS Footnote; 1.46× for comfortable reading
         bodySmall: {
           fontSize: 13,
           lineHeight: 19,
         },
 
-        // Chips, tab labels, metadata. Caps text wants wider tracking.
         label: {
           fontFamily: "Satoshi-Medium",
           fontSize: 12,
@@ -66,13 +60,11 @@ const styles = StyleSheet.create((theme) => ({
           letterSpacing: 0.5,
         },
 
-        // Tertiary fine print — axis labels, helper hints, supplementary numbers
         caption: {
           fontSize: 11,
           lineHeight: 14,
         },
 
-        // Numeric callouts (PnL, balances)
         mono: {
           fontFamily: "Menlo",
           fontSize: 14,

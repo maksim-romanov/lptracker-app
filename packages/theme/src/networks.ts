@@ -1,19 +1,11 @@
-/**
- * Per-network brand colors.
- *
- * Each blockchain keeps its canonical brand color across themes. Use these
- * for network badges, pool/token chips, and accent borders that must remain
- * recognizable independent of light/dark mode.
- */
+// Each chain keeps its canonical brand color across all themes — independent
+// of light/dark mode — so network badges and chips stay recognizable.
 
 export type NetworkKey = "ethereum" | "base" | "arbitrum" | "optimism" | "polygon" | "bnb" | "avalanche";
 
 export type NetworkColor = {
-  /** Solid brand color — chips, badge fills, icon tints. */
   base: string;
-  /** Foreground color that reads on top of `base`. */
   onBase: string;
-  /** Low-opacity surface for soft containers (cards, banners). */
   soft: string;
 };
 

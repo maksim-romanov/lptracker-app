@@ -1,54 +1,25 @@
 import { consoleTransport, logger, type transportFunctionType } from "react-native-logs";
 
-/** Metadata for structured logging */
 export interface LogMetadata {
   [key: string]: unknown;
 }
 
-/** Log levels by severity */
 export type LogLevel = "debug" | "info" | "warn" | "error" | "critical";
 
-/**
- * Logger interface with structured logging support
- *
- * @example
- * // Simple message
- * logger.info("User logged in");
- *
- * // Structured logging with metadata
- * logger.info("Payment processed", { orderId: "123", amount: 99.99 });
- *
- * // Namespaced logger
- * const authLogger = logger.extend("AuthService");
- * authLogger.debug("Token refresh started");
- */
 export interface Logger {
   debug(message: string, metadata?: LogMetadata): void;
   info(message: string, metadata?: LogMetadata): void;
   warn(message: string, metadata?: LogMetadata): void;
   error(message: string, metadata?: LogMetadata): void;
   critical(message: string, metadata?: LogMetadata): void;
-
-  /** Create a child logger with namespace prefix */
   extend(namespace: string): Logger;
 }
 
-// Implementation
-
 const isDev = __DEV__;
 
-/**
- * Error tracking transport for critical logs
- * Placeholder for future Sentry/Bugsnag/Crashlytics integration
- */
 const errorTrackingTransport: transportFunctionType<object> = (props) => {
   if (isDev) return;
   if (props.level.text !== "error" && props.level.text !== "critical") return;
-
-  // TODO: Integrate with error tracking service
-  // Sentry.captureMessage(props.msg, {
-  //   level: props.level.text === "critical" ? "fatal" : "error",
-  // });
 };
 
 const loggerInstance = logger.createLogger({

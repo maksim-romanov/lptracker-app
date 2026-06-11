@@ -13,7 +13,6 @@ import { container } from "./container";
 import { ALERTS, APP_INFO, DEVICE_INFO, LOGGER } from "./tokens";
 
 function register() {
-  // Core
   container.register(LOGGER, { useValue: ReactNativeLogger });
   container.register(ALERTS, { useValue: ReactNativeAlerts });
   container.registerSingleton(APP_INFO, AppInfoService);
@@ -22,14 +21,11 @@ function register() {
   linking.register();
   query.register();
 
-  // Entities
   positions.register();
   wallets.register();
   membership.register();
 
-  // Features
   registerWidgetsModule();
 }
 
-// Auto-register on import
 register();
