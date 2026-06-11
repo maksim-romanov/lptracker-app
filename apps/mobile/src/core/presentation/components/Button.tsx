@@ -66,21 +66,17 @@ const styles = StyleSheet.create((theme) => ({
 
     variants: {
       variant: {
-        // Filled brand button — high-contrast neon violet (or white on dark)
         primary: {
           backgroundColor: theme.primary,
         },
-        // Inverted — Twitter's classic white-on-black sign-in button
         inverse: {
           backgroundColor: theme.inverseSurface,
         },
-        // Hollow border — secondary CTA
         outline: {
           backgroundColor: "transparent",
           borderWidth: 1,
           borderColor: theme.outline,
         },
-        // No border, no fill — tertiary
         ghost: {
           backgroundColor: "transparent",
         },

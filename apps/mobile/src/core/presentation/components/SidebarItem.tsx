@@ -13,11 +13,9 @@ type Props = {
   iconActive?: IconName;
   active?: boolean;
   onPress: () => void;
-  /** Optional numeric badge — e.g., unread count. */
   badge?: number;
-  /** Active-state accent token. Defaults to "primary". */
   accent?: AccentToken;
-  /** Wrap the row in a colored shadow halo when active. */
+  /** Render a colored shadow halo around the row. Only takes effect when `active`. */
   glow?: boolean;
 };
 

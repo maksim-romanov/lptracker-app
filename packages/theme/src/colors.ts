@@ -1,61 +1,43 @@
-/**
- * Color tokens following Material Design 3 naming conventions
- * These are semantic color roles, not raw color values
- */
-
 export type ColorTokens = {
-  // Primary colors
   primary: string;
   onPrimary: string;
   primaryContainer: string;
   onPrimaryContainer: string;
 
-  // Secondary colors
   secondary: string;
   onSecondary: string;
   secondaryContainer: string;
   onSecondaryContainer: string;
 
-  // Surface colors (MD3)
   surface: string;
   onSurface: string;
   surfaceContainer: string;
   surfaceVariant: string;
   onSurfaceVariant: string;
 
-  // Outline
   outline: string;
   outlineVariant: string;
 
-  // Error
   error: string;
   onError: string;
   errorContainer: string;
   onErrorContainer: string;
 
-  // Success
   success: string;
   onSuccess: string;
 
-  // Warning
   warning: string;
   onWarning: string;
 
-  // Inverse
   inverseSurface: string;
   inverseOnSurface: string;
   inversePrimary: string;
 
-  // Scrim & Shadow
   scrim: string;
   shadow: string;
 };
 
-/**
- * Base color palette - raw color values
- */
 export const palette = {
-  // Blues
   blue50: "#E3F2FD",
   blue100: "#BBDEFB",
   blue200: "#90CAF9",
@@ -67,7 +49,6 @@ export const palette = {
   blue800: "#1565C0",
   blue900: "#0D47A1",
 
-  // Purples
   purple50: "#F3E5F5",
   purple100: "#E1BEE7",
   purple200: "#CE93D8",
@@ -79,7 +60,6 @@ export const palette = {
   purple800: "#6A1B9A",
   purple900: "#4A148C",
 
-  // Neon Pink (Uniswap-inspired)
   neonPink50: "#FFF0F6",
   neonPink100: "#FFD6E8",
   neonPink200: "#FFB3D4",
@@ -91,12 +71,10 @@ export const palette = {
   neonPink800: "#99004A",
   neonPink900: "#660031",
 
-  // Neon accents
   neonCyan: "#00D9FF",
   neonPurple: "#BF00FF",
   neonYellow: "#FAFF00",
 
-  // Teals
   teal50: "#E0F2F1",
   teal100: "#B2DFDB",
   teal200: "#80CBC4",
@@ -108,7 +86,6 @@ export const palette = {
   teal800: "#00695C",
   teal900: "#004D40",
 
-  // Oranges
   orange50: "#FFF3E0",
   orange100: "#FFE0B2",
   orange200: "#FFCC80",
@@ -120,7 +97,6 @@ export const palette = {
   orange800: "#EF6C00",
   orange900: "#E65100",
 
-  // Neutrals
   white: "#FFFFFF",
   black: "#000000",
 
@@ -136,7 +112,6 @@ export const palette = {
   neutral900: "#212121",
   neutral950: "#121212",
 
-  // Semantic
   red50: "#FFEBEE",
   red100: "#FFCDD2",
   red500: "#F44336",

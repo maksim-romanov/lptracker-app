@@ -1,43 +1,27 @@
-# CLAUDE.md
+# CLAUDE.md — apps/mobile
 
-This file provides guidance to Claude Code (claude.ai/code) when working with this codebase.
+See [docs/architecture.md](docs/architecture.md) for the DDD module layout, the file-naming suffix table, the multi-protocol plugin pattern, and DI tokens.
 
-## Documentation
+## Rules specific to this app
 
-- [docs/architecture.md](docs/architecture.md) - DDD modules, DI patterns, project structure
-- [docs/code-style.md](docs/code-style.md) - Naming conventions, imports
-- [docs/styling/overview.md](docs/styling/overview.md) - Theme system, @grapp/stacks, typography
-- [docs/commands.md](docs/commands.md) - Dev and build commands
+- **Business logic stays in use cases, not in React components.** Screens are thin: resolve the store/hook, render. If a component file contains a Result-mapping or a network call, move it.
+- **Modules don't share error types.** Each feature owns its `*.error.ts`. Cross-feature work goes through the gateway (`positions/` shell).
+- **Plugin façade is the only entry point.** Import `features/<protocol>` (the barrel), never deep paths — enforced by Biome `noRestrictedImports` in root `biome.json`.
 
-## Key Principles
+## Android device → host ports
 
-### Framework-Agnostic Logic
+When running on a physical Android device or non-localhost emulator, forward both backend ports so API + tokens-data calls reach the Mac:
 
-Keep business logic in use cases, not in React components. UI should be a thin layer.
-
-### Module Isolation
-
-Each module has its own errors, types, events. Never use shared/global error types across modules.
-
-### DI Patterns
-
-```typescript
-// Symbol tokens for replaceable dependencies
-export const FEATURE_REPOSITORY = Symbol("FEATURE_REPOSITORY");
-container.register(FEATURE_REPOSITORY, FeatureRepository);
-
-// Direct class injection for concrete implementations
-constructor(
-  @inject(FEATURE_REPOSITORY) private readonly repo: FeatureRepository,
-) {}
+```bash
+adb reverse tcp:3000 tcp:3000   # server
+adb reverse tcp:3100 tcp:3100   # tokens-data
 ```
 
 ## Widget extension (`targets/positions-widget`)
 
-Native iOS widget extension for tracking one Following LP position. Built with `@bacons/apple-targets` config plugin (CNG-compatible). Data flow: RN app writes JSON snapshot to App Group via `widget-bridge` native module; SwiftUI widget reads on every timeline reload.
+Native iOS widget for one followed LP position. Built with `@bacons/apple-targets` (CNG-compatible — never eject). Data flow: RN app writes a JSON snapshot to the App Group via the `widget-bridge` native module; the SwiftUI widget reads it on every timeline reload.
 
-- Swift conventions: [docs/swift-conventions.md](docs/swift-conventions.md). Do **not** apply TypeScript conventions here.
+- Swift conventions: [docs/swift-conventions.md](docs/swift-conventions.md). TypeScript conventions (`T`/`I`/`E` prefixes, kebab-case files) do **not** apply to Swift.
 - App Group: `group.com.depthly.app.shared`
 - Widget kind: `depthly.position`
-- Refresh trigger: TanStack Query refetch success (Following changes follow on next refetch; see `usePositionsQuery.ts` TODO marker)
-- Implementation plan: `docs/superpowers/plans/2026-06-10-positions-widget.md` (outside git, planning artifact)
+- Refresh trigger: TanStack Query refetch success path. Future silent-push plan: [docs/widget-silent-push.md](docs/widget-silent-push.md).

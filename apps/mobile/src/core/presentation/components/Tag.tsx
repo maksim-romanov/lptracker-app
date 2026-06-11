@@ -9,7 +9,6 @@ type Variants = UnistylesVariants<typeof styles>;
 
 type Props = Variants & {
   children: React.ReactNode;
-  /** Override tint (e.g., for network-specific tags). */
   color?: string;
   style?: ViewStyle;
 };

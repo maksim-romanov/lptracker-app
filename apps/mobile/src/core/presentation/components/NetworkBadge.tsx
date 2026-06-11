@@ -10,7 +10,6 @@ type Variants = UnistylesVariants<typeof styles>;
 
 type Props = Variants & {
   chainId: number;
-  /** When true, renders just a colored dot. */
   dot?: boolean;
   style?: ViewStyle;
 };

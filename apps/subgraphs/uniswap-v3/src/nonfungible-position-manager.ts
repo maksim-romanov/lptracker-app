@@ -18,7 +18,6 @@ function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: Bi
   let contract = NonfungiblePositionManager.bind(contractAddress);
   let result = contract.try_positions(tokenId);
 
-  // If the call reverted (position was burned or doesn't exist), mark as closed
   if (result.reverted) {
     position.closed = true;
     position.updatedAtBlock = blockNumber;
@@ -37,7 +36,6 @@ function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: Bi
   position.updatedAtBlock = blockNumber;
   position.updatedAtTimestamp = timestamp;
 
-  // Get or create pool if not set (using shared utility)
   if (position.pool === null) {
     let pool = getOrCreatePool(contractAddress, data.getToken0(), data.getToken1(), data.getFee(), blockNumber, timestamp);
     if (pool !== null) {
@@ -73,7 +71,6 @@ export function handleTransfer(event: Transfer): void {
     position.updatedAtBlock = event.block.number;
     position.updatedAtTimestamp = event.block.timestamp;
 
-    // Fetch position data immediately to get pool
     let contract = NonfungiblePositionManager.bind(event.address);
     let result = contract.try_positions(event.params.tokenId);
     if (!result.reverted) {
@@ -84,7 +81,6 @@ export function handleTransfer(event: Transfer): void {
       position.tickUpper = data.getTickUpper();
       position.liquidity = data.getLiquidity();
 
-      // Get or create pool (using shared utility)
       let pool = getOrCreatePool(event.address, data.getToken0(), data.getToken1(), data.getFee(), event.block.number, event.block.timestamp);
       if (pool !== null) {
         position.pool = pool.id;
@@ -92,7 +88,6 @@ export function handleTransfer(event: Transfer): void {
     }
   }
 
-  // burn
   if (event.params.to.equals(Address.zero())) {
     position.closed = true;
     position.updatedAtBlock = event.block.number;
@@ -106,7 +101,6 @@ export function handleTransfer(event: Transfer): void {
   position.updatedAtTimestamp = event.block.timestamp;
   position.save();
 
-  // For existing positions, sync to get latest data
   if (!isNewPosition) {
     syncPosition(event.address, event.params.tokenId, event.block.number, event.block.timestamp);
   }

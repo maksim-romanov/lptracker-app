@@ -7,9 +7,7 @@ import { Text } from "./Text";
 type Variants = UnistylesVariants<typeof styles>;
 
 type Props = Variants & {
-  /** Source for initials when no image is provided. */
   label?: string;
-  /** Optional override color (e.g., network brand). */
   tint?: string;
   style?: ViewStyle;
 };

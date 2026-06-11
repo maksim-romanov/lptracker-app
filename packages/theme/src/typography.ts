@@ -1,21 +1,3 @@
-/**
- * Typography scale - Simplified responsive system
- *
- * Headings (3 levels, always bold):
- * - display: Hero text, splash screens, empty states (32px, Black)
- * - title: Screen titles, section headers (22px, Bold)
- * - headline: Card accents, section emphasis (18px, Bold)
- *
- * Text (with bold modifier):
- * - body: Default paragraphs, descriptions (16px, Regular / Bold)
- * - bodySmall: Secondary info, captions (13px, Regular / Medium)
- * - label: UI controls - tabs, chips (14px, Medium / Bold)
- *
- * Controls:
- * - button: Button labels (16px, Bold)
- * - input: Text fields, search bars (16px, Medium)
- */
-
 export type FontWeight = "400" | "500" | "600" | "700";
 
 export type TextStyleType = {
@@ -37,9 +19,6 @@ export type TypographyTokens = {
   input: TextStyleType;
 };
 
-/**
- * Font families - Satoshi font family
- */
 export const fontFamily = {
   regular: "Satoshi-Regular",
   medium: "Satoshi-Medium",
@@ -48,18 +27,12 @@ export const fontFamily = {
   mono: "Menlo",
 } as const;
 
-/**
- * Line height multipliers
- */
 export const lineHeight = {
   tight: 1.1,
   normal: 1.4,
   relaxed: 1.6,
 } as const;
 
-/**
- * Letter spacing
- */
 export const letterSpacing = {
   tight: -0.5,
   normal: 0,
@@ -67,10 +40,7 @@ export const letterSpacing = {
   wider: 1,
 } as const;
 
-/**
- * Typography scale - base sizes for phone (xs breakpoint)
- * Responsive scaling happens in Unistyles via breakpoints
- */
+// Base sizes for the xs breakpoint. Responsive scaling happens in Unistyles via breakpoints.
 export const typography: TypographyTokens = {
   display: {
     fontFamily: fontFamily.black,

@@ -15,11 +15,10 @@ const SIZE = {
 type Size = keyof typeof SIZE;
 
 type Props = {
-  /** Deterministic seed — wallet address or any string. Falls back to a neutral pattern. */
+  /** Deterministic seed — wallet address or any string. Undefined renders a neutral pattern. */
   seed?: string;
   size?: Size;
   onPress?: () => void;
-  /** Decorative ring around the avatar. */
   ring?: boolean;
   style?: ViewStyle;
 };

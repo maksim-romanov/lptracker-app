@@ -9,7 +9,6 @@ import { TokenImage } from "./TokenImage";
 
 export type TickerToken = {
   symbol: string;
-  /** 24h percent change, e.g. +2.4 or -1.8. */
   change: number;
   address?: string;
   chainId?: number;
@@ -17,7 +16,6 @@ export type TickerToken = {
 
 type Props = {
   tokens: TickerToken[];
-  /** Duration in ms for one full pass of a single set of tokens. */
   durationPerSetMs?: number;
 };
 

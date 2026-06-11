@@ -11,11 +11,10 @@ export type TokenImageSize = "sm" | "md" | "lg";
 
 type Token = { address?: string; symbol?: string };
 
+// Logo source priority: explicit `imageUrl` → meta lookup by `chainId` → symbol monogram fallback.
 type TokenImageProps = {
   token: Token;
-  /** Used to fetch the logo from the meta endpoint (optional — falls back to monogram). */
   chainId?: number;
-  /** Direct image URL — overrides chainId-based lookup. */
   imageUrl?: string;
   size?: TokenImageSize;
 } & Pick<ViewProps, "style">;

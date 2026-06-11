@@ -1,17 +1,11 @@
 import { type ColorTokens, depthlyDark, depthlyLight, radius, spacing, typography } from "@depthly/theme";
 import { StyleSheet } from "react-native-unistyles";
 
-/**
- * Stacks layout configuration
- */
 const stacks = {
-  spacing: 4, // Base unit matching @depthly/theme (4px)
+  spacing: 4,
   debug: false,
 };
 
-/**
- * Complete theme type combining colors, spacing, and typography
- */
 export type AppTheme = ColorTokens & {
   spacing: typeof spacing;
   radius: typeof radius;
@@ -19,9 +13,6 @@ export type AppTheme = ColorTokens & {
   stacks: typeof stacks;
 };
 
-/**
- * Create a complete theme from color tokens
- */
 const createTheme = (colors: ColorTokens): AppTheme => ({
   ...colors,
   spacing,
@@ -30,9 +21,6 @@ const createTheme = (colors: ColorTokens): AppTheme => ({
   stacks,
 });
 
-/**
- * All available themes
- */
 export const themes = {
   depthlyLight: createTheme(depthlyLight),
   depthlyDark: createTheme(depthlyDark),
@@ -40,9 +28,6 @@ export const themes = {
 
 export type ThemeName = keyof typeof themes;
 
-/**
- * Breakpoints for responsive design
- */
 const breakpoints = {
   xs: 0,
   sm: 576,
@@ -51,7 +36,6 @@ const breakpoints = {
   xl: 1200,
 } as const;
 
-// Type augmentation for Unistyles
 type AppBreakpoints = typeof breakpoints;
 type AppThemes = typeof themes;
 
@@ -64,9 +48,6 @@ declare module "@grapp/stacks" {
   export interface StacksBreakpoints extends AppBreakpoints {}
 }
 
-/**
- * Configure Unistyles
- */
 StyleSheet.configure({
   themes,
   breakpoints,

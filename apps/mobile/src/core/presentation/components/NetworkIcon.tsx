@@ -12,7 +12,6 @@ type Variants = UnistylesVariants<typeof styles>;
 
 type Props = Variants & {
   chainId: number;
-  /** Drops contrast for unselected/disabled states. */
   muted?: boolean;
   style?: ViewStyle;
 };
