@@ -13,12 +13,12 @@ import type { WidgetSnapshotRepository } from "../data/widget-snapshot.repositor
 import { WIDGET_SNAPSHOT_REPOSITORY } from "../di/tokens";
 
 /**
- * Widget snapshot orchestrator. Reads followed positions and view prefs,
- * intersects with the latest positions from the gateway, and writes a snapshot
- * to the App Group consumed by the SwiftUI widget.
+ * Widget snapshot orchestrator. Pulls current wallets, fetches positions,
+ * intersects with followed/inverted refs, and writes a snapshot to the App
+ * Group consumed by the SwiftUI widget.
  *
- * Triggered explicitly from wallet mutation use cases, the positions refetch
- * success path, the BG task, and AppInit. No store subscriptions.
+ * Triggered explicitly from wallet/positions use cases, the BG task, and
+ * AppInit. No store subscriptions.
  */
 @injectable()
 export class WidgetSnapshotService extends Service {
@@ -34,39 +34,43 @@ export class WidgetSnapshotService extends Service {
     super();
   }
 
-  async revalidateWith(positions: readonly TGatewayPosition[], tokens: TTokensMap): Promise<void> {
+  async revalidate(): Promise<void> {
     if (this.inflight) return this.inflight;
-    this.inflight = this.doRevalidate(positions, tokens).finally(() => {
+    this.inflight = this.doRevalidate().finally(() => {
       this.inflight = null;
     });
     return this.inflight;
   }
 
-  async revalidate(): Promise<void> {
+  private async doRevalidate(): Promise<void> {
     const wallets = this.walletsRepo.getAll().map((w) => ({
       address: w.address,
       chainIds: [...w.chainIds],
     }));
-    if (wallets.length === 0) {
-      await this.revalidateWith([], {});
-      return;
-    }
-    try {
-      const data = await this.positionsRepo.list({ wallets });
-      await this.revalidateWith(data.data, data.tokens);
-    } catch (error) {
-      this.logger.warn("Widget snapshot revalidation failed", { error });
-    }
-  }
 
-  private async doRevalidate(positions: readonly TGatewayPosition[], tokens: TTokensMap): Promise<void> {
+    const data = await this.fetchPositions(wallets);
+    if (data === null) return;
+
     const snapshot = buildWidgetSnapshot({
-      positions,
+      positions: data.positions,
+      tokens: data.tokens,
       following: new Set(this.followingRepo.getAll()),
       invertedRefs: new Set(this.viewPrefsRepo.getInvertedRefs()),
-      tokens,
       now: Date.now(),
     });
     await this.repo.write(snapshot);
+  }
+
+  private async fetchPositions(
+    wallets: readonly { address: string; chainIds: number[] }[],
+  ): Promise<{ positions: readonly TGatewayPosition[]; tokens: TTokensMap } | null> {
+    if (wallets.length === 0) return { positions: [], tokens: {} };
+    try {
+      const data = await this.positionsRepo.list({ wallets });
+      return { positions: data.data, tokens: data.tokens };
+    } catch (error) {
+      this.logger.warn("Widget snapshot revalidation: positions fetch failed", { error });
+      return null;
+    }
   }
 }
