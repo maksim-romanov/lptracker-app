@@ -1,0 +1,109 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "dictionaries": [
+    "typescript",
+    "node",
+    "npm",
+    "html",
+    "css",
+    "fonts",
+    "filetypes",
+    "softwareTerms",
+    "companies",
+    "misc",
+    "bash",
+    "swift",
+    "rust",
+    "en_US",
+    "shared-words"
+  ],
+  "dictionaryDefinitions": [
+    { "name": "shared-words", "path": "./cspell-words.txt", "addWords": true },
+    { "name": "server-words", "path": "./apps/server/cspell-words.txt", "addWords": true },
+    { "name": "mobile-words", "path": "./apps/mobile/cspell-words.txt", "addWords": true },
+    { "name": "tokens-data-words", "path": "./apps/tokens-data/cspell-words.txt", "addWords": true },
+    { "name": "subgraph-words", "path": "./apps/subgraphs/cspell-words.txt", "addWords": true }
+  ],
+  "overrides": [
+    {
+      "filename": ["apps/server/**", "packages/logger/**"],
+      "dictionaries": ["server-words"]
+    },
+    {
+      "filename": ["apps/mobile/**", "packages/theme/**"],
+      "dictionaries": ["mobile-words"]
+    },
+    {
+      "filename": ["apps/tokens-data/**"],
+      "dictionaries": ["tokens-data-words"]
+    },
+    {
+      "filename": ["apps/subgraphs/**"],
+      "dictionaries": ["subgraph-words"]
+    },
+    {
+      "filename": ["docs/**", "CLAUDE.md", "README.md", "package.json", "lefthook.yml", "cspell.json", ".github/**"],
+      "dictionaries": ["server-words", "mobile-words", "tokens-data-words", "subgraph-words"]
+    }
+  ],
+  "ignorePaths": [
+    ".git/**",
+    ".turbo/**",
+    ".expo/**",
+    ".vscode/**",
+    ".claude/**",
+    ".superpowers/**",
+    "node_modules/**",
+    "bun.lock",
+    "*.lock",
+    "yarn.lock",
+    "package-lock.json",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/.next/**",
+    "**/.expo/**",
+    "**/.turbo/**",
+    "apps/server/openapi/**",
+    "apps/server/**/gql/**",
+    "apps/server/src/features/token-prices/data/tokens-data.generated.ts",
+    "apps/mobile/src/core/tokens-data/generated.d.ts",
+    "apps/mobile/src/core/api-client/generated/**",
+    "apps/mobile/src/features/uniswap-v3/data/generated/**",
+    "apps/mobile/ios/**",
+    "apps/mobile/android/**",
+    "apps/tokens-data/generated/**",
+    "apps/subgraphs/**/generated/**",
+    "apps/subgraphs/**/build/**",
+    "apps/subgraphs/**/data/**",
+    "apps/subgraphs/**/tests/.bin/**",
+    "assets/**",
+    "**/assets/**",
+    "**/*.svg",
+    "**/*.png",
+    "**/*.jpg",
+    "**/*.jpeg",
+    "**/*.gif",
+    "**/*.webp",
+    "**/*.ico",
+    "**/*.pdf",
+    "**/*.zip",
+    "**/*.tar",
+    "**/*.gz",
+    "**/*.pem",
+    "**/*.key",
+    "**/*.p8",
+    "**/*.p12",
+    "**/*.mobileprovision",
+    "CHANGELOG.md",
+    "LICENSE",
+    ".env*",
+    "**/cspell-words.txt",
+    "skills-lock.json",
+    "dump.rdb"
+  ],
+  "ignoreRegExpList": ["0x[0-9a-fA-F]+", "https?://\\S+", "[a-zA-Z0-9+/]{40,}={0,2}", "[a-f0-9]{32,}"],
+  "useGitignore": true
+}
