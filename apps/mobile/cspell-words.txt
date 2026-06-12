@@ -29,6 +29,8 @@ podfile
 podspec
 mobileprovision
 widgetkit
+widgetbridge
+jetpack
 wholemodule
 
 pressable
