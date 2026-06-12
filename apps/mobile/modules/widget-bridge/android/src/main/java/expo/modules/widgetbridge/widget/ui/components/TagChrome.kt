@@ -22,11 +22,11 @@ data class TagSize(
 ) {
   companion object {
     val Large = TagSize(
-      labelStyle = Typography.labelMd,
+      labelStyle = Typography.labelLg,
       dotSize = Sizing.Tag.dotLarge,
-      horizontalPadding = Spacing.md,
-      verticalPadding = Spacing.xxs,
-      internalSpacing = Spacing.xs,
+      horizontalPadding = Spacing.lg,
+      verticalPadding = Spacing.xs,
+      internalSpacing = Spacing.sm,
     )
     val Compact = TagSize(
       labelStyle = Typography.labelSm,

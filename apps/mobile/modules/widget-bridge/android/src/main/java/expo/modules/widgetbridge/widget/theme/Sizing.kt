@@ -6,7 +6,9 @@ object Sizing {
   object RangeBar {
     val track = 14.dp
     val thumb = 24.dp
-    const val thumbStroke = 2.5f
+    // Bitmap-space pixel stroke around the thumb circle (RangeBarView renders
+    // into a 600x48 px bitmap; this is in those pixel units, not dp).
+    const val thumbStrokePx = 7f
     val thumbShadowRadius = 6.dp
   }
 

@@ -6,10 +6,12 @@ DeFi portfolio monitoring — track your LP positions, accumulated fees, and on-
 [![Bun](https://img.shields.io/badge/Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![React Native](https://img.shields.io/badge/React_Native-61DAFB?logo=react&logoColor=black)](https://reactnative.dev)
+[![Swift](https://img.shields.io/badge/Swift-F05138?logo=swift&logoColor=white)](https://swift.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 
 ## Stack
 
-Hono API on Bun · The Graph subgraphs (AssemblyScript) · React Native 0.83 / Expo 55 / React 19 · Turborepo
+Hono API on Bun · The Graph subgraphs (AssemblyScript) · React Native 0.83 / Expo 55 / React 19 · Turborepo · Home-screen widgets via SwiftUI/WidgetKit (iOS) and Jetpack Glance (Android), shipped through an Expo Module bridge
 
 ## Requirements
 

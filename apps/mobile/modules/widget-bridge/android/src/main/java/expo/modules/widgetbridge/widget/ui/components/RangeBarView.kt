@@ -80,7 +80,7 @@ private fun render(range: WidgetTickRange): Bitmap {
 
   // Stroke
   paint.style = Paint.Style.STROKE
-  paint.strokeWidth = 7f
+  paint.strokeWidth = Sizing.RangeBar.thumbStrokePx
   paint.color = Colors.bgPrimary.toArgb()
   canvas.drawCircle(thumbX, thumbY, thumbDiameter / 2, paint)
 

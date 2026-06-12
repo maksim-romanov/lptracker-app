@@ -1,7 +1,6 @@
 package expo.modules.widgetbridge.widget.actions
 
 import android.content.Context
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.GlanceAppWidgetManager
@@ -10,10 +9,9 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
 import expo.modules.widgetbridge.widget.DepthlyWidgetMedium
 import expo.modules.widgetbridge.widget.DepthlyWidgetSmall
+import expo.modules.widgetbridge.widget.data.INVERSION_TICK
 import expo.modules.widgetbridge.widget.data.InvertedStore
 import expo.modules.widgetbridge.widget.data.POSITION_REF_KEY
-
-val INVERSION_TICK = intPreferencesKey("inversionTick")
 
 class ToggleInversionAction : ActionCallback {
   override suspend fun onAction(
