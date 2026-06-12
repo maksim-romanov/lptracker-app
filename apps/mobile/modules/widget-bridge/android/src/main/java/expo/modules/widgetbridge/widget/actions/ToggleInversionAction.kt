@@ -23,7 +23,7 @@ class ToggleInversionAction : ActionCallback {
     InvertedStore(context).toggle(ref)
 
     // Bump a per-widget tick across every widget instance so Glance's
-    // state diffing recognises a change and recomposes. The file-based
+    // state diffing recognizes a change and recomposes. The file-based
     // InvertedStore mutation alone is invisible to Glance state tracking.
     val mgr = GlanceAppWidgetManager(context)
     val ids = mgr.getGlanceIds(DepthlyWidgetSmall::class.java) +

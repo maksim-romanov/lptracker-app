@@ -32,6 +32,14 @@ widgetkit
 widgetbridge
 jetpack
 wholemodule
+androidx
+appwidget
+argb
+buildscript
+clickables
+ellipsize
+kotlinx
+robolectric
 
 pressable
 swipeable
