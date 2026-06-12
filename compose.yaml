@@ -1,0 +1,62 @@
+name: depthly
+
+services:
+  redis:
+    image: redis:7-alpine
+    init: true
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  tokens-data:
+    build:
+      context: .
+      dockerfile: apps/tokens-data/Dockerfile
+    init: true
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      REDIS_URL: redis://redis:6379
+      PORT: "3100"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3100/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    ports:
+      - "${SERVER_PORT:-3000}:3000"
+    env_file: .env
+    environment:
+      REDIS_URL: redis://redis:6379
+      TOKENS_DATA_URL: http://tokens-data:3100
+    depends_on:
+      redis:
+        condition: service_healthy
+      tokens-data:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  redis-data:

@@ -17,6 +17,8 @@ const app = new Hono();
 
 app.use("*", requestLogger({ app: "server" }));
 
+app.get("/health", (c) => c.json({ ok: true, service: "server" }));
+
 app.route("/api/v1", v1Routes);
 
 const openApiDocumentation = {
