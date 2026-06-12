@@ -69,7 +69,7 @@ export const TokenImage = ({ token, chainId, imageUrl, size = "md", style }: Tok
   const seed = (token.address || token.symbol || "?").toLowerCase();
   const [errored, setErrored] = useState(false);
 
-  const remoteUrl = imageUrl ?? (chainId && token.address ? tokensDataUrls.logo(chainId, token.address) : undefined);
+  const remoteUrl = tokensDataUrls.resolve(imageUrl) ?? (chainId && token.address ? tokensDataUrls.logo(chainId, token.address) : undefined);
 
   styles.useVariants({ size });
 

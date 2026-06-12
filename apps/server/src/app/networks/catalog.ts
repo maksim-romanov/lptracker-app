@@ -1,11 +1,7 @@
 import { NETWORKS } from "@depthly/catalog";
-import { buildNetworkIconUrl } from "shared/adapters/tokens-data.urls";
 import type { Network } from "shared/contracts";
 
-export const networkCatalog: Network[] = NETWORKS.map((seed) => ({
-  ...seed,
-  iconUrl: buildNetworkIconUrl(seed.chainId),
-}));
+export const networkCatalog: Network[] = NETWORKS.map((seed) => ({ ...seed }));
 
 const byChainId = new Map<number, Network>(networkCatalog.map((n) => [n.chainId, n]));
 

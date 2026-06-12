@@ -4,6 +4,7 @@ import { installLogger, requestLogger } from "@depthly/logger";
 import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
 import { openAPIRouteHandler } from "hono-openapi";
+import { iconsRoutes } from "icons/presentation/api";
 import { tokenPricesRoutes } from "token-prices/presentation/api";
 import { tokensMetaRoutes } from "tokens-meta/presentation/api";
 
@@ -38,6 +39,7 @@ const openApiDocumentation = {
 app.get("/openapi.json", openAPIRouteHandler(v1Routes, { documentation: openApiDocumentation }));
 app.get("/docs", Scalar({ url: "/openapi.json", theme: "purple", pageTitle: "Depthly API" }));
 
+app.route("/icons", iconsRoutes);
 app.route("/meta", tokensMetaRoutes);
 app.route("/prices", tokenPricesRoutes);
 

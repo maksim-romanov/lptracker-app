@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "depthly Gateway API",
+    "title": "Depthly Gateway API",
     "description": "Protocol-agnostic gateway API for DeFi position aggregation across wallets, chains, and protocols",
     "version": "1.0.0"
   },
@@ -257,9 +257,6 @@
               "decimals"
             ]
           },
-          "iconUrl": {
-            "type": "string"
-          },
           "explorerUrl": {
             "type": "string"
           }
@@ -270,7 +267,6 @@
           "name",
           "shortName",
           "nativeCurrency",
-          "iconUrl",
           "explorerUrl"
         ]
       },

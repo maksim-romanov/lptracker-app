@@ -1,4 +1,5 @@
 import { PROTOCOLS_META } from "@depthly/catalog";
+import { tokensDataUrls } from "core/tokens-data/urls";
 import type { TGatewayPosition, TPositionByExt, TTokensMap } from "positions/domain/types";
 
 import type { TWidgetExtension, TWidgetPair, TWidgetPosition, TWidgetSnapshot, TWidgetStatus, TWidgetToken } from "../domain/types";
@@ -53,7 +54,7 @@ function toWidgetToken(tokenRef: string, formatted: string, tokens: TTokensMap):
   const meta = tokens[tokenRef];
   return {
     symbol: meta?.symbol ?? tokenRef,
-    iconUrl: meta?.iconUrl ?? "",
+    iconUrl: tokensDataUrls.resolve(meta?.iconUrl) ?? "",
     formatted: formatWidgetAmount(formatted),
   };
 }

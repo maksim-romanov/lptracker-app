@@ -17,7 +17,8 @@
 
       "uniswap-v3/*": ["features/uniswap-v3/*", "features/uniswap-v3"],
       "token-prices/*": ["features/token-prices/*", "features/token-prices"],
-      "tokens-meta/*": ["features/tokens-meta/*", "features/tokens-meta"]
+      "tokens-meta/*": ["features/tokens-meta/*", "features/tokens-meta"],
+      "icons/*": ["features/icons/*", "features/icons"]
     }
   },
   "exclude": ["scripts"]
