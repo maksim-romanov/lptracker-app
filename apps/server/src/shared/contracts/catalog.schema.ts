@@ -11,7 +11,6 @@ export const networkSchema = v.pipe(
       name: v.string(),
       decimals: v.number(),
     }),
-    iconUrl: v.string(),
     explorerUrl: v.string(),
   }),
   v.metadata({ ref: "Network" }),

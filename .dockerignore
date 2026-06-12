@@ -1,0 +1,43 @@
+# VCS
+.git
+.gitignore
+.gitattributes
+
+# Dependencies (re-installed inside the image)
+node_modules
+**/node_modules
+
+# Turborepo cache
+.turbo
+**/.turbo
+
+# Local env (compose loads .env from host, not from build context)
+.env
+.env.*
+!.env.example
+
+# Logs and OS junk
+*.log
+.DS_Store
+
+# Docs and tooling that aren't needed in the image
+docs
+.vscode
+.idea
+.superpowers
+
+# Workspaces not built into either backend image
+apps/mobile
+apps/subgraphs
+
+# Build/test artifacts
+build
+dist
+coverage
+**/build
+**/dist
+**/coverage
+
+# Expo
+.expo
+**/.expo

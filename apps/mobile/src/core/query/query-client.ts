@@ -13,7 +13,7 @@ export const mmkvPersister = experimental_createQueryPersister({
     },
   },
   maxAge: 1000 * 60 * 60 * 24 * 90,
-  refetchOnRestore: false,
+  refetchOnRestore: true,
 });
 
 export function clearPersistedQueries(): void {
@@ -23,10 +23,10 @@ export function clearPersistedQueries(): void {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 30,
+      staleTime: 1000 * 60,
       gcTime: 1000 * 60 * 60 * 24 * 90,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
       refetchOnReconnect: true,
       persister: mmkvPersister.persisterFn,
     },
