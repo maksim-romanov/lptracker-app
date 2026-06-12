@@ -25,3 +25,10 @@ pre-commit:
       skip:
         - merge
         - rebase
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: cspell
+      glob: "*.{ts,tsx,js,jsx,mjs,cjs,md,mdx,json,jsonc,yml,yaml,swift,rs,sh,toml}"
+      run: bunx cspell --no-progress --no-must-find-files --no-summary {push_files}

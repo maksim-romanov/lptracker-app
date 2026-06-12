@@ -1,0 +1,12 @@
+assemblyscript
+changetype
+graphprotocol
+cshared
+cumulatives
+typehash
+agos
+cmax
+ipfs
+kubo
+initdb
+pgdata

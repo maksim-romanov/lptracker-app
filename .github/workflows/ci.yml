@@ -21,3 +21,16 @@ jobs:
         run: bun run lint
       - name: Type check
         run: bun run typecheck
+
+  spellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: streetsidesoftware/cspell-action@v8
+        with:
+          config: cspell.json
+          incremental_files_only: false
+          strict: true
+          inline: warning

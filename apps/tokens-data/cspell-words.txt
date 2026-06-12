@@ -1,0 +1,8 @@
+avalanchec
+smartchain
+defillama
+lifi
+oneinch
+trustwallet
+pancakeswap
+sushiswap
