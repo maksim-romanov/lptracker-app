@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="horizontal"
+  android:background="@drawable/widget_bg_dark"
+  android:padding="16dp">
+
+  <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="ETH/USDC"
+      android:textColor="#FFFFFF"
+      android:textSize="21sp"
+      android:textStyle="bold"
+      android:singleLine="true"
+      android:ellipsize="end"/>
+
+    <Space
+      android:layout_width="match_parent"
+      android:layout_height="8dp"/>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_vertical">
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:background="@drawable/widget_preview_tag_bg">
+        <View
+          android:layout_width="6dp"
+          android:layout_height="6dp"
+          android:background="@drawable/widget_preview_dot_chain"/>
+        <Space
+          android:layout_width="4dp"
+          android:layout_height="match_parent"/>
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Base"
+          android:textColor="#B3FFFFFF"
+          android:textSize="11sp"/>
+      </LinearLayout>
+
+      <Space
+        android:layout_width="4dp"
+        android:layout_height="match_parent"/>
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.30%"
+        android:textColor="#B3FFFFFF"
+        android:textSize="11sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:background="@drawable/widget_preview_tag_bg"/>
+
+      <Space
+        android:layout_width="4dp"
+        android:layout_height="match_parent"/>
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:background="@drawable/widget_preview_tag_bg">
+        <View
+          android:layout_width="6dp"
+          android:layout_height="6dp"
+          android:background="@drawable/widget_preview_dot_status"/>
+        <Space
+          android:layout_width="4dp"
+          android:layout_height="match_parent"/>
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="In range"
+          android:textColor="#11C56B"
+          android:textSize="11sp"/>
+      </LinearLayout>
+    </LinearLayout>
+
+    <Space
+      android:layout_width="match_parent"
+      android:layout_height="12dp"/>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="8dp"
+      android:background="@drawable/widget_preview_track"/>
+  </LinearLayout>
+
+  <Space
+    android:layout_width="16dp"
+    android:layout_height="match_parent"/>
+
+  <View
+    android:layout_width="1dp"
+    android:layout_height="match_parent"
+    android:background="#14FFFFFF"/>
+
+  <Space
+    android:layout_width="16dp"
+    android:layout_height="match_parent"/>
+
+  <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical">
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Value"
+      android:textColor="#B3FFFFFF"
+      android:textSize="11sp"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="1.23 ETH"
+      android:textColor="#FFFFFF"
+      android:textSize="20sp"
+      android:textStyle="bold"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="3 450 USDC"
+      android:textColor="#FFFFFF"
+      android:textSize="14sp"
+      android:textStyle="bold"/>
+
+    <Space
+      android:layout_width="match_parent"
+      android:layout_height="12dp"/>
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Fees"
+      android:textColor="#B3FFFFFF"
+      android:textSize="11sp"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="+0.01 ETH"
+      android:textColor="#FF3D6E"
+      android:textSize="16sp"
+      android:textStyle="bold"/>
+  </LinearLayout>
+</LinearLayout>

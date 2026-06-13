@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="widget_description">Track a single LP position.</string>
+  <string name="widget_label_small">Depthly Position (small)</string>
+  <string name="widget_label_medium">Depthly Position (medium)</string>
+</resources>
