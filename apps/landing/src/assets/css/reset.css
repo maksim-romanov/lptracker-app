@@ -1,0 +1,24 @@
+:where(*, *::before, *::after) {
+  box-sizing: border-box;
+}
+:where(*) {
+  margin: 0;
+}
+:where(html, body) {
+  height: 100%;
+}
+html {
+  color-scheme: light dark;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+:where(img, picture, video, canvas, svg) {
+  display: block;
+  max-width: 100%;
+}
+:where(input, button, textarea, select) {
+  font: inherit;
+}
+:where(button) {
+  cursor: pointer;
+}

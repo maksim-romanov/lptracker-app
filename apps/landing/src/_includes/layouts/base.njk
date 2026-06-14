@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <title>{{ title or site.title }}</title>
+    <meta name="description" content="{{ description or site.description }}" />
+
+    <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ title or site.title }}" />
+    <meta property="og:description" content="{{ description or site.description }}" />
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
+    <meta property="og:image" content="{{ site.url }}{{ site.ogImage }}" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ title or site.title }}" />
+    <meta name="twitter:description" content="{{ description or site.description }}" />
+    <meta name="twitter:image" content="{{ site.url }}{{ site.ogImage }}" />
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23000000'/><circle cx='16' cy='16' r='4.5' fill='%23FF007A'/></svg>" />
+
+    <link rel="stylesheet" href="/assets/css/main.css" fetchpriority="high" />
+
+    {% if "CHANGE-ME" not in site.waitlistUrl %}
+    <script type="speculationrules">
+      {
+        "prefetch": [{
+          "source": "list",
+          "urls": ["{{ site.waitlistUrl }}"],
+          "eagerness": "moderate"
+        }]
+      }
+    </script>
+    {% endif %}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <main id="main">
+      {{ content | safe }}
+    </main>
+  </body>
+</html>

@@ -1,0 +1,145 @@
+@property --glow-tx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --glow-ty {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --glow-scale {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --glow-opacity {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.75;
+}
+
+@keyframes hero-glow-drift {
+  0% {
+    --glow-tx: 0%;
+    --glow-ty: 0%;
+    --glow-scale: 1;
+    --glow-opacity: 0.75;
+  }
+  25% {
+    --glow-tx: -5%;
+    --glow-ty: 3%;
+    --glow-scale: 1.15;
+    --glow-opacity: 1;
+  }
+  50% {
+    --glow-tx: 3%;
+    --glow-ty: 5%;
+    --glow-scale: 0.92;
+    --glow-opacity: 0.8;
+  }
+  75% {
+    --glow-tx: 5%;
+    --glow-ty: -3%;
+    --glow-scale: 1.1;
+    --glow-opacity: 0.95;
+  }
+  100% {
+    --glow-tx: 0%;
+    --glow-ty: 0%;
+    --glow-scale: 1;
+    --glow-opacity: 0.75;
+  }
+}
+
+@scope (.hero) {
+  :scope {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    container-type: inline-size;
+    container-name: hero;
+  }
+
+  .bg-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background:
+      radial-gradient(55% 45% at 78% 36%, var(--glow-pink), transparent 70%),
+      radial-gradient(45% 35% at 92% 75%, var(--glow-cool), transparent 70%);
+    transform: translate3d(var(--glow-tx), var(--glow-ty), 0) scale(var(--glow-scale));
+    opacity: var(--glow-opacity);
+    animation: hero-glow-drift 16s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    width: 100%;
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block-start: max(var(--space-block), 6rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: start;
+  }
+
+  .text {
+    padding-block-end: var(--space-block);
+  }
+
+  h1 {
+    font-size: var(--text-display);
+    font-weight: 600;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--lh-display);
+    text-wrap: balance;
+    max-width: 14ch;
+    color: var(--text);
+    text-box: trim-both cap alphabetic;
+    view-transition-name: hero-title;
+  }
+
+  p {
+    margin-top: var(--space-sm);
+    font-size: var(--text-sub);
+    font-weight: 400;
+    line-height: var(--lh-body);
+    text-wrap: pretty;
+    color: var(--text-secondary);
+    max-width: var(--measure-default);
+  }
+
+  @container hero (max-width: 45rem) {
+    .inner {
+      justify-content: center;
+    }
+
+    .text {
+      padding-block: var(--space-block);
+    }
+
+    h1 {
+      font-size: var(--text-display-tight);
+    }
+
+    p {
+      max-width: var(--measure-narrow);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .bg-glow {
+    animation: none;
+  }
+}
