@@ -27,6 +27,7 @@ async function boot() {
       img.src = src;
     });
 
+  const INT16_SCALE = 1 / 32767;
   let targets: Float32Array;
   let tokenAtlas: HTMLImageElement;
   try {
@@ -35,9 +36,11 @@ async function boot() {
         if (!r.ok) throw new Error(`silhouette.bin status ${r.status}`);
         return r.arrayBuffer();
       }),
-      loadImage("/assets/img/token-atlas.png"),
+      loadImage("/assets/img/token-atlas.webp"),
     ]);
-    targets = new Float32Array(silhouetteRes);
+    const packed = new Int16Array(silhouetteRes);
+    targets = new Float32Array(packed.length);
+    for (let i = 0; i < packed.length; i++) targets[i] = (packed[i] ?? 0) * INT16_SCALE;
     tokenAtlas = atlasImg;
   } catch (err) {
     console.warn("hero: failed to load assets, falling back", err);

@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
 const TOKENS_DIR = resolve(root, "src/assets/img/tokens");
-const OUT = resolve(root, "src/assets/img/token-atlas.png");
+const OUT = resolve(root, "src/assets/img/token-atlas.webp");
 
 const CELL_SIZE = 64;
 const ATLAS_ROWS = Math.ceil(TOKENS.length / ATLAS_COLS);
@@ -60,7 +60,7 @@ await sharp({
   },
 })
   .composite(composites)
-  .png()
+  .webp({ quality: 92, alphaQuality: 100, effort: 6 })
   .toFile(OUT);
 
 console.log(`build-token-atlas: ${TOKENS.length} tokens → ${ATLAS_W}×${ATLAS_H} → ${OUT}`);

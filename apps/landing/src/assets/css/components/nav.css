@@ -1,3 +1,8 @@
+@keyframes entry-nav {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @scope (.nav) {
   :scope {
     position: fixed;
@@ -7,6 +12,7 @@
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border-bottom: 1px solid var(--hairline-soft);
+    animation: entry-nav 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .inner {
@@ -29,5 +35,11 @@
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .nav {
     background: var(--bg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav {
+    animation: none;
   }
 }

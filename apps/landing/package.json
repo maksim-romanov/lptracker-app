@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "eleventy --serve",
     "build": "bun scripts/sample-silhouette.ts && bun scripts/build-token-atlas.ts && bun scripts/build-hero.ts --mode=production && eleventy",
-    "clean": "rm -rf _site src/assets/js/hero.bundle.js src/assets/data",
+    "clean": "rm -rf _site src/assets/js/hero.bundle.js src/assets/data src/assets/img/token-atlas.webp",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit"

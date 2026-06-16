@@ -11,6 +11,8 @@ const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const SITE_DATA = resolve(root, "src/_data/site.js");
 const BIN_OUT = resolve(root, "src/assets/data/silhouette.bin");
 
+const INT16_SCALE = 32767;
+
 const { default: site } = (await import(pathToFileURL(SITE_DATA).href)) as {
   default: { brand: string };
 };
@@ -50,7 +52,7 @@ const longest = Math.max(width, height);
 const halfW = width / longest;
 const halfH = height / longest;
 
-const out = new Float32Array(PARTICLE_COUNT * 2);
+const out = new Int16Array(PARTICLE_COUNT * 2);
 let written = 0;
 let attempts = 0;
 
@@ -65,8 +67,8 @@ while (written < PARTICLE_COUNT && attempts < MAX_ATTEMPTS) {
   const nx = (px / width) * 2 - 1;
   const ny = 1 - (py / height) * 2;
 
-  out[written * 2] = nx * halfW;
-  out[written * 2 + 1] = ny * halfH;
+  out[written * 2] = Math.round(nx * halfW * INT16_SCALE);
+  out[written * 2 + 1] = Math.round(ny * halfH * INT16_SCALE);
   written++;
 }
 
@@ -75,6 +77,6 @@ if (written < PARTICLE_COUNT) {
 }
 
 await mkdir(dirname(BIN_OUT), { recursive: true });
-await writeFile(BIN_OUT, Buffer.from(out.buffer, 0, written * 2 * 4));
+await writeFile(BIN_OUT, Buffer.from(out.buffer, 0, written * 2 * 2));
 
 console.log(`sample-silhouette: wrote ${written} points → ${BIN_OUT}`);

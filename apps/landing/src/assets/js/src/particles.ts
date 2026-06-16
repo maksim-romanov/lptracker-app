@@ -7,6 +7,26 @@ import fragmentShader from "./shaders/particle.frag.glsl";
 import vertexShader from "./shaders/particle.vert.glsl";
 import { type TuneState, tuneDefaults } from "./tuning/state";
 
+// Seeded RNG so kind/size/jitter assignments are stable across reloads —
+// brand visual identity stays consistent, iteration on shaders/tune is
+// comparable between builds. sfc32: 128-bit state, no known bias.
+const PARTICLE_SEED: readonly [number, number, number, number] = [0x238ad65c, 0x91e7042f, 0xbc3f5818, 0x6d29ec47];
+function sfc32(a: number, b: number, c: number, d: number): () => number {
+  return () => {
+    a |= 0;
+    b |= 0;
+    c |= 0;
+    d |= 0;
+    const t = (((a + b) | 0) + d) | 0;
+    d = (d + 1) | 0;
+    a = b ^ (b >>> 9);
+    b = (c + (c << 3)) | 0;
+    c = ((c << 21) | (c >>> 11)) >>> 0;
+    c = (c + t) | 0;
+    return (t >>> 0) / 4294967296;
+  };
+}
+
 export type Particles = {
   mesh: Mesh;
   setProgress: (p: number) => void;
@@ -21,6 +41,7 @@ export type Particles = {
 
 export function createParticles(scene: Scene, targets: Float32Array, count: number, tokenAtlas: HTMLImageElement): Particles {
   const gl = scene.renderer.gl;
+  const rng = sfc32(...PARTICLE_SEED);
 
   const positions = new Float32Array(count * 3);
   const seeds = new Float32Array(count * 3);
@@ -30,7 +51,7 @@ export function createParticles(scene: Scene, targets: Float32Array, count: numb
   // non-token particles.
   const slotPositions = new Float32Array(count * 2);
 
-  const tokenSlots = pickTokenSlots(count, Math.random);
+  const tokenSlots = pickTokenSlots(count, rng);
 
   // Tokens are written LAST so render-order puts them on top (depth test off).
   let outIdx = 0;
@@ -47,11 +68,11 @@ export function createParticles(scene: Scene, targets: Float32Array, count: numb
     positions[outIdx * 3] = targets[sourceIdx * 2] ?? 0;
     positions[outIdx * 3 + 1] = targets[sourceIdx * 2 + 1] ?? 0;
     positions[outIdx * 3 + 2] = 0;
-    const angle = Math.random() * Math.PI * 2;
-    const length = 0.5 + Math.random() * 0.7;
+    const angle = rng() * Math.PI * 2;
+    const length = 0.5 + rng() * 0.7;
     seeds[outIdx * 3] = Math.cos(angle) * length;
     seeds[outIdx * 3 + 1] = Math.sin(angle) * length;
-    seeds[outIdx * 3 + 2] = Math.random();
+    seeds[outIdx * 3 + 2] = rng();
     variants[outIdx * 4] = sizeScale;
     variants[outIdx * 4 + 1] = kind;
     variants[outIdx * 4 + 2] = tokenIndex;
@@ -63,7 +84,7 @@ export function createParticles(scene: Scene, targets: Float32Array, count: numb
 
   for (let i = 0; i < count; i++) {
     if (tokenSlots.has(i)) continue;
-    const { kind, sizeScale, tokenIndex } = pickKindAndSize(Math.random);
+    const { kind, sizeScale, tokenIndex } = pickKindAndSize(rng);
     writeParticle(i, sizeScale, kind, tokenIndex, 0, 0, 0);
   }
 
@@ -92,7 +113,7 @@ export function createParticles(scene: Scene, targets: Float32Array, count: numb
     const tk = tokenSpawns[n];
     if (!tk) continue;
     const slot = sortedSlots[n]?.pos ?? [0, 0];
-    writeParticle(tk.sourceIdx, tokenSizeScale(Math.random), KINDS.TOKEN.id, tk.tokenIndex, gridSlot, slot[0], slot[1]);
+    writeParticle(tk.sourceIdx, tokenSizeScale(rng), KINDS.TOKEN.id, tk.tokenIndex, gridSlot, slot[0], slot[1]);
     gridSlot++;
   }
 

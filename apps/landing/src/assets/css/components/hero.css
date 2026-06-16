@@ -1,55 +1,16 @@
-@property --glow-tx {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-@property --glow-ty {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-@property --glow-scale {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 1;
-}
-@property --glow-opacity {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 0.75;
+@keyframes entry-h1 {
+  from { opacity: 0; transform: translateY(1.2rem); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-@keyframes hero-glow-drift {
-  0% {
-    --glow-tx: 0%;
-    --glow-ty: 0%;
-    --glow-scale: 1;
-    --glow-opacity: 0.75;
-  }
-  25% {
-    --glow-tx: -5%;
-    --glow-ty: 3%;
-    --glow-scale: 1.15;
-    --glow-opacity: 1;
-  }
-  50% {
-    --glow-tx: 3%;
-    --glow-ty: 5%;
-    --glow-scale: 0.92;
-    --glow-opacity: 0.8;
-  }
-  75% {
-    --glow-tx: 5%;
-    --glow-ty: -3%;
-    --glow-scale: 1.1;
-    --glow-opacity: 0.95;
-  }
-  100% {
-    --glow-tx: 0%;
-    --glow-ty: 0%;
-    --glow-scale: 1;
-    --glow-opacity: 0.75;
-  }
+@keyframes entry-sub {
+  from { opacity: 0; transform: translateY(0.6rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes entry-glow {
+  from { opacity: 0; }
+  to   { opacity: 0.55; }
 }
 
 @scope (.hero) {
@@ -70,12 +31,18 @@
     pointer-events: none;
     z-index: 1;
     background:
-      radial-gradient(55% 45% at 78% 36%, var(--glow-pink), transparent 70%),
-      radial-gradient(45% 35% at 92% 75%, var(--glow-cool), transparent 70%);
-    transform: translate3d(var(--glow-tx), var(--glow-ty), 0) scale(var(--glow-scale));
-    opacity: var(--glow-opacity);
-    animation: hero-glow-drift 16s ease-in-out infinite;
-    will-change: transform, opacity;
+      radial-gradient(55% 45% at 22% 78%, var(--glow-pink), transparent 70%),
+      radial-gradient(40% 32% at 8% 96%, var(--glow-cool), transparent 70%);
+    -webkit-mask-image:
+      linear-gradient(to right, transparent, #000 8%, #000 92%, transparent),
+      linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+    mask-image:
+      linear-gradient(to right, transparent, #000 8%, #000 92%, transparent),
+      linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    opacity: 0.55;
+    animation: entry-glow 1100ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
   }
 
   .inner {
@@ -107,6 +74,7 @@
     color: var(--text);
     text-box: trim-both cap alphabetic;
     view-transition-name: hero-title;
+    animation: entry-h1 720ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
   }
 
   p {
@@ -117,6 +85,7 @@
     text-wrap: pretty;
     color: var(--text-secondary);
     max-width: var(--measure-default);
+    animation: entry-sub 520ms cubic-bezier(0.16, 1, 0.3, 1) 420ms both;
   }
 
   @container hero (max-width: 45rem) {
@@ -139,7 +108,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero .bg-glow {
+  .hero .bg-glow,
+  .hero h1,
+  .hero p {
     animation: none;
   }
 }
