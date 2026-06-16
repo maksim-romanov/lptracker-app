@@ -24,7 +24,8 @@
     { "name": "server-words", "path": "./apps/server/cspell-words.txt", "addWords": true },
     { "name": "mobile-words", "path": "./apps/mobile/cspell-words.txt", "addWords": true },
     { "name": "tokens-data-words", "path": "./apps/tokens-data/cspell-words.txt", "addWords": true },
-    { "name": "subgraph-words", "path": "./apps/subgraphs/cspell-words.txt", "addWords": true }
+    { "name": "subgraph-words", "path": "./apps/subgraphs/cspell-words.txt", "addWords": true },
+    { "name": "landing-words", "path": "./apps/landing/cspell-words.txt", "addWords": true }
   ],
   "overrides": [
     {
@@ -44,8 +45,12 @@
       "dictionaries": ["subgraph-words"]
     },
     {
+      "filename": ["apps/landing/**"],
+      "dictionaries": ["landing-words"]
+    },
+    {
       "filename": ["docs/**", "CLAUDE.md", "README.md", "package.json", "lefthook.yml", "cspell.json", ".github/**"],
-      "dictionaries": ["server-words", "mobile-words", "tokens-data-words", "subgraph-words"]
+      "dictionaries": ["server-words", "mobile-words", "tokens-data-words", "subgraph-words", "landing-words"]
     }
   ],
   "ignorePaths": [
