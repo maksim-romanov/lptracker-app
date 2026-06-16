@@ -121,11 +121,11 @@
 
   @container hero (max-width: 45rem) {
     .inner {
-      justify-content: center;
+      justify-content: end;
     }
 
     .text {
-      padding-block: var(--space-block);
+      padding-block-end: var(--space-block);
     }
 
     h1 {

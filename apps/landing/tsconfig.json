@@ -6,5 +6,5 @@
     "types": ["bun"],
     "noEmit": true
   },
-  "include": ["scripts/**/*.ts"]
+  "include": ["scripts/**/*.ts", "src/assets/js/src/**/*.ts", "src/assets/js/src/**/*.d.ts"]
 }

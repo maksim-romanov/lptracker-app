@@ -12,6 +12,10 @@ RUN turbo prune landing --docker
 # --- builder: install (incl. devDeps for the tokens build) and run eleventy ---
 FROM base AS builder
 WORKDIR /app
+# Fonts for sharp/Pango — particle silhouette is rendered from text glyphs at build time.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
 COPY --from=pruner /repo/out/json/ .
 RUN bun install --frozen-lockfile --ignore-scripts --linker=hoisted
 COPY --from=pruner /repo/out/full/ .

@@ -1,0 +1,21 @@
+#hero-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero,
+.cta {
+  isolation: isolate;
+}
+
+.hero-fallback-img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: clamp(12rem, 32vw, 22rem);
+  height: auto;
+  opacity: 0.85;
+  pointer-events: none;
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" aria-hidden="true">
+  <!--
+    Static fallback rendering of the "depthly" wordmark for the no-WebGL path.
+    The particle sampler does NOT read this file — it renders the same string
+    via sharp/Pango directly so library glyphs are guaranteed regardless of
+    SVG-text rendering support.
+  -->
+  <text x="800" y="290" text-anchor="middle"
+        font-family="system-ui, -apple-system, 'Helvetica Neue', 'Segoe UI', Roboto, Arial, sans-serif"
+        font-weight="800" font-size="300" letter-spacing="-10" fill="#000">Depthly</text>
+</svg>

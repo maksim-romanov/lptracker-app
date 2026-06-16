@@ -1,4 +1,5 @@
 export default {
+  brand: "Depthly",
   title: "Depthly — Onchain portfolio monitoring",
   description: "Track every position across every chain.",
   url: "https://depthly.app",

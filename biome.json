@@ -42,7 +42,8 @@
       "!apps/server/src/features/token-prices/data/tokens-data.generated.ts",
       "!apps/mobile/src/core/tokens-data/generated.d.ts",
       "!apps/tokens-data/generated",
-      "!apps/landing/_site"
+      "!apps/landing/_site",
+      "!apps/landing/src/assets/js/hero.bundle.js"
     ]
   },
   "overrides": [

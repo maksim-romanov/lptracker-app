@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#000000" />
     <title>{{ title or site.title }}</title>
     <meta name="description" content="{{ description or site.description }}" />
 
@@ -26,6 +25,11 @@
 
     <link rel="stylesheet" href="/assets/css/main.css" fetchpriority="high" />
 
+    <script>
+      // Manual scroll restoration so the hero entry sequence plays cleanly.
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    </script>
+
     {% if "CHANGE-ME" not in site.waitlistUrl %}
     <script type="speculationrules">
       {
@@ -39,9 +43,12 @@
     {% endif %}
   </head>
   <body>
+    <script>window.scrollTo(0, 0);</script>
     <a class="skip-link" href="#main">Skip to content</a>
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
     <main id="main">
       {{ content | safe }}
     </main>
+    <script type="module" defer src="/assets/js/hero.bundle.js"></script>
   </body>
 </html>
