@@ -31,6 +31,8 @@
         "ogl": "^1.0.11",
       },
       "devDependencies": {
+        "@depthly/theme": "workspace:*",
+        "@depthly/typescript-config": "workspace:*",
         "@tweakpane/core": "^2.0.5",
         "esbuild": "^0.24.2",
         "sharp": "^0.33.5",
