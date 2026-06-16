@@ -1,0 +1,59 @@
+@scope (.cta) {
+  :scope {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: var(--space-block) var(--gutter);
+  }
+
+  .inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: var(--measure-default);
+  }
+
+  .eyebrow {
+    font-size: var(--text-tiny);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  h2 {
+    margin-top: var(--space-sm);
+    font-size: var(--text-h2);
+    font-weight: 600;
+    letter-spacing: var(--tracking-h2);
+    line-height: var(--lh-h2);
+    text-wrap: balance;
+    color: var(--text);
+  }
+
+  .button {
+    margin-top: var(--space-xl);
+    display: inline-flex;
+    align-items: center;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: var(--text-button);
+    font-weight: 600;
+    padding: 0.875em 2em;
+    border-radius: var(--radius-pill);
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: var(--accent-hover);
+    }
+  }
+
+  .note {
+    margin-top: var(--space-md);
+    font-size: var(--text-small);
+    text-wrap: pretty;
+    color: var(--text-secondary);
+  }
+}

@@ -6,7 +6,7 @@
     "build": {
       "dependsOn": ["^build", "codegen"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", "build/**"]
+      "outputs": ["dist/**", "build/**", "_site/**"]
     },
     "lint": { "dependsOn": ["^lint"] },
     "lint:fix": { "dependsOn": ["^lint:fix"] },

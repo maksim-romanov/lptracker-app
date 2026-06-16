@@ -1,0 +1,13 @@
+@layer reset, tokens, base, components;
+
+@import url("reset.css") layer(reset);
+@import url("tokens.css") layer(tokens);
+@import url("base.css") layer(base);
+@import url("components/nav.css") layer(components);
+@import url("components/hero.css") layer(components);
+@import url("components/hero-canvas.css") layer(components);
+@import url("components/cta.css") layer(components);
+
+@view-transition {
+  navigation: auto;
+}

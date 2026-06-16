@@ -1,0 +1,12 @@
+:8080 {
+	root * /srv
+	encode zstd gzip
+
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=3600, must-revalidate"
+
+	@html path /index.html /
+	header @html Cache-Control "public, max-age=0, must-revalidate"
+
+	file_server
+}

@@ -1,0 +1,11 @@
+glsl
+GLSL
+tweakpane
+waitlist
+rasterise
+speculationrules
+
+dejavu
+fontconfig
+Pango
+zstd
