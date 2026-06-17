@@ -11,7 +11,7 @@ DeFi portfolio monitoring — track your LP positions, accumulated fees, and on-
 
 ## Stack
 
-Hono API on Bun · The Graph subgraphs (AssemblyScript) · React Native 0.83 / Expo 55 / React 19 · Turborepo · Home-screen widgets via SwiftUI/WidgetKit (iOS) and Jetpack Glance (Android), shipped through an Expo Module bridge
+Bun + Hono · The Graph subgraphs (AssemblyScript) · Expo 55 · Turborepo · Expo Modules: SwiftUI/WidgetKit (iOS), Jetpack Glance (Android)
 
 ## Requirements
 
@@ -25,5 +25,3 @@ Hono API on Bun · The Graph subgraphs (AssemblyScript) · React Native 0.83 / E
 bun install
 bun run dev:ios      # or dev:android — boots mobile + server + tokens-data
 ```
-
-See [CLAUDE.md](CLAUDE.md) for architecture, conventions, and the full command list. Per-app guidance lives in `apps/server/CLAUDE.md` and `apps/mobile/CLAUDE.md`.
