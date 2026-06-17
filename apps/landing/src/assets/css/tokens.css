@@ -1,0 +1,52 @@
+:root {
+  /* Layout */
+  --max-w: 90rem;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+
+  /* Type scale — fluid, rem-based */
+  --text-display: clamp(2.5rem, 6vw, 5.5rem);
+  --text-display-tight: clamp(2.25rem, 9vw, 4rem);
+  --text-h2: clamp(2rem, 5vw, 3.5rem);
+  --text-sub: clamp(1.0625rem, 1.6vw, 1.3125rem);
+  --text-body: 1.0625rem;
+  --text-small: 0.8125rem;
+  --text-tiny: 0.75rem;
+  --text-button: 0.9375rem;
+
+  /* Line-heights */
+  --lh-display: 1.05;
+  --lh-h2: 1.15;
+  --lh-body: 1.47;
+
+  /* Letter-spacing — em-based */
+  --tracking-display: -0.025em;
+  --tracking-h2: -0.022em;
+  --tracking-body: 0;
+  --tracking-eyebrow: 0.14em;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 0.875rem;
+  --space-md: 1.125rem;
+  --space-xl: 2rem;
+  --space-block: clamp(2.5rem, 8vh, 6rem);
+
+  /* Text measure caps */
+  --measure-narrow: 24rem;
+  --measure-default: 36rem;
+
+  /* Radii */
+  --radius-pill: 999px;
+
+  /* Theme — dark only, oklch base derived via color-mix */
+  --bg: oklch(0% 0 0);
+  --text: oklch(96% 0.005 286);
+  --text-secondary: oklch(62% 0.005 286);
+  --accent: oklch(55% 0.22 0);
+  --accent-hover: color-mix(in oklab, var(--accent) 85%, black);
+  --on-accent: oklch(100% 0 0);
+  --hairline-soft: rgb(255 255 255 / 0.06);
+  --nav-bg: rgb(0 0 0 / 0.75);
+  --glow-pink: color-mix(in oklab, var(--accent) 22%, transparent);
+  --glow-cool: rgb(120 160 255 / 0.08);
+}
