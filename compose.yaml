@@ -73,5 +73,16 @@ services:
       retries: 3
       start_period: 10s
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    init: true
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      landing:
+        condition: service_healthy
+      server:
+        condition: service_healthy
+
 volumes:
   redis-data:
