@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM oven/bun:1.3.6-slim AS base
+FROM oven/bun:1.3.13-slim AS base
 
 # --- pruner: emit a partial monorepo containing only tokens-data + its deps ---
 FROM base AS pruner

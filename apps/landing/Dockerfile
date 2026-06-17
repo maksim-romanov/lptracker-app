@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM oven/bun:1.3.6-slim AS base
+FROM oven/bun:1.3.13-slim AS base
 
 # --- pruner: emit a partial monorepo containing only landing + its workspace deps ---
 FROM base AS pruner
@@ -17,7 +17,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=pruner /repo/out/json/ .
-RUN bun install --frozen-lockfile --ignore-scripts --linker=hoisted
+RUN bun install --ignore-scripts --linker=hoisted
 COPY --from=pruner /repo/out/full/ .
 RUN cd apps/landing && bun run build
 
