@@ -105,9 +105,11 @@ void main() {
   vec2 jitter = baseMotion * depthAmp * (1.0 + t * uTuneMotionRamp);
 
   // Spread=0 at rest, so zDir stays neutral and text reads flat. Tokens skip
-  // dispersion (they follow tokenBase → slotPos lerp instead).
+  // dispersion (they follow tokenBase → slotPos lerp instead). Dispersion is
+  // tied to uScale so narrow viewports don't fling the whole starfield past
+  // their (much narrower) frustum, leaving only tokens on screen at full scroll.
   float zDir = (hash(delay * 7.11) - 0.5) * 0.8;
-  float spread = t * uTuneSpread * kindSpreadMul(kind) * notToken;
+  float spread = t * uTuneSpread * kindSpreadMul(kind) * notToken * min(1.0, uScale);
   // gridSlot parity alternates token depth (near/far). gridSlot increments
   // along the angular-sorted matching, so spatial neighbours land at opposite
   // depths; hash jitter breaks the strict A-B-A-B pattern.
@@ -123,8 +125,10 @@ void main() {
   vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * mvPos;
 
-  // restBoost makes the wordmark chunkier so letters read crisper at rest.
-  float restBoost = 1.0 + 0.35 * restMask;
+  // restBoost makes the wordmark chunkier so letters read crisper at rest with
+  // the lower phone particle count. Don't push it high: on retina screens too
+  // many overlapping points blow the wordmark out to solid white.
+  float restBoost = 1.0 + 0.3 * restMask;
   float rawSize = uSize * uPixelRatio * effSize * boost * restBoost * (uCameraZ / -mvPos.z);
   // Sub-pixel-safe alpha fade: under ~1px the GPU samples flicker as wave drifts.
   float subPixelFade = smoothstep(0.5, 1.4, rawSize);

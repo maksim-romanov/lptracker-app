@@ -11,6 +11,9 @@ html {
   color-scheme: dark;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Kill pull-to-refresh / overscroll chaining — it stutters badly over the
+     fixed WebGL canvas on mobile, and the page has nothing to refresh into. */
+  overscroll-behavior-y: none;
 }
 :where(img, picture, video, canvas, svg) {
   display: block;

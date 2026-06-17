@@ -48,9 +48,11 @@ async function boot() {
     return;
   }
 
+  // Density follows viewport width, not touch — a narrow desktop window should
+  // read as sparsely as a phone. Touch only nudges the mid tier down a notch.
+  const width = window.innerWidth;
   const touch = isTouch();
-  const isPhone = touch && window.innerWidth < 600;
-  const budget = isPhone ? 12_000 : touch ? 20_000 : 42_000;
+  const budget = width < 600 ? 5_000 : width < 1024 || touch ? 20_000 : 42_000;
   const maxCount = Math.floor(targets.length / 2);
   const count = Math.min(maxCount, budget);
 

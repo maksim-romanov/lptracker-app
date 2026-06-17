@@ -23,7 +23,7 @@ export interface TuneState {
 export const tuneDefaults: TuneState = {
   dolly: 4.0,
   wordmarkY: 0.18,
-  pointSize: 1.6,
+  pointSize: 1.28,
 
   spread: 4.5,
   cull: 0.55,

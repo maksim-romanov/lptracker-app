@@ -35,30 +35,24 @@ export function createProgressDriver(): ProgressDriver {
     for (const cb of subs) cb(p);
   };
 
-  let lenis: Lenis | null = null;
+  // Lenis mediates BOTH wheel and touch so the WebGL hero stays locked to the
+  // scroll position. With native touch scrolling the page scrolls on the
+  // compositor thread while the canvas renders on rAF, so the two desync and
+  // the hero stutters — the exact WebGL/DOM scroll conflict Lenis exists to
+  // solve. `syncTouch` can be unstable on iOS<16, which is acceptably rare.
+  const lenis = new Lenis({
+    smoothWheel: true,
+    syncTouch: isTouch(),
+    syncTouchLerp: 0.1,
+    touchInertiaExponent: 1.7,
+  });
+  lenis.on("scroll", emit);
   let rafId = 0;
-  let scrollListener: (() => void) | null = null;
-  let scrollPending = false;
-
-  if (isTouch()) {
-    scrollListener = () => {
-      if (scrollPending) return;
-      scrollPending = true;
-      requestAnimationFrame(() => {
-        scrollPending = false;
-        emit();
-      });
-    };
-    window.addEventListener("scroll", scrollListener, { passive: true });
-  } else {
-    lenis = new Lenis({ smoothWheel: true });
-    lenis.on("scroll", emit);
-    const tick = (time: number) => {
-      lenis?.raf(time);
-      rafId = requestAnimationFrame(tick);
-    };
+  const tick = (time: number) => {
+    lenis.raf(time);
     rafId = requestAnimationFrame(tick);
-  }
+  };
+  rafId = requestAnimationFrame(tick);
 
   const onResize = () => {
     measure();
@@ -92,9 +86,8 @@ export function createProgressDriver(): ProgressDriver {
       };
     },
     destroy() {
-      lenis?.destroy();
+      lenis.destroy();
       if (rafId) cancelAnimationFrame(rafId);
-      if (scrollListener) window.removeEventListener("scroll", scrollListener);
       window.removeEventListener("resize", onResize);
       ro.disconnect();
       subs.clear();
