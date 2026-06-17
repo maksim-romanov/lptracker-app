@@ -45,6 +45,7 @@ out float vReveal;
 out float vSeed;
 out float vShimmer;
 out float vTokenIdx;
+out float vTokenSat;
 out vec3 vIridescence;
 
 void main() {
@@ -143,5 +144,8 @@ void main() {
   vSizeScale = sizeScale;
   vTwinkle = 0.92 + 0.08 * sin(uTime * (0.55 + hA * 0.9) + delay * 17.3);
   vReveal = effReveal;
+  // Token dots start near-white inside the wordmark so they blend with the
+  // text, then ramp to full brand saturation as the scene opens.
+  vTokenSat = smoothstep(0.0, 0.22, uProgress);
   vSeed = delay;
 }

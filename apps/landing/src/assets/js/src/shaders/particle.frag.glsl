@@ -14,6 +14,7 @@ in float vReveal;
 in float vSeed;
 in float vShimmer;
 in float vTokenIdx;
+in float vTokenSat;
 in vec3 vIridescence;
 uniform vec3 uColor;
 uniform float uTime;
@@ -73,10 +74,13 @@ void main() {
     // Rest look = crisp filled disk (not a star with spikes), so the brand
     // colour reads opaque before vReveal blooms in the coin disk + logo.
     vec3 brand = tokenColor(vTokenIdx);
+    // Near-white at the very start (vTokenSat→0) so token dots blend into the
+    // white wordmark, ramping to full brand colour as the animation opens.
+    vec3 restColor = mix(uColor, brand, vTokenSat);
     float restDisk = (1.0 - smoothstep(0.30, 0.44, r)) * (0.94 + 0.06 * vTwinkle);
     vec4 tok = tokenLook(c, r, vTokenIdx);
     float glow = softGlow(r, 0.18, 0.5, 0.25) * vReveal;
-    color = mix(brand, tok.rgb, vReveal);
+    color = mix(restColor, tok.rgb, vReveal);
     alpha = mix(restDisk, tok.a + glow, vReveal);
   } else {
     float asStar = starLook(c, r, 2.4) * vTwinkle;

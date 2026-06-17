@@ -37,7 +37,7 @@ export const tuneDefaults: TuneState = {
 
   entryMs: 1800,
 
-  waveAmp: 0.02,
+  waveAmp: 0.0,
   shimmer: 0.55,
   iridescence: 0.75,
 };
