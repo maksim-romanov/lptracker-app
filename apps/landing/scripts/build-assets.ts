@@ -69,7 +69,8 @@ const glslPlugin: esbuild.Plugin = {
   },
 };
 
-const manifest: { hero?: string; css?: string } = {};
+type ManifestField = "hero" | "css" | "popup";
+const manifest: Partial<Record<ManifestField, string>> = {};
 
 async function writeManifest() {
   await mkdir(dirname(MANIFEST_PATH), { recursive: true });
@@ -77,7 +78,7 @@ async function writeManifest() {
   await writeFile(MANIFEST_PATH, `${JSON.stringify(sorted, null, 2)}\n`);
 }
 
-function recordOutput(field: "hero" | "css", result: esbuild.BuildResult, ext: ".js" | ".css", urlDir: string) {
+function recordOutput(field: ManifestField, result: esbuild.BuildResult, ext: ".js" | ".css", urlDir: string) {
   if (!result.metafile) return false;
   const outputs = Object.keys(result.metafile.outputs);
   const out = outputs.find((p) => p.endsWith(ext));
@@ -101,10 +102,7 @@ function run(cmd: string, args: string[]): Promise<void> {
   });
 }
 
-const heroOptions: esbuild.BuildOptions = {
-  entryPoints: [resolve(root, "src/assets/js/src/main.ts")],
-  outdir: JS_DIR,
-  entryNames: isProd ? "hero.[hash]" : "hero.bundle",
+const baseJs: esbuild.BuildOptions = {
   bundle: true,
   format: "esm",
   target: ["es2022"],
@@ -112,8 +110,15 @@ const heroOptions: esbuild.BuildOptions = {
   sourcemap: isProd ? false : "inline",
   define: { __DEV__: isProd ? "false" : "true" },
   metafile: true,
-  plugins: [glslPlugin],
   logLevel: "info",
+};
+
+const heroOptions: esbuild.BuildOptions = {
+  ...baseJs,
+  entryPoints: [resolve(root, "src/assets/js/src/main.ts")],
+  outdir: JS_DIR,
+  entryNames: isProd ? "hero.[hash]" : "hero.bundle",
+  plugins: [glslPlugin],
 };
 
 const cssOptions: esbuild.BuildOptions = {
@@ -126,9 +131,17 @@ const cssOptions: esbuild.BuildOptions = {
   logLevel: "info",
 };
 
+const popupOptions: esbuild.BuildOptions = {
+  ...baseJs,
+  entryPoints: [resolve(root, "src/assets/js/src/popup.ts")],
+  outdir: JS_DIR,
+  entryNames: isProd ? "popup.[hash]" : "popup.bundle",
+};
+
 await run("bun", ["scripts/sample-silhouette.ts"]);
 await run("bun", ["scripts/build-token-atlas.ts"]);
 await cleanOld(JS_DIR, /^hero\.([a-z0-9]+|bundle)\.js$/);
+await cleanOld(JS_DIR, /^popup\.([a-z0-9]+|bundle)\.js$/);
 await cleanOld(CSS_DIR, /^main\.([a-z0-9]+|bundle)\.css$/);
 
 if (isWatch) {
@@ -159,12 +172,31 @@ if (isWatch) {
       },
     ],
   });
+  const popupCtx = await esbuild.context({
+    ...popupOptions,
+    plugins: [
+      {
+        name: "record-popup",
+        setup(build) {
+          build.onEnd(async (result) => {
+            if (recordOutput("popup", result, ".js", "assets/js")) await writeManifest();
+          });
+        },
+      },
+    ],
+  });
   await heroCtx.watch();
   await cssCtx.watch();
-  console.log("build-assets: watching hero + css for changes…");
+  await popupCtx.watch();
+  console.log("build-assets: watching hero + css + popup for changes…");
 } else {
-  const [heroResult, cssResult] = await Promise.all([esbuild.build(heroOptions), esbuild.build(cssOptions)]);
+  const [heroResult, cssResult, popupResult] = await Promise.all([
+    esbuild.build(heroOptions),
+    esbuild.build(cssOptions),
+    esbuild.build(popupOptions),
+  ]);
   recordOutput("hero", heroResult, ".js", "assets/js");
   recordOutput("css", cssResult, ".css", "assets/css");
+  recordOutput("popup", popupResult, ".js", "assets/js");
   await writeManifest();
 }

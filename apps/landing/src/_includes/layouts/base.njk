@@ -29,18 +29,6 @@
       // Manual scroll restoration so the hero entry sequence plays cleanly.
       if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     </script>
-
-    {% if "CHANGE-ME" not in site.waitlistUrl %}
-    <script type="speculationrules">
-      {
-        "prefetch": [{
-          "source": "list",
-          "urls": ["{{ site.waitlistUrl }}"],
-          "eagerness": "moderate"
-        }]
-      }
-    </script>
-    {% endif %}
   </head>
   <body>
     <script>window.scrollTo(0, 0);</script>
@@ -49,6 +37,7 @@
     <main id="main">
       {{ content | safe }}
     </main>
-    <script type="module" defer src="/{{ assets.hero }}"></script>
+    <script type="module" src="/{{ assets.hero }}"></script>
+    <script type="module" src="/{{ assets.popup }}"></script>
   </body>
 </html>

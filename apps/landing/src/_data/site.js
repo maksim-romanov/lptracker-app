@@ -1,3 +1,8 @@
+const waitlistUrl = "https://tally.so/r/WOZGRN";
+const waitlistMatch = waitlistUrl.match(/\/r\/([A-Za-z0-9]+)/);
+if (!waitlistMatch) throw new Error(`waitlistUrl missing /r/<id>: ${waitlistUrl}`);
+const waitlistFormId = waitlistMatch[1];
+
 export default {
   brand: "Depthly",
   title: "Depthly — Onchain portfolio monitoring",
@@ -5,8 +10,8 @@ export default {
   url: "https://depthly.app",
   ogImage: "/assets/img/og.png",
 
-  // TODO: replace with the real Tally (or other) form URL before deploy.
-  waitlistUrl: "https://tally.so/r/CHANGE-ME",
+  waitlistUrl,
+  waitlistFormId,
 
   hero: {
     headline: "Onchain portfolio monitoring.",

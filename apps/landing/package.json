@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "eleventy --serve",
     "build": "bun scripts/build-assets.ts --mode=production && eleventy",
-    "clean": "rm -rf _site src/assets/js/hero.*.js src/assets/css/main.*.css src/assets/data src/assets/img/token-atlas.webp src/_data/assets.json",
+    "clean": "rm -rf _site src/assets/js/hero.*.js src/assets/js/popup.*.js src/assets/css/main.*.css src/assets/data src/assets/img/token-atlas.webp src/_data/assets.json",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit"
