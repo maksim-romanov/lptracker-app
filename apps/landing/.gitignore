@@ -1,4 +1,6 @@
 _site/
-src/assets/js/hero.bundle.js
+src/assets/js/hero.*.js
+src/assets/css/main.*.css
 src/assets/data/
 src/assets/img/token-atlas.webp
+src/_data/assets.json

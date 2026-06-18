@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 
-const heroWatchers = [];
+const watcher = { proc: null };
 
 function run(cmd, args) {
   return new Promise((resolve, reject) => {
@@ -14,16 +14,13 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addWatchTarget("./src/assets/");
+  eleventyConfig.addWatchTarget("./src/_data/");
 
   eleventyConfig.on("eleventy.before", async ({ runMode }) => {
     if (runMode !== "serve" && runMode !== "watch") return;
-    if (heroWatchers.length > 0) return;
-
-    await run("bun", ["scripts/sample-silhouette.ts"]);
-    await run("bun", ["scripts/build-token-atlas.ts"]);
-    await run("bun", ["scripts/build-hero.ts"]);
-    const watcher = spawn("bun", ["scripts/build-hero.ts", "--watch"], { stdio: "inherit" });
-    heroWatchers.push(watcher);
+    if (watcher.proc) return;
+    await run("bun", ["scripts/build-assets.ts"]);
+    watcher.proc = spawn("bun", ["scripts/build-assets.ts", "--watch"], { stdio: "inherit" });
   });
 
   return {
