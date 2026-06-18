@@ -23,7 +23,7 @@
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23000000'/><circle cx='16' cy='16' r='4.5' fill='%23FF007A'/></svg>" />
 
-    <link rel="stylesheet" href="/assets/css/main.css" fetchpriority="high" />
+    <link rel="stylesheet" href="/{{ assets.css }}" fetchpriority="high" />
 
     <script>
       // Manual scroll restoration so the hero entry sequence plays cleanly.
@@ -49,6 +49,6 @@
     <main id="main">
       {{ content | safe }}
     </main>
-    <script type="module" defer src="/assets/js/hero.bundle.js"></script>
+    <script type="module" defer src="/{{ assets.hero }}"></script>
   </body>
 </html>

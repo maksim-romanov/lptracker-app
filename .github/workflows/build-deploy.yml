@@ -1,0 +1,157 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "apps/mobile/**"
+      - "apps/subgraphs/**"
+      - "docs/**"
+      - "**.md"
+      - ".github/workflows/ci.yml"
+      - ".github/workflows/expo-update.yml"
+      - ".gitignore"
+      - ".dockerignore"
+      - "LICENSE"
+  workflow_dispatch:
+
+concurrency:
+  group: build-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.service }}
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [server, tokens-data, landing]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/depthly-${{ matrix.service }}
+          tags: |
+            type=sha,format=short,prefix=sha-
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=depthly-${{ matrix.service }}
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/${{ matrix.service }}/Dockerfile
+          platforms: linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,scope=${{ matrix.service }},mode=max
+          provenance: false
+
+  deploy:
+    name: Deploy to Pi
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Linux, ARM64, depthly-prod]
+    environment:
+      name: production
+      url: https://depthly.xyz
+    permissions:
+      contents: read
+    steps:
+      - name: Resolve image tag
+        id: tag
+        run: echo "value=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - name: Sync repo to deployed SHA
+        working-directory: /home/gh-runner/depthly
+        run: |
+          git fetch origin main
+          git reset --hard ${{ github.sha }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull images
+        working-directory: /home/gh-runner/depthly
+        env:
+          IMAGE_TAG: ${{ steps.tag.outputs.value }}
+        run: docker compose pull server tokens-data landing
+
+      - name: Apply deploy
+        working-directory: /home/gh-runner/depthly
+        env:
+          IMAGE_TAG: ${{ steps.tag.outputs.value }}
+        run: docker compose up -d --no-build
+
+      - name: Wait for services to become healthy
+        working-directory: /home/gh-runner/depthly
+        run: |
+          set -e
+          deadline=$((SECONDS + 120))
+          while [ $SECONDS -lt $deadline ]; do
+            ok=true
+            for svc in tokens-data server landing; do
+              status=$(docker inspect --format='{{.State.Health.Status}}' depthly-${svc}-1 2>/dev/null || echo missing)
+              if [ "$status" != "healthy" ]; then
+                ok=false
+                echo "[${SECONDS}s] ${svc}: ${status}"
+                break
+              fi
+            done
+            if $ok; then
+              echo "All services healthy"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Deploy failed — services did not reach healthy state in 120s"
+          docker compose ps
+          docker compose logs --tail=80 server tokens-data landing
+          exit 1
+
+      - name: Probe public URLs
+        run: |
+          set -e
+          for i in 1 2 3 4 5 6; do
+            landing=$(curl -sI -o /dev/null -w '%{http_code}' https://depthly.xyz/ || echo 000)
+            api=$(curl -sI -o /dev/null -w '%{http_code}' https://api.depthly.xyz/health || echo 000)
+            echo "attempt $i — landing=$landing api=$api"
+            if [ "$landing" = "200" ] && [ "$api" = "200" ]; then
+              echo "Public probe OK"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Public probe failed"
+          exit 1
+
+      - name: Prune dangling images
+        if: always()
+        run: docker image prune -f --filter "until=168h"

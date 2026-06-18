@@ -91,3 +91,7 @@ unparseable
 persistable
 stringly
 oneline
+buildx
+opencontainers
+ghcr
+cloudflared
