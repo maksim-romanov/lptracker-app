@@ -80,6 +80,7 @@ jobs:
       url: https://depthly.xyz
     permissions:
       contents: read
+      packages: read
     steps:
       - name: Resolve image tag
         id: tag
@@ -152,6 +153,6 @@ jobs:
           echo "Public probe failed"
           exit 1
 
-      - name: Prune dangling images
+      - name: Prune unused images
         if: always()
-        run: docker image prune -f --filter "until=168h"
+        run: docker image prune -af --filter "until=168h"
