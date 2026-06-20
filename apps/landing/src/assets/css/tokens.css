@@ -42,8 +42,9 @@
   --bg: oklch(0% 0 0);
   --text: oklch(96% 0.005 286);
   --text-secondary: oklch(62% 0.005 286);
-  --accent: oklch(55% 0.22 0);
-  --accent-hover: color-mix(in oklab, var(--accent) 85%, black);
+  --accent: oklch(64.4% 0.259 4.3); /* brand neon pink #FF007A — glow, focus */
+  --accent-strong: oklch(54.5% 0.219 3.7); /* #CC0062 — deeper, for AA text on fills */
+  --accent-hover: color-mix(in oklab, var(--accent-strong) 85%, black);
   --on-accent: oklch(100% 0 0);
   --hairline-soft: rgb(255 255 255 / 0.06);
   --nav-bg: rgb(0 0 0 / 0.75);

@@ -8,5 +8,5 @@
   -->
   <text x="800" y="290" text-anchor="middle"
         font-family="system-ui, -apple-system, 'Helvetica Neue', 'Segoe UI', Roboto, Arial, sans-serif"
-        font-weight="800" font-size="300" letter-spacing="-10" fill="#000">Depthly</text>
+        font-weight="800" font-size="300" letter-spacing="-10" fill="#E7E9EA">Depthly</text>
 </svg>
