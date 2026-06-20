@@ -37,7 +37,7 @@
     margin-top: var(--space-xl);
     display: inline-flex;
     align-items: center;
-    background: var(--accent);
+    background: var(--accent-strong);
     color: var(--on-accent);
     font-size: var(--text-button);
     font-weight: 600;
