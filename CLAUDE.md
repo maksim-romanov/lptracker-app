@@ -4,6 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 > **Brand:** `Depthly`. All workspace package scopes use `@depthly/*`.
 
+## Design Context
+
+- **`PRODUCT.md`** (root) — strategic design context: register, users, brand personality, anti-references, design principles, a11y. Default register is **brand** (landing-first); override to `product` for mobile-app work.
+- **`DESIGN.md`** (root) — visual system spec (colors, typography, components) in Stitch format. Source tokens live in `packages/theme/*` (mobile) and `apps/landing/src/assets/css/tokens.css` (landing).
+- Identity is committed: **neon pink `#FF007A` (Uniswap signature) on pure black, "wireframe distortion" aesthetic.** Preserve it; don't reintroduce crypto-purple gradients or SaaS-template patterns.
+- Design work runs through the `/impeccable` skill.
+
 ## Big Picture
 
 DeFi portfolio monitoring platform. Data flows **Blockchain → Subgraphs (The Graph) + tokens-data → Hono API → Mobile app**.
