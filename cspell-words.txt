@@ -95,3 +95,10 @@ buildx
 opencontainers
 ghcr
 cloudflared
+
+glassmorphism
+glassmorphic
+fintech
+waitlist
+robinhood
+wcag
