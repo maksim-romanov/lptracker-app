@@ -1,0 +1,98 @@
+@layer components {
+  .position-modal {
+    & .modal-box {
+      @apply relative;
+      min-height: 220px;
+    }
+
+    & .close {
+      @apply absolute right-md top-md z-10;
+    }
+
+    & .loader {
+      @apply pointer-events-none absolute inset-0 flex items-center justify-center text-primary;
+    }
+  }
+
+  .modal-detail {
+    @apply flex flex-col gap-md;
+
+    /* Larger than on the card. */
+    & .token-icon {
+      @apply h-10 w-10 border-base-100;
+    }
+
+    & .head {
+      @apply flex items-center gap-md pr-2xl;
+    }
+
+    & .titles {
+      @apply min-w-0;
+    }
+
+    & .pair {
+      @apply truncate text-xl font-bold tracking-tight;
+    }
+
+    & .meta {
+      @apply text-sm text-base-content/60;
+    }
+
+    & .tags {
+      @apply flex flex-wrap items-center gap-xs;
+    }
+
+    & .tags .badge {
+      @apply whitespace-nowrap;
+    }
+
+    & .range-block {
+      @apply flex flex-col gap-sm;
+    }
+
+    & .range-head {
+      @apply flex items-baseline justify-between gap-sm;
+    }
+
+    & .range-now {
+      @apply text-sm font-semibold;
+    }
+
+    & .group {
+      @apply flex flex-col gap-xs;
+    }
+
+    & .rows {
+      @apply flex flex-col;
+    }
+
+    & .rows .stat-row {
+      @apply flex items-center justify-between gap-sm border-b border-base-300/70 py-sm text-sm last:border-0;
+    }
+
+    & .rows dt {
+      @apply text-base-content/60;
+    }
+
+    & .rows dd {
+      @apply font-semibold;
+    }
+
+    & .foot {
+      @apply flex items-center justify-between border-t border-base-300 pt-md;
+    }
+
+    & .addr {
+      @apply inline-flex items-center gap-1 font-mono text-sm text-base-content/70;
+      @apply transition-colors hover:text-base-content;
+    }
+
+    & .actions {
+      @apply flex flex-wrap gap-sm pt-xs;
+    }
+
+    & .actions .btn {
+      @apply gap-1.5;
+    }
+  }
+}

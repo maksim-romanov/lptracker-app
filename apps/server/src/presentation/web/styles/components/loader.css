@@ -1,0 +1,29 @@
+@layer components {
+  /* htmx toggles `htmx-request` on the hx-indicator target during a request. */
+  .htmx-indicator {
+    opacity: 0;
+    transition: opacity 150ms ease-in;
+  }
+
+  .htmx-request .htmx-indicator,
+  .htmx-request.htmx-indicator {
+    opacity: 1;
+  }
+
+  /* pointer-events:none — at opacity:0 the overlay still covers the cards and would eat clicks. */
+  .board-loader {
+    @apply pointer-events-none absolute inset-0 z-10 flex items-center justify-center gap-sm text-sm text-base-content/60;
+    @apply rounded-box bg-base-100/60 backdrop-blur-[1px];
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .htmx-indicator {
+      transition: none;
+    }
+
+    /* daisyUI's loading spinner animates by default. */
+    .loading {
+      animation: none;
+    }
+  }
+}

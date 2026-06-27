@@ -1,17 +1,24 @@
 {
   "name": "server",
   "scripts": {
+    "build": "bun run scripts/build-assets.ts",
+    "build:dev": "bun run scripts/build-assets.ts --dev",
+    "css:dev": "tailwindcss -i src/presentation/web/styles/app.css -o src/static/dist/app.css --watch",
+    "js:dev": "bun build src/presentation/web/client/application.ts --outfile src/static/dist/application.js --format=iife --watch",
     "dev": "bun run --watch src/index.ts",
+    "predev": "bun run build:dev",
     "start": "bun run src/index.ts",
     "codegen": "graphql-codegen --config codegen.ts && bun run scripts/generate-openapi.ts && bunx openapi-typescript",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
   },
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",
     "@depthly/catalog": "workspace:*",
     "@depthly/logger": "workspace:*",
+    "@depthly/protocol-math": "workspace:*",
     "@scalar/hono-api-reference": "^0.10.20",
     "@uniswap/v3-core": "^1.0.1",
     "@uniswap/v3-periphery": "^1.4.4",
@@ -28,16 +35,21 @@
     "valibot": "^1.2.0"
   },
   "devDependencies": {
+    "@depthly/typescript-config": "workspace:*",
     "@graphql-codegen/cli": "^6.1.1",
     "@graphql-codegen/introspection": "^5.0.0",
     "@graphql-codegen/typescript": "^5.0.7",
     "@graphql-codegen/typescript-graphql-request": "^6.4.0",
     "@graphql-codegen/typescript-operations": "^5.0.7",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@depthly/typescript-config": "workspace:*",
+    "@hotwired/stimulus": "^3.2.2",
+    "@tailwindcss/cli": "^4.3.1",
     "@types/bun": "latest",
     "@types/opossum": "^8.1.9",
     "graphql": "^16.12.0",
-    "openapi-typescript": "^7.10.1"
+    "htmx.org": "^2.0.10",
+    "openapi-typescript": "^7.10.1",
+    "tailwindcss": "^4.3.1",
+    "typed-htmx": "^0.3.1"
   }
 }

@@ -1,0 +1,30 @@
+@layer components {
+  /* relative + min-height so the loader can center over this area. */
+  .board-region {
+    @apply relative flex min-h-[200px] flex-col;
+  }
+
+  .board {
+    @apply grid gap-md;
+    /* auto-fill (not auto-fit): a lone card stays compact instead of stretching. */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  /* Empty state / error banner span the full width. */
+  .board > :not(.position-card) {
+    grid-column: 1 / -1;
+  }
+
+  .board-empty {
+    @apply flex flex-col items-center gap-sm rounded-box border border-dashed border-base-300 p-xl text-center text-sm text-base-content/60;
+
+    & .board-empty__icon {
+      @apply text-base-content/40;
+    }
+  }
+
+  /* In the hero the form is the CTA, so the "add a wallet" hint is redundant. */
+  .app-main:not(:has(.position-card)) .board-empty[data-reason="no-wallets"] {
+    @apply hidden;
+  }
+}

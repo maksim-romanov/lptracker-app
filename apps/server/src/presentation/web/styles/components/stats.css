@@ -1,0 +1,10 @@
+@layer components {
+  .display {
+    @apply font-bold tracking-tight;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    @apply text-xs font-medium uppercase tracking-wide text-base-content/50;
+  }
+}

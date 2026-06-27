@@ -43,10 +43,25 @@
       "!apps/mobile/src/core/tokens-data/generated.d.ts",
       "!apps/tokens-data/generated",
       "!apps/landing/_site",
-      "!apps/landing/src/assets/js/hero.bundle.js"
+      "!apps/landing/src/assets/js/hero.bundle.js",
+      "!apps/server/src/static/htmx.min.js",
+      "!**/.impeccable/**",
+      "!.claude/skills/**",
+      "!.agents/skills/**",
+      "!skills-lock.json"
     ]
   },
   "overrides": [
+    {
+      "includes": ["apps/server/src/presentation/web/styles/**/*.css"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noInvalidPositionAtImportRule": "off"
+          }
+        }
+      }
+    },
     {
       "includes": ["apps/subgraphs/**/src/**", "apps/subgraphs/**/tests/**"],
       "linter": {
@@ -74,6 +89,14 @@
       }
     }
   ],
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    },
+    "linter": {
+      "enabled": true
+    }
+  },
   "javascript": {
     "parser": {
       "unsafeParameterDecoratorsEnabled": true

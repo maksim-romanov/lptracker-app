@@ -17,6 +17,7 @@
   "dependencies": {
     "@bacons/apple-targets": "^4.0.7",
     "@depthly/catalog": "workspace:*",
+    "@depthly/protocol-math": "workspace:*",
     "@depthly/theme": "workspace:*",
     "@expo/ui": "~55.0.1",
     "@expo/vector-icons": "^15.0.3",
@@ -55,7 +56,6 @@
     "mobx-persist-store": "^1.1.8",
     "mobx-react-lite": "^4.1.1",
     "moti": "^0.30.0",
-    "numbro": "*",
     "openapi-fetch": "^0.15.0",
     "react": "19.2.0",
     "react-native": "0.83.2",

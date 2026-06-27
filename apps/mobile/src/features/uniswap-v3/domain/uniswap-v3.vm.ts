@@ -1,4 +1,6 @@
-export type TUniswapV3RangeStatus = "in-range" | "out-of-range" | "closed";
+import type { TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
+
+export type { TUniswapV3RangeStatus };
 
 export interface TUniswapV3TokenSide {
   readonly tokenRef: string;

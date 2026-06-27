@@ -1,7 +1,6 @@
 import * as v from "valibot";
 
-const ETH_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
-const POSITION_REF_REGEX = /^[a-z0-9-]+:\d+:[A-Za-z0-9_-]+$/;
+export const POSITION_REF_REGEX = /^[a-z0-9-]+:\d+:[A-Za-z0-9_-]+$/;
 const WALLET_ITEM_REGEX = /^0x[a-fA-F0-9]{40}:\d+(?:,\d+)*$/;
 
 /**
@@ -53,7 +52,6 @@ export const positionRefParamSchema = v.object({
   ref: v.pipe(v.string(), v.regex(POSITION_REF_REGEX, "ref must be in format '{protocol}:{chainId}:{protocolPositionId}'")),
 });
 
-export type WalletScopeEntry = { address: string; chainIds: number[] };
 export type PositionsListQuery = v.InferOutput<typeof positionsListQuerySchema>;
 export type PositionRefParam = v.InferOutput<typeof positionRefParamSchema>;
 

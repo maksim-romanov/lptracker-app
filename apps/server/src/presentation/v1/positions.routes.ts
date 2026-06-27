@@ -1,9 +1,7 @@
 import "reflect-metadata";
 
-import { getLogger } from "@depthly/logger";
 import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
-import type { Result } from "neverthrow";
 import {
   type DetailResponse,
   detailResponseSchema,
@@ -11,50 +9,18 @@ import {
   errorResponseSchema,
   type ListResponse,
   listResponseSchema,
-  type MapPositionResult,
   type Position,
 } from "shared/contracts";
 import { DomainError } from "shared/errors/base.error";
+import { TokensMapBuilder } from "shared/tokens/tokens-map";
 
-import { isKnownChainId } from "../../app/networks/catalog";
+import { listPositions } from "../../app/positions/list-positions";
 import { protocolRegistry } from "../../app/protocols/registry";
-import type { ProtocolEntry } from "../../app/protocols/types";
 import { badRequest, mapErrorToHttpResponse, notFound, validationHook } from "./error-mapper";
 import { positionSchema } from "./schemas/position.schema";
-import { parsePositionRef, positionRefParamSchema, positionsListQuerySchema, type WalletScopeEntry } from "./schemas/request.schemas";
-import { TokensMapBuilder } from "./utils/tokens-map";
-
-const logger = getLogger(["server", "positions"]);
+import { parsePositionRef, positionRefParamSchema, positionsListQuerySchema } from "./schemas/request.schemas";
 
 export const positionsRoutes = new Hono();
-
-// Hard cap per upstream source. Wallets with >MAX_PER_SOURCE positions on a
-// single chain×protocol see only the most-recently-updated MAX_PER_SOURCE.
-// Revisit when real wallets approach this limit.
-const MAX_PER_SOURCE = 200;
-
-interface ResolvedTriple {
-  wallet: WalletScopeEntry;
-  chainId: number;
-  protocol: ProtocolEntry;
-}
-
-const resolveScope = (wallets: WalletScopeEntry[], protocolFilter: string[] | undefined): ResolvedTriple[] => {
-  const protocols = protocolFilter ? protocolRegistry.all().filter((p) => protocolFilter.includes(p.slug)) : protocolRegistry.all();
-  const triples: ResolvedTriple[] = [];
-
-  for (const wallet of wallets) {
-    for (const chainId of wallet.chainIds) {
-      if (!isKnownChainId(chainId)) continue;
-      for (const protocol of protocols) {
-        if (!protocol.supportedChainIds.includes(chainId)) continue;
-        triples.push({ wallet, chainId, protocol });
-      }
-    }
-  }
-
-  return triples;
-};
 
 positionsRoutes.get(
   "/",
@@ -93,75 +59,19 @@ positionsRoutes.get(
       }
     }
 
-    const triples = resolveScope(query.wallets, query.protocols);
-
-    const closed = query.status === "closed";
-    const upstreamFilter = query.status === "all" ? undefined : { closed };
-
-    logger.info("list start", {
-      walletCount: query.wallets.length,
-      wallets: query.wallets.map((w) => ({ address: w.address, chainIds: w.chainIds })),
-      protocols: query.protocols ?? "all",
+    const { positions, tokens, partialFailures, resolvedScope } = await listPositions({
+      wallets: query.wallets,
+      protocols: query.protocols,
       status: query.status,
-      triples: triples.map((t) => ({ address: t.wallet.address, chainId: t.chainId, protocol: t.protocol.slug })),
     });
 
-    const results = await Promise.all(
-      triples.map(
-        async (triple): Promise<Result<MapPositionResult[], DomainError>> =>
-          triple.protocol.listPositionsForChain({
-            ownerAddress: triple.wallet.address,
-            chainId: triple.chainId,
-            pagination: { limit: MAX_PER_SOURCE, offset: 0 },
-            filters: upstreamFilter,
-          }),
-      ),
-    );
+    const body: ListResponse<Position> = { data: positions, tokens };
 
-    const tokensBuilder = new TokensMapBuilder();
-    const allPositions: Position[] = [];
-    const partialFailures: { protocol: string; chainId: number; message: string }[] = [];
-
-    for (const [i, res] of results.entries()) {
-      const triple = triples[i]!;
-      if (res.isErr()) {
-        partialFailures.push({ protocol: triple.protocol.slug, chainId: triple.chainId, message: res.error.message });
-        logger.error("source failed", {
-          protocol: triple.protocol.slug,
-          chainId: triple.chainId,
-          wallet: triple.wallet.address,
-          error: res.error,
-        });
-        continue;
-      }
-      logger.info("source ok", {
-        protocol: triple.protocol.slug,
-        chainId: triple.chainId,
-        wallet: triple.wallet.address,
-        count: res.value.length,
-      });
-      for (const mapped of res.value) {
-        allPositions.push(mapped.position);
-        tokensBuilder.add(mapped.tokenMetaInputs);
-      }
-    }
-
-    allPositions.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : a.updatedAt > b.updatedAt ? -1 : a.ref.localeCompare(b.ref)));
-
-    const body: ListResponse<Position> = {
-      data: allPositions,
-      tokens: tokensBuilder.build(),
-    };
-
-    c.header(
-      "X-Resolved-Scope",
-      JSON.stringify(triples.map((t) => ({ address: t.wallet.address, chainId: t.chainId, protocol: t.protocol.slug }))),
-    );
+    c.header("X-Resolved-Scope", JSON.stringify(resolvedScope));
     if (partialFailures.length > 0) {
       c.header("Warning", `199 - "partial-results: ${partialFailures.length} source(s) failed"`);
       c.header("X-Partial-Failures", JSON.stringify(partialFailures));
     }
-
     return c.json(body);
   },
 );

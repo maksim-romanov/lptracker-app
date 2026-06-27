@@ -9,6 +9,13 @@ RUN bun add -g turbo@2.7.5
 COPY . .
 RUN turbo prune server --docker
 
+# --- css: build Tailwind output (needs dev deps + full workspace for @depthly/theme) ---
+FROM base AS css
+WORKDIR /repo
+COPY . .
+RUN bun install --frozen-lockfile
+RUN bun run --cwd apps/server css:build
+
 # --- installer: install production deps against the pruned manifests ---
 FROM base AS installer
 WORKDIR /app
@@ -23,6 +30,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=installer /app .
+COPY --from=css /repo/apps/server/src/static/dist/app.css apps/server/src/static/dist/app.css
 USER bun
 WORKDIR /app/apps/server
 ENV NODE_ENV=production

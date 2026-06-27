@@ -1,0 +1,39 @@
+@layer components {
+  /* Ported from apps/mobile PriceRangeBar. --band-left/--band-width/--thumb set by the range controller. */
+  .range-bar {
+    @apply relative h-1.5 rounded-full bg-base-content/5;
+
+    & .band {
+      @apply absolute inset-y-0 rounded-full;
+      left: var(--band-left, 15%);
+      width: var(--band-width, 70%);
+    }
+
+    & .thumb {
+      @apply absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-base-100;
+      left: var(--thumb, 50%);
+    }
+
+    &[data-inrange="true"] .band {
+      @apply bg-success/90;
+    }
+
+    &[data-inrange="true"] .thumb {
+      @apply bg-success;
+      box-shadow: 0 0 8px color-mix(in oklch, var(--color-success) 80%, transparent);
+    }
+
+    &[data-inrange="false"] .band {
+      @apply bg-warning/90;
+    }
+
+    &[data-inrange="false"] .thumb {
+      @apply bg-warning;
+      box-shadow: 0 0 8px color-mix(in oklch, var(--color-warning) 80%, transparent);
+    }
+  }
+
+  .range-labels {
+    @apply flex justify-between text-xs text-base-content/55;
+  }
+}

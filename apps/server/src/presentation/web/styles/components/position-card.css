@@ -1,0 +1,80 @@
+@layer components {
+  /* `.position-card` is the invert swap's hx-target="closest .position-card" — don't rename. */
+  .position-card {
+    @apply flex h-full cursor-pointer flex-col gap-sm rounded-box border border-base-300 bg-base-200 p-md;
+    @apply transition-[box-shadow,border-color] duration-200 ease-out;
+    box-shadow: var(--shadow-card);
+
+    &:hover {
+      @apply border-base-content/15;
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    &:focus-visible {
+      @apply outline-2 outline-offset-2 outline-primary;
+    }
+
+    & .head {
+      @apply flex items-center;
+    }
+
+    & .invert {
+      @apply ml-auto shrink-0;
+    }
+
+    & .title {
+      @apply flex items-baseline gap-xs;
+    }
+
+    & .pair {
+      @apply text-base font-semibold tracking-tight;
+    }
+
+    & .fee {
+      @apply text-xs text-base-content/50;
+    }
+
+    & .status {
+      @apply w-fit shrink-0 self-start whitespace-nowrap;
+    }
+
+    & .metrics {
+      @apply mt-xxs flex flex-col gap-xxs border-t border-base-300 pt-sm text-sm;
+    }
+
+    & .stat-row {
+      @apply flex items-center justify-between gap-sm;
+
+      & dt {
+        @apply shrink-0 text-base-content/50;
+      }
+
+      & dd {
+        @apply truncate text-right font-medium;
+      }
+    }
+  }
+
+  /* Shared by card + modal. */
+  .token-stack {
+    @apply inline-flex items-center;
+
+    & > :not(:first-child) {
+      @apply -ml-md;
+    }
+  }
+
+  .token-icon {
+    @apply h-8 w-8 shrink-0 rounded-full border-2 border-base-200 bg-base-300 object-cover;
+
+    &.is-fallback {
+      @apply flex items-center justify-center text-xs font-medium uppercase text-base-content/60;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .position-card {
+      @apply transition-none;
+    }
+  }
+}

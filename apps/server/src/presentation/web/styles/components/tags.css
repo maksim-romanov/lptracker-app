@@ -1,0 +1,30 @@
+@layer components {
+  /* Brand-colour tags (brand hexes are asset data, not theme tokens). */
+  .net-tag,
+  .proto-tag {
+    @apply gap-1 border;
+    background-color: color-mix(in oklch, var(--tag-color) 14%, transparent);
+    border-color: color-mix(in oklch, var(--tag-color) 38%, transparent);
+    color: var(--tag-color);
+  }
+
+  .net-tag--ethereum {
+    --tag-color: #627eea;
+  }
+
+  .net-tag--base {
+    --tag-color: #3d7bff;
+  }
+
+  .net-tag--arbitrum {
+    --tag-color: #28a0f0;
+  }
+
+  .net-tag--unknown {
+    --tag-color: var(--color-base-content);
+  }
+
+  .proto-tag--uniswap {
+    --tag-color: #ff007a;
+  }
+}

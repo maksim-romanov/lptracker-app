@@ -1,0 +1,30 @@
+@layer components {
+  .app-header {
+    @apply sticky top-0 z-20 border-b border-base-300 bg-base-100/90 backdrop-blur;
+  }
+
+  .app-header__inner {
+    @apply mx-auto flex w-full max-w-[1152px] items-center justify-between px-lg py-md;
+  }
+
+  .brand {
+    @apply text-lg font-semibold tracking-tight;
+  }
+
+  .theme-toggle {
+    @apply text-base-content/70;
+  }
+
+  /* Sun in dark, moon in light (theme controller sets data-theme on connect). */
+  .theme-toggle__sun {
+    @apply hidden;
+  }
+
+  [data-theme="depthly-dark"] .theme-toggle__moon {
+    @apply hidden;
+  }
+
+  [data-theme="depthly-dark"] .theme-toggle__sun {
+    @apply inline-block;
+  }
+}

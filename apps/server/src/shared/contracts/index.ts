@@ -5,3 +5,4 @@ export * from "./position.schema";
 export * from "./protocol-adapter";
 export * from "./token.schema";
 export * from "./token-amount.schema";
+export * from "./wallet";

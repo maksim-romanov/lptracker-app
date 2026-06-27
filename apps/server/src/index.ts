@@ -3,6 +3,8 @@ import "reflect-metadata";
 import { installLogger, requestLogger } from "@depthly/logger";
 import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
+import { serveStatic } from "hono/bun";
+import { secureHeaders } from "hono/secure-headers";
 import { openAPIRouteHandler } from "hono-openapi";
 import { iconsRoutes } from "icons/presentation/api";
 import { tokenPricesRoutes } from "token-prices/presentation/api";
@@ -10,6 +12,8 @@ import { tokensMetaRoutes } from "tokens-meta/presentation/api";
 
 import { registerApp } from "./di/register";
 import { v1Routes } from "./presentation/v1";
+import { webRoutes } from "./presentation/web/routes/positions.routes";
+import { shellRoutes } from "./presentation/web/routes/shell.routes";
 
 await installLogger({ app: "server" });
 registerApp();
@@ -42,5 +46,37 @@ app.get("/docs", Scalar({ url: "/openapi.json", theme: "purple", pageTitle: "Dep
 app.route("/icons", iconsRoutes);
 app.route("/meta", tokensMetaRoutes);
 app.route("/prices", tokenPricesRoutes);
+
+const STATIC_ROOT = new URL("./static/", import.meta.url).pathname;
+
+app.use(
+  "/static/*",
+  serveStatic({
+    root: STATIC_ROOT,
+    rewriteRequestPath: (p) => p.replace(/^\/static/, ""),
+    onFound: (path, c) => {
+      // Only cache-bust content-hashed files (e.g. application-5fx314ew.js); dev fixed names have no hash segment.
+      if (/-[a-z0-9]{6,}\.(js|css)$/i.test(path)) {
+        c.header("Cache-Control", "public, max-age=31536000, immutable");
+      }
+    },
+  }),
+);
+
+const appCsp = secureHeaders({
+  contentSecurityPolicy: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'"],
+    styleSrc: ["'self'"],
+    imgSrc: ["'self'", "https:", "data:"],
+    connectSrc: ["'self'"],
+  },
+});
+
+app.use("/app", appCsp);
+app.use("/app/*", appCsp);
+
+app.route("/app", shellRoutes);
+app.route("/app", webRoutes);
 
 export default app;

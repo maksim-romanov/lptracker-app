@@ -1,0 +1,108 @@
+@import "tailwindcss";
+@config "../../../../tailwind.config.ts";
+@plugin "daisyui";
+
+/* App theme — separate from @depthly/theme (the landing). Canvas = base-100,
+   cards = base-200 + soft shadow. */
+@plugin "daisyui/theme" {
+  name: "depthly-light";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-base-100: #f4f6f8;
+  --color-base-200: #ffffff;
+  --color-base-300: #e6eaee;
+  --color-base-content: #0f1419;
+
+  --color-primary: #cc0062;
+  --color-primary-content: #ffffff;
+  --color-secondary: #ff007a;
+  --color-secondary-content: #ffffff;
+  --color-accent: #ff2d92;
+  --color-accent-content: #ffffff;
+  --color-neutral: #0f1419;
+  --color-neutral-content: #ffffff;
+
+  --color-info: #536471;
+  --color-info-content: #ffffff;
+  --color-success: #10b981;
+  --color-success-content: #ffffff;
+  --color-warning: #f59e0b;
+  --color-warning-content: #1a1500;
+  --color-error: #ef4444;
+  --color-error-content: #ffffff;
+
+  --radius-selector: 0.75rem;
+  --radius-field: 2rem;
+  --radius-box: 1.5rem;
+  --size-selector: 0.28125rem;
+  --size-field: 0.28125rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "depthly-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+
+  --color-base-100: #0a0b0d;
+  --color-base-200: #17191d;
+  --color-base-300: #2a2e35;
+  --color-base-content: #e7e9ea;
+
+  --color-primary: #ff007a;
+  --color-primary-content: #ffffff;
+  --color-secondary: #ff80be;
+  --color-secondary-content: #0a0a0b;
+  --color-accent: #ff4da6;
+  --color-accent-content: #0a0a0b;
+  --color-neutral: #17191d;
+  --color-neutral-content: #e7e9ea;
+
+  --color-info: #8b8f95;
+  --color-info-content: #0a0a0b;
+  --color-success: #10e29a;
+  --color-success-content: #001f0f;
+  --color-warning: #ffd60a;
+  --color-warning-content: #1a1500;
+  --color-error: #ff5a5f;
+  --color-error-content: #1a0002;
+
+  --radius-selector: 0.75rem;
+  --radius-field: 2rem;
+  --radius-box: 1.5rem;
+  --size-selector: 0.28125rem;
+  --size-field: 0.28125rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* Soft shadow tokens, tuned per theme. */
+@layer base {
+  :root {
+    --shadow-card: 0 1px 2px rgba(15, 20, 25, 0.04), 0 4px 16px rgba(15, 20, 25, 0.06);
+    --shadow-card-hover: 0 2px 4px rgba(15, 20, 25, 0.06), 0 8px 28px rgba(15, 20, 25, 0.1);
+  }
+
+  [data-theme="depthly-dark"] {
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 6px 20px rgba(0, 0, 0, 0.45);
+    --shadow-card-hover: 0 2px 6px rgba(0, 0, 0, 0.55), 0 10px 30px rgba(0, 0, 0, 0.55);
+  }
+}
+
+@import "./base.css";
+@import "./components/header.css";
+@import "./components/footer.css";
+@import "./components/controls.css";
+@import "./components/board.css";
+@import "./components/range-bar.css";
+@import "./components/tags.css";
+@import "./components/position-card.css";
+@import "./components/position-detail.css";
+@import "./components/stats.css";
+@import "./components/loader.css";

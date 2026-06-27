@@ -1,0 +1,156 @@
+@layer components {
+  /* Hero (no positions) → centered column; with positions → two columns. */
+  .app-main {
+    @apply mx-auto flex w-full max-w-[560px] flex-1 flex-col justify-center gap-lg p-lg;
+  }
+
+  .app-main:has(.position-card) {
+    @apply max-w-[1152px] justify-start;
+    @apply lg:grid lg:grid-cols-2 lg:items-start lg:gap-4xl;
+  }
+
+  .wallet-panel {
+    @apply flex flex-col gap-lg rounded-box border border-base-300 bg-base-200 p-lg;
+    @apply lg:sticky lg:top-[68px];
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Hero emphasis while empty. */
+  .app-main:not(:has(.position-card)) .wallet-panel {
+    @apply p-xl;
+  }
+
+  .app-main:not(:has(.position-card)) .wallet-panel__head {
+    @apply items-center text-center;
+  }
+
+  .app-main:not(:has(.position-card)) .wallet-panel__title {
+    @apply text-3xl;
+  }
+
+  .wallet-panel__head {
+    @apply flex flex-col gap-xs;
+
+    & .wallet-panel__title {
+      @apply text-xl lg:text-2xl;
+    }
+
+    & .wallet-panel__sub {
+      @apply text-sm text-base-content/60;
+    }
+  }
+
+  .wallet-form {
+    @apply flex flex-col gap-lg;
+  }
+
+  .wallet-form__row {
+    @apply flex items-center gap-sm;
+  }
+
+  /* daisyUI .input as a label: leading icon + bare input. */
+  .wallet-input {
+    @apply flex-1 gap-sm;
+
+    & .wallet-input__icon {
+      @apply shrink-0 text-base-content/40;
+    }
+  }
+
+  .wallet-form__submit {
+    @apply shrink-0 transition-[transform,opacity] duration-200 ease-out;
+  }
+
+  .wallet-form:has(.wallet-input input:invalid) .wallet-form__submit {
+    @apply scale-90 opacity-50;
+  }
+
+  .wallet-form:has(.wallet-input input:valid) .wallet-form__submit {
+    @apply scale-100 opacity-100;
+  }
+
+  /* A <legend> ignores flex gap — use an explicit label margin (matches .tracked). */
+  .chains {
+    & .chains__legend {
+      @apply mb-sm block text-xs font-medium uppercase tracking-wide text-base-content/50;
+    }
+
+    & .chains__list {
+      @apply flex flex-wrap gap-xs;
+    }
+  }
+
+  /* The hidden checkbox is the source of truth; the label is the visible tag. */
+  .chain {
+    @apply inline-flex cursor-pointer select-none items-center gap-xs rounded-full border border-base-300 bg-base-100 py-xs pl-sm pr-md text-sm font-medium text-base-content/70;
+    @apply transition-colors hover:border-base-content/25 hover:text-base-content;
+
+    & .chain__input {
+      @apply sr-only;
+    }
+
+    & .chain__check {
+      @apply hidden text-primary;
+    }
+
+    &:has(.chain__input:checked) {
+      @apply border-primary bg-primary/10 text-primary;
+    }
+
+    &:has(.chain__input:checked) .chain__check {
+      @apply inline-block;
+    }
+
+    &:has(.chain__input:focus-visible) {
+      @apply outline-2 outline-offset-2 outline-primary;
+    }
+  }
+
+  .tracked {
+    &:has(.wallet-chips:empty) {
+      @apply hidden;
+    }
+
+    & .tracked__label {
+      @apply mb-sm block text-xs font-medium uppercase tracking-wide text-base-content/50;
+    }
+  }
+
+  .wallet-chips {
+    @apply flex flex-wrap gap-xs;
+  }
+
+  .wallet-chip {
+    @apply inline-flex items-center gap-xs rounded-full border border-base-300 bg-base-100 py-xxs pr-xxs pl-sm text-sm font-medium;
+    @apply transition-[opacity,transform] duration-200 ease-out;
+
+    & .wallet-chip__icon {
+      @apply shrink-0 text-base-content/40;
+    }
+
+    & .wallet-chip__addr {
+      @apply font-mono;
+      font-variant-numeric: tabular-nums;
+    }
+
+    & .wallet-chip__remove {
+      @apply inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full p-xxs text-base-content/40;
+      @apply transition-colors hover:bg-base-300 hover:text-error;
+      @apply focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary;
+    }
+  }
+
+  @starting-style {
+    .wallet-chip {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wallet-chip,
+    .wallet-form__submit {
+      @apply transition-none;
+    }
+  }
+}
