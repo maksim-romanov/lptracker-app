@@ -10,8 +10,8 @@ COPY . .
 RUN turbo prune server --docker
 
 # --- css: build hashed JS+CSS assets (needs dev deps + full workspace for @depthly/theme) ---
-# Not --frozen-lockfile: apps/mobile and apps/subgraphs are dockerignored, so the full
-# lockfile can't match this context. --ignore-scripts skips the lefthook prepare (no .git here).
+# Not --frozen-lockfile: apps/mobile and apps/subgraphs are excluded by .dockerignore, so
+# the full lockfile can't match this context. --ignore-scripts skips lefthook prepare (no .git).
 FROM base AS css
 WORKDIR /repo
 COPY . .
