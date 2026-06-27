@@ -11,3 +11,15 @@ gusd
 lusd
 usde
 usdp
+htmx
+hotwired
+gsap
+clickables
+colour
+fintech
+inrange
+prefersdark
+prefs
+xnope
+xowner
+xpool

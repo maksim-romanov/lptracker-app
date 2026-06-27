@@ -49,7 +49,7 @@
       "dictionaries": ["landing-words"]
     },
     {
-      "filename": ["docs/**", "CLAUDE.md", "README.md", "package.json", "lefthook.yml", "cspell.json", ".github/**"],
+      "filename": ["docs/**", "CLAUDE.md", "README.md", "package.json", "biome.json", "lefthook.yml", "cspell.json", ".github/**"],
       "dictionaries": ["server-words", "mobile-words", "tokens-data-words", "subgraph-words", "landing-words"]
     }
   ],
@@ -59,6 +59,7 @@
     ".expo/**",
     ".vscode/**",
     ".claude/**",
+    ".agents/**",
     ".superpowers/**",
     "node_modules/**",
     "bun.lock",
@@ -109,6 +110,6 @@
     "skills-lock.json",
     "dump.rdb"
   ],
-  "ignoreRegExpList": ["0x[0-9a-fA-F]+", "https?://\\S+", "[a-zA-Z0-9+/]{40,}={0,2}", "[a-f0-9]{32,}"],
+  "ignoreRegExpList": ["0x[0-9a-fA-F]+", "https?://\\S+", "[a-zA-Z0-9+/]{40,}={0,2}", "[a-f0-9]{32,}", "[\\u0400-\\u04FF]+"],
   "useGitignore": true
 }
