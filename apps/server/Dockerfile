@@ -9,12 +9,14 @@ RUN bun add -g turbo@2.7.5
 COPY . .
 RUN turbo prune server --docker
 
-# --- css: build Tailwind output (needs dev deps + full workspace for @depthly/theme) ---
+# --- css: build hashed JS+CSS assets (needs dev deps + full workspace for @depthly/theme) ---
+# Not --frozen-lockfile: apps/mobile and apps/subgraphs are dockerignored, so the full
+# lockfile can't match this context. --ignore-scripts skips the lefthook prepare (no .git here).
 FROM base AS css
 WORKDIR /repo
 COPY . .
-RUN bun install --frozen-lockfile
-RUN bun run --cwd apps/server css:build
+RUN bun install --ignore-scripts
+RUN bun run --cwd apps/server build
 
 # --- installer: install production deps against the pruned manifests ---
 FROM base AS installer
@@ -30,7 +32,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=installer /app .
-COPY --from=css /repo/apps/server/src/static/dist/app.css apps/server/src/static/dist/app.css
+COPY --from=css /repo/apps/server/src/static/dist apps/server/src/static/dist
 USER bun
 WORKDIR /app/apps/server
 ENV NODE_ENV=production
