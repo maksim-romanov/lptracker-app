@@ -2,6 +2,8 @@
 
 DeFi portfolio monitoring — track your LP positions, accumulated fees, and on-chain holdings across multiple networks in one place.
 
+[depthly.xyz](https://depthly.xyz) · [app.depthly.xyz](https://app.depthly.xyz)
+
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
 [![Bun](https://img.shields.io/badge/Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
