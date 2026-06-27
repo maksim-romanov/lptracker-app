@@ -73,10 +73,11 @@ const appCsp = secureHeaders({
   },
 });
 
-app.use("/app", appCsp);
-app.use("/app/*", appCsp);
+app.use("/", appCsp);
+app.use("/positions", appCsp);
+app.use("/positions/*", appCsp);
 
-app.route("/app", shellRoutes);
-app.route("/app", webRoutes);
+app.route("/", shellRoutes);
+app.route("/", webRoutes);
 
 export default app;

@@ -7,7 +7,7 @@ export const inject = (event: Event): void => {
   const detail = (event as CustomEvent).detail;
   const elt: Element | null = detail?.elt ?? null;
   const reqPath = elt?.getAttribute ? (elt.getAttribute("hx-get") ?? elt.getAttribute("hx-post") ?? "") : "";
-  if (reqPath.indexOf("/app/positions") !== 0) return;
+  if (reqPath.indexOf("/positions") !== 0) return;
 
   const invertRef = elt?.getAttribute ? elt.getAttribute("data-invert") : null;
   if (invertRef) {
@@ -17,7 +17,7 @@ export const inject = (event: Event): void => {
 
   // Only the board list gets wallet/inverted injected; per-position requests
   // carry their own query.
-  if (reqPath !== "/app/positions") return;
+  if (reqPath !== "/positions") return;
   detail.parameters.wallets = walletStore.serialize();
   detail.parameters.inverted = positionPrefs.serializeInverted();
 };

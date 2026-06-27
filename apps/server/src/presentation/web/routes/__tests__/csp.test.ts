@@ -1,9 +1,9 @@
 import app from "../../../../index";
 import { describe, expect, it } from "bun:test";
 
-describe("/app CSP", () => {
-  it("sets an eval-free, inline-free script-src on /app", async () => {
-    const res = await app.request("/app");
+describe("app shell CSP", () => {
+  it("sets an eval-free, inline-free script-src on /", async () => {
+    const res = await app.request("/");
     const csp = res.headers.get("Content-Security-Policy") || "";
     expect(csp).toContain("script-src");
     expect(csp).toContain("'self'");

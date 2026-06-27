@@ -46,7 +46,7 @@ describe("web fragments", () => {
     expect(html).toContain("WETH");
     expect(html).toContain("0.3%");
     expect(html).toContain('data-invert="uniswap-v3:1:42"');
-    expect(html).toContain('hx-get="/app/positions/uniswap-v3:1:42/card"');
+    expect(html).toContain('hx-get="/positions/uniswap-v3:1:42/card"');
     // hx-target must be a valid selector: a colon-laden #id (the ref) breaks CSS querying,
     // so the swap silently fails. Target the enclosing card via `closest` instead.
     expect(html).toContain('hx-target="closest .position-card"');

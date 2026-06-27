@@ -99,7 +99,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
             <div
               id="board"
               class="board"
-              hx-get="/app/positions"
+              hx-get="/positions"
               hx-trigger="load, board:refresh from:body"
               hx-sync="this:replace"
               hx-indicator="#board-loader"

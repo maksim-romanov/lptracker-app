@@ -59,14 +59,14 @@ describe("htmx-params", () => {
   describe("inject()", () => {
     it("derives path from elt.getAttribute('hx-get'), not detail.path (guarantee b)", async () => {
       await seed({ wallets: ["0xabc:1"] });
-      const evt = makeEvt({ "hx-get": "/app/positions" });
+      const evt = makeEvt({ "hx-get": "/positions" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.wallets).toBe("0xabc:1");
     });
 
-    it("injects wallets (pipe-joined) and inverted (comma-joined) for /app/positions (guarantee d)", async () => {
+    it("injects wallets (pipe-joined) and inverted (comma-joined) for /positions (guarantee d)", async () => {
       await seed({ wallets: ["0xabc:1,8453", "0xdef:42161"], inverted: ["uniswap-v3:1:7"] });
-      const evt = makeEvt({ "hx-get": "/app/positions" });
+      const evt = makeEvt({ "hx-get": "/positions" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.wallets).toBe("0xabc:1,8453|0xdef:42161");
       expect(evt.detail.parameters.inverted).toBe("uniswap-v3:1:7");
@@ -74,7 +74,7 @@ describe("htmx-params", () => {
 
     it("sets inverted=1 and saves the ref on first invert-toggle (guarantee c)", async () => {
       await seed({ inverted: [] });
-      const evt = makeEvt({ "hx-get": "/app/positions/uniswap-v3:1:42/card", "data-invert": "uniswap-v3:1:42" });
+      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/card", "data-invert": "uniswap-v3:1:42" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.inverted).toBe("1");
       expect(positionPrefs.serializeInverted()).toBe("uniswap-v3:1:42");
@@ -82,13 +82,13 @@ describe("htmx-params", () => {
 
     it("sets inverted=0 and removes the ref when toggling an already-inverted ref (guarantee c)", async () => {
       await seed({ inverted: ["uniswap-v3:1:42"] });
-      const evt = makeEvt({ "hx-get": "/app/positions/uniswap-v3:1:42/card", "data-invert": "uniswap-v3:1:42" });
+      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/card", "data-invert": "uniswap-v3:1:42" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.inverted).toBe("0");
       expect(positionPrefs.serializeInverted()).toBe("");
     });
 
-    it("does nothing for non-/app/positions paths (guarantee d)", async () => {
+    it("does nothing for non-/positions paths (guarantee d)", async () => {
       await seed({ wallets: ["0xabc:1"] });
       const evt = makeEvt({ "hx-get": "/api/v1/positions" });
       inject(evt as unknown as Event);

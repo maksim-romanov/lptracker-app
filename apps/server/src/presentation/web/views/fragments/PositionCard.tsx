@@ -21,7 +21,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
       tabindex={0}
       aria-haspopup="dialog"
       aria-label={`View ${card.pair.base.symbol} / ${card.pair.quote.symbol} details`}
-      hx-get={`/app/positions/${card.ref}/detail?inverted=${card.inverted ? "1" : "0"}`}
+      hx-get={`/positions/${card.ref}/detail?inverted=${card.inverted ? "1" : "0"}`}
       hx-target="#position-modal-box"
       hx-swap="innerHTML"
       hx-indicator="#position-modal-loading"
@@ -35,7 +35,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
         <button
           type="button"
           data-invert={card.ref}
-          hx-get={`/app/positions/${card.ref}/card`}
+          hx-get={`/positions/${card.ref}/card`}
           hx-target="closest .position-card"
           hx-swap="outerHTML"
           hx-trigger="click consume"

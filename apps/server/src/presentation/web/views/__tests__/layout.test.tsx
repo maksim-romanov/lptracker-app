@@ -20,7 +20,7 @@ describe("Layout", () => {
     expect(html).toContain('data-wallet-target="chain"');
 
     expect(html).toContain('id="board"');
-    expect(html).toContain('hx-get="/app/positions"');
+    expect(html).toContain('hx-get="/positions"');
     expect(html).toContain("board:refresh");
 
     // chips render client-side from localStorage (no round-trip): a target container + a <template>
