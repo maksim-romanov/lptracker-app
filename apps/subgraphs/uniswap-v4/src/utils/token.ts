@@ -5,7 +5,6 @@ import { ERC20SymbolBytes } from "../../generated/PoolManager/ERC20SymbolBytes";
 import { ERC20NameBytes } from "../../generated/PoolManager/ERC20NameBytes";
 import { Token } from "../../generated/schema";
 
-// Decode a bytes32 token symbol/name: trim trailing null padding, then UTF-8 decode.
 function bytes32ToString(value: Bytes): string {
   let length = value.length;
   while (length > 0 && value[length - 1] == 0) {

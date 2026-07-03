@@ -66,7 +66,7 @@ function mockERC20Token(tokenAddress: Address, symbol: string, name: string, dec
   createMockedFunction(tokenAddress, "decimals", "decimals():(uint8)").returns([ethereum.Value.fromI32(decimals)]);
 }
 
-// Right-pad a short ASCII label to 32 bytes — how legacy tokens (MKR, DGD) store bytes32 symbol/name.
+// Legacy tokens (MKR, DGD) store bytes32 symbol/name as right-padded ASCII.
 function padToBytes32(text: string): Bytes {
   let hex = "";
   for (let i = 0; i < text.length; i++) {
@@ -83,7 +83,6 @@ function padToBytes32(text: string): Bytes {
   return Bytes.fromHexString("0x" + hex);
 }
 
-// A token whose string symbol()/name() revert and only the bytes32 variants return.
 function mockERC20TokenBytes32(tokenAddress: Address, symbol: Bytes, name: Bytes, decimals: i32): void {
   createMockedFunction(tokenAddress, "symbol", "symbol():(string)").reverts();
   createMockedFunction(tokenAddress, "name", "name():(string)").reverts();
@@ -401,7 +400,6 @@ describe("Position Lifecycle Tests", () => {
 
     setupPoolMocks(TOKEN0_ADDRESS, TOKEN1_ADDRESS, 3000, POOL_ADDRESS);
 
-    // Mint with liquidity
     createMockedFunction(
       CONTRACT_ADDRESS,
       "positions",
@@ -429,7 +427,6 @@ describe("Position Lifecycle Tests", () => {
     mintEvent.address = CONTRACT_ADDRESS;
     handleTransfer(mintEvent);
 
-    // Drain to zero -> closed
     createMockedFunction(
       CONTRACT_ADDRESS,
       "positions",
@@ -459,7 +456,6 @@ describe("Position Lifecycle Tests", () => {
 
     assert.fieldEquals("Position", "8", "closed", "true");
 
-    // Re-add liquidity -> must reopen
     createMockedFunction(
       CONTRACT_ADDRESS,
       "positions",

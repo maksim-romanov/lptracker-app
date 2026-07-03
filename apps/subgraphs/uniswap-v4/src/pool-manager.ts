@@ -1,12 +1,9 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
-
 import { Initialize, ModifyLiquidity, Swap } from "../generated/PoolManager/PoolManager";
 import { Pool } from "../generated/schema";
 
+import { POSITION_MANAGER } from "./constants";
 import { getOrCreatePool } from "./utils/pool";
-import { getOrCreatePosition, saltToTokenId } from "./utils/position";
-
-let POSITION_MANAGER = Address.fromString("0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e");
+import { getOrCreatePosition, saltToTokenId, updateClosed } from "./utils/position";
 
 export function handleInitialize(event: Initialize): void {
   getOrCreatePool(
@@ -38,7 +35,7 @@ export function handleModifyLiquidity(event: ModifyLiquidity): void {
   position.tickLower = event.params.tickLower;
   position.tickUpper = event.params.tickUpper;
   position.liquidity = position.liquidity.plus(event.params.liquidityDelta);
-  position.closed = position.liquidity.equals(BigInt.zero());
+  updateClosed(position, false);
   position.updatedAtBlock = event.block.number;
   position.updatedAtTimestamp = event.block.timestamp;
   position.save();

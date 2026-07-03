@@ -81,7 +81,7 @@ export function mockERC20Token(tokenAddress: Address, symbol: string, name: stri
   createMockedFunction(tokenAddress, "decimals", "decimals():(uint8)").returns([ethereum.Value.fromI32(decimals)]);
 }
 
-// Right-pad a short ASCII label to 32 bytes — how legacy tokens (MKR, DGD) store bytes32 symbol/name.
+// Legacy tokens (MKR, DGD) store bytes32 symbol/name as right-padded ASCII.
 export function padToBytes32(text: string): Bytes {
   let hex = "";
   for (let i = 0; i < text.length; i++) {
@@ -98,7 +98,6 @@ export function padToBytes32(text: string): Bytes {
   return Bytes.fromHexString("0x" + hex);
 }
 
-// A token whose string symbol()/name() revert and only the bytes32 variants return.
 export function mockERC20TokenBytes32(tokenAddress: Address, symbol: Bytes, name: Bytes, decimals: i32): void {
   createMockedFunction(tokenAddress, "symbol", "symbol():(string)").reverts();
   createMockedFunction(tokenAddress, "name", "name():(string)").reverts();

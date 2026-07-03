@@ -2,10 +2,10 @@ import { assert, describe, test, clearStore, beforeEach } from "matchstick-as/as
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { handleModifyLiquidity } from "../src/pool-manager";
 import { saltToTokenId } from "../src/utils/position";
+import { POSITION_MANAGER } from "../src/constants";
 import { createModifyLiquidityEvent, tokenIdToSalt } from "./pool-manager-utils";
 
 const POOL_ID = Bytes.fromHexString("0x1111111111111111111111111111111111111111111111111111111111111111");
-const POSITION_MANAGER = Address.fromString("0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e");
 const RANDOM_SENDER = Address.fromString("0x9999999999999999999999999999999999999999");
 
 describe("saltToTokenId", () => {

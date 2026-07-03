@@ -2,13 +2,13 @@ import { Address } from "@graphprotocol/graph-ts";
 
 import { Transfer } from "../generated/PositionManager/PositionManager";
 
-import { getOrCreatePosition } from "./utils/position";
+import { getOrCreatePosition, updateClosed } from "./utils/position";
 
 export function handleTransfer(event: Transfer): void {
   let position = getOrCreatePosition(event.params.id, event.block.number, event.block.timestamp);
 
   if (event.params.to.equals(Address.zero())) {
-    position.closed = true;
+    updateClosed(position, true);
   } else {
     position.owner = event.params.to;
   }

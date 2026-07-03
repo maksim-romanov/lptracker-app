@@ -10,6 +10,10 @@ export function saltToTokenId(salt: Bytes): BigInt {
   return BigInt.fromUnsignedBytes(Bytes.fromUint8Array(reversed));
 }
 
+export function updateClosed(position: Position, burned: boolean): void {
+  position.closed = burned || position.liquidity.equals(BigInt.zero());
+}
+
 export function getOrCreatePosition(tokenId: BigInt, blockNumber: BigInt, timestamp: BigInt): Position {
   let id = tokenId.toString();
   let position = Position.load(id);

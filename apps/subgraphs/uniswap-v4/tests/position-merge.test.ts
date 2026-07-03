@@ -4,9 +4,9 @@ import { handleModifyLiquidity } from "../src/pool-manager";
 import { handleTransfer } from "../src/position-manager";
 import { createModifyLiquidityEvent, tokenIdToSalt } from "./pool-manager-utils";
 import { createTransferEvent } from "./position-manager-utils";
+import { POSITION_MANAGER } from "../src/constants";
 
 const POOL_ID = Bytes.fromHexString("0x1111111111111111111111111111111111111111111111111111111111111111");
-const POSITION_MANAGER = Address.fromString("0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e");
 const ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 const OWNER = Address.fromString("0x0000000000000000000000000000000000000001");
 
