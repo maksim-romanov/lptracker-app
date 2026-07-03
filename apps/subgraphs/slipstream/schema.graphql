@@ -1,0 +1,46 @@
+type Token @entity(immutable: true) {
+  id: Bytes!
+  symbol: String!
+  name: String!
+  decimals: Int!
+}
+
+type Pool @entity(immutable: true) {
+  id: Bytes!
+  token0: Token!
+  token1: Token!
+  # Slipstream pools are keyed by tickSpacing, not a fee tier — the swap fee is dynamic
+  # (SwapFeeModule) and can change, so it is not indexed here.
+  tickSpacing: Int!
+
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Position @entity(immutable: false) {
+  id: ID!
+
+  owner: Bytes!
+  operator: Bytes!
+
+  pool: Pool
+
+  tickLower: Int!
+  tickUpper: Int!
+  liquidity: BigInt!
+
+  nonce: BigInt!
+
+  # While staked, the CLGauge holds the NFT, so the NFPM Transfer sets `owner` to the gauge;
+  # the CLGauge Deposit event restores `owner` to the real staker. `gauge` is the gauge the
+  # position is staked in, or null when unstaked.
+  staked: Boolean!
+  gauge: Bytes
+
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  updatedAtBlock: BigInt!
+  updatedAtTimestamp: BigInt!
+
+  closed: Boolean!
+}
