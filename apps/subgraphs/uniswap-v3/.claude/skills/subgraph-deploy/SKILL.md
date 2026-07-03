@@ -18,8 +18,49 @@ Three deploy targets, each its own Studio slug:
 1. `bun run codegen` — regenerates `generated/` from schema + ABIs. Required only if `schema.graphql`, `subgraph.yaml`, or any ABI changed.
 2. `bun run build` — must succeed before deploy. Treat AS warnings as errors.
 3. `bun run test` — matchstick tests must pass. If you added a new handler or branch, add a test for it first.
-4. Verify `networks.json` has correct `address`/`startBlock` for the target chain. If not, fix before deploying.
+4. **On-chain sanity check** — verify `address`, `startBlock`, and event signatures against the live chain, never from memory. See the section below. This is the single most costly thing to get wrong: a bad `startBlock` silently indexes an empty subgraph, and you pay for it.
 5. Confirm you are authenticated: `graph auth <DEPLOY_KEY>` once per machine. Deploy key comes from Studio dashboard.
+
+## On-chain sanity check (README Rule #1)
+
+matchstick does **not** verify the manifest — it trusts whatever `subgraph.yaml`/`networks.json` say. So before a deploy that changes an address, `startBlock`, or event, confirm each against the chain. This is a one-time pre-deploy check, not CI. `cast` (Foundry) is already the documented tool; the Etherscan key lives in `apps/subgraphs/uniswap-v4/.env`.
+
+```sh
+set -a; source apps/subgraphs/uniswap-v4/.env; set +a   # loads ETHERSCAN_API_KEY (one key, all chains)
+```
+
+**startBlock = contract creation block.** `cast` has no command for this — `cast creation-code`/`constructor-args` return bytecode/args, not the block — so use Etherscan v2 `getcontractcreation`, which returns it directly (chainid: mainnet 1, arbitrum 42161, base 8453):
+
+```sh
+curl -s "https://api.etherscan.io/v2/api?chainid=42161&module=contract&action=getcontractcreation&contractaddresses=<ADDR>&apikey=$ETHERSCAN_API_KEY" \
+  | jq -r '.result[0].blockNumber'
+```
+
+The free key covers mainnet + arbitrum but **not base** (`NOTOK … upgrade your api plan`). For base, use pure `cast` — binary-search the first block with code against a base RPC (no API key needed):
+
+```sh
+ADDR=0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1; RPC=https://mainnet.base.org
+lo=1; hi=$(cast block-number --rpc-url $RPC)
+while [ $((hi-lo)) -gt 1 ]; do mid=$(((lo+hi)/2));
+  c=$(cast code $ADDR --rpc-url $RPC --block $mid 2>/dev/null);
+  if [ "$c" = "0x" ] || [ -z "$c" ]; then lo=$mid; else hi=$mid; fi; done
+echo "creation block = $hi"
+```
+
+Note: a **pruned** RPC returns `0x` for old blocks and gives a false (too-high) result — sanity-check the block's timestamp matches the protocol's known launch era. Verified reference values: mainnet NPM `12369621`+, arbitrum `173`, base `1371714`.
+
+**Event signatures** must match the ABI exactly — one wrong type and that handler never fires:
+
+```sh
+cast interface <ADDR> --chain arbitrum | grep "event "   # diff against subgraph.yaml eventHandlers
+```
+
+Confirm the substitution actually lands before deploying:
+
+```sh
+bunx graph build --network base && grep -E "address:|startBlock:" build/subgraph.yaml
+git checkout -- subgraph.yaml   # --network rewrites the root manifest in place; restore the mainnet default
+```
 
 ## Deploying
 
@@ -90,6 +131,7 @@ If the schema changed (added/removed fields, renamed entities), the server queri
 - [ ] `bun run codegen` (in subgraph dir, if schema/yaml/ABI changed)
 - [ ] `bun run build` passes
 - [ ] `bun run test` passes
+- [ ] On-chain sanity check: `address` / `startBlock` / event signatures verified against the chain (Rule #1) — especially when the target chain or contract changed
 - [ ] `networks.json` reviewed
 - [ ] `bun run deploy:<chain>` succeeded, Studio gave a new version URL
 - [ ] `apps/server/codegen.ts` schema URL updated

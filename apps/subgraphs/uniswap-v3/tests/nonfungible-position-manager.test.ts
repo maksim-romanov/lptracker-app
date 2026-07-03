@@ -396,6 +396,101 @@ describe("Position Lifecycle Tests", () => {
     assert.fieldEquals("Position", "5", "closed", "true");
   });
 
+  test("Should reopen position when liquidity is re-added after reaching zero", () => {
+    let tokenId = BigInt.fromI32(8);
+
+    setupPoolMocks(TOKEN0_ADDRESS, TOKEN1_ADDRESS, 3000, POOL_ADDRESS);
+
+    // Mint with liquidity
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.fromI32(1000000),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let mintEvent = createTransferEvent(ZERO_ADDRESS, OWNER_ADDRESS, tokenId);
+    mintEvent.address = CONTRACT_ADDRESS;
+    handleTransfer(mintEvent);
+
+    // Drain to zero -> closed
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let decreaseEvent = createDecreaseLiquidityEvent(tokenId, BigInt.fromI32(1000000), BigInt.fromI32(100), BigInt.fromI32(200));
+    decreaseEvent.address = CONTRACT_ADDRESS;
+    handleDecreaseLiquidity(decreaseEvent);
+
+    assert.fieldEquals("Position", "8", "closed", "true");
+
+    // Re-add liquidity -> must reopen
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.fromI32(750000),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let increaseEvent = createIncreaseLiquidityEvent(tokenId, BigInt.fromI32(750000), BigInt.fromI32(100), BigInt.fromI32(200));
+    increaseEvent.address = CONTRACT_ADDRESS;
+    handleIncreaseLiquidity(increaseEvent);
+
+    assert.fieldEquals("Position", "8", "liquidity", "750000");
+    assert.fieldEquals("Position", "8", "closed", "false");
+  });
+
   test("Should handle Collect event without closing position with liquidity", () => {
     let tokenId = BigInt.fromI32(6);
 

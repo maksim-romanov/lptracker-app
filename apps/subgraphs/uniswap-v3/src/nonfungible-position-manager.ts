@@ -43,9 +43,7 @@ function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: Bi
     }
   }
 
-  if (position.liquidity.equals(BigInt.zero())) {
-    position.closed = true;
-  }
+  position.closed = position.liquidity.equals(BigInt.zero());
 
   position.save();
 }
