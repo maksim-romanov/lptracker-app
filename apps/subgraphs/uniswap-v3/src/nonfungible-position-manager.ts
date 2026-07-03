@@ -11,6 +11,10 @@ import {
 import { Position } from "../generated/schema";
 import { getOrCreatePool } from "./utils/pool";
 
+function updateClosed(position: Position, burned: boolean): void {
+  position.closed = burned || position.liquidity.equals(BigInt.zero());
+}
+
 function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: BigInt, timestamp: BigInt): void {
   let position = Position.load(tokenId.toString());
   if (position == null) return;
@@ -19,7 +23,7 @@ function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: Bi
   let result = contract.try_positions(tokenId);
 
   if (result.reverted) {
-    position.closed = true;
+    updateClosed(position, true);
     position.updatedAtBlock = blockNumber;
     position.updatedAtTimestamp = timestamp;
     position.save();
@@ -43,20 +47,16 @@ function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: Bi
     }
   }
 
-  if (position.liquidity.equals(BigInt.zero())) {
-    position.closed = true;
-  }
+  updateClosed(position, false);
 
   position.save();
 }
 
 export function handleTransfer(event: Transfer): void {
   let tokenId = event.params.tokenId.toString();
-  let isNewPosition = false;
 
   let position = Position.load(tokenId);
   if (position == null) {
-    isNewPosition = true;
     position = new Position(tokenId);
     position.liquidity = BigInt.zero();
     position.owner = event.params.to;
@@ -89,7 +89,7 @@ export function handleTransfer(event: Transfer): void {
   }
 
   if (event.params.to.equals(Address.zero())) {
-    position.closed = true;
+    updateClosed(position, true);
     position.updatedAtBlock = event.block.number;
     position.updatedAtTimestamp = event.block.timestamp;
     position.save();
@@ -97,13 +97,10 @@ export function handleTransfer(event: Transfer): void {
   }
 
   position.owner = event.params.to;
+  position.operator = Address.zero();
   position.updatedAtBlock = event.block.number;
   position.updatedAtTimestamp = event.block.timestamp;
   position.save();
-
-  if (!isNewPosition) {
-    syncPosition(event.address, event.params.tokenId, event.block.number, event.block.timestamp);
-  }
 }
 
 export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {

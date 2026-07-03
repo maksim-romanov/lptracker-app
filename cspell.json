@@ -17,10 +17,16 @@
     "swift",
     "rust",
     "en_US",
-    "shared-words"
+    "base-words",
+    "eth-words",
+    "defi-words",
+    "tokens-words"
   ],
   "dictionaryDefinitions": [
-    { "name": "shared-words", "path": "./cspell-words.txt", "addWords": true },
+    { "name": "base-words", "path": "./cspell/base.txt", "addWords": true },
+    { "name": "eth-words", "path": "./cspell/eth.txt", "addWords": true },
+    { "name": "defi-words", "path": "./cspell/defi.txt", "addWords": true },
+    { "name": "tokens-words", "path": "./cspell/tokens.txt", "addWords": true },
     { "name": "server-words", "path": "./apps/server/cspell-words.txt", "addWords": true },
     { "name": "mobile-words", "path": "./apps/mobile/cspell-words.txt", "addWords": true },
     { "name": "tokens-data-words", "path": "./apps/tokens-data/cspell-words.txt", "addWords": true },
@@ -107,6 +113,7 @@
     "LICENSE",
     ".env*",
     "**/cspell-words.txt",
+    "cspell/**",
     "skills-lock.json",
     "dump.rdb"
   ],

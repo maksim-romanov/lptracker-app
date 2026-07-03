@@ -1,8 +1,8 @@
 import { Address, Bytes } from "@graphprotocol/graph-ts";
 
-import { ERC20 } from "../../generated/NonfungiblePositionManager/ERC20";
-import { ERC20SymbolBytes } from "../../generated/NonfungiblePositionManager/ERC20SymbolBytes";
-import { ERC20NameBytes } from "../../generated/NonfungiblePositionManager/ERC20NameBytes";
+import { ERC20 } from "../../generated/PoolManager/ERC20";
+import { ERC20SymbolBytes } from "../../generated/PoolManager/ERC20SymbolBytes";
+import { ERC20NameBytes } from "../../generated/PoolManager/ERC20NameBytes";
 import { Token } from "../../generated/schema";
 
 function bytes32ToString(value: Bytes): string {
@@ -64,13 +64,19 @@ export function fetchTokenDecimals(tokenAddress: Address): i32 {
 }
 
 export function getOrCreateToken(address: Address): Token {
-  let tokenId = Bytes.fromHexString(address.toHexString());
+  let tokenId = address;
   let token = Token.load(tokenId);
   if (token == null) {
     token = new Token(tokenId);
-    token.symbol = fetchTokenSymbol(address);
-    token.name = fetchTokenName(address);
-    token.decimals = fetchTokenDecimals(address);
+    if (address.equals(Address.zero())) {
+      token.symbol = "ETH";
+      token.name = "Ether";
+      token.decimals = 18;
+    } else {
+      token.symbol = fetchTokenSymbol(address);
+      token.name = fetchTokenName(address);
+      token.decimals = fetchTokenDecimals(address);
+    }
     token.save();
   }
   return token;

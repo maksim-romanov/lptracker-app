@@ -66,8 +66,34 @@ function mockERC20Token(tokenAddress: Address, symbol: string, name: string, dec
   createMockedFunction(tokenAddress, "decimals", "decimals():(uint8)").returns([ethereum.Value.fromI32(decimals)]);
 }
 
+// Legacy tokens (MKR, DGD) store bytes32 symbol/name as right-padded ASCII.
+function padToBytes32(text: string): Bytes {
+  let hex = "";
+  for (let i = 0; i < text.length; i++) {
+    let code = text.charCodeAt(i);
+    let h = code.toString(16);
+    if (h.length < 2) {
+      h = "0" + h;
+    }
+    hex += h;
+  }
+  while (hex.length < 64) {
+    hex += "0";
+  }
+  return Bytes.fromHexString("0x" + hex);
+}
+
+function mockERC20TokenBytes32(tokenAddress: Address, symbol: Bytes, name: Bytes, decimals: i32): void {
+  createMockedFunction(tokenAddress, "symbol", "symbol():(string)").reverts();
+  createMockedFunction(tokenAddress, "name", "name():(string)").reverts();
+  createMockedFunction(tokenAddress, "symbol", "symbol():(bytes32)").returns([ethereum.Value.fromFixedBytes(symbol)]);
+  createMockedFunction(tokenAddress, "name", "name():(bytes32)").returns([ethereum.Value.fromFixedBytes(name)]);
+  createMockedFunction(tokenAddress, "decimals", "decimals():(uint8)").returns([ethereum.Value.fromI32(decimals)]);
+}
+
 // Setup all mocks for pool creation
 function setupPoolMocks(token0: Address, token1: Address, fee: i32, poolAddress: Address): void {
+  createMockedFunction(CONTRACT_ADDRESS, "factory", "factory():(address)").returns([ethereum.Value.fromAddress(FACTORY_ADDRESS)]);
   mockFactoryGetPool(token0, token1, fee, poolAddress);
   mockERC20Token(token0, "TOKEN0", "Token Zero", 18);
   mockERC20Token(token1, "TOKEN1", "Token One", 18);
@@ -369,6 +395,98 @@ describe("Position Lifecycle Tests", () => {
     assert.fieldEquals("Position", "5", "closed", "true");
   });
 
+  test("Should reopen position when liquidity is re-added after reaching zero", () => {
+    let tokenId = BigInt.fromI32(8);
+
+    setupPoolMocks(TOKEN0_ADDRESS, TOKEN1_ADDRESS, 3000, POOL_ADDRESS);
+
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.fromI32(1000000),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let mintEvent = createTransferEvent(ZERO_ADDRESS, OWNER_ADDRESS, tokenId);
+    mintEvent.address = CONTRACT_ADDRESS;
+    handleTransfer(mintEvent);
+
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let decreaseEvent = createDecreaseLiquidityEvent(tokenId, BigInt.fromI32(1000000), BigInt.fromI32(100), BigInt.fromI32(200));
+    decreaseEvent.address = CONTRACT_ADDRESS;
+    handleDecreaseLiquidity(decreaseEvent);
+
+    assert.fieldEquals("Position", "8", "closed", "true");
+
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.fromI32(750000),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let increaseEvent = createIncreaseLiquidityEvent(tokenId, BigInt.fromI32(750000), BigInt.fromI32(100), BigInt.fromI32(200));
+    increaseEvent.address = CONTRACT_ADDRESS;
+    handleIncreaseLiquidity(increaseEvent);
+
+    assert.fieldEquals("Position", "8", "liquidity", "750000");
+    assert.fieldEquals("Position", "8", "closed", "false");
+  });
+
   test("Should handle Collect event without closing position with liquidity", () => {
     let tokenId = BigInt.fromI32(6);
 
@@ -436,5 +554,44 @@ describe("Position Lifecycle Tests", () => {
     // Assertions - position still open because it has liquidity
     assert.fieldEquals("Position", "6", "liquidity", "1000000");
     assert.fieldEquals("Position", "6", "closed", "false");
+  });
+
+  test("Should decode bytes32 symbol/name tokens (e.g. MKR) instead of UNKNOWN", () => {
+    let tokenId = BigInt.fromI32(7);
+
+    createMockedFunction(CONTRACT_ADDRESS, "factory", "factory():(address)").returns([ethereum.Value.fromAddress(FACTORY_ADDRESS)]);
+    mockFactoryGetPool(TOKEN0_ADDRESS, TOKEN1_ADDRESS, 3000, POOL_ADDRESS);
+    mockERC20TokenBytes32(TOKEN0_ADDRESS, padToBytes32("MKR"), padToBytes32("Maker"), 18);
+    mockERC20Token(TOKEN1_ADDRESS, "TOKEN1", "Token One", 18);
+
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.fromI32(1000000),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let mintEvent = createTransferEvent(ZERO_ADDRESS, OWNER_ADDRESS, tokenId);
+    mintEvent.address = CONTRACT_ADDRESS;
+    handleTransfer(mintEvent);
+
+    assert.fieldEquals("Token", TOKEN0_ADDRESS.toHexString(), "symbol", "MKR");
+    assert.fieldEquals("Token", TOKEN0_ADDRESS.toHexString(), "name", "Maker");
   });
 });

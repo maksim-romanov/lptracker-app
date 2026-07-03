@@ -1,0 +1,12 @@
+{
+  "mainnet": {
+    "PoolManager": {
+      "address": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+      "startBlock": 21688329
+    },
+    "PositionManager": {
+      "address": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+      "startBlock": 21689089
+    }
+  }
+}

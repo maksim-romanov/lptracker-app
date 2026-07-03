@@ -5,34 +5,6 @@ romanov
 maksimromanov
 jetrockets
 
-uniswap
-subgraph
-subgraphs
-thegraph
-defi
-multicall
-multichain
-onchain
-offchain
-fungible
-nonfungible
-liquidity
-slippage
-tickspacing
-ticktype
-ticktypes
-chainid
-chainids
-erc20
-erc721
-weth
-usdc
-usdt
-viem
-wagmi
-ethers
-ethersjs
-stablecoins
 deeplink
 deeplinks
 

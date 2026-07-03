@@ -13,7 +13,7 @@ const ARBITRUM_NETWORK = {
   },
 
   graph: {
-    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.0.34",
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.1.0",
   },
 
   deployments: {
@@ -32,7 +32,7 @@ const MAINNET_NETWORK = {
   },
 
   graph: {
-    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-mainnet/v0.0.2",
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-mainnet/v0.1.0",
   },
 
   deployments: {
@@ -51,7 +51,7 @@ const BASE_NETWORK = {
   },
 
   graph: {
-    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-base/v0.0.4",
+    url: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-base/v0.1.0",
   },
 
   deployments: {
