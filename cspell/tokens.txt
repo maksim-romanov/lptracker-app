@@ -1,0 +1,9 @@
+stablecoins
+
+weth
+usdc
+usdt
+usde
+usdp
+gusd
+lusd
