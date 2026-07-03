@@ -65,7 +65,7 @@ export function fetchTokenDecimals(tokenAddress: Address): i32 {
 }
 
 export function getOrCreateToken(address: Address): Token {
-  let tokenId = Bytes.fromHexString(address.toHexString());
+  let tokenId = address;
   let token = Token.load(tokenId);
   if (token == null) {
     token = new Token(tokenId);

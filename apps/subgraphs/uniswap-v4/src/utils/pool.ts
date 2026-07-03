@@ -30,7 +30,7 @@ export function getOrCreatePool(
     pool.feeTier = fee;
     pool.isDynamicFee = fee == DYNAMIC_FEE_FLAG;
     pool.tickSpacing = tickSpacing;
-    pool.hooks = Bytes.fromHexString(hooks.toHexString());
+    pool.hooks = hooks;
     pool.sqrtPriceX96 = sqrtPriceX96;
     pool.tick = tick;
     pool.liquidity = BigInt.zero();

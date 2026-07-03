@@ -9,6 +9,8 @@ type Pool @entity(immutable: false) {
   id: Bytes!
   token0: Token!
   token1: Token!
+  # For dynamic-fee pools feeTier holds the raw LPFeeLibrary flag 0x800000 (8388608);
+  # check isDynamicFee before reading feeTier as a bps value.
   feeTier: Int!
   isDynamicFee: Boolean!
   tickSpacing: Int!
@@ -16,6 +18,8 @@ type Pool @entity(immutable: false) {
 
   sqrtPriceX96: BigInt!
   tick: Int!
+  # Active in-range liquidity as of the last Swap; 0 until the first swap (not refreshed on
+  # ModifyLiquidity). Treat a pre-swap pool as unknown, not empty.
   liquidity: BigInt!
 
   createdAtBlock: BigInt!
