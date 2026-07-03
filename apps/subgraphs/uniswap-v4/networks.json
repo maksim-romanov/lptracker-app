@@ -8,5 +8,55 @@
       "address": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
       "startBlock": 21689089
     }
+  },
+  "arbitrum-one": {
+    "PoolManager": {
+      "address": "0x360E68faccca8cA495c1B759Fd9EEe466db9FB32",
+      "startBlock": 297842872
+    },
+    "PositionManager": {
+      "address": "0xd88F38F930b7952f2DB2432Cb002E7abbF3dD869",
+      "startBlock": 297842893
+    }
+  },
+  "base": {
+    "PoolManager": {
+      "address": "0x498581fF718922c3f8e6A244956aF099B2652b2b",
+      "startBlock": 25350988
+    },
+    "PositionManager": {
+      "address": "0x7C5f5A4bBd8fD63184577525326123B519429bDc",
+      "startBlock": 25350993
+    }
+  },
+  "optimism": {
+    "PoolManager": {
+      "address": "0x9a13F98Cb987694C9F086b1F5eB990EeA8264Ec3",
+      "startBlock": 130947675
+    },
+    "PositionManager": {
+      "address": "0x3C3Ea4B57a46241e54610e5f022E5c45859A1017",
+      "startBlock": 130947681
+    }
+  },
+  "matic": {
+    "PoolManager": {
+      "address": "0x67366782805870060151383F4BbFF9daB53e5cD6",
+      "startBlock": 66980384
+    },
+    "PositionManager": {
+      "address": "0x1Ec2eBf4F37E7363FDfe3551602425af0B3ceef9",
+      "startBlock": 66980394
+    }
+  },
+  "unichain": {
+    "PoolManager": {
+      "address": "0x1F98400000000000000000000000000000000004",
+      "startBlock": 0
+    },
+    "PositionManager": {
+      "address": "0x4529A01c7A0410167c5740C487A8DE60232617bf",
+      "startBlock": 6819679
+    }
   }
 }
