@@ -10,3 +10,7 @@ ipfs
 kubo
 initdb
 pgdata
+extsload
+exttload
+iweth
+unsubscription
