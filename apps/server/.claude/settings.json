@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "deny": ["Read(./src/features/*/data/gql/**)", "Read(./openapi/**)", "Read(./src/features/token-prices/data/tokens-data.generated.ts)"],
+    "additionalDirectories": [
+      "../../packages/catalog",
+      "../../packages/logger",
+      "../../packages/protocol-math",
+      "../../packages/theme",
+      "../../packages/typescript-config",
+      "../tokens-data"
+    ]
+  },
+  "worktree": {
+    "sparsePaths": [
+      ".claude",
+      "apps/server",
+      "apps/tokens-data",
+      "packages/catalog",
+      "packages/logger",
+      "packages/protocol-math",
+      "packages/theme",
+      "packages/typescript-config"
+    ]
+  }
+}

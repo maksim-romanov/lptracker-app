@@ -42,12 +42,6 @@ yarn-error.log*
 # Lefthook local overrides
 lefthook-local.yml
 
-**/CLAUDE.md
-!CLAUDE.md
-!apps/mobile/CLAUDE.md
-!apps/server/CLAUDE.md
-!apps/subgraphs/uniswap-v3/CLAUDE.md
-
 # The Graph Subgraphs
 apps/subgraphs/**/generated/
 apps/subgraphs/**/build/
@@ -59,3 +53,5 @@ apps/subgraphs/**/tests/.latest.json
 dump.rdb
 
 .superpowers/
+
+.claude-backup-*

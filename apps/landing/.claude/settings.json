@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "deny": ["Read(./_site/**)"]
+  },
+  "worktree": {
+    "sparsePaths": [".claude", "apps/landing", "packages/typescript-config"]
+  }
+}

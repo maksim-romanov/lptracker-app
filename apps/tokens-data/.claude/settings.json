@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "deny": ["Read(./generated/**)"],
+    "additionalDirectories": ["../../packages/logger", "../../packages/typescript-config"]
+  },
+  "worktree": {
+    "sparsePaths": [".claude", "apps/tokens-data", "packages/logger", "packages/typescript-config"]
+  }
+}
