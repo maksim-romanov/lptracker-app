@@ -1,32 +1,16 @@
-# Error Handling — Depthly
+---
+paths:
+  - "apps/server/src/**"
+  - "apps/tokens-data/src/**"
+---
 
-Server and mobile diverge on purpose. Match the app you're editing.
+# Error handling
 
-## Server — `Result<T, DomainError>` (neverthrow)
-Business logic **never throws** — it returns `ok(...)` / `err(...)`. Throwing in a use case/repository is a bug.
+Both backends follow the same shape, each with its own `src/shared/errors/base.error.ts` defining an abstract `DomainError<TCode>`:
 
-**Base:** abstract `DomainError<TCode, TContext>` (`src/shared/errors/base.error.ts`) carrying `code`, `message`, optional typed `context`, plus static `isInstance` guard.
+- **Use cases return `Result<T, DomainError>` (neverthrow), never throw.** Throwing out of business logic is a bug in this codebase, not a style nit — the presentation layer expects `.match(...)`/`.isOk()` on the return value.
+- **One error class per feature, extending `DomainError`, with a static factory method per error code** — e.g. `PositionError.POSITION_NOT_FOUND(opts)`, `PositionError.GRAPHQL_ERROR(opts)` (backed by a shared `protected static create()` in the base class) plus `PositionError.isInstance(error)`. Don't go back to a generic `new FooError(code, message)` constructor call site, and don't reuse another feature's error type or invent a shared generic `AppError`.
+- **Error → HTTP mapping is registry-dispatch, not one mapper per feature in isolation.** The shared `presentation/v1/error-mapper.ts` owns `mapErrorToHttpResponse`/building the actual HTTP response, and loops through a `protocolRegistry`. Each feature contributes a `mapV3Error`-style function (in its own `presentation/error-mapper.ts`) that's registered into that registry — new features add a registry entry, they don't reimplement response-building.
+- New external HTTP calls go through `shared/providers/base-external-provider.ts` (opossum circuit breaker + `rate-limiter-flexible`), not a raw `fetch`.
 
-**One error class per feature** in `features/<name>/domain/errors/*.error.ts`. Never import another feature's error type. Pattern (see `PositionError`):
-- `enum XErrorCode` for variants + default message map
-- extends `DomainError<XErrorCode>`
-- **static factory per code**: `PositionError.POSITION_NOT_FOUND({ context })`, `.GRAPHQL_ERROR({ error, context })`
-- `static isInstance(...)` + optional getters (`isNotFound`)
-
-**Flow:**
-1. Repository wraps the call in try/catch → `return ok(value)` or `return err(PositionError.GRAPHQL_ERROR({ error, context }))`.
-2. Use case chains `if (result.isErr()) return err(result.error)` and propagates.
-3. Route: `if (result.isErr()) return mapErrorToHttpResponse(c, result.error)`.
-
-**Mapping → HTTP** (`presentation/v1/error-mapper.ts`): iterates the protocol registry; each protocol supplies `mapError(error)` (`features/<name>/presentation/error-mapper.ts`) switching on `error.code` → `{ status, code, message }`. Unmatched → 500 + `logger.error("unhandled error", { error })`. Register the mapper on the `ProtocolEntry` (`mapError:` field).
-
-**Cross-feature gateway** (`src/app/positions/`): awaits protocols in parallel, does **not** unify error types — collects failures into `partialFailures[]` (protocol + chainId + message), logs each, and still returns success with metadata. The route surfaces partials (e.g. warning header).
-
-**Legit throw sites:** bootstrap/DI only (chain unsupported, RPC config missing). If an exception still reaches a route, it's caught as a generic 500.
-
-## Mobile — throw + TanStack Query
-No neverthrow. Repositories **throw**; `useQuery` catches and exposes `isError` / `error`. No central error-mapper, no registry.
-
-- Errors are plain classes: `class LinkingError extends Error` with `code`, optional `context`, `static isInstance`. No generic base, no factory methods.
-- Repository throws (`throw this.asError(response, error)`); the query hook's `queryFn` lets it propagate; components read `error` from the hook.
-- Still: one `*.error.ts` per feature, modules don't share error types; cross-feature goes through the `positions/` gateway shell.
+This does **not** apply to `apps/mobile` — mobile uses a different pattern (see `apps/mobile/CLAUDE.md`), don't assume neverthrow `Result` there.

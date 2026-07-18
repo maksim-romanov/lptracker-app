@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": ["Read(./src/**/generated/**)", "Read(./src/core/tokens-data/generated.d.ts)"],
+    "additionalDirectories": [
+      "../../packages/catalog",
+      "../../packages/protocol-math",
+      "../../packages/theme",
+      "../../packages/typescript-config"
+    ]
+  },
+  "worktree": {
+    "sparsePaths": [".claude", "apps/mobile", "packages/catalog", "packages/protocol-math", "packages/theme", "packages/typescript-config"]
+  }
+}

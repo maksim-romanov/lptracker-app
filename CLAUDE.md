@@ -1,65 +1,57 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this repository.
 
-> **Brand:** `Depthly`. All workspace package scopes use `@depthly/*`.
+> **Brand:** `Depthly`. Workspace package scopes are `@depthly/*`.
 
-## Big Picture
+## Big picture
 
-DeFi portfolio monitoring platform. Data flows **Blockchain → Subgraphs (The Graph) + tokens-data → Hono API → Mobile app**.
+DeFi portfolio monitoring. Data flows **Blockchain → Subgraphs (The Graph) + tokens-data → Hono API → Mobile app**.
 
-- **`apps/server`** — Hono API on Bun. Clean Architecture (Domain → Data → Application → Presentation). Valibot validation, tsyringe DI, neverthrow `Result` types, opossum circuit breakers + Redis caching for external providers.
-- **`apps/tokens-data`** — Standalone Hono service on Bun that produces token metadata. Runs as a sidecar to `server` in dev; its output is consumed via `server#codegen` (see Codegen).
-- **`apps/mobile`** — React Native 0.83 / Expo 55 / React 19. DDD modules with tsyringe DI, react-native-unistyles + `@grapp/stacks` for styling, expo-router, MobX stores, TanStack Query.
-- **`apps/subgraphs/*`** — The Graph indexers in AssemblyScript (currently `uniswap-v3`).
-- **`packages/theme`** — Design tokens consumed by mobile.
-- **`packages/typescript-config`** — Shared `tsconfig` bases.
+Bun workspaces (`apps/*`, `apps/subgraphs/*`, `packages/*`) + Turborepo. Read the relevant subdirectory's `CLAUDE.md` before editing there — each is self-contained for that area's stack.
 
-Per-app guidance: [apps/server/CLAUDE.md](apps/server/CLAUDE.md), [apps/mobile/CLAUDE.md](apps/mobile/CLAUDE.md), [apps/subgraphs/uniswap-v3/CLAUDE.md](apps/subgraphs/uniswap-v3/CLAUDE.md). Read the relevant one before editing inside an app.
+| Path | What it is |
+| --- | --- |
+| [`apps/server`](apps/server/CLAUDE.md) | Hono API on Bun. Clean Architecture (domain → data → app → presentation), tsyringe DI, neverthrow `Result` error handling. Also serves a small Tailwind/daisyUI/HTMX SSR web app. |
+| [`apps/mobile`](apps/mobile/CLAUDE.md) | React Native 0.83 / Expo 55 / React 19. DDD feature modules, tsyringe DI, MobX + TanStack Query, react-native-unistyles. Ships an iOS home-screen widget. |
+| [`apps/tokens-data`](apps/tokens-data/CLAUDE.md) | Standalone Hono/Bun sidecar producing token metadata; consumed only via `server#codegen`. |
+| [`apps/landing`](apps/landing/CLAUDE.md) | 11ty static site with a custom esbuild pipeline and a WebGL particle hero. |
+| [`apps/subgraphs`](apps/subgraphs/CLAUDE.md) | The Graph indexers in AssemblyScript — [`uniswap-v3`](apps/subgraphs/uniswap-v3/CLAUDE.md), [`uniswap-v4`](apps/subgraphs/uniswap-v4/CLAUDE.md). |
+| [`packages/catalog`](packages/catalog/CLAUDE.md) | Network + protocol reference data. |
+| [`packages/theme`](packages/theme/CLAUDE.md) | Design tokens — consumed by `apps/mobile` only today. |
+| [`packages/protocol-math`](packages/protocol-math/CLAUDE.md) | Uniswap v3 tick/price math + number formatting. |
+| [`packages/logger`](packages/logger/CLAUDE.md) | `logtape` wrapper used by `server` and `tokens-data`. |
+| [`packages/typescript-config`](packages/typescript-config/CLAUDE.md) | Shared `tsconfig` bases. |
 
-## Conventions to know up-front
+**v4 isn't wired up above the subgraph yet:** `packages/catalog`'s `PROTOCOLS_META` only registers `uniswap-v3`. Neither `apps/server` nor `apps/mobile`'s protocol-plugin registry can reference v4 until a `uniswap-v4` entry is added there — the v4 subgraph itself is deployed and indexing, it's just not consumed anywhere yet.
 
-- **TypeScript naming** — types prefixed `T` (`TPosition`), interfaces `I` (`IRepository`), enums `E` (`EChainId`), DI tokens `SCREAMING_SNAKE_CASE` (`POSITIONS_REPOSITORY`).
-- **File naming** — components/screens `PascalCase.tsx`, hooks `camelCase.ts`, everything else `kebab-case.ts` (with suffixes like `.repository.ts`, `.usecase.ts`, `.store.ts`).
-- **DI** — use Symbol tokens for replaceable dependencies; the server uses child containers for chain-specific isolation.
-- **No `React.FC`** — declare components as `const Foo = function ({ ... }: Props) { ... }`.
+## Codegen chain
 
-## Rules
+Enforced in `turbo.json`, **run from the repo root only**, never per-app:
 
-- Run `bun run typecheck` after code changes (Turbo runs it across all workspaces).
-- `bun run codegen` chain (enforced in `turbo.json`):
-  1. `tokens-data#codegen` — emits token metadata.
-  2. `server#codegen` — GraphQL types from subgraph schemas + OpenAPI from Valibot; consumes tokens-data output.
-  3. `mobile#codegen` — `openapi-typescript` against server's emitted OpenAPI + tokens-data types.
+1. `tokens-data#codegen` — emits token metadata.
+2. `server#codegen` — GraphQL types from subgraph schemas + OpenAPI from Valibot routes; consumes tokens-data's output.
+3. `mobile#codegen` — `openapi-typescript` against server's OpenAPI + tokens-data's types.
 
-  Run from the repo root, never per-app.
-- Generated files (don't hand-edit). `biome.json` and `turbo.json` reference these paths — sync them if any move:
-  - server: `src/features/**/gql/`, `openapi/`, `src/features/token-prices/data/tokens-data.generated.ts`
-  - mobile: `src/core/api-client/generated/`, `src/features/uniswap-v3/data/generated/`, `src/core/tokens-data/generated.d.ts`
-  - tokens-data: `apps/tokens-data/generated/`
-- Lint with Biome (`bun run lint` / `lint:fix`); config in root `biome.json`.
+Generated files are gitignored/deny-listed — don't hand-edit them.
 
 ## Commands
 
 ```bash
-# Setup
 bun install
 
-# Dev
-bun run dev              # All dev servers (Turbo)
-bun run dev:ios          # Mobile (iOS) + server + tokens-data sidecars (turbo `with`)
-bun run dev:android      # Mobile (Android) + server + tokens-data sidecars
+bun run dev              # all dev servers (Turbo)
+bun run dev:ios          # mobile (iOS) + server + tokens-data sidecars
+bun run dev:android      # mobile (Android) + server + tokens-data sidecars
 
-# Quality
 bun run lint             # Biome
 bun run lint:fix
 bun run typecheck        # tsc --noEmit across workspaces
-bun run codegen          # tokens-data → server → mobile (turbo-ordered)
+bun run codegen          # tokens-data → server → mobile, turbo-ordered
 
-# Subgraphs (Docker required)
-bun run graph:up         # Start local Graph Node + IPFS + Postgres
+bun run graph:up         # local Graph Node + IPFS + Postgres (Docker)
 bun run graph:down
-bun run graph:build      # AssemblyScript compile
+bun run graph:build
 bun run graph:test
 ```
 

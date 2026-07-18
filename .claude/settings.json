@@ -3,27 +3,17 @@
     "deny": [
       "Read(./apps/server/src/features/*/data/gql/**)",
       "Read(./apps/server/openapi/**)",
+      "Read(./apps/server/src/features/token-prices/data/tokens-data.generated.ts)",
       "Read(./apps/mobile/src/**/generated/**)",
+      "Read(./apps/mobile/src/core/tokens-data/generated.d.ts)",
       "Read(./apps/subgraphs/*/generated/**)",
-      "Read(./apps/subgraphs/*/build/**)"
+      "Read(./apps/subgraphs/*/build/**)",
+      "Read(./apps/tokens-data/generated/**)",
+      "Read(./apps/landing/_site/**)",
+      "Read(./**/.impeccable/**)"
     ]
   },
-  "enabledPlugins": {
-    "react-native-best-practices@callstack-agent-skills": true,
-    "swiftui-expert@swiftui-expert-skill": true
-  },
-  "extraKnownMarketplaces": {
-    "callstack-agent-skills": {
-      "source": {
-        "source": "github",
-        "repo": "callstackincubator/agent-skills"
-      }
-    },
-    "swiftui-expert-skill": {
-      "source": {
-        "source": "github",
-        "repo": "AvdLee/SwiftUI-Agent-Skill"
-      }
-    }
+  "worktree": {
+    "sparsePaths": [".claude", "apps", "packages"]
   }
 }

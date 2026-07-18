@@ -1,17 +1,22 @@
 ---
 name: subgraph-deploy
-description: Use when deploying or updating the Uniswap V3 subgraph to The Graph Studio (mainnet, arbitrum, base), or when changing schema/handlers and rolling out a new version. Covers pre-flight checks, deploy commands per chain, and the two required URL updates in the server so it queries the new version.
+description: Use when deploying or updating the Uniswap V3 subgraph to The Graph Studio (mainnet, arbitrum, base, optimism, polygon, unichain), or when changing schema/handlers and rolling out a new version. Covers pre-flight checks, deploy commands per chain, and the two required URL updates in the server so it queries the new version.
 ---
 
 # Deploy / update the Uniswap V3 subgraph
 
-Three deploy targets, each its own Studio slug:
+Six deploy targets, each its own Studio slug:
 
-| Chain         | Script               | Studio slug             |
-| ------------- | -------------------- | ----------------------- |
-| Mainnet       | `bun run deploy:mainnet`  | `uniswap-v-3-mainnet`   |
-| Arbitrum One  | `bun run deploy:arbitrum` | `uniswap-v-3-graph`     |
-| Base          | `bun run deploy:base`     | `uniswap-v-3-base`      |
+| Chain         | Script                     | Studio slug              |
+| ------------- | -------------------------- | ------------------------- |
+| Mainnet       | `bun run deploy:mainnet`   | `uniswap-v-3-mainnet`     |
+| Arbitrum One  | `bun run deploy:arbitrum`  | `uniswap-v-3-graph`       |
+| Base          | `bun run deploy:base`      | `uniswap-v-3-base`        |
+| Optimism      | `bun run deploy:optimism`  | `uniswap-v-3-optimism`    |
+| Polygon       | `bun run deploy:polygon`   | `uniswap-v-3-polygon`     |
+| Unichain      | `bun run deploy:unichain`  | `uniswap-v-3-unichain`    |
+
+Only mainnet/arbitrum/base currently have a corresponding `graph.url` entry actually read by the server (see "Post-deploy" below) — confirm whether the chain you're deploying is one the server queries before assuming the sync step applies.
 
 ## Pre-flight (run from `apps/subgraphs/uniswap-v3/`)
 
