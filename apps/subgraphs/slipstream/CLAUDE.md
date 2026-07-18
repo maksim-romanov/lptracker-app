@@ -63,16 +63,7 @@ key in `../uniswap-v4/.env`. Two gotchas:
 - `CLGauge` is a CREATE2 clone and is not on Sourcify; fetch its ABI via Etherscan `getabi`
   (`action=getabi&address=…&chainid=8453`), not the Sourcify `v2/contract` endpoint.
 
-## AssemblyScript gotchas
-
-- **It is NOT TypeScript.** No async/await, no destructuring in params, no spread, no optional
-  chaining on entity fields. Use `if (x === null)` checks.
-- **`let`, not `const`.** Biome rules are disabled for this package intentionally — do not
-  "fix" the style. TS-LSP `i32`/`changetype`/`Cannot find module` diagnostics are false
-  positives here (AS builtins + pre-codegen generated modules).
-- **Entity nullable fields** load as `T | null`. Always null-check before access.
-- **No `BigInt(0)`** — use `BigInt.zero()`.
-- **Reverted calls** go through `try_<method>()`, never the throwing form.
+AssemblyScript gotchas (not TypeScript, `let` not `const`, `BigInt.zero()`, revert-safe `try_*`) are in `.claude/rules/assemblyscript.md` — auto-loads when editing `src/`. One addition specific to this package: TS-LSP `i32`/`changetype`/`Cannot find module` diagnostics are false positives here (AS builtins + pre-codegen generated modules).
 
 ## Edit cycle
 
@@ -89,9 +80,4 @@ When changing only handlers in `src/` (no schema/yaml change), `codegen` is not 
 
 ## Deploying
 
-`bun run deploy:base` / `deploy:optimism` (each its own Studio slug). Verify `address` /
-`startBlock` / event signatures against the chain before deploying — see the cast workflow in
-`apps/subgraphs/README.md` (Rule #1). The server does not consume this subgraph yet; when it
-does, wire the Studio URL the same way `uniswap-v3` does (`apps/server/codegen.ts` + the
-feature's `data/constants/networks.ts`), and add a package deploy skill then if it earns its
-keep — `uniswap-v3` has one for reference; `uniswap-v4` deliberately ships without.
+Use the `subgraph-deploy` skill (this package's own). The server doesn't consume this subgraph yet; if that changes, wire the Studio URL the same way `uniswap-v3` does (`apps/server/codegen.ts` + the feature's `data/constants/networks.ts`) and add that sync step to the skill.
