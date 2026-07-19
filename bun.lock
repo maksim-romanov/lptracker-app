@@ -157,6 +157,18 @@
         "typed-htmx": "^0.3.1",
       },
     },
+    "apps/subgraphs/slipstream": {
+      "name": "@depthly/subgraph-slipstream",
+      "version": "0.1.0",
+      "dependencies": {
+        "@graphprotocol/graph-cli": "0.98.1",
+        "@graphprotocol/graph-ts": "0.37.0",
+      },
+      "devDependencies": {
+        "assemblyscript": "0.19.23",
+        "matchstick-as": "0.6.0",
+      },
+    },
     "apps/subgraphs/uniswap-v3": {
       "name": "@depthly/subgraph-uniswap-v3",
       "version": "0.1.0",
@@ -648,6 +660,8 @@
     "@depthly/logger": ["@depthly/logger@workspace:packages/logger"],
 
     "@depthly/protocol-math": ["@depthly/protocol-math@workspace:packages/protocol-math"],
+
+    "@depthly/subgraph-slipstream": ["@depthly/subgraph-slipstream@workspace:apps/subgraphs/slipstream"],
 
     "@depthly/subgraph-uniswap-v3": ["@depthly/subgraph-uniswap-v3@workspace:apps/subgraphs/uniswap-v3"],
 

@@ -1,0 +1,29 @@
+{
+  "name": "@depthly/subgraph-slipstream",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "test": "graph test",
+    "build:base": "graph build --network base",
+    "build:optimism": "graph build --network optimism",
+    "deploy:base": "graph deploy --network base --node https://api.studio.thegraph.com/deploy/ slipstream-base",
+    "deploy:optimism": "graph deploy --network optimism --node https://api.studio.thegraph.com/deploy/ slipstream-optimism",
+    "create-local": "graph create --node http://localhost:8020/ slipstream-graph",
+    "remove-local": "graph remove --node http://localhost:8020/ slipstream-graph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 slipstream-graph",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "check": "echo 'AssemblyScript - no biome linter'",
+    "check:fix": "echo 'AssemblyScript - no biome linter'"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.98.1",
+    "@graphprotocol/graph-ts": "0.37.0"
+  },
+  "devDependencies": {
+    "assemblyscript": "0.19.23",
+    "matchstick-as": "0.6.0"
+  }
+}
