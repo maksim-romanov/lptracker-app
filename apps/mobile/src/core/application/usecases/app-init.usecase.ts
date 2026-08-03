@@ -3,7 +3,6 @@ import { UseCase } from "core/domain/base";
 import { RootStore } from "core/presentation/root.store";
 import { Asset } from "expo-asset";
 import { inject, injectable } from "tsyringe";
-import { registerWidgetBackgroundRefresh } from "widgets/application/background-refresh.task";
 import type { WidgetSnapshotService } from "widgets/application/widget-snapshot.service";
 import { WIDGET_SNAPSHOT_SERVICE } from "widgets/di/tokens";
 
@@ -38,9 +37,11 @@ export class AppInitUseCase extends UseCase {
         this.logger.warn("Widget startup revalidation failed", { error });
       });
 
-      void registerWidgetBackgroundRefresh().catch((error) => {
-        this.logger.warn("Widget background refresh registration failed", { error });
-      });
+      void import("widgets/application/background-refresh.task")
+        .then(({ registerWidgetBackgroundRefresh }) => registerWidgetBackgroundRefresh())
+        .catch((error) => {
+          this.logger.warn("Widget background refresh registration failed", { error });
+        });
 
       this.appEvents.emit({ type: "APP_INITIALIZED" });
     } catch (error) {

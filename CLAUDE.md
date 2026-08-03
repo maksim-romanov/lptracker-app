@@ -18,7 +18,7 @@ Bun workspaces (`apps/*`, `apps/subgraphs/*`, `packages/*`) + Turborepo. Read th
 | [`apps/landing`](apps/landing/CLAUDE.md) | 11ty static site with a custom esbuild pipeline and a WebGL particle hero. |
 | [`apps/subgraphs`](apps/subgraphs/CLAUDE.md) | The Graph indexers in AssemblyScript — [`uniswap-v3`](apps/subgraphs/uniswap-v3/CLAUDE.md), [`uniswap-v4`](apps/subgraphs/uniswap-v4/CLAUDE.md). |
 | [`packages/catalog`](packages/catalog/CLAUDE.md) | Network + protocol reference data. |
-| [`packages/theme`](packages/theme/CLAUDE.md) | Design tokens — consumed by `apps/mobile` only today. |
+| [`packages/theme`](packages/theme/CLAUDE.md) | Design tokens, generated via Style Dictionary — shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget. |
 | [`packages/protocol-math`](packages/protocol-math/CLAUDE.md) | Uniswap v3 tick/price math + number formatting. |
 | [`packages/logger`](packages/logger/CLAUDE.md) | `logtape` wrapper used by `server` and `tokens-data`. |
 | [`packages/typescript-config`](packages/typescript-config/CLAUDE.md) | Shared `tsconfig` bases. |
@@ -29,9 +29,10 @@ Bun workspaces (`apps/*`, `apps/subgraphs/*`, `packages/*`) + Turborepo. Read th
 
 Enforced in `turbo.json`, **run from the repo root only**, never per-app:
 
-1. `tokens-data#codegen` — emits token metadata.
-2. `server#codegen` — GraphQL types from subgraph schemas + OpenAPI from Valibot routes; consumes tokens-data's output.
-3. `mobile#codegen` — `openapi-typescript` against server's OpenAPI + tokens-data's types.
+1. `@depthly/theme#codegen` — emits shared design tokens (JS, CSS, iOS colorset) from `packages/theme`.
+2. `tokens-data#codegen` — emits token metadata.
+3. `server#codegen` — GraphQL types from subgraph schemas + OpenAPI from Valibot routes; consumes tokens-data's output and `@depthly/theme`'s CSS.
+4. `mobile#codegen` — `openapi-typescript` against server's OpenAPI + tokens-data's types.
 
 Generated files are gitignored/deny-listed — don't hand-edit them.
 

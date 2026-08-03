@@ -36,6 +36,7 @@
     "expo-asset": "~55.0.8",
     "expo-background-task": "~55.0.18",
     "expo-blur": "~55.0.14",
+    "expo-build-properties": "~55.0.16",
     "expo-constants": "~55.0.7",
     "expo-crypto": "~55.0.8",
     "expo-dev-client": "~55.0.10",

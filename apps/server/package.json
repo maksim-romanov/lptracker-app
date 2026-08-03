@@ -1,5 +1,6 @@
 {
   "name": "server",
+  "type": "module",
   "scripts": {
     "build": "bun run scripts/build-assets.ts",
     "build:dev": "bun run scripts/build-assets.ts --dev",

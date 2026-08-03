@@ -1,0 +1,80 @@
+export default {
+  typography: {
+    fontFamily: {
+      regular: { $value: "Satoshi-Regular" },
+      medium: { $value: "Satoshi-Medium" },
+      bold: { $value: "Satoshi-Bold" },
+      black: { $value: "Satoshi-Black" },
+      mono: { $value: "Menlo" },
+    },
+    lineHeight: {
+      tight: { $value: 1.1 },
+      normal: { $value: 1.4 },
+      relaxed: { $value: 1.6 },
+    },
+    letterSpacing: {
+      tight: { $value: -0.5 },
+      normal: { $value: 0 },
+      wide: { $value: 0.5 },
+      wider: { $value: 1 },
+    },
+    role: {
+      display: {
+        fontFamily: { $value: "{typography.fontFamily.black}" },
+        fontSize: { $value: 32 },
+        fontWeight: { $value: "700" },
+        lineHeight: { $value: 38.4 },
+        letterSpacing: { $value: 0 },
+      },
+      title: {
+        fontFamily: { $value: "{typography.fontFamily.bold}" },
+        fontSize: { $value: 22 },
+        fontWeight: { $value: "700" },
+        lineHeight: { $value: 30.8 },
+        letterSpacing: { $value: 0 },
+      },
+      headline: {
+        fontFamily: { $value: "{typography.fontFamily.bold}" },
+        fontSize: { $value: 18 },
+        fontWeight: { $value: "700" },
+        lineHeight: { $value: 25.2 },
+        letterSpacing: { $value: 0 },
+      },
+      body: {
+        fontFamily: { $value: "{typography.fontFamily.regular}" },
+        fontSize: { $value: 16 },
+        fontWeight: { $value: "400" },
+        lineHeight: { $value: 25.6 },
+        letterSpacing: { $value: 0 },
+      },
+      bodySmall: {
+        fontFamily: { $value: "{typography.fontFamily.regular}" },
+        fontSize: { $value: 13 },
+        fontWeight: { $value: "400" },
+        lineHeight: { $value: 19.5 },
+        letterSpacing: { $value: 0 },
+      },
+      label: {
+        fontFamily: { $value: "{typography.fontFamily.medium}" },
+        fontSize: { $value: 14 },
+        fontWeight: { $value: "500" },
+        lineHeight: { $value: 19.6 },
+        letterSpacing: { $value: 0.5 },
+      },
+      button: {
+        fontFamily: { $value: "{typography.fontFamily.medium}" },
+        fontSize: { $value: 16 },
+        fontWeight: { $value: "500" },
+        lineHeight: { $value: 19.2 },
+        letterSpacing: { $value: 0.5 },
+      },
+      input: {
+        fontFamily: { $value: "{typography.fontFamily.medium}" },
+        fontSize: { $value: 16 },
+        fontWeight: { $value: "500" },
+        lineHeight: { $value: 19.2 },
+        letterSpacing: { $value: 0 },
+      },
+    },
+  },
+};
