@@ -55,15 +55,7 @@
       ],
       "expo-asset",
       "expo-web-browser",
-      "expo-background-task",
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "forceStaticLinking": ["ExpoTaskManager", "ExpoBackgroundTask"]
-          }
-        }
-      ]
+      "expo-background-task"
     ],
     "experiments": {
       "typedRoutes": true
