@@ -35,6 +35,7 @@
         }
       ],
       "expo-localization",
+      "./plugins/withThemeCodegen.js",
       "@bacons/apple-targets",
       [
         "expo-font",
