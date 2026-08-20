@@ -1,6 +1,4 @@
-import StyleDictionary from "style-dictionary";
+import { build } from "../kit/core";
+import config from "../theme.config";
 
-import config from "../style-dictionary.config";
-
-const styleDictionary = new StyleDictionary(config);
-await styleDictionary.buildAllPlatforms();
+await build(config);

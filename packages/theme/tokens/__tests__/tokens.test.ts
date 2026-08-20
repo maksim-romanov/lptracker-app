@@ -9,15 +9,28 @@ describe("token source files", () => {
   test("palette has the expected ramps and singles", () => {
     expect(palette.color.palette.neonPink["500"].$value).toBe("#FF007A");
     expect(palette.color.palette.white.$value).toBe("#FFFFFF");
-    expect(palette.color.palette.neutral["950"].$value).toBe("#121212");
+    expect(palette.color.palette.neutral["900"].$value).toBe("#0F1419");
   });
 
   test("depthly dark/light have matching field sets", () => {
     const darkKeys = Object.keys(depthly.color.depthly.dark).sort();
     const lightKeys = Object.keys(depthly.color.depthly.light).sort();
     expect(darkKeys).toEqual(lightKeys);
-    expect(depthly.color.depthly.dark.primary.$value).toBe("#FF007A");
-    expect(depthly.color.depthly.light.primary.$value).toBe("#CC0062");
+    expect(depthly.color.depthly.dark.primary.$value).toBe("{color.palette.neonPink.500}");
+    expect(depthly.color.depthly.light.primary.$value).toBe("{color.palette.neonPink.700}");
+  });
+
+  test("every palette reference in depthly points at an existing palette token", () => {
+    const paletteLeaf = (path: string[]): unknown =>
+      path.reduce<unknown>((node, segment) => (node as Record<string, unknown> | undefined)?.[segment as never], palette.color.palette);
+    for (const mode of [depthly.color.depthly.dark, depthly.color.depthly.light]) {
+      for (const [field, token] of Object.entries(mode)) {
+        const reference = /^\{color\.palette\.(.+)\}$/.exec((token as { $value: string }).$value);
+        if (!reference) continue;
+        const target = paletteLeaf(reference[1].split(".")) as { $value?: string } | undefined;
+        expect(target?.$value, `${field} → ${reference[1]}`).toBeString();
+      }
+    }
   });
 
   test("networks has all 7 chains", () => {

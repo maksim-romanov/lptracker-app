@@ -6,8 +6,10 @@ shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget.
 ## Layout
 
 - `tokens/` — the actual source. DTCG-style TypeScript (`$value`), edit here.
-- `style-dictionary.config.ts` + `style-dictionary/*.ts` — custom formats, one per output shape.
-  `style-dictionary/helpers.ts`'s `getGroup`/`getValue` are shared by all of them.
+- `kit/` — reusable build engine, no Depthly specifics (open-source extraction candidate):
+  Style Dictionary as alias resolver, `ts-emit.ts` serializer, plugins (`jsModules`, `daisyuiTheme`, `iosColorsets`).
+  Plugin specs receive the resolved token tree typed via `Resolved<T>` — full autocomplete.
+- `theme.config.ts` — the Depthly manifest: token tree + every output file declared through kit plugins.
 - `dist/` — generated (gitignored, denied). `src/index.ts` re-exports from here — never edit `dist/` by hand.
 
 ## Three generated targets
@@ -16,7 +18,7 @@ shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget.
   `apps/mobile` needed zero changes.
 - **CSS** (`dist/css/depthly.css`) — self-contained DaisyUI `@plugin "daisyui/theme"` blocks,
   imported by `apps/server`'s `app.css`. Colors only — radius/depth/border/noise are still
-  SSR-local constants inside `format-daisyui-css.ts`, not sourced from here yet.
+  SSR-local constants (`ssrStructuralDeclarations` in `theme.config.ts`), not sourced from tokens yet.
 - **iOS colorset** (written cross-package into `apps/mobile/targets/positions-widget/Assets.xcassets/`)
   — the one generated target that stays **committed to git**, since Xcode needs it physically
   present and there's no prebuild hook that runs codegen automatically yet. Regenerate with

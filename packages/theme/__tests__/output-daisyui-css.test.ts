@@ -3,12 +3,12 @@ import { $ } from "bun";
 import { beforeAll, describe, expect, test } from "bun:test";
 
 beforeAll(async () => {
-  await $`bun run codegen`.cwd(`${import.meta.dir}/../..`);
+  await $`bun run codegen`.cwd(`${import.meta.dir}/..`);
 });
 
 describe("generated depthly.css", () => {
   test("has both self-contained DaisyUI theme blocks", async () => {
-    const content = await Bun.file(`${import.meta.dir}/../../dist/css/depthly.css`).text();
+    const content = await Bun.file(`${import.meta.dir}/../dist/css/depthly.css`).text();
     expect(content).toContain('name: "depthly-light";');
     expect(content).toContain("--color-primary: #CC0062;");
     expect(content).toContain('name: "depthly-dark";');

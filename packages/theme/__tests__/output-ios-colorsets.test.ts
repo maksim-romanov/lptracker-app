@@ -3,10 +3,10 @@ import { $ } from "bun";
 import { beforeAll, describe, expect, test } from "bun:test";
 
 beforeAll(async () => {
-  await $`bun run codegen`.cwd(`${import.meta.dir}/../..`);
+  await $`bun run codegen`.cwd(`${import.meta.dir}/..`);
 });
 
-const assetsDir = `${import.meta.dir}/../../../../apps/mobile/targets/positions-widget/Assets.xcassets`;
+const assetsDir = `${import.meta.dir}/../../../apps/mobile/targets/positions-widget/Assets.xcassets`;
 
 describe("generated iOS colorsets", () => {
   test("bgPrimary (depthly-mapped) emits light + dark appearances", async () => {
@@ -15,6 +15,8 @@ describe("generated iOS colorsets", () => {
     expect(parsed.colors[0].color.components).toEqual({ red: 1, green: 1, blue: 1, alpha: 1 });
     expect(parsed.colors[1].color.components).toEqual({ red: 0, green: 0, blue: 0, alpha: 1 });
     expect(parsed.colors[1].appearances).toEqual([{ appearance: "luminosity", value: "dark" }]);
+    expect(parsed.colors[0].color["color-space"]).toBe("srgb");
+    expect(parsed.colors[1].color["color-space"]).toBe("srgb");
   });
 
   test("chainEthereum (network-mapped) has identical light/dark components", async () => {
