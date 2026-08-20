@@ -2,9 +2,7 @@
   "extends": "@depthly/typescript-config/base.json",
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "bundler",
-    "rootDir": "src",
-    "outDir": "dist"
+    "moduleResolution": "bundler"
   },
-  "include": ["src"]
+  "include": ["src", "dist"]
 }

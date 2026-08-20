@@ -2,7 +2,7 @@
   "colors": [
     {
       "color": {
-        "color-space": "display-p3",
+        "color-space": "srgb",
         "components": {
           "red": 0.3254901960784314,
           "green": 0.39215686274509803,
@@ -20,7 +20,7 @@
         }
       ],
       "color": {
-        "color-space": "display-p3",
+        "color-space": "srgb",
         "components": {
           "red": 0.5450980392156862,
           "green": 0.5607843137254902,
@@ -33,6 +33,6 @@
   ],
   "info": {
     "version": 1,
-    "author": "expo"
+    "author": "depthly-theme-codegen"
   }
 }

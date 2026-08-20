@@ -12,12 +12,13 @@ DeFi position monitor. A wallet owner pastes addresses and watches their Uniswap
 LP positions across Ethereum / Base / Arbitrum. Data-dense but scannable; the job of
 each screen is **"is my liquidity in range, and what's it worth?"** — answered at a glance.
 
-## Aesthetic — branched from the landing
+## Aesthetic — shared colors, SSR-local structure
 
-The **landing** (`@depthly/theme`, morpho.org) is quiet, flat, monochrome. The **app is
-the opposite**: app-native fintech, like Uniswap and Revolut. This theme is therefore
-**branched away from `@depthly/theme`** (which stays untouched for the landing) and
-re-derived directly here. Four levers:
+**Colors now come from `@depthly/theme`** (shared with mobile — see the Themes section
+below), not a branched-away palette. What still makes `/app` read as app-native fintech
+(Uniswap/Revolut) rather than the landing's quiet flat wireframe is **structure**, not
+color: cranked radius, depth/shadows, and pill controls — all still SSR-local, not from
+`@depthly/theme`. Four levers:
 
 1. **Radius — cranked.** Cards `--radius-box: 1.5rem`; buttons & inputs pill
    (`--radius-field: 2rem`); controls `--radius-selector: 0.75rem`.
@@ -33,28 +34,15 @@ re-derived directly here. Four levers:
 
 ## Themes (daisyUI custom themes)
 
-Two themes in `src/presentation/web/styles/app.css`. `depthly-light` is `--default`,
-`depthly-dark` is `--prefersdark`. A header toggle persists the choice.
+Two themes in `src/presentation/web/styles/app.css`. Colors come from `@depthly/theme`
+(shared with mobile — see `packages/theme/CLAUDE.md`) via `@import "@depthly/theme/css/depthly.css";`.
+Regenerate with `bun run codegen` (root) after changing a color in `packages/theme/tokens/`.
+`depthly-light` is `--default`, `depthly-dark` is `--prefersdark`. A header toggle persists the choice.
 
-| daisyUI token | depthly-light | depthly-dark | role |
-|---|---|---|---|
-| `--color-base-100` | `#F4F6F8` | `#0A0B0D` | app canvas (page bg) |
-| `--color-base-200` | `#FFFFFF` | `#17191D` | cards / panels (lifted) |
-| `--color-base-300` | `#E6EAEE` | `#2A2E35` | borders / inset inputs |
-| `--color-base-content` | `#0F1419` | `#E7E9EA` | text |
-| `--color-primary` | `#CC0062` | `#FF007A` | brand pink — CTAs, focus |
-| `--color-secondary` | `#FF007A` | `#FF80BE` | pink highlight |
-| `--color-accent` | `#FF2D92` | `#FF4DA6` | vivid pink for emphasis |
-| `--color-success` | `#10B981` | `#10E29A` | in-range / positive delta |
-| `--color-warning` | `#F59E0B` | `#FFD60A` | warning |
-| `--color-error` | `#EF4444` | `#FF5A5F` | out-of-range / negative delta |
-
-Radius `selector 0.75 / field 2 / box 1.5 rem`; `--depth: 1`; `--border: 1px`;
-`--noise: 0`. Shadow + gradient tokens defined in `app.css @layer base` (tuned per
-theme; in dark the border carries separation and shadow is a faint ambient lift).
-Primary stays `#CC0062` in light for AA contrast of white text (vibrant `#FF007A` fails
-on small text); pink presence comes from **usage** (solid pills, gradient, accent),
-not a brighter hue.
+Radius (`selector 0.75 / field 2 / box 1.5 rem`), `--depth: 1`, `--border: 1px`, `--noise: 0`,
+and shadow/gradient tokens are still **SSR-local** (hand-written in `app.css`'s generated block
+and the `@layer base` shadow rules below) — not yet unified with mobile. A future re-skin phase
+will migrate these too; until then don't assume `/app`'s radius/depth matches mobile.
 
 ## Typography
 
