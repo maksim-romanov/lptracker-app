@@ -1,5 +1,5 @@
 import { defineTokens } from "./kit/core";
-import { daisyuiTheme } from "./kit/plugins/daisyui";
+import { cssVariablesTheme } from "./kit/plugins/css-variables";
 import { iosColorsets } from "./kit/plugins/ios-colorsets";
 import { jsModules } from "./kit/plugins/js-modules";
 import type { Resolved } from "./kit/tree";
@@ -22,41 +22,24 @@ type Tree = Resolved<Tokens>;
 
 const generatedHeader = (source: string) => `// GENERATED FILE — do not edit. Source: ${source}`;
 
-const daisyuiColors = (mode: Tree["color"]["depthly"]["light"]) => ({
-  "--color-base-100": mode.surface,
-  "--color-base-200": mode.surfaceContainer,
-  "--color-base-300": mode.surfaceVariant,
-  "--color-base-content": mode.onSurface,
+const semanticColors = (mode: Tree["color"]["depthly"]["light"]) => ({
+  "--color-surface": mode.surface,
+  "--color-surface-container": mode.surfaceContainer,
+  "--color-surface-variant": mode.surfaceVariant,
+  "--color-on-surface": mode.onSurface,
+  "--color-on-surface-variant": mode.onSurfaceVariant,
+  "--color-outline": mode.outline,
   "--color-primary": mode.primary,
-  "--color-primary-content": mode.onPrimary,
+  "--color-on-primary": mode.onPrimary,
   "--color-secondary": mode.secondary,
-  "--color-secondary-content": mode.onSecondary,
-  "--color-accent": mode.secondary,
-  "--color-accent-content": mode.onSecondary,
-  "--color-neutral": mode.surfaceVariant,
-  "--color-neutral-content": mode.onSurfaceVariant,
-  "--color-info": mode.secondary,
-  "--color-info-content": mode.onSecondary,
+  "--color-on-secondary": mode.onSecondary,
   "--color-success": mode.success,
-  "--color-success-content": mode.onSuccess,
+  "--color-on-success": mode.onSuccess,
   "--color-warning": mode.warning,
-  "--color-warning-content": mode.onWarning,
+  "--color-on-warning": mode.onWarning,
   "--color-error": mode.error,
-  "--color-error-content": mode.onError,
+  "--color-on-error": mode.onError,
 });
-
-// SSR-local structural constants — not sourced from tokens yet (same in both modes today).
-// Pending the future re-skin phase — see apps/server/design-system/depthly-app/MASTER.md.
-const ssrStructuralDeclarations = {
-  "--radius-selector": "0.75rem",
-  "--radius-field": "2rem",
-  "--radius-box": "1.5rem",
-  "--size-selector": "0.28125rem",
-  "--size-field": "0.28125rem",
-  "--border": "1px",
-  "--depth": "1",
-  "--noise": "0",
-};
 
 // depthly.{light,dark} field each colorset maps to.
 const semanticColorsets = {
@@ -156,27 +139,16 @@ export default defineTokens({
         },
       },
     }),
-    daisyuiTheme<Tokens>({
+    cssVariablesTheme<Tokens>({
       outFile: "dist/css/depthly.css",
-      headerComments: [
-        "/* GENERATED FILE — do not edit. Source: packages/theme/tokens/color/depthly.ts */",
-        "/* radius/depth/border/noise below are SSR-local constants, not yet from @depthly/theme */",
-      ],
-      themes: (tree) => [
-        {
-          name: "depthly-light",
-          colorScheme: "light",
-          default: true,
-          colors: daisyuiColors(tree.color.depthly.light),
-          extra: ssrStructuralDeclarations,
-        },
-        {
-          name: "depthly-dark",
-          colorScheme: "dark",
-          prefersdark: true,
-          colors: daisyuiColors(tree.color.depthly.dark),
-          extra: ssrStructuralDeclarations,
-        },
+      headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/color/depthly.ts */"],
+      // :root + prefers-color-scheme give a correct first paint before theme_controller.ts sets
+      // data-theme on connect(); the [data-theme] blocks are what it switches afterward.
+      blocks: (tree) => [
+        { selector: ":root", declarations: semanticColors(tree.color.depthly.light) },
+        { selector: ":root", declarations: semanticColors(tree.color.depthly.dark), media: "(prefers-color-scheme: dark)" },
+        { selector: '[data-theme="depthly-light"]', declarations: semanticColors(tree.color.depthly.light) },
+        { selector: '[data-theme="depthly-dark"]', declarations: semanticColors(tree.color.depthly.dark) },
       ],
     }),
     iosColorsets<Tokens>({

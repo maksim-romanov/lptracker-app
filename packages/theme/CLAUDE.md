@@ -7,7 +7,7 @@ shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget.
 
 - `tokens/` — the actual source. DTCG-style TypeScript (`$value`), edit here.
 - `kit/` — reusable build engine, no Depthly specifics (open-source extraction candidate):
-  Style Dictionary as alias resolver, `ts-emit.ts` serializer, plugins (`jsModules`, `daisyuiTheme`, `iosColorsets`).
+  Style Dictionary as alias resolver, `ts-emit.ts` serializer, plugins (`jsModules`, `cssVariablesTheme`, `iosColorsets`).
   Plugin specs receive the resolved token tree typed via `Resolved<T>` — full autocomplete.
 - `theme.config.ts` — the Depthly manifest: token tree + every output file declared through kit plugins.
 - `dist/` — generated (gitignored, denied). `src/index.ts` re-exports from here — never edit `dist/` by hand.
@@ -16,9 +16,11 @@ shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget.
 
 - **JS** (`dist/js/*.ts`) — mirrors the pre-migration hand-written module shape exactly, so
   `apps/mobile` needed zero changes.
-- **CSS** (`dist/css/depthly.css`) — self-contained DaisyUI `@plugin "daisyui/theme"` blocks,
-  imported by `apps/server`'s `app.css`. Colors only — radius/depth/border/noise are still
-  SSR-local constants (`ssrStructuralDeclarations` in `theme.config.ts`), not sourced from tokens yet.
+- **CSS** (`dist/css/depthly.css`) — plain CSS custom properties (`:root` / `@media
+  (prefers-color-scheme: dark)` / `[data-theme="depthly-*"]` blocks), imported by
+  `apps/server`'s `app.css` and aliased into Tailwind's `@theme inline` color namespace there.
+  Colors only — `apps/server` owns its own structural constants (radius/border) directly in its
+  stylesheet, not sourced from tokens.
 - **iOS colorset** (written cross-package into `apps/mobile/targets/positions-widget/Assets.xcassets/`)
   — gitignored, regenerated on every `expo prebuild` by `apps/mobile/plugins/withThemeCodegen.js`
   (registered before `@bacons/apple-targets` in `app.json`). Don't add a `colors` object to the
