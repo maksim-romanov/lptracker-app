@@ -7,12 +7,12 @@ export const Positions = ({ cards }: { cards: ICardVM[] }) =>
     <Empty reason="no-positions" />
   ) : (
     <>
-      <div class="board-header" aria-hidden="true">
-        <span>Pool</span>
-        <span>Range</span>
-        <span>Principal</span>
+      <div aria-hidden="true" class="hidden gap-4 border-b border-outline pb-2 text-sm @md:flex">
+        <span class="flex-1">Pool</span>
+        <span class="flex-1">Range</span>
+        <span class="flex-1">Principal</span>
         <span>Status</span>
-        <span />
+        <span class="w-8" />
       </div>
       {cards.map((card) => (
         <PositionCard card={card} />

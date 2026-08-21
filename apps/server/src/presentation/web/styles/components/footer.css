@@ -1,5 +1,0 @@
-@layer components {
-  .app-footer {
-    @apply mx-auto w-full max-w-[1152px] px-lg py-lg text-center text-sm text-on-surface-variant;
-  }
-}

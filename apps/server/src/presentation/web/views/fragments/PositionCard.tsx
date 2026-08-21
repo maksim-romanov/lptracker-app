@@ -4,20 +4,23 @@ import type { ICardVM } from "../../../../features/uniswap-v3/presentation/web/p
 import { IconInvert } from "../Icons";
 
 const TokenIcon = ({ url, symbol }: { url: string; symbol: string }) =>
-  url ? <img src={url} alt={symbol} class="token-icon" loading="lazy" /> : <span class="token-icon is-fallback">{symbol.slice(0, 1)}</span>;
+  url ? (
+    <img src={url} alt={symbol} loading="lazy" class="h-6 w-6 rounded-full" />
+  ) : (
+    <span class="h-6 w-6 rounded-full border border-outline">{symbol.slice(0, 1)}</span>
+  );
 
-const STATUS: Record<TUniswapV3RangeStatus, { label: string; cls: string }> = {
-  "in-range": { label: "In range", cls: "badge-success" },
-  "out-of-range": { label: "Out of range", cls: "badge-error" },
-  closed: { label: "Closed", cls: "badge-ghost" },
+const STATUS: Record<TUniswapV3RangeStatus, string> = {
+  "in-range": "In range",
+  "out-of-range": "Out of range",
+  closed: "Closed",
 };
 
 export const PositionCard = ({ card }: { card: ICardVM }) => {
-  const status = STATUS[card.status];
   const range = card.priceRange;
   return (
     <article
-      class="position-card"
+      class="position-card @container flex flex-col gap-3 rounded-md border border-outline p-4 @md:flex-row @md:items-center @md:gap-4"
       tabindex={0}
       aria-haspopup="dialog"
       aria-label={`View ${card.pair.base.symbol} / ${card.pair.quote.symbol} details`}
@@ -27,53 +30,53 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
       hx-indicator="#position-modal-loading"
       hx-trigger="click"
     >
-      <div class="cell-pool">
-        <span class="token-stack">
+      <div class="flex items-center gap-2 @md:flex-1">
+        <span class="flex -space-x-2">
           <TokenIcon url={card.pair.base.iconUrl} symbol={card.pair.base.symbol} />
           <TokenIcon url={card.pair.quote.iconUrl} symbol={card.pair.quote.symbol} />
         </span>
-        <div class="title">
-          <span class="pair">
+        <div class="flex flex-col">
+          <span>
             {card.pair.base.symbol} / {card.pair.quote.symbol}
           </span>
-          <span class="fee">{card.feeTierLabel}</span>
+          <span>{card.feeTierLabel}</span>
         </div>
       </div>
 
-      <div class="cell-range">
-        <div class="range-head">
-          <span class="range-now nums">
+      <div class="flex flex-col gap-1 @md:flex-1">
+        <div class="flex justify-between gap-2 text-sm">
+          <span>
             {range.currentLabel} {range.quoteSymbol}
           </span>
         </div>
         <div
-          class="range-bar"
+          class="relative h-1.5 rounded-full bg-surface-variant"
           data-controller="range"
           data-band-left={String(range.bandLeftPct)}
           data-band-width={String(range.bandWidthPct)}
           data-thumb={String(range.thumbPct)}
           data-inrange={String(range.inRange)}
         >
-          <span class="band" />
-          <span class="thumb" />
+          <span class="absolute inset-y-0 rounded-full bg-on-surface/30 left-[var(--band-left)] w-[var(--band-width)]" />
+          <span class="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-outline bg-surface left-[var(--thumb)]" />
         </div>
-        <div class="range-labels nums">
+        <div class="flex justify-between gap-2 text-sm">
           <span>{range.minLabel}</span>
           <span>{range.maxLabel}</span>
         </div>
       </div>
 
-      <dl class="cell-principal">
+      <dl class="flex flex-col gap-1 @md:flex-1">
         {card.principal.map((p) => (
-          <div class="stat-row">
+          <div class="flex justify-between gap-2">
             <dt>{p.symbol}</dt>
-            <dd class="nums">{p.formatted}</dd>
+            <dd>{p.formatted}</dd>
           </div>
         ))}
       </dl>
 
-      <div class="cell-status">
-        <span class={`badge ${status.cls}`}>{status.label}</span>
+      <div class="flex items-center">
+        <span class="rounded-sm border border-outline px-2 py-0.5 text-xs">{STATUS[card.status]}</span>
       </div>
 
       <button
@@ -85,7 +88,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
         hx-trigger="click consume"
         hx-indicator="this"
         aria-label="Invert price"
-        class="btn btn-ghost btn-square invert"
+        class="self-start rounded-sm border border-outline p-1.5 @md:self-center"
       >
         <IconInvert size={16} />
       </button>
