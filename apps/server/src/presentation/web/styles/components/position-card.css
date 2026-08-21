@@ -1,8 +1,10 @@
 @layer components {
   /* `.position-card` is the invert swap's hx-target="closest .position-card" — don't rename.
-     It now styles a list row, not a square card. */
+     It's a table row now: single column stacked below `sm`, a real grid of cells at `sm` and up,
+     column widths mirrored by `.board-header` in board.css — keep both in sync. */
   .position-card {
-    @apply flex cursor-pointer flex-col gap-md p-xl;
+    @apply grid cursor-pointer grid-cols-1 items-start gap-sm p-lg;
+    @apply sm:grid-cols-[minmax(160px,1.7fr)_minmax(200px,2fr)_minmax(110px,1fr)_92px_36px] sm:items-center sm:gap-lg sm:px-lg sm:py-md;
     @apply transition-colors duration-150 ease-out;
 
     &:not(:last-child) {
@@ -17,44 +19,48 @@
       @apply outline-2 -outline-offset-2 outline-primary;
     }
 
-    & .head {
-      @apply flex items-center;
-    }
-
-    & .status {
-      @apply ml-auto mr-sm w-fit shrink-0 whitespace-nowrap;
-    }
-
-    & .invert {
-      @apply shrink-0;
+    & .cell-pool {
+      @apply flex items-center gap-sm;
     }
 
     & .title {
-      @apply flex items-baseline gap-xs;
+      @apply flex min-w-0 flex-col;
     }
 
     & .pair {
-      @apply text-lg font-semibold tracking-tight;
+      @apply truncate text-base font-semibold tracking-tight;
     }
 
     & .fee {
       @apply text-xs text-on-surface-variant;
     }
 
-    & .metrics {
-      @apply mt-sm flex flex-col gap-xs text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-xl;
+    & .cell-range {
+      @apply flex flex-col gap-xs;
     }
 
-    & .stat-row {
-      @apply flex items-center justify-between gap-sm sm:justify-start;
+    & .cell-principal {
+      @apply flex flex-col gap-xxs text-sm;
 
-      & dt {
-        @apply shrink-0 text-on-surface-variant;
-      }
+      & .stat-row {
+        @apply flex items-center justify-between gap-sm sm:justify-end sm:gap-xs;
 
-      & dd {
-        @apply truncate text-right font-medium sm:text-left;
+        & dt {
+          @apply shrink-0 text-on-surface-variant;
+        }
+
+        & dd {
+          @apply truncate text-right font-medium;
+        }
       }
+    }
+
+    & .cell-status {
+      @apply flex sm:justify-start;
+    }
+
+    & .invert {
+      @apply shrink-0 justify-self-end;
     }
   }
 

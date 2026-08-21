@@ -28,4 +28,13 @@
   .range-labels {
     @apply flex justify-between text-xs text-on-surface-variant/80;
   }
+
+  /* Shared by the row's range column and the detail's range block. */
+  .range-head {
+    @apply flex items-baseline justify-between gap-sm;
+  }
+
+  .range-now {
+    @apply text-sm font-semibold;
+  }
 }

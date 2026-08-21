@@ -2,6 +2,30 @@
 @config "../../../../tailwind.config.ts";
 @import "@depthly/theme/css/depthly.css";
 
+/* Local-only accent override for THIS web app — real values extracted from app.uniswap.org
+   (their pinkVibrant/pinkBase). `packages/theme` (shared with mobile/landing/the iOS widget)
+   stays untouched; this wins by source order over the @import above, mirroring depthly.css's
+   own :root / prefers-color-scheme / [data-theme] structure so it applies in all three theme
+   states the same way the shared tokens do. */
+:root {
+  --color-primary: #f50db4;
+  --color-on-primary: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #fc74fe;
+    --color-on-primary: #131313;
+  }
+}
+[data-theme="depthly-light"] {
+  --color-primary: #f50db4;
+  --color-on-primary: #ffffff;
+}
+[data-theme="depthly-dark"] {
+  --color-primary: #fc74fe;
+  --color-on-primary: #131313;
+}
+
 /* Aliases the runtime custom properties from @depthly/theme/css/depthly.css into Tailwind's
    color namespace, so `bg-surface`, `text-on-surface`, `border-outline`, etc. are ordinary
    Tailwind utilities that stay reactive to the active [data-theme]. */

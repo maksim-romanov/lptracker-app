@@ -27,7 +27,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
       hx-indicator="#position-modal-loading"
       hx-trigger="click"
     >
-      <header class="head">
+      <div class="cell-pool">
         <span class="token-stack">
           <TokenIcon url={card.pair.base.iconUrl} symbol={card.pair.base.symbol} />
           <TokenIcon url={card.pair.quote.iconUrl} symbol={card.pair.quote.symbol} />
@@ -38,47 +38,32 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
           </span>
           <span class="fee">{card.feeTierLabel}</span>
         </div>
-        <span class={`badge status ${status.cls}`}>{status.label}</span>
-        <button
-          type="button"
-          data-invert={card.ref}
-          hx-get={`/positions/${card.ref}/card`}
-          hx-target="closest .position-card"
-          hx-swap="outerHTML"
-          hx-trigger="click consume"
-          hx-indicator="this"
-          aria-label="Invert price"
-          class="btn btn-ghost btn-square invert"
-        >
-          <IconInvert size={16} />
-        </button>
-      </header>
-
-      <div
-        class="range-bar"
-        data-controller="range"
-        data-band-left={String(range.bandLeftPct)}
-        data-band-width={String(range.bandWidthPct)}
-        data-thumb={String(range.thumbPct)}
-        data-inrange={String(range.inRange)}
-      >
-        <span class="band" />
-        <span class="thumb" />
       </div>
 
-      <dl class="metrics">
-        <div class="stat-row">
-          <dt>Range</dt>
-          <dd class="nums">
-            {range.minLabel} – {range.maxLabel}
-          </dd>
-        </div>
-        <div class="stat-row">
-          <dt>Current</dt>
-          <dd class="nums">
+      <div class="cell-range">
+        <div class="range-head">
+          <span class="range-now nums">
             {range.currentLabel} {range.quoteSymbol}
-          </dd>
+          </span>
         </div>
+        <div
+          class="range-bar"
+          data-controller="range"
+          data-band-left={String(range.bandLeftPct)}
+          data-band-width={String(range.bandWidthPct)}
+          data-thumb={String(range.thumbPct)}
+          data-inrange={String(range.inRange)}
+        >
+          <span class="band" />
+          <span class="thumb" />
+        </div>
+        <div class="range-labels nums">
+          <span>{range.minLabel}</span>
+          <span>{range.maxLabel}</span>
+        </div>
+      </div>
+
+      <dl class="cell-principal">
         {card.principal.map((p) => (
           <div class="stat-row">
             <dt>{p.symbol}</dt>
@@ -86,6 +71,24 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
           </div>
         ))}
       </dl>
+
+      <div class="cell-status">
+        <span class={`badge ${status.cls}`}>{status.label}</span>
+      </div>
+
+      <button
+        type="button"
+        data-invert={card.ref}
+        hx-get={`/positions/${card.ref}/card`}
+        hx-target="closest .position-card"
+        hx-swap="outerHTML"
+        hx-trigger="click consume"
+        hx-indicator="this"
+        aria-label="Invert price"
+        class="btn btn-ghost btn-square invert"
+      >
+        <IconInvert size={16} />
+      </button>
     </article>
   );
 };

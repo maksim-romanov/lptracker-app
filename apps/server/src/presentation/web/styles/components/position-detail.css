@@ -50,14 +50,6 @@
       @apply flex flex-col gap-sm;
     }
 
-    & .range-head {
-      @apply flex items-baseline justify-between gap-sm;
-    }
-
-    & .range-now {
-      @apply text-sm font-semibold;
-    }
-
     & .group {
       @apply flex flex-col gap-xs;
     }
