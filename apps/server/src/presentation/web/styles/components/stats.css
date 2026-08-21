@@ -5,6 +5,6 @@
   }
 
   .stat-label {
-    @apply text-xs font-medium uppercase tracking-wide text-base-content/50;
+    @apply text-xs font-medium uppercase tracking-wide text-on-surface-variant;
   }
 }

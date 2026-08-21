@@ -35,12 +35,12 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
       </header>
 
       <div class="tags">
-        <span class={`badge badge-sm ${status.cls}`}>{status.label}</span>
-        <span class={`badge badge-sm net-tag net-tag--${networkKey(card.chainId)}`}>
+        <span class={`badge ${status.cls}`}>{status.label}</span>
+        <span class={`badge net-tag net-tag--${networkKey(card.chainId)}`}>
           <NetworkLogo chainId={card.chainId} size={14} />
           {networkLabel(card.chainId)}
         </span>
-        <span class="badge badge-sm proto-tag proto-tag--uniswap">{card.protocolLabel}</span>
+        <span class="badge proto-tag proto-tag--uniswap">{card.protocolLabel}</span>
       </div>
 
       <section class="range-block">
@@ -102,7 +102,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
       </footer>
 
       <div class="actions">
-        <a href={uniswapPositionUrl(card.chainId, card.nftTokenId)} target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+        <a href={uniswapPositionUrl(card.chainId, card.nftTokenId)} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
           View on Uniswap
           <IconExternal size={15} />
         </a>

@@ -1,6 +1,6 @@
 @layer components {
   .position-modal {
-    & .modal-box {
+    & .dialog-box {
       @apply relative;
       min-height: 220px;
     }
@@ -17,9 +17,9 @@
   .modal-detail {
     @apply flex flex-col gap-md;
 
-    /* Larger than on the card. */
+    /* Larger than on the row. */
     & .token-icon {
-      @apply h-10 w-10 border-base-100;
+      @apply h-10 w-10 border-surface-container;
     }
 
     & .head {
@@ -35,7 +35,7 @@
     }
 
     & .meta {
-      @apply text-sm text-base-content/60;
+      @apply text-sm text-on-surface-variant;
     }
 
     & .tags {
@@ -67,11 +67,11 @@
     }
 
     & .rows .stat-row {
-      @apply flex items-center justify-between gap-sm border-b border-base-300/70 py-sm text-sm last:border-0;
+      @apply flex items-center justify-between gap-sm border-b border-outline/70 py-sm text-sm last:border-0;
     }
 
     & .rows dt {
-      @apply text-base-content/60;
+      @apply text-on-surface-variant;
     }
 
     & .rows dd {
@@ -79,12 +79,12 @@
     }
 
     & .foot {
-      @apply flex items-center justify-between border-t border-base-300 pt-md;
+      @apply flex items-center justify-between border-t border-outline pt-md;
     }
 
     & .addr {
-      @apply inline-flex items-center gap-1 font-mono text-sm text-base-content/70;
-      @apply transition-colors hover:text-base-content;
+      @apply inline-flex items-center gap-1 font-mono text-sm text-on-surface-variant;
+      @apply transition-colors hover:text-on-surface;
     }
 
     & .actions {
