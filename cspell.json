@@ -81,6 +81,7 @@
     "apps/server/openapi/**",
     "apps/server/**/gql/**",
     "apps/server/src/features/token-prices/data/tokens-data.generated.ts",
+    "apps/server/src/presentation/web/views/fragments/__stories__/**",
     "apps/mobile/src/core/tokens-data/generated.d.ts",
     "apps/mobile/src/core/api-client/generated/**",
     "apps/mobile/src/features/uniswap-v3/data/generated/**",
