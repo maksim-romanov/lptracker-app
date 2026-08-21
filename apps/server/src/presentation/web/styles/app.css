@@ -1,22 +1,31 @@
 @import "tailwindcss";
 @config "../../../../tailwind.config.ts";
-@plugin "daisyui";
 @import "@depthly/theme/css/depthly.css";
 
-/* Soft shadow tokens, tuned per theme. */
-@layer base {
-  :root {
-    --shadow-card: 0 1px 2px rgba(15, 20, 25, 0.04), 0 4px 16px rgba(15, 20, 25, 0.06);
-    --shadow-card-hover: 0 2px 4px rgba(15, 20, 25, 0.06), 0 8px 28px rgba(15, 20, 25, 0.1);
-  }
-
-  [data-theme="depthly-dark"] {
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 6px 20px rgba(0, 0, 0, 0.45);
-    --shadow-card-hover: 0 2px 6px rgba(0, 0, 0, 0.55), 0 10px 30px rgba(0, 0, 0, 0.55);
-  }
+/* Aliases the runtime custom properties from @depthly/theme/css/depthly.css into Tailwind's
+   color namespace, so `bg-surface`, `text-on-surface`, `border-outline`, etc. are ordinary
+   Tailwind utilities that stay reactive to the active [data-theme]. */
+@theme inline {
+  --color-surface: var(--color-surface);
+  --color-surface-container: var(--color-surface-container);
+  --color-surface-variant: var(--color-surface-variant);
+  --color-on-surface: var(--color-on-surface);
+  --color-on-surface-variant: var(--color-on-surface-variant);
+  --color-outline: var(--color-outline);
+  --color-primary: var(--color-primary);
+  --color-on-primary: var(--color-on-primary);
+  --color-secondary: var(--color-secondary);
+  --color-on-secondary: var(--color-on-secondary);
+  --color-success: var(--color-success);
+  --color-on-success: var(--color-on-success);
+  --color-warning: var(--color-warning);
+  --color-on-warning: var(--color-on-warning);
+  --color-error: var(--color-error);
+  --color-on-error: var(--color-on-error);
 }
 
 @import "./base.css";
+@import "./components/primitives.css";
 @import "./components/header.css";
 @import "./components/footer.css";
 @import "./components/controls.css";

@@ -4,7 +4,7 @@
   }
 
   body {
-    @apply flex min-h-screen flex-col bg-base-100 text-base-content antialiased;
+    @apply flex min-h-screen flex-col bg-surface text-on-surface antialiased;
   }
 
   /* Tabular figures so numeric columns don't jitter. */
