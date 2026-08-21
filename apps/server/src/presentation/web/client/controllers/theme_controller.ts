@@ -5,7 +5,7 @@ const LIGHT = "depthly-light";
 const DARK = "depthly-dark";
 type Theme = typeof LIGHT | typeof DARK;
 
-// Sets an explicit data-theme on <html> so daisyUI's theme is deterministic
+// Sets an explicit data-theme on <html> so the theme is deterministic
 // (not left to the prefers-color-scheme media query), swapped via View Transition.
 export default class ThemeController extends Controller {
   static targets = ["toggle"];

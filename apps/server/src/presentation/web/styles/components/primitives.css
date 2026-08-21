@@ -90,7 +90,23 @@
      that submits (closes) the <dialog> on click — modal_controller.ts only calls showModal() /
      relies on the native close-on-submit behavior, it doesn't know about any of these classes. */
   .dialog {
-    @apply fixed inset-0 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-none bg-transparent p-0;
+    @apply fixed inset-0 m-0 hidden h-full w-full items-center justify-center border-none bg-transparent p-0;
+    /* Plain CSS, not @apply: this project's spacing/radius scale has a "none" key (value 0),
+       which collides with Tailwind's max-h-none/max-w-none keyword utilities and silently
+       emits a conflicting `max-height: 0px`/`max-width: 0px` after the correct `none` — see
+       apps/server CLAUDE.md or the design doc for the incident. Write the property directly
+       for any future max-h-none/max-w-none usage in this file. */
+    max-height: none;
+    max-width: none;
+
+    /* `hidden` (display:none) above is the closed state — a plain `.dialog{display:flex}` class
+       rule would win over the UA's `dialog:not([open]){display:none}` regardless of the UA
+       selector's higher specificity, because author-origin styles beat user-agent-origin styles
+       in the cascade. Without this override the (empty) box stays permanently on top of the page
+       and swallows clicks meant for the row underneath it, even while "closed". */
+    &[open] {
+      display: flex;
+    }
 
     &::backdrop {
       @apply bg-black/40;
@@ -111,7 +127,9 @@
 
   @media (max-width: 640px) {
     .dialog-box {
-      @apply h-full max-h-none w-full max-w-full rounded-none;
+      @apply h-full w-full max-w-full rounded-none;
+      /* Plain CSS — see the .dialog rule above for why max-h-none isn't used here. */
+      max-height: none;
     }
   }
 
