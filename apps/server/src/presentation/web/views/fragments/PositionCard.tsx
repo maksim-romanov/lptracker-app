@@ -32,6 +32,13 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
           <TokenIcon url={card.pair.base.iconUrl} symbol={card.pair.base.symbol} />
           <TokenIcon url={card.pair.quote.iconUrl} symbol={card.pair.quote.symbol} />
         </span>
+        <div class="title">
+          <span class="pair">
+            {card.pair.base.symbol} / {card.pair.quote.symbol}
+          </span>
+          <span class="fee">{card.feeTierLabel}</span>
+        </div>
+        <span class={`badge status ${status.cls}`}>{status.label}</span>
         <button
           type="button"
           data-invert={card.ref}
@@ -41,20 +48,23 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
           hx-trigger="click consume"
           hx-indicator="this"
           aria-label="Invert price"
-          class="btn btn-soft btn-sm btn-square invert"
+          class="btn btn-ghost btn-square invert"
         >
           <IconInvert size={16} />
         </button>
       </header>
 
-      <div class="title">
-        <span class="pair">
-          {card.pair.base.symbol} / {card.pair.quote.symbol}
-        </span>
-        <span class="fee">{card.feeTierLabel}</span>
+      <div
+        class="range-bar"
+        data-controller="range"
+        data-band-left={String(range.bandLeftPct)}
+        data-band-width={String(range.bandWidthPct)}
+        data-thumb={String(range.thumbPct)}
+        data-inrange={String(range.inRange)}
+      >
+        <span class="band" />
+        <span class="thumb" />
       </div>
-
-      <span class={`badge badge-sm status ${status.cls}`}>{status.label}</span>
 
       <dl class="metrics">
         <div class="stat-row">

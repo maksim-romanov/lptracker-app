@@ -21,7 +21,7 @@
   }
 
   .net-tag--unknown {
-    --tag-color: var(--color-base-content);
+    --tag-color: var(--color-on-surface);
   }
 
   .proto-tag--uniswap {

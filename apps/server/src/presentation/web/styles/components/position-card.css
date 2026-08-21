@@ -1,25 +1,32 @@
 @layer components {
-  /* `.position-card` is the invert swap's hx-target="closest .position-card" — don't rename. */
+  /* `.position-card` is the invert swap's hx-target="closest .position-card" — don't rename.
+     It now styles a list row, not a square card. */
   .position-card {
-    @apply flex h-full cursor-pointer flex-col gap-sm rounded-box border border-base-300 bg-base-200 p-md;
-    @apply transition-[box-shadow,border-color] duration-200 ease-out;
-    box-shadow: var(--shadow-card);
+    @apply flex cursor-pointer flex-col gap-sm p-md;
+    @apply transition-colors duration-150 ease-out;
+
+    &:not(:last-child) {
+      @apply border-b border-outline;
+    }
 
     &:hover {
-      @apply border-base-content/15;
-      box-shadow: var(--shadow-card-hover);
+      @apply bg-surface-variant/40;
     }
 
     &:focus-visible {
-      @apply outline-2 outline-offset-2 outline-primary;
+      @apply outline-2 -outline-offset-2 outline-primary;
     }
 
     & .head {
       @apply flex items-center;
     }
 
+    & .status {
+      @apply ml-auto mr-sm w-fit shrink-0 whitespace-nowrap;
+    }
+
     & .invert {
-      @apply ml-auto shrink-0;
+      @apply shrink-0;
     }
 
     & .title {
@@ -31,31 +38,27 @@
     }
 
     & .fee {
-      @apply text-xs text-base-content/50;
-    }
-
-    & .status {
-      @apply w-fit shrink-0 self-start whitespace-nowrap;
+      @apply text-xs text-on-surface-variant;
     }
 
     & .metrics {
-      @apply mt-xxs flex flex-col gap-xxs border-t border-base-300 pt-sm text-sm;
+      @apply mt-xxs flex flex-col gap-xxs text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-lg;
     }
 
     & .stat-row {
-      @apply flex items-center justify-between gap-sm;
+      @apply flex items-center justify-between gap-sm sm:justify-start;
 
       & dt {
-        @apply shrink-0 text-base-content/50;
+        @apply shrink-0 text-on-surface-variant;
       }
 
       & dd {
-        @apply truncate text-right font-medium;
+        @apply truncate text-right font-medium sm:text-left;
       }
     }
   }
 
-  /* Shared by card + modal. */
+  /* Shared by the row + the detail dialog. */
   .token-stack {
     @apply inline-flex items-center;
 
@@ -65,10 +68,10 @@
   }
 
   .token-icon {
-    @apply h-8 w-8 shrink-0 rounded-full border-2 border-base-200 bg-base-300 object-cover;
+    @apply h-8 w-8 shrink-0 rounded-full border-2 border-surface bg-surface-variant object-cover;
 
     &.is-fallback {
-      @apply flex items-center justify-center text-xs font-medium uppercase text-base-content/60;
+      @apply flex items-center justify-center text-xs font-medium uppercase text-on-surface-variant;
     }
   }
 
