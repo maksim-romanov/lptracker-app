@@ -25,6 +25,6 @@
   }
 
   .proto-tag--uniswap {
-    --tag-color: #ff007a;
+    --tag-color: var(--color-primary);
   }
 }

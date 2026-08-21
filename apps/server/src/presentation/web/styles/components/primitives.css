@@ -52,20 +52,23 @@
     accent-color: var(--color-primary);
   }
 
+  /* Borderless soft-fill pill, matching Uniswap's status/tag treatment — no stroke, radius-full
+     regardless of height (rounded-sm at this size read as a rounded chip, not a true pill). */
   .badge {
-    @apply inline-flex w-fit shrink-0 items-center gap-1 whitespace-nowrap rounded-sm border border-outline px-sm py-0.5 text-xs font-medium text-on-surface-variant;
+    @apply inline-flex w-fit shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-sm py-0.5 text-xs font-medium text-on-surface-variant;
   }
 
   .badge-success {
-    @apply border-success/40 bg-success/10 text-success;
+    @apply bg-success/10 text-success;
   }
 
   .badge-error {
-    @apply border-error/40 bg-error/10 text-error;
+    @apply bg-error/10 text-error;
   }
 
+  /* Ghost has no fill, so it keeps a hairline border for definition — unlike the filled variants. */
   .badge-ghost {
-    @apply border-outline bg-transparent text-on-surface-variant;
+    @apply border border-outline bg-transparent text-on-surface-variant;
   }
 
   .chip {
