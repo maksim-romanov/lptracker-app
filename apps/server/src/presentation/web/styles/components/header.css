@@ -4,15 +4,18 @@
   }
 
   .app-header__inner {
-    @apply mx-auto flex w-full max-w-[1152px] items-center justify-between px-lg py-md;
+    @apply mx-auto flex w-full max-w-[1152px] items-center justify-between px-3xl py-lg;
   }
 
   .brand {
     @apply text-lg font-semibold tracking-tight;
   }
 
+  /* True circle at a larger size, overriding .btn-square's default rounded-sm/auto sizing —
+     matches Uniswap's round icon-button treatment (their own toggle-style controls are circular,
+     not rounded-square). */
   .theme-toggle {
-    @apply text-on-surface-variant;
+    @apply h-9 w-9 rounded-full text-on-surface-variant;
   }
 
   /* Sun in dark, moon in light (theme controller sets data-theme on connect). */

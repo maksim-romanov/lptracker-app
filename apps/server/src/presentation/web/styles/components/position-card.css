@@ -59,8 +59,9 @@
       @apply flex sm:justify-start;
     }
 
+    /* Circular, overriding .btn-square's rounded-sm — matches the theme toggle's round treatment. */
     & .invert {
-      @apply shrink-0 justify-self-end;
+      @apply h-8 w-8 shrink-0 justify-self-end rounded-full;
     }
   }
 
