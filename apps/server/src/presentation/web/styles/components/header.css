@@ -3,8 +3,11 @@
     @apply sticky top-0 z-20 border-b border-outline bg-surface/90 backdrop-blur;
   }
 
+  /* Edge-to-edge, not constrained to main's 1152/1280px content column — matches the mockup and
+     Uniswap's own nav (their logo sits near the true viewport edge, not inset to a centered
+     column). A wide viewport was pushing "Depthly" ~200px in from the edge before this. */
   .app-header__inner {
-    @apply mx-auto flex w-full max-w-[1152px] items-center justify-between px-3xl py-lg;
+    @apply flex w-full items-center justify-between px-3xl py-lg;
   }
 
   .brand {
