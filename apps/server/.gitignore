@@ -3,3 +3,6 @@ node_modules/
 
 # generated CSS
 src/static/dist/
+
+# generated Storybook static build
+storybook-static/
