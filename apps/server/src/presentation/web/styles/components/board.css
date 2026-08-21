@@ -21,6 +21,12 @@
   .board-header {
     @apply hidden text-xs font-medium uppercase tracking-wide text-on-surface-variant;
     @apply sm:grid sm:grid-cols-[minmax(160px,1.7fr)_minmax(200px,2fr)_minmax(110px,1fr)_92px_36px] sm:items-center sm:gap-lg sm:border-b sm:border-outline sm:px-lg sm:py-sm;
+
+    /* "Principal" label — its column's values are right-aligned (.cell-principal .stat-row),
+       so the label must be too or it reads as misaligned against every row below it. */
+    & > span:nth-child(3) {
+      @apply text-right;
+    }
   }
 
   .board-empty {

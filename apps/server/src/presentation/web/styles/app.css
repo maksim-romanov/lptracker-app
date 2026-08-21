@@ -2,28 +2,49 @@
 @config "../../../../tailwind.config.ts";
 @import "@depthly/theme/css/depthly.css";
 
-/* Local-only accent override for THIS web app — real values extracted from app.uniswap.org
-   (their pinkVibrant/pinkBase). `packages/theme` (shared with mobile/landing/the iOS widget)
-   stays untouched; this wins by source order over the @import above, mirroring depthly.css's
-   own :root / prefers-color-scheme / [data-theme] structure so it applies in all three theme
-   states the same way the shared tokens do. */
+/* Local-only accent + status + border override for THIS web app — real values extracted from
+   app.uniswap.org (their pink/green/orange scale, and a neutral hairline border to replace
+   Depthly's blue-tinted --color-outline). `packages/theme` (shared with mobile/landing/the iOS
+   widget) stays untouched; this wins by source order over the @import above, mirroring
+   depthly.css's own :root / prefers-color-scheme / [data-theme] structure so it applies in all
+   three theme states the same way the shared tokens do. */
 :root {
   --color-primary: #f50db4;
   --color-on-primary: #ffffff;
+  --color-success: #0c8911;
+  --color-on-success: #ffffff;
+  --color-warning: #ff8934;
+  --color-on-warning: #ffffff;
+  --color-outline: #e5e5e5;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --color-primary: #fc74fe;
     --color-on-primary: #131313;
+    --color-success: #21c95e;
+    --color-on-success: #0f2c1a;
+    --color-warning: #ffbf17;
+    --color-on-warning: #1f1e02;
+    --color-outline: #2e2e2e;
   }
 }
 [data-theme="depthly-light"] {
   --color-primary: #f50db4;
   --color-on-primary: #ffffff;
+  --color-success: #0c8911;
+  --color-on-success: #ffffff;
+  --color-warning: #ff8934;
+  --color-on-warning: #ffffff;
+  --color-outline: #e5e5e5;
 }
 [data-theme="depthly-dark"] {
   --color-primary: #fc74fe;
   --color-on-primary: #131313;
+  --color-success: #21c95e;
+  --color-on-success: #0f2c1a;
+  --color-warning: #ffbf17;
+  --color-on-warning: #1f1e02;
+  --color-outline: #2e2e2e;
 }
 
 /* Aliases the runtime custom properties from @depthly/theme/css/depthly.css into Tailwind's
