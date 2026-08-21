@@ -7,13 +7,21 @@
     @apply flex flex-col rounded-md border border-outline;
   }
 
-  /* Empty/error states render as their own dashed box, not a bordered list row. */
+  /* True empty/error-only state (no rows at all) renders its own dashed box — `.board` itself
+     drops its border so there's exactly one box, not two nested ones. */
   .board:has(> :not(.position-card):only-child) {
     @apply border-none;
   }
 
-  .board > :not(.position-card):not(.board-header) {
+  .board > :not(.position-card):not(.board-header):only-child {
     @apply rounded-md border border-dashed border-outline;
+  }
+
+  /* Partial-failure banner ABOVE real rows: it's already flush inside `.board`'s own border, so
+     giving it a second nested border+radius here reads as a box-within-a-box. Strip .alert's own
+     border/radius down to a flat separator strip instead. */
+  .board > :not(.position-card):not(.board-header):not(:only-child) {
+    @apply rounded-none border-0 border-b border-outline;
   }
 
   /* Column labels — hidden below `sm` (rows stack there, so there's no grid to label).
