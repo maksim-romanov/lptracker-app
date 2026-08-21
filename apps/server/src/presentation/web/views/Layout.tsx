@@ -36,6 +36,23 @@ export const Layout = ({ children }: PropsWithChildren) => (
         </header>
 
         <main class="app-main" data-controller="wallet">
+          <div class="board-region">
+            <div id="board-loader" class="htmx-indicator board-loader">
+              <span class="spinner" />
+              Loading positions…
+            </div>
+            <div
+              id="board"
+              class="board"
+              hx-get="/positions"
+              hx-trigger="load, board:refresh from:body"
+              hx-sync="this:replace"
+              hx-indicator="#board-loader"
+            >
+              {children}
+            </div>
+          </div>
+
           <section class="card wallet-panel">
             <div class="wallet-panel__head">
               <h1 class="wallet-panel__title display">Track a wallet</h1>
@@ -90,23 +107,6 @@ export const Layout = ({ children }: PropsWithChildren) => (
               </span>
             </template>
           </section>
-
-          <div class="board-region">
-            <div id="board-loader" class="htmx-indicator board-loader">
-              <span class="spinner" />
-              Loading positions…
-            </div>
-            <div
-              id="board"
-              class="board"
-              hx-get="/positions"
-              hx-trigger="load, board:refresh from:body"
-              hx-sync="this:replace"
-              hx-indicator="#board-loader"
-            >
-              {children}
-            </div>
-          </div>
         </main>
 
         <footer class="app-footer">Anonymous · positions stored in your browser</footer>

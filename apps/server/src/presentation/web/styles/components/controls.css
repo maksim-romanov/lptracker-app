@@ -5,8 +5,8 @@
   }
 
   .app-main:has(.position-card) {
-    @apply max-w-[1152px] justify-start;
-    @apply lg:grid lg:grid-cols-[320px_1fr] lg:items-start lg:gap-4xl;
+    @apply max-w-[1280px] justify-start;
+    @apply lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-4xl;
   }
 
   .wallet-panel {

@@ -2,7 +2,7 @@
   /* `.position-card` is the invert swap's hx-target="closest .position-card" — don't rename.
      It now styles a list row, not a square card. */
   .position-card {
-    @apply flex cursor-pointer flex-col gap-sm p-md;
+    @apply flex cursor-pointer flex-col gap-md p-xl;
     @apply transition-colors duration-150 ease-out;
 
     &:not(:last-child) {
@@ -34,7 +34,7 @@
     }
 
     & .pair {
-      @apply text-base font-semibold tracking-tight;
+      @apply text-lg font-semibold tracking-tight;
     }
 
     & .fee {
@@ -42,7 +42,7 @@
     }
 
     & .metrics {
-      @apply mt-xxs flex flex-col gap-xxs text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-lg;
+      @apply mt-sm flex flex-col gap-xs text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-xl;
     }
 
     & .stat-row {
@@ -68,7 +68,7 @@
   }
 
   .token-icon {
-    @apply h-8 w-8 shrink-0 rounded-full border-2 border-surface bg-surface-variant object-cover;
+    @apply h-9 w-9 shrink-0 rounded-full border-2 border-surface bg-surface-variant object-cover;
 
     &.is-fallback {
       @apply flex items-center justify-center text-xs font-medium uppercase text-on-surface-variant;
