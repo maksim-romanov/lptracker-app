@@ -1,6 +1,6 @@
 @layer components {
   .app-header {
-    @apply sticky top-0 z-20 border-b border-base-300 bg-base-100/90 backdrop-blur;
+    @apply sticky top-0 z-20 border-b border-outline bg-surface/90 backdrop-blur;
   }
 
   .app-header__inner {
@@ -12,7 +12,7 @@
   }
 
   .theme-toggle {
-    @apply text-base-content/70;
+    @apply text-on-surface-variant;
   }
 
   /* Sun in dark, moon in light (theme controller sets data-theme on connect). */

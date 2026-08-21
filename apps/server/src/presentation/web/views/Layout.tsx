@@ -17,7 +17,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
         <link rel="stylesheet" href={assets.css} />
         <script src={assets.js} defer />
       </head>
-      <body class="bg-base-100 text-base-content">
+      <body class="bg-surface text-on-surface">
         <header class="app-header" data-controller="theme">
           <div class="app-header__inner">
             <strong class="brand">Depthly</strong>
@@ -25,7 +25,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
               type="button"
               data-action="theme#toggle"
               data-theme-target="toggle"
-              class="btn btn-ghost btn-sm btn-square theme-toggle"
+              class="btn btn-ghost btn-square theme-toggle"
               aria-label="Toggle dark mode"
               aria-pressed="false"
             >
@@ -36,7 +36,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
         </header>
 
         <main class="app-main" data-controller="wallet">
-          <section class="wallet-panel">
+          <section class="card wallet-panel">
             <div class="wallet-panel__head">
               <h1 class="wallet-panel__title display">Track a wallet</h1>
               <p class="wallet-panel__sub">Paste an address to monitor its Uniswap V3 positions across chains.</p>
@@ -44,7 +44,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
 
             <form data-action="submit->wallet#add" class="wallet-form">
               <div class="wallet-form__row">
-                <label class="input input-bordered wallet-input">
+                <label class="input wallet-input">
                   <IconWallet size={18} class="wallet-input__icon" />
                   <input
                     name="address"
@@ -57,7 +57,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
                     aria-label="Wallet address"
                   />
                 </label>
-                <button type="submit" class="btn btn-primary btn-circle wallet-form__submit" aria-label="Add wallet">
+                <button type="submit" class="btn btn-primary rounded-full wallet-form__submit" aria-label="Add wallet">
                   <IconPlus size={20} />
                 </button>
               </div>
@@ -93,7 +93,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
 
           <div class="board-region">
             <div id="board-loader" class="htmx-indicator board-loader">
-              <span class="loading loading-spinner loading-sm" />
+              <span class="spinner" />
               Loading positions…
             </div>
             <div
@@ -111,19 +111,19 @@ export const Layout = ({ children }: PropsWithChildren) => (
 
         <footer class="app-footer">Anonymous · positions stored in your browser</footer>
 
-        <dialog id="position-modal" class="modal position-modal" data-controller="modal">
-          <div class="modal-box">
+        <dialog id="position-modal" class="dialog position-modal" data-controller="modal">
+          <div class="dialog-box">
             <form method="dialog" class="close">
-              <button type="submit" class="btn btn-sm btn-circle btn-ghost" aria-label="Close">
+              <button type="submit" class="btn btn-ghost rounded-full" aria-label="Close">
                 <IconClose size={18} />
               </button>
             </form>
             <div id="position-modal-loading" class="loader htmx-indicator">
-              <span class="loading loading-spinner loading-lg" />
+              <span class="spinner h-6 w-6" />
             </div>
             <div id="position-modal-box" class="modal-detail" data-modal-target="box" />
           </div>
-          <form method="dialog" class="modal-backdrop">
+          <form method="dialog" class="dialog-backdrop">
             <button type="submit" aria-label="Close">
               close
             </button>

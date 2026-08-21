@@ -6,13 +6,12 @@
 
   .app-main:has(.position-card) {
     @apply max-w-[1152px] justify-start;
-    @apply lg:grid lg:grid-cols-2 lg:items-start lg:gap-4xl;
+    @apply lg:grid lg:grid-cols-[320px_1fr] lg:items-start lg:gap-4xl;
   }
 
   .wallet-panel {
-    @apply flex flex-col gap-lg rounded-box border border-base-300 bg-base-200 p-lg;
+    @apply flex flex-col gap-lg;
     @apply lg:sticky lg:top-[68px];
-    box-shadow: var(--shadow-card);
   }
 
   /* Hero emphasis while empty. */
@@ -36,7 +35,7 @@
     }
 
     & .wallet-panel__sub {
-      @apply text-sm text-base-content/60;
+      @apply text-sm text-on-surface-variant;
     }
   }
 
@@ -48,12 +47,11 @@
     @apply flex items-center gap-sm;
   }
 
-  /* daisyUI .input as a label: leading icon + bare input. */
   .wallet-input {
-    @apply flex-1 gap-sm;
+    @apply flex-1;
 
     & .wallet-input__icon {
-      @apply shrink-0 text-base-content/40;
+      @apply shrink-0 text-on-surface-variant/70;
     }
   }
 
@@ -72,7 +70,7 @@
   /* A <legend> ignores flex gap — use an explicit label margin (matches .tracked). */
   .chains {
     & .chains__legend {
-      @apply mb-sm block text-xs font-medium uppercase tracking-wide text-base-content/50;
+      @apply mb-sm block text-xs font-medium uppercase tracking-wide text-on-surface-variant;
     }
 
     & .chains__list {
@@ -82,8 +80,8 @@
 
   /* The hidden checkbox is the source of truth; the label is the visible tag. */
   .chain {
-    @apply inline-flex cursor-pointer select-none items-center gap-xs rounded-full border border-base-300 bg-base-100 py-xs pl-sm pr-md text-sm font-medium text-base-content/70;
-    @apply transition-colors hover:border-base-content/25 hover:text-base-content;
+    @apply inline-flex cursor-pointer select-none items-center gap-xs rounded-full border border-outline bg-surface py-xs pl-sm pr-md text-sm font-medium text-on-surface-variant;
+    @apply transition-colors hover:border-on-surface/40 hover:text-on-surface;
 
     & .chain__input {
       @apply sr-only;
@@ -112,7 +110,7 @@
     }
 
     & .tracked__label {
-      @apply mb-sm block text-xs font-medium uppercase tracking-wide text-base-content/50;
+      @apply mb-sm block text-xs font-medium uppercase tracking-wide text-on-surface-variant;
     }
   }
 
@@ -121,11 +119,11 @@
   }
 
   .wallet-chip {
-    @apply inline-flex items-center gap-xs rounded-full border border-base-300 bg-base-100 py-xxs pr-xxs pl-sm text-sm font-medium;
+    @apply inline-flex items-center gap-xs rounded-full border border-outline bg-surface py-xxs pl-sm pr-xxs text-sm font-medium;
     @apply transition-[opacity,transform] duration-200 ease-out;
 
     & .wallet-chip__icon {
-      @apply shrink-0 text-base-content/40;
+      @apply shrink-0 text-on-surface-variant/70;
     }
 
     & .wallet-chip__addr {
@@ -134,8 +132,8 @@
     }
 
     & .wallet-chip__remove {
-      @apply inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full p-xxs text-base-content/40;
-      @apply transition-colors hover:bg-base-300 hover:text-error;
+      @apply inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full p-xxs text-on-surface-variant/70;
+      @apply transition-colors hover:bg-surface-variant hover:text-error;
       @apply focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary;
     }
   }
