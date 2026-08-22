@@ -1,0 +1,14 @@
+/* Tailwind Preflight's global `* { margin: 0 }` reset (author origin) beats the UA
+   stylesheet's `dialog:modal { margin: auto }` (user-agent origin) regardless of specificity,
+   which breaks native dialog centering — restore it explicitly. Same for width: `dialog:modal`
+   defaults to `width: fit-content`, so it shrink-wraps to its narrowest content row instead of
+   growing toward the inner `max-w-[640px]` — set it explicitly, and clear the UA's own
+   `max-width` cap (~38px short of 100%) so this width isn't clamped short either. */
+#position-modal {
+  --dialog-enter-transform: translateY(0.5rem) scale(0.98);
+
+  margin: auto;
+  width: min(40rem, calc(100vw - 2rem));
+  max-width: none;
+  will-change: opacity, transform;
+}

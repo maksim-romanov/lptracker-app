@@ -32,6 +32,18 @@ class WalletStore extends CollectionStore {
     if (this.entries.delete(address.toLowerCase())) this.persist();
   }
 
+  // Single-wallet mode: connecting a wallet replaces whatever was tracked
+  // before, rather than adding to a list.
+  replace(entry: WalletEntry): void {
+    this.entries = new Map([[entry.address, entry]]);
+    this.persist();
+  }
+
+  clear(): void {
+    this.entries = new Map();
+    this.persist();
+  }
+
   serialize(): string {
     return [...this.entries.values()].join("|");
   }

@@ -1,0 +1,17 @@
+/* Native <dialog>'s `:modal` UA rule (specificity 0,1,1 — element + pseudo-class) beats a
+   plain utility class (0,1,0) for inset/margin/width/height, so a <dialog>-as-drawer needs an
+   ID-selector override for those specific properties to actually apply. */
+#wallet-sidebar {
+  --dialog-enter-transform: translateX(1rem);
+
+  inset: 1rem 1rem 1rem auto;
+  margin: 0;
+  width: min(24rem, calc(100vw - 2rem));
+  height: auto;
+  /* dialog:modal's UA stylesheet caps max-height/max-width below 100% — without overriding
+     those too, the inset/height above gets silently clamped short. */
+  max-height: none;
+  max-width: none;
+  overflow: hidden;
+  will-change: opacity, transform;
+}

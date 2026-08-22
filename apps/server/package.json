@@ -18,10 +18,10 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@hono/standard-validator": "^0.2.2",
     "@depthly/catalog": "workspace:*",
     "@depthly/logger": "workspace:*",
     "@depthly/protocol-math": "workspace:*",
+    "@hono/standard-validator": "^0.2.2",
     "@scalar/hono-api-reference": "^0.10.20",
     "@uniswap/v3-core": "^1.0.1",
     "@uniswap/v3-periphery": "^1.4.4",
@@ -55,6 +55,7 @@
     "@types/opossum": "^8.1.9",
     "graphql": "^16.12.0",
     "htmx.org": "^2.0.10",
+    "mipd": "^0.0.7",
     "openapi-typescript": "^7.10.1",
     "storybook": "^10.5.10",
     "tailwindcss": "^4.3.1",

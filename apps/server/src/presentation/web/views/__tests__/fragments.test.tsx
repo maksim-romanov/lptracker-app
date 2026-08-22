@@ -34,7 +34,7 @@ const s = (node: unknown) => String(node);
 
 describe("web fragments", () => {
   it("Empty renders an onboarding message for no-wallets", () => {
-    expect(s(Empty({ reason: "no-wallets" }))).toContain("Add a wallet");
+    expect(s(Empty({ reason: "no-wallets" }))).toContain("Connect a wallet");
   });
 
   it("ErrorBanner escapes the message", () => {
@@ -91,6 +91,6 @@ describe("web route validation XSS regression", () => {
     const res = await webRoutes.request("/positions?protocols=nonexistent");
     expect(res.status).toBe(200);
     const body = await res.text();
-    expect(body).toContain("Add a wallet");
+    expect(body).toContain("Connect a wallet");
   });
 });

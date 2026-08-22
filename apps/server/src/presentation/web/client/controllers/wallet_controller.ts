@@ -1,52 +1,86 @@
 import { Controller } from "@hotwired/stimulus";
+import { createStore } from "mipd";
 
+import { NETWORKS } from "../../views/networks";
 import { WalletEntry } from "../lib/wallet.entity";
 import { walletStore } from "../lib/wallet.store";
 
+type TEip1193Provider = {
+  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+};
+
+// EIP-6963 discovery, requested at module load so wallets have announced by connect time.
+const providerStore = createStore();
+
+const ALL_CHAIN_IDS = NETWORKS.map((n) => n.id);
+
 export default class WalletController extends Controller {
-  static targets = ["address", "chain", "chips", "chipTemplate"];
+  static targets = ["sidebar", "connectButton", "walletPill", "walletAddress", "addressInput"];
 
-  declare readonly addressTarget: HTMLInputElement;
-  declare readonly chainTargets: HTMLInputElement[];
-  declare readonly chipsTarget: HTMLElement;
-  declare readonly chipTemplateTarget: HTMLTemplateElement;
+  declare readonly sidebarTarget: HTMLDialogElement;
+  declare readonly hasSidebarTarget: boolean;
+  declare readonly connectButtonTarget: HTMLButtonElement;
+  declare readonly walletPillTarget: HTMLButtonElement;
+  declare readonly walletAddressTarget: HTMLElement;
+  declare readonly addressInputTarget: HTMLInputElement;
 
-  // Wallets are client-owned (localStorage) — render their chips locally, no
-  // round-trip. Positions stay server-rendered (their data is server-side).
   connect(): void {
-    this.renderChips();
+    this.render();
   }
 
-  add(event: SubmitEvent): void {
-    event.preventDefault();
+  openSidebar(): void {
+    this.sidebarTarget.showModal();
+  }
 
-    const chainIds = this.chainTargets.filter((c) => c.checked).map((c) => Number(c.value));
-    const entry = WalletEntry.create(this.addressTarget.value.trim(), chainIds);
+  async connectWallet(): Promise<void> {
+    const provider = this.injectedProvider();
+    if (!provider) return;
+
+    let accounts: unknown;
+    try {
+      accounts = await provider.request({ method: "eth_requestAccounts" });
+    } catch {
+      return;
+    }
+
+    const address = Array.isArray(accounts) ? accounts[0] : undefined;
+    if (typeof address !== "string") return;
+
+    this.track(address);
+  }
+
+  addManual(event: SubmitEvent): void {
+    event.preventDefault();
+    this.track(this.addressInputTarget.value.trim());
+    (event.target as HTMLFormElement).reset();
+  }
+
+  disconnectWallet(): void {
+    walletStore.clear();
+    this.render();
+    this.dispatch("refresh", { prefix: "board" });
+  }
+
+  private track(address: string): void {
+    const entry = WalletEntry.create(address, ALL_CHAIN_IDS);
     if (!entry) return;
 
-    walletStore.add(entry);
-    (event.target as HTMLFormElement).reset();
-    this.renderChips();
+    walletStore.replace(entry);
+    this.render();
     this.dispatch("refresh", { prefix: "board" });
+    if (this.hasSidebarTarget && this.sidebarTarget.open) this.sidebarTarget.close();
   }
 
-  remove(event: Event & { params: { address: string } }): void {
-    walletStore.remove(event.params.address);
-    this.renderChips();
-    this.dispatch("refresh", { prefix: "board" });
+  private render(): void {
+    const entry = walletStore.list()[0];
+    this.connectButtonTarget.hidden = Boolean(entry);
+    this.walletPillTarget.hidden = !entry;
+    if (entry) this.walletAddressTarget.textContent = entry.shortLabel();
   }
 
-  // Clone the server-rendered <template> per wallet (CSP-safe: markup stays in
-  // HTML, no innerHTML string-building).
-  private renderChips(): void {
-    this.chipsTarget.replaceChildren();
-    for (const entry of walletStore.list()) {
-      const fragment = this.chipTemplateTarget.content.cloneNode(true) as DocumentFragment;
-      const label = fragment.querySelector("[data-chip-label]");
-      if (label) label.textContent = entry.shortLabel();
-      const removeButton = fragment.querySelector("button");
-      if (removeButton) removeButton.setAttribute("data-wallet-address-param", entry.address);
-      this.chipsTarget.appendChild(fragment);
-    }
+  private injectedProvider(): TEip1193Provider | undefined {
+    const [announced] = providerStore.getProviders();
+    if (announced) return announced.provider as TEip1193Provider;
+    return (window as { ethereum?: TEip1193Provider }).ethereum;
   }
 }

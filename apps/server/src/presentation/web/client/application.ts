@@ -3,6 +3,7 @@ import "./htmx-params";
 import { Application } from "@hotwired/stimulus";
 import htmx from "htmx.org";
 
+import ClickOutsideController from "./controllers/click_outside_controller";
 import ModalController from "./controllers/modal_controller";
 import RangeController from "./controllers/range_controller";
 import ThemeController from "./controllers/theme_controller";
@@ -28,6 +29,7 @@ export async function start(): Promise<void> {
   app.register("theme", ThemeController);
   app.register("modal", ModalController);
   app.register("range", RangeController);
+  app.register("click-outside", ClickOutsideController);
 }
 
 void start();

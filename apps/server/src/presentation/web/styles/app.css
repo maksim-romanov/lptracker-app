@@ -19,6 +19,10 @@
   opacity: 1;
 }
 
+@import "./components/modal.css";
+@import "./components/sidebar.css";
+@import "./components/position-modal.css";
+
 /* Aliases the runtime custom properties from @depthly/theme/css/depthly.css into Tailwind's
    color namespace, so `bg-surface`, `text-on-surface`, `border-outline`, etc. are ordinary
    Tailwind utilities that stay reactive to the active [data-theme]. */
