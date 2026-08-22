@@ -9,6 +9,7 @@ quansync
 metas
 htmx
 hotwired
+mipd
 gsap
 clickables
 colour
