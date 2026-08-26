@@ -9,13 +9,14 @@
   }
 }
 
-/* htmx.config.includeIndicatorStyles = false (CSP: no injected <style> tag) — this app supplies
-   the default indicator show/hide rule itself. */
+/* htmx.config.includeIndicatorStyles = false (CSP) — this is that show/hide rule. */
 .htmx-indicator {
+  display: none;
   opacity: 0;
 }
 .htmx-request.htmx-indicator,
 .htmx-request .htmx-indicator {
+  display: flex;
   opacity: 1;
 }
 
@@ -23,6 +24,8 @@
 @import "./components/modal.css";
 @import "./components/sidebar.css";
 @import "./components/position-modal.css";
+@import "./components/toast.css";
+@import "./components/theme-toggle.css";
 
 /* Aliases the runtime custom properties from @depthly/theme/css/depthly.css into Tailwind's
    color namespace, so `bg-surface`, `text-on-surface`, `border-outline`, etc. are ordinary
@@ -44,4 +47,6 @@
   --color-on-warning: var(--color-on-warning);
   --color-error: var(--color-error);
   --color-on-error: var(--color-on-error);
+  --color-info: var(--color-info);
+  --color-on-info: var(--color-on-info);
 }

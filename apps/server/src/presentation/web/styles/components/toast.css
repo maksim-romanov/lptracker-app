@@ -1,0 +1,37 @@
+/* Same technique as modal.css's [data-animate="dialog"]. */
+[data-animate="toast"] {
+  opacity: 0;
+  transform: translateX(1rem);
+  transition:
+    opacity 180ms ease-out,
+    transform 180ms ease-out,
+    display 180ms ease-out allow-discrete;
+}
+
+.htmx-request[data-animate="toast"] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .htmx-request[data-animate="toast"] {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate="toast"] {
+    transition: none;
+  }
+
+  .toast-spinner {
+    animation: none;
+  }
+}
+
+.toast-spinner {
+  background: conic-gradient(from 0deg, transparent, currentColor);
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
+}

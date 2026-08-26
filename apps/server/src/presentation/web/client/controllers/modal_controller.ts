@@ -10,20 +10,18 @@ export default class ModalController extends Controller {
   }
 
   connect(): void {
-    document.body.addEventListener("htmx:beforeRequest", this.onBeforeRequest);
+    document.body.addEventListener("htmx:afterSwap", this.onAfterSwap);
     document.body.addEventListener("keydown", this.onKeydown);
   }
 
   disconnect(): void {
-    document.body.removeEventListener("htmx:beforeRequest", this.onBeforeRequest);
+    document.body.removeEventListener("htmx:afterSwap", this.onAfterSwap);
     document.body.removeEventListener("keydown", this.onKeydown);
   }
 
-  // The request fires on the card (outside the dialog), so listen on body.
-  private onBeforeRequest = (event: Event): void => {
-    const target = (event as CustomEvent).detail?.target as Node | undefined;
-    if (target !== this.boxTarget) return;
-    this.boxTarget.replaceChildren();
+  // htmx:afterSwap fires per inserted child, not once on the target itself, hence contains().
+  private onAfterSwap = (event: Event): void => {
+    if (!this.boxTarget.contains(event.target as Node)) return;
     if (!this.dialog.open) this.dialog.showModal();
   };
 

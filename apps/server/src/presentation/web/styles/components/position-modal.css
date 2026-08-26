@@ -1,12 +1,12 @@
-/* Tailwind Preflight's global `* { margin: 0 }` reset (author origin) beats the UA
-   stylesheet's `dialog:modal { margin: auto }` (user-agent origin) regardless of specificity,
-   which breaks native dialog centering — restore it explicitly. Same for width: `dialog:modal`
-   defaults to `width: fit-content`, so it shrink-wraps to its narrowest content row instead of
-   growing toward the inner `max-w-[640px]` — set it explicitly, and clear the UA's own
-   `max-width` cap (~38px short of 100%) so this width isn't clamped short either. */
+/* Restores dialog:modal's UA centering, which Preflight's reset breaks. `position: fixed` is
+   explicit, not left to the UA :modal rule — :modal stops matching the instant .close() runs,
+   so during the allow-discrete exit transition the dialog would otherwise fall back to
+   non-modal positioning (absolute, near document y=0) and visibly jump before fading out. */
 #position-modal {
   --dialog-enter-transform: translateY(0.5rem) scale(0.98);
 
+  position: fixed;
+  inset: 0;
   margin: auto;
   width: min(40rem, calc(100vw - 2rem));
   max-width: none;

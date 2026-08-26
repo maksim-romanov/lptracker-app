@@ -1,11 +1,12 @@
-import type { PropsWithChildren } from "hono/jsx";
+import type { JSX, PropsWithChildren } from "hono/jsx";
 
 import { Modal } from "../Modal/Modal";
 
-type Props = PropsWithChildren<{ id: string; dataAttrs?: Record<string, string> }>;
+type Props = PropsWithChildren<JSX.IntrinsicElements["dialog"] & { id: string }>;
 
-export const Sidebar = ({ id, dataAttrs, children }: Props) => (
-  <Modal id={id} class="sidebar" dataAttrs={dataAttrs} bodyClass="flex h-full w-full flex-col gap-4 p-4">
+// key destructured out — spreading it onward into <Modal> conflicts with its IntrinsicAttributes.
+export const Sidebar = ({ id, key: _key, class: className, children, ...rest }: Props) => (
+  <Modal id={id} class={`sidebar${className ? ` ${className}` : ""}`} bodyClass="flex h-full w-full flex-col gap-4 p-4" {...rest}>
     {children}
   </Modal>
 );

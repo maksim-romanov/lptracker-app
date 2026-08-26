@@ -11,12 +11,12 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// `dataAttrs={{ open: "" }}` forces the native <dialog open> attribute so it renders inline in
-// the canvas instead of its browser-default `display: none` (Modal has no dedicated `open` prop).
+// `open` forces the native <dialog open> attribute so it renders inline in the canvas instead of
+// its browser-default `display: none`.
 export const Default = {
   render: () =>
     String(
-      <Modal id="modal-story" dataAttrs={{ open: "" }}>
+      <Modal id="modal-story" open>
         <p>Modal content</p>
       </Modal>,
     ),
@@ -27,7 +27,7 @@ export const Default = {
 export const WithPositionDetail = {
   render: () =>
     String(
-      <Modal id="modal-position-story" dataAttrs={{ open: "" }} bodyClass="flex w-full max-w-[640px] flex-col gap-4 p-4">
+      <Modal id="modal-position-story" title="Position details" open bodyClass="flex w-full max-w-[640px] flex-col gap-4 p-4">
         <PositionDetail card={inRange} />
       </Modal>,
     ),

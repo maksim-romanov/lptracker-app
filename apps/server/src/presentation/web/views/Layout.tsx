@@ -6,6 +6,7 @@ import { Button } from "./components/Button/Button";
 import { Icon } from "./components/Icon/Icon";
 import { Modal } from "./components/Modal/Modal/Modal";
 import { Sidebar } from "./components/Modal/Sidebar/Sidebar";
+import { Toast } from "./components/Toast/Toast";
 import { WalletConnect } from "./wallets/WalletConnect/WalletConnect";
 
 export const Layout = ({ children }: PropsWithChildren) => (
@@ -21,7 +22,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
       </head>
       <body class="flex min-h-screen flex-col bg-surface text-on-surface" data-controller="wallet">
         <header data-controller="theme" class="flex items-center justify-between gap-4 border-b border-outline p-4">
-          <strong>Depthly</strong>
+          <h1 class="text-base font-bold">Depthly</h1>
           <div class="flex items-center gap-2">
             <Button data-wallet-target="connectButton" data-action="wallet#openSidebar" class="px-3 py-2">
               Connect Wallet
@@ -44,36 +45,34 @@ export const Layout = ({ children }: PropsWithChildren) => (
         </header>
 
         <main class="flex-1 p-4">
-          <div class="@container flex flex-col gap-3 rounded-md border border-outline bg-surface-container p-4">
-            <div id="board-loader" class="htmx-indicator">
-              <span />
-              Loading positions…
-            </div>
-            <div
-              id="board"
-              class="flex flex-col gap-3"
-              hx-get="/positions"
-              hx-trigger="load, board:refresh from:body"
-              hx-sync="this:replace"
-              hx-indicator="#board-loader"
-            >
-              {children}
-            </div>
+          <div id="board-loader" class="htmx-indicator">
+            Loading positions…
+          </div>
+          <div
+            id="board"
+            class="flex flex-col gap-3"
+            aria-live="polite"
+            hx-get="/positions"
+            hx-trigger="load, board:refresh from:body"
+            hx-sync="this:replace"
+            hx-indicator="#board-loader"
+          >
+            {children}
           </div>
         </main>
 
         <footer class="border-t border-outline p-4">Anonymous · positions stored in your browser</footer>
 
-        <Sidebar id="wallet-sidebar" dataAttrs={{ "data-wallet-target": "sidebar" }}>
+        <Sidebar id="wallet-sidebar" data-wallet-target="sidebar">
           <WalletConnect />
         </Sidebar>
 
-        <Modal id="position-modal" controller="modal" bodyClass="flex w-full max-w-[640px] flex-col gap-4 p-4">
-          <div id="position-modal-loading" class="htmx-indicator">
-            <span />
-            Loading position…
-          </div>
-          <div id="position-modal-box" data-modal-target="box" class="flex min-h-[24rem] flex-col gap-3" />
+        <Toast id="position-toast-loading" type="loading">
+          Loading position…
+        </Toast>
+
+        <Modal id="position-modal" title="Position details" controller="modal" bodyClass="flex w-full max-w-[640px] flex-col gap-4 p-4">
+          <div id="position-modal-box" data-modal-target="box" class="flex flex-col gap-3" />
         </Modal>
       </body>
     </html>

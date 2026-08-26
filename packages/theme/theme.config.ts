@@ -39,6 +39,8 @@ const semanticColors = (mode: Tree["color"]["depthly"]["light"]) => ({
   "--color-on-warning": mode.onWarning,
   "--color-error": mode.error,
   "--color-on-error": mode.onError,
+  "--color-info": mode.info,
+  "--color-on-info": mode.onInfo,
 });
 
 // depthly.{light,dark} field each colorset maps to.

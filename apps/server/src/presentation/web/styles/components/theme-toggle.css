@@ -1,0 +1,8 @@
+/* Icon shows the mode a click switches TO. Both render until theme_controller.ts sets
+   [data-theme] on <html> (first JS tick) — unavoidable for a JS-driven toggle. */
+[data-theme="depthly-dark"] [data-theme-target="toggle"] .icon-moon {
+  display: none;
+}
+[data-theme="depthly-light"] [data-theme-target="toggle"] .icon-sun {
+  display: none;
+}

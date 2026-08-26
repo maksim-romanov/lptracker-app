@@ -1,20 +1,13 @@
-/* Native <dialog>'s `:modal` UA rule (specificity 0,1,1 — element + pseudo-class) beats a
-   plain utility class (0,1,0) for inset/margin/width/height, so a <dialog>-as-drawer needs an
-   equal-or-higher-specificity override for those specific properties to actually apply.
-   `dialog.sidebar` ties `:modal` at (0,1,1) — an author-origin rule wins a specificity tie
-   against a user-agent rule, so this applies to any `<Sidebar>` (which sets `class="sidebar"`
-   in Modal/Sidebar.tsx), not just one hardcoded id — `<Sidebar>` wouldn't get real drawer sizing
-   under any other id/instance otherwise (its bodyClass's `h-full` has nothing definite to
-   resolve against without this). */
+/* `dialog.sidebar` (class, not an id) ties :modal's UA specificity so this applies to any
+   <Sidebar> instance. position: fixed is explicit — see position-modal.css for why. */
 dialog.sidebar {
   --dialog-enter-transform: translateX(1rem);
 
+  position: fixed;
   inset: 1rem 1rem 1rem auto;
   margin: 0;
   width: min(24rem, calc(100vw - 2rem));
   height: auto;
-  /* dialog:modal's UA stylesheet caps max-height/max-width below 100% — without overriding
-     those too, the inset/height above gets silently clamped short. */
   max-height: none;
   max-width: none;
   overflow: hidden;

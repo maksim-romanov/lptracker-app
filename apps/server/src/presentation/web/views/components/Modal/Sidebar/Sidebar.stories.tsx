@@ -10,12 +10,12 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// `dataAttrs={{ open: "" }}` forces the native <dialog open> attribute so it renders inline in
-// the canvas instead of its browser-default `display: none`.
+// `open` forces the native <dialog open> attribute so it renders inline in the canvas instead of
+// its browser-default `display: none`.
 export const Default = {
   render: () =>
     String(
-      <Sidebar id="sidebar-story" dataAttrs={{ open: "" }}>
+      <Sidebar id="sidebar-story" open>
         <p>Sidebar content</p>
       </Sidebar>,
     ),
@@ -26,7 +26,7 @@ export const Default = {
 export const WithWalletConnect = {
   render: () =>
     String(
-      <Sidebar id="sidebar-wallet-story" dataAttrs={{ open: "" }}>
+      <Sidebar id="sidebar-wallet-story" open>
         <WalletConnect />
       </Sidebar>,
     ),

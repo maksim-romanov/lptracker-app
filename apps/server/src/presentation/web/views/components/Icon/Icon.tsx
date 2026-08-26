@@ -1,11 +1,10 @@
 export type TIconName = "invert" | "close" | "check" | "plus" | "sun" | "moon" | "wallet" | "inbox" | "external" | "alert";
+export type TIconSize = 12 | 15 | 16 | 18 | 20 | 28 | 32;
 
-type Props = { name: TIconName; size?: number; class?: string };
+type Props = { name: TIconName; size?: TIconSize; class?: string };
 
+// CSP is style-src 'self' (no unsafe-inline) — icon.css's static classes carry the mask-image
+// and size, never an inline `style` attribute.
 export const Icon = ({ name, size = 20, class: className }: Props) => (
-  <span
-    aria-hidden="true"
-    class={`icon${className ? ` ${className}` : ""}`}
-    style={{ "--icon-url": `url(/static/icons/${name}.svg)`, width: size, height: size }}
-  />
+  <span aria-hidden="true" class={`icon icon-${name} icon-size-${size}${className ? ` ${className}` : ""}`} />
 );
