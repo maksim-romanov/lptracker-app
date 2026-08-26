@@ -48,7 +48,8 @@
       "!**/.impeccable/**",
       "!.claude/skills/**",
       "!.agents/skills/**",
-      "!skills-lock.json"
+      "!skills-lock.json",
+      "!**/.omc/**"
     ]
   },
   "overrides": [

@@ -1,7 +1,12 @@
 /* Native <dialog>'s `:modal` UA rule (specificity 0,1,1 — element + pseudo-class) beats a
    plain utility class (0,1,0) for inset/margin/width/height, so a <dialog>-as-drawer needs an
-   ID-selector override for those specific properties to actually apply. */
-#wallet-sidebar {
+   equal-or-higher-specificity override for those specific properties to actually apply.
+   `dialog.sidebar` ties `:modal` at (0,1,1) — an author-origin rule wins a specificity tie
+   against a user-agent rule, so this applies to any `<Sidebar>` (which sets `class="sidebar"`
+   in Modal/Sidebar.tsx), not just one hardcoded id — `<Sidebar>` wouldn't get real drawer sizing
+   under any other id/instance otherwise (its bodyClass's `h-full` has nothing definite to
+   resolve against without this). */
+dialog.sidebar {
   --dialog-enter-transform: translateX(1rem);
 
   inset: 1rem 1rem 1rem auto;

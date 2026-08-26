@@ -8,11 +8,11 @@ import { protocolRegistry } from "../../../app/protocols/registry";
 import { UNISWAP_V3_EXTENSION_TYPE } from "../../../features/uniswap-v3/presentation/schemas/extension.schema";
 import { mapPositionToCardVM } from "../../../features/uniswap-v3/presentation/web/position.web-mapper";
 import { POSITION_REF_REGEX, parsePositionRef } from "../../v1/schemas/request.schemas";
-import { Empty } from "../views/fragments/Empty";
-import { ErrorBanner } from "../views/fragments/ErrorBanner";
-import { PositionCard } from "../views/fragments/PositionCard";
-import { PositionDetail } from "../views/fragments/PositionDetail";
-import { Positions } from "../views/fragments/Positions";
+import { ErrorBanner } from "../views/components/Banner/ErrorBanner/ErrorBanner";
+import { PositionCard } from "../views/positions/PositionCard/PositionCard";
+import { PositionDetail } from "../views/positions/PositionDetail/PositionDetail";
+import { Positions } from "../views/positions/Positions/Positions";
+import { NoWallets } from "../views/wallets/NoWallets/NoWallets";
 import { webPositionsQuerySchema } from "./query.schema";
 import { webValidationHook } from "./validation";
 
@@ -32,7 +32,7 @@ webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValid
   const invertedSet = query.inverted ?? new Set<string>();
 
   if (wallets.length === 0) {
-    return c.html(<Empty reason="no-wallets" />);
+    return c.html(<NoWallets />);
   }
 
   if (query.protocols) {

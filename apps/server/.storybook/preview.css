@@ -1,0 +1,19 @@
+/* Static story previews never go through a real open/close interaction — a story that renders
+   `<dialog open>` via a plain attribute (not `.showModal()`) can otherwise get stuck in a
+   partially-animated state (`[data-animate="dialog"]`'s enter transition + @starting-style),
+   which showed up in Safari as a collapsed/misshapen dialog box. Skip the transition entirely
+   so dialogs always render in their fully-resolved [open] state. Real usage in the app opens
+   dialogs via .showModal()/Stimulus, where the animation is intentional — this file only loads
+   in Storybook's preview, never in the built app.
+
+   Same selectors as app.css's modal.css (same specificity), winning on source order — this file
+   is imported after app.css in preview.ts, so no !important needed. */
+[data-animate="dialog"],
+[data-animate="dialog"]::backdrop {
+  transition: none;
+}
+
+[data-animate="dialog"][open] {
+  opacity: 1;
+  transform: none;
+}

@@ -2,8 +2,11 @@ import { raw } from "hono/html";
 import type { PropsWithChildren } from "hono/jsx";
 
 import { assets } from "../asset-manifest";
-import { IconMoon, IconPlus, IconSun, IconWallet } from "./Icons";
-import { Modal } from "./Modal";
+import { Button } from "./components/Button/Button";
+import { Icon } from "./components/Icon/Icon";
+import { Modal } from "./components/Modal/Modal/Modal";
+import { Sidebar } from "./components/Modal/Sidebar/Sidebar";
+import { WalletConnect } from "./wallets/WalletConnect/WalletConnect";
 
 export const Layout = ({ children }: PropsWithChildren) => (
   <>
@@ -20,36 +23,23 @@ export const Layout = ({ children }: PropsWithChildren) => (
         <header data-controller="theme" class="flex items-center justify-between gap-4 border-b border-outline p-4">
           <strong>Depthly</strong>
           <div class="flex items-center gap-2">
-            <button
-              type="button"
-              data-wallet-target="connectButton"
-              data-action="wallet#openSidebar"
-              class="rounded-sm border border-outline px-3 py-2"
-            >
+            <Button data-wallet-target="connectButton" data-action="wallet#openSidebar" class="px-3 py-2">
               Connect Wallet
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
               hidden
               data-wallet-target="walletPill"
               data-action="wallet#disconnectWallet"
               aria-label="Disconnect wallet"
-              class="flex items-center gap-2 rounded-sm border border-outline px-3 py-2"
+              class="flex items-center gap-2 px-3 py-2"
             >
-              <IconWallet size={16} />
+              <Icon name="wallet" size={16} />
               <span data-wallet-target="walletAddress" />
-            </button>
-            <button
-              type="button"
-              data-action="theme#toggle"
-              data-theme-target="toggle"
-              aria-label="Toggle dark mode"
-              aria-pressed="false"
-              class="rounded-sm border border-outline p-2"
-            >
-              <IconMoon size={18} />
-              <IconSun size={18} />
-            </button>
+            </Button>
+            <Button data-action="theme#toggle" data-theme-target="toggle" aria-label="Toggle dark mode" aria-pressed="false" class="p-2">
+              <Icon name="moon" size={18} />
+              <Icon name="sun" size={18} />
+            </Button>
           </div>
         </header>
 
@@ -74,37 +64,9 @@ export const Layout = ({ children }: PropsWithChildren) => (
 
         <footer class="border-t border-outline p-4">Anonymous · positions stored in your browser</footer>
 
-        <Modal id="wallet-sidebar" dataAttrs={{ "data-wallet-target": "sidebar" }} bodyClass="flex h-full w-full flex-col gap-4 p-4">
-          <h2>Connect a wallet</h2>
-
-          <button type="button" data-action="wallet#connectWallet" class="flex items-center gap-2 rounded-sm border border-outline p-3">
-            <IconWallet size={18} />
-            Connect Wallet
-          </button>
-
-          <div class="flex items-center gap-2 text-sm">
-            <span class="h-px flex-1 bg-outline" />
-            or
-            <span class="h-px flex-1 bg-outline" />
-          </div>
-
-          <form data-action="submit->wallet#addManual" class="flex gap-2">
-            <input
-              name="address"
-              data-wallet-target="addressInput"
-              placeholder="0x… wallet address"
-              autocomplete="off"
-              spellcheck={false}
-              required
-              pattern="^0x[a-fA-F0-9]{40}$"
-              aria-label="Wallet address"
-              class="min-w-0 flex-1 rounded-sm border border-outline px-3 py-2"
-            />
-            <button type="submit" aria-label="Add address" class="rounded-sm border border-outline p-2">
-              <IconPlus size={20} />
-            </button>
-          </form>
-        </Modal>
+        <Sidebar id="wallet-sidebar" dataAttrs={{ "data-wallet-target": "sidebar" }}>
+          <WalletConnect />
+        </Sidebar>
 
         <Modal id="position-modal" controller="modal" bodyClass="flex w-full max-w-[640px] flex-col gap-4 p-4">
           <div id="position-modal-loading" class="htmx-indicator">

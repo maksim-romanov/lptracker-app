@@ -1,0 +1,19 @@
+/* Icon SVGs (src/static/icons/*.svg) are referenced via mask-image, not <img>/background-image —
+   an <img>-referenced SVG is rendered in an isolated document that doesn't inherit currentColor
+   from this page, so it can't follow the light/dark theme. Masking paints from
+   background-color: currentColor instead; the SVG itself only supplies the shape (alpha/luminance).
+   Source SVGs use white strokes so they mask correctly whether the browser treats mask-image as
+   alpha- or luminance-based. */
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask-image: var(--icon-url);
+  mask-image: var(--icon-url);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}

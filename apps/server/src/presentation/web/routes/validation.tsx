@@ -1,6 +1,6 @@
 import type { Context } from "hono";
 
-import { ErrorBanner } from "../views/fragments/ErrorBanner";
+import { ErrorBanner } from "../views/components/Banner/ErrorBanner/ErrorBanner";
 
 // Mirrors v1 validationHook shape but renders an ErrorBanner HTML fragment instead of JSON.
 interface ValidationIssue {
