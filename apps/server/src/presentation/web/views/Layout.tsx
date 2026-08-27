@@ -20,9 +20,9 @@ export const Layout = ({ children }: PropsWithChildren) => (
         <link rel="stylesheet" href={assets.css} />
         <script src={assets.js} defer />
       </head>
-      <body class="flex min-h-screen flex-col bg-surface text-on-surface" data-controller="wallet">
-        <header data-controller="theme" class="flex items-center justify-between gap-4 border-b border-outline p-4">
-          <h1 class="text-base font-bold">Depthly</h1>
+      <body class="flex min-h-dvh flex-col bg-surface text-on-surface" data-controller="wallet">
+        <header data-controller="theme" class="flex items-center justify-between gap-4 border-outline border-b p-4">
+          <h1 class="font-bold text-base">Depthly</h1>
           <div class="flex items-center gap-2">
             <Button data-wallet-target="connectButton" data-action="wallet#openSidebar" class="px-3 py-2">
               Connect Wallet
@@ -61,7 +61,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
           </div>
         </main>
 
-        <footer class="border-t border-outline p-4">Anonymous · positions stored in your browser</footer>
+        <footer class="border-outline border-t p-4">Anonymous · positions stored in your browser</footer>
 
         <Sidebar id="wallet-sidebar" data-wallet-target="sidebar">
           <WalletConnect />

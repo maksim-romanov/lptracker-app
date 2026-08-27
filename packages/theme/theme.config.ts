@@ -22,6 +22,9 @@ type Tree = Resolved<Tokens>;
 
 const generatedHeader = (source: string) => `// GENERATED FILE — do not edit. Source: ${source}`;
 
+const pxVars = (prefix: string, tokens: Record<string, number>): Record<string, string> =>
+  Object.fromEntries(Object.entries(tokens).map(([key, value]) => [`--${prefix}-${key}`, `${value}px`]));
+
 const semanticColors = (mode: Tree["color"]["depthly"]["light"]) => ({
   "--color-surface": mode.surface,
   "--color-surface-container": mode.surfaceContainer,
@@ -152,6 +155,11 @@ export default defineTokens({
         { selector: '[data-theme="depthly-light"]', declarations: semanticColors(tree.color.depthly.light) },
         { selector: '[data-theme="depthly-dark"]', declarations: semanticColors(tree.color.depthly.dark) },
       ],
+    }),
+    cssVariablesTheme<Tokens>({
+      outFile: "dist/css/spacing.css",
+      headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/spacing.ts */"],
+      blocks: (tree) => [{ selector: "@theme", declarations: { ...pxVars("spacing", tree.spacing), ...pxVars("radius", tree.radius) } }],
     }),
     iosColorsets<Tokens>({
       outDir: "../../apps/mobile/targets/positions-widget/Assets.xcassets",

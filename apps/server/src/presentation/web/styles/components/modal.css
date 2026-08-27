@@ -1,50 +1,52 @@
 /* Shared open/close animation for any <dialog data-animate="dialog">. Each dialog sets
    --dialog-enter-transform (via its own ID-scoped rule) for the entrance direction. */
-[data-animate="dialog"] {
-  opacity: 0;
-  transform: var(--dialog-enter-transform, none);
-  transition:
-    opacity 200ms ease-out,
-    transform 200ms ease-out,
-    overlay 200ms ease-out allow-discrete,
-    display 200ms ease-out allow-discrete;
-}
-
-[data-animate="dialog"][open] {
-  opacity: 1;
-  transform: none;
-}
-
-@starting-style {
-  [data-animate="dialog"][open] {
+@layer components {
+  [data-animate="dialog"] {
     opacity: 0;
     transform: var(--dialog-enter-transform, none);
+    transition:
+      opacity 200ms ease-out,
+      transform 200ms ease-out,
+      overlay 200ms ease-out allow-discrete,
+      display 200ms ease-out allow-discrete;
   }
-}
 
-/* Transitioning background-color (alpha channel) rather than opacity — more consistent
-   across browsers than opacity on a ::backdrop pseudo-element. */
-[data-animate="dialog"]::backdrop {
-  background-color: rgb(0 0 0 / 0%);
-  transition:
-    background-color 200ms ease-out,
-    overlay 200ms ease-out allow-discrete,
-    display 200ms ease-out allow-discrete;
-}
-
-[data-animate="dialog"][open]::backdrop {
-  background-color: rgb(0 0 0 / 40%);
-}
-
-@starting-style {
-  [data-animate="dialog"][open]::backdrop {
-    background-color: rgb(0 0 0 / 0%);
+  [data-animate="dialog"][open] {
+    opacity: 1;
+    transform: none;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  [data-animate="dialog"],
+  @starting-style {
+    [data-animate="dialog"][open] {
+      opacity: 0;
+      transform: var(--dialog-enter-transform, none);
+    }
+  }
+
+  /* Transitioning background-color (alpha channel) rather than opacity — more consistent
+     across browsers than opacity on a ::backdrop pseudo-element. */
   [data-animate="dialog"]::backdrop {
-    transition: none;
+    background-color: rgb(0 0 0 / 0%);
+    transition:
+      background-color 200ms ease-out,
+      overlay 200ms ease-out allow-discrete,
+      display 200ms ease-out allow-discrete;
+  }
+
+  [data-animate="dialog"][open]::backdrop {
+    background-color: rgb(0 0 0 / 40%);
+  }
+
+  @starting-style {
+    [data-animate="dialog"][open]::backdrop {
+      background-color: rgb(0 0 0 / 0%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-animate="dialog"],
+    [data-animate="dialog"]::backdrop {
+      transition: none;
+    }
   }
 }

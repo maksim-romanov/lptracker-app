@@ -11,7 +11,8 @@
     "./typography": "./dist/js/typography.ts",
     "./spacing": "./dist/js/spacing.ts",
     "./themes/*": "./dist/js/themes/*.ts",
-    "./css/depthly.css": "./dist/css/depthly.css"
+    "./css/depthly.css": "./dist/css/depthly.css",
+    "./css/spacing.css": "./dist/css/spacing.css"
   },
   "scripts": {
     "codegen": "bun run scripts/generate-tokens.ts",

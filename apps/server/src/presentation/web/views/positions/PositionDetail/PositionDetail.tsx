@@ -20,7 +20,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
   const range = card.priceRange;
   return (
     <>
-      <header class="flex items-center gap-3 border-b border-outline pb-3">
+      <header class="flex items-center gap-3 border-outline border-b pb-3">
         <span class="flex -space-x-2">
           <TokenIcon url={card.pair.base.iconUrl} symbol={card.pair.base.symbol} class="h-8 w-8" />
           <TokenIcon url={card.pair.quote.iconUrl} symbol={card.pair.quote.symbol} class="h-8 w-8" />
@@ -33,7 +33,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
         </div>
       </header>
 
-      <div class="flex flex-wrap gap-2 border-b border-outline pb-3">
+      <div class="flex flex-wrap gap-2 border-outline border-b pb-3">
         <Tag>{STATUS[card.status]}</Tag>
         <Tag>
           <NetworkLogo chainId={card.chainId} size={14} />
@@ -42,7 +42,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
         <Tag>{card.protocolLabel}</Tag>
       </div>
 
-      <section class="flex flex-col gap-2 border-b border-outline pb-3">
+      <section class="flex flex-col gap-2 border-outline border-b pb-3">
         <div class="flex justify-between gap-2 text-sm">
           <span>Price range</span>
           <span>
@@ -56,7 +56,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
         </div>
       </section>
 
-      <section class="flex flex-col gap-2 border-b border-outline pb-3">
+      <section class="flex flex-col gap-2 border-outline border-b pb-3">
         <div class="text-sm">Principal</div>
         <dl class="flex flex-col gap-1">
           {card.principal.map((p) => (
@@ -69,7 +69,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
       </section>
 
       {card.fees.length > 0 && (
-        <section class="flex flex-col gap-2 border-b border-outline pb-3">
+        <section class="flex flex-col gap-2 border-outline border-b pb-3">
           <div class="text-sm">Unclaimed fees</div>
           <dl class="flex flex-col gap-1">
             {card.fees.map((f) => (
@@ -82,7 +82,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
         </section>
       )}
 
-      <footer class="flex items-center justify-between gap-2 border-b border-outline pb-3">
+      <footer class="flex items-center justify-between gap-2 border-outline border-b pb-3">
         <span class="text-sm">Pool</span>
         <a href={explorerAddressUrl(card.chainId, card.poolAddress)} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1">
           {shortenAddress(card.poolAddress)}

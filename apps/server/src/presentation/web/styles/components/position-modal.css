@@ -2,13 +2,15 @@
    explicit, not left to the UA :modal rule — :modal stops matching the instant .close() runs,
    so during the allow-discrete exit transition the dialog would otherwise fall back to
    non-modal positioning (absolute, near document y=0) and visibly jump before fading out. */
-#position-modal {
-  --dialog-enter-transform: translateY(0.5rem) scale(0.98);
+@layer components {
+  #position-modal {
+    --dialog-enter-transform: translateY(0.5rem) scale(0.98);
 
-  position: fixed;
-  inset: 0;
-  margin: auto;
-  width: min(40rem, calc(100vw - 2rem));
-  max-width: none;
-  will-change: opacity, transform;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(40rem, calc(100vw - 2rem));
+    max-width: none;
+    will-change: opacity, transform;
+  }
 }

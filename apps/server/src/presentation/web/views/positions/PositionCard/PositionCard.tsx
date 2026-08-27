@@ -18,7 +18,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
   return (
     // transition:false avoids globalViewTransitions cross-fading the whole page (application.ts).
     <article
-      class="position-card @container flex cursor-pointer flex-col gap-3 rounded-md border border-outline p-4 @md:flex-row @md:items-center @md:gap-4"
+      class="position-card @container flex cursor-pointer @md:flex-row flex-col @md:items-center @md:gap-4 gap-3 rounded-md border border-outline p-4"
       tabindex={0}
       aria-haspopup="dialog"
       aria-label={`View ${card.pair.base.symbol} / ${card.pair.quote.symbol} details`}
@@ -28,7 +28,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
       hx-indicator="#position-toast-loading"
       hx-trigger="click"
     >
-      <div class="flex items-center gap-2 @md:flex-1">
+      <div class="flex @md:flex-1 items-center gap-2">
         <span class="sr-only">Pool:</span>
         <span class="flex -space-x-2">
           <TokenIcon url={card.pair.base.iconUrl} symbol={card.pair.base.symbol} class="h-6 w-6" />
@@ -42,7 +42,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
         </div>
       </div>
 
-      <div class="flex flex-col gap-1 @md:flex-1">
+      <div class="flex @md:flex-1 flex-col gap-1">
         <span class="sr-only">Range:</span>
         <div class="flex justify-between gap-2 text-sm">
           <span>
@@ -56,7 +56,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
         </div>
       </div>
 
-      <dl aria-label="Principal" class="flex flex-col gap-1 @md:flex-1">
+      <dl aria-label="Principal" class="flex @md:flex-1 flex-col gap-1">
         {card.principal.map((p) => (
           <div class="flex justify-between gap-2">
             <dt>{p.symbol}</dt>
@@ -78,7 +78,7 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
         hx-trigger="click consume"
         hx-indicator="this"
         aria-label="Invert price"
-        class="self-start p-1.5 @md:self-center"
+        class="self-start @md:self-center p-1.5"
       >
         <Icon name="invert" size={16} />
       </Button>

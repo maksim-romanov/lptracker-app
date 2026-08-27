@@ -1,15 +1,18 @@
 /* `dialog.sidebar` (class, not an id) ties :modal's UA specificity so this applies to any
    <Sidebar> instance. position: fixed is explicit — see position-modal.css for why. */
-dialog.sidebar {
-  --dialog-enter-transform: translateX(1rem);
+@layer components {
+  dialog.sidebar {
+    --dialog-enter-transform: translateX(1rem);
 
-  position: fixed;
-  inset: 1rem 1rem 1rem auto;
-  margin: 0;
-  width: min(24rem, calc(100vw - 2rem));
-  height: auto;
-  max-height: none;
-  max-width: none;
-  overflow: hidden;
-  will-change: opacity, transform;
+    position: fixed;
+    inset: 1rem 1rem 1rem auto;
+    margin: 0;
+    width: min(24rem, calc(100vw - 2rem));
+    height: auto;
+    max-height: none;
+    max-width: none;
+    overflow: hidden;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    will-change: opacity, transform;
+  }
 }

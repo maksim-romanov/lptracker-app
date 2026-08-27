@@ -16,11 +16,12 @@ shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget.
 
 - **JS** (`dist/js/*.ts`) — mirrors the pre-migration hand-written module shape exactly, so
   `apps/mobile` needed zero changes.
-- **CSS** (`dist/css/depthly.css`) — plain CSS custom properties (`:root` / `@media
-  (prefers-color-scheme: dark)` / `[data-theme="depthly-*"]` blocks), imported by
-  `apps/server`'s `app.css` and aliased into Tailwind's `@theme inline` color namespace there.
-  Colors only — `apps/server` owns its own structural constants (radius/border) directly in its
-  stylesheet, not sourced from tokens.
+- **CSS** — two files, both imported by `apps/server`'s `app.css`:
+  - `dist/css/depthly.css` — plain CSS custom properties (`:root` / `@media
+    (prefers-color-scheme: dark)` / `[data-theme="depthly-*"]` blocks), aliased into Tailwind's
+    `@theme inline` color namespace there (runtime-reactive to the active theme).
+  - `dist/css/spacing.css` — a native Tailwind v4 `@theme { --spacing-*; --radius-* }` block,
+    consumed directly (no `tailwind.config.ts`/`@config` indirection).
 - **iOS colorset** (written cross-package into `apps/mobile/targets/positions-widget/Assets.xcassets/`)
   — gitignored, regenerated on every `expo prebuild` by `apps/mobile/plugins/withThemeCodegen.js`
   (registered before `@bacons/apple-targets` in `app.json`). Don't add a `colors` object to the

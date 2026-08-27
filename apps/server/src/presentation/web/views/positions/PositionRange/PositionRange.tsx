@@ -9,7 +9,7 @@ export const PositionRange = ({ range }: { range: ICardVM["priceRange"] }) => (
     data-thumb={String(range.thumbPct)}
     data-inrange={String(range.inRange)}
   >
-    <span class="absolute inset-y-0 rounded-full bg-on-surface/30 left-[var(--band-left)] w-[var(--band-width)]" />
-    <span class="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-outline bg-surface left-[var(--thumb)]" />
+    <span class="absolute inset-y-0 left-[var(--band-left)] w-[var(--band-width)] rounded-full bg-on-surface/30" />
+    <span class="absolute top-1/2 left-[var(--thumb)] h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-outline bg-surface" />
   </div>
 );

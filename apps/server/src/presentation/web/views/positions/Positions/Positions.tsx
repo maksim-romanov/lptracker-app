@@ -7,7 +7,7 @@ export const Positions = ({ cards }: { cards: ICardVM[] }) =>
     <NoPositions />
   ) : (
     <div class="@container flex flex-col gap-3 md:rounded-md md:border md:border-outline md:bg-surface-container md:p-4">
-      <div aria-hidden="true" class="hidden gap-4 border-b border-outline pb-2 text-sm md:flex">
+      <div aria-hidden="true" class="hidden gap-4 border-outline border-b pb-2 text-sm md:flex">
         <span class="flex-1">Pool</span>
         <span class="flex-1">Range</span>
         <span class="flex-1">Principal</span>

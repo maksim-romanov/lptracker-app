@@ -24,7 +24,7 @@ export const Modal = ({ id, title, controller, class: className, bodyClass, chil
     <div class={bodyClass ?? "flex w-full flex-col gap-4 p-4"}>
       <form method="dialog" class={`flex items-center gap-2 ${title ? "justify-between" : "justify-end"}`}>
         {title && (
-          <h2 id={`${id}-title`} class="text-lg font-medium">
+          <h2 id={`${id}-title`} class="font-medium text-lg">
             {title}
           </h2>
         )}
