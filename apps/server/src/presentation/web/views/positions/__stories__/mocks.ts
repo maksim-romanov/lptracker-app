@@ -1,8 +1,8 @@
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 const basePair: ICardVM["pair"] = {
-  base: { tokenRef: "1:0xweth", symbol: "WETH", iconUrl: "https://assets.uniswap.org/weth.png" },
-  quote: { tokenRef: "1:0xusdc", symbol: "USDC", iconUrl: "https://assets.uniswap.org/usdc.png" },
+  base: { tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", symbol: "WETH", iconUrl: "https://assets.uniswap.org/weth.png" },
+  quote: { tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", symbol: "USDC", iconUrl: "https://assets.uniswap.org/usdc.png" },
 };
 
 const basePriceRange: ICardVM["priceRange"] = {
@@ -18,8 +18,18 @@ const basePriceRange: ICardVM["priceRange"] = {
 };
 
 const baseFees: ICardVM["fees"] = [
-  { tokenRef: "1:0xweth", symbol: "WETH", formatted: "0.012", iconUrl: "https://assets.uniswap.org/weth.png" },
-  { tokenRef: "1:0xusdc", symbol: "USDC", formatted: "8.40", iconUrl: "https://assets.uniswap.org/usdc.png" },
+  {
+    tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    symbol: "WETH",
+    formatted: "0.012",
+    iconUrl: "https://assets.uniswap.org/weth.png",
+  },
+  {
+    tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    symbol: "USDC",
+    formatted: "8.40",
+    iconUrl: "https://assets.uniswap.org/usdc.png",
+  },
 ];
 
 export const inRange: ICardVM = {
@@ -32,8 +42,8 @@ export const inRange: ICardVM = {
   protocolLabel: "Uniswap V3",
   pair: basePair,
   principal: [
-    { tokenRef: "1:0xweth", symbol: "WETH", formatted: "1.24", iconUrl: basePair.base.iconUrl },
-    { tokenRef: "1:0xusdc", symbol: "USDC", formatted: "2,480.00", iconUrl: basePair.quote.iconUrl },
+    { tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", symbol: "WETH", formatted: "1.24", iconUrl: basePair.base.iconUrl },
+    { tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", symbol: "USDC", formatted: "2,480.00", iconUrl: basePair.quote.iconUrl },
   ],
   fees: baseFees,
   priceRange: basePriceRange,
