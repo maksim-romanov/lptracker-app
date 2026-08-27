@@ -1,5 +1,6 @@
-import type { JSX, PropsWithChildren } from "hono/jsx";
+import type { PropsWithChildren } from "hono/jsx";
 
+import { cn, type TIntrinsic } from "../../utils/cn";
 import { Icon, type TIconName } from "../Icon/Icon";
 
 type ToastType = "loading" | "info" | "warning" | "error";
@@ -24,7 +25,7 @@ const TYPE_CLASS: Record<ToastType, string> = {
 };
 
 type Props = PropsWithChildren<
-  JSX.IntrinsicElements["output"] & {
+  TIntrinsic<"output"> & {
     id: string;
     type: ToastType;
     // Visibility is driven by htmx request state by default; pass false for a
@@ -38,12 +39,15 @@ const BASE_CLASS =
 
 export const Toast = ({ id, type, indicator = true, class: className, children, ...rest }: Props) => {
   const icon = TYPE_ICON[type];
-  // Joined from parts rather than interpolated: a conditional class inside a template
-  // literal is what `biome check --unsafe` mangles when it re-sorts the attribute.
-  const classes = [BASE_CLASS, TYPE_CLASS[type], indicator ? "htmx-indicator" : "", className ?? ""].filter(Boolean).join(" ");
 
   return (
-    <output id={id} role={TYPE_ROLE[type]} data-animate="toast" class={classes} {...rest}>
+    <output
+      id={id}
+      role={TYPE_ROLE[type]}
+      data-animate="toast"
+      class={cn(BASE_CLASS, TYPE_CLASS[type], indicator && "htmx-indicator", className)}
+      {...rest}
+    >
       {type === "loading" ? (
         <span aria-hidden="true" class="toast-spinner h-4 w-4 shrink-0 animate-spin rounded-full" />
       ) : (

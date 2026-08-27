@@ -27,7 +27,7 @@ export const WalletConnect = () => (
         required
         pattern="^0x[a-fA-F0-9]{40}$"
         aria-label="Wallet address"
-        class="min-w-0 flex-1 px-3 py-2"
+        class="min-w-0 flex-1"
       />
       <Button type="submit" aria-label="Add address" class="p-2">
         <Icon name="plus" size={20} />

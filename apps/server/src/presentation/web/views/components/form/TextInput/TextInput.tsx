@@ -1,7 +1,7 @@
-import type { JSX } from "hono/jsx";
+import { cn, type TIntrinsic } from "../../../utils/cn";
 
-type Props = JSX.IntrinsicElements["input"];
+type Props = TIntrinsic<"input">;
 
 export const TextInput = ({ class: className, ...rest }: Props) => (
-  <input class={`rounded-sm border border-outline px-3 py-2${className ? ` ${className}` : ""}`} {...rest} />
+  <input class={cn("rounded-sm border border-outline px-3 py-2", className)} {...rest} />
 );

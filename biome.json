@@ -26,7 +26,7 @@
           "level": "warn",
           "options": {
             "attributes": ["class"],
-            "functions": []
+            "functions": ["cn"]
           }
         }
       }

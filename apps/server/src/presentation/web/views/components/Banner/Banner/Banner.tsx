@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "hono/jsx";
 
+import { cn } from "../../../utils/cn";
 import { Icon, type TIconName } from "../../Icon/Icon";
 
 type Variant = "error" | "warning" | "success";
@@ -27,10 +28,7 @@ const VARIANT_CLASS: Record<Variant, string> = {
 type Props = PropsWithChildren<{ variant: Variant; class?: string }>;
 
 export const Banner = ({ variant, class: className, children }: Props) => (
-  <div
-    role={VARIANT_ROLE[variant]}
-    class={`flex items-center gap-2 rounded-md border p-3 ${VARIANT_CLASS[variant]}${className ? ` ${className}` : ""}`}
-  >
+  <div role={VARIANT_ROLE[variant]} class={cn("flex items-center gap-2 rounded-md border p-3", VARIANT_CLASS[variant], className)}>
     <Icon name={VARIANT_ICON[variant]} size={18} />
     <span>{children}</span>
   </div>
