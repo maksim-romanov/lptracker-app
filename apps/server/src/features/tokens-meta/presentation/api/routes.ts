@@ -5,7 +5,7 @@ import { describeRoute, validator } from "hono-openapi";
 import { container } from "tsyringe";
 import * as v from "valibot";
 
-import { TokensDataClient } from "../../../token-prices/data/tokens-data-client";
+import { TokensDataClient } from "#shared/adapters/tokens-data.client";
 import { config } from "#shared/config";
 
 const logoParamsSchema = v.object({

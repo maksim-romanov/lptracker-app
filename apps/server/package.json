@@ -14,6 +14,7 @@
     "codegen": "graphql-codegen --config codegen.ts && bun run scripts/generate-openapi.ts && bunx openapi-typescript",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
+    "lint:deps": "depcruise src",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
@@ -54,6 +55,7 @@
     "@tailwindcss/vite": "^4.3.1",
     "@types/bun": "latest",
     "@types/opossum": "^8.1.9",
+    "dependency-cruiser": "^18.2.0",
     "graphql": "^16.12.0",
     "htmx.org": "^2.0.10",
     "mipd": "^0.0.7",

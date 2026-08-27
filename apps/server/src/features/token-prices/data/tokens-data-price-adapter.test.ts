@@ -3,9 +3,9 @@ import "reflect-metadata";
 import { container } from "tsyringe";
 
 import type { TokenPriceQuery } from "../domain/types";
-import { TokensDataClient } from "./tokens-data-client";
 import { TokensDataPriceAdapter } from "./tokens-data-price-adapter";
 import { beforeEach, describe, expect, test } from "bun:test";
+import { TokensDataClient } from "#shared/adapters/tokens-data.client";
 
 class FakeClient {
   next = { prices: {} as Record<string, { priceUSD: number; confidence: number } | null> };

@@ -2,7 +2,7 @@ import { formatUnits } from "viem";
 
 import type { PositionEntity } from "../../domain/entities/position.entity";
 import type { TokenEntity } from "../../domain/entities/token.entity";
-import { UNISWAP_V3_EXTENSION_TYPE, type UniswapV3Extension } from "../schemas/extension.schema";
+import { UNISWAP_V3_EXTENSION_TYPE, type UniswapV3Extension } from "../../presentation/schemas/extension.schema";
 import { buildTokenRef, type MapPositionResult, type Position, type TokenMetaInput } from "#shared/contracts";
 
 export interface MapperUnclaimedFees {

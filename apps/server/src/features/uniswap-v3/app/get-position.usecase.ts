@@ -8,7 +8,7 @@ import type { PositionEntity } from "../domain/entities/position.entity";
 import type { PositionError } from "../domain/errors/position.error";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
-import { type MapperUnclaimedFees, mapV3PositionToContract } from "../presentation/mappers/position.mapper";
+import { type MapperUnclaimedFees, mapV3PositionToContract } from "./mappers/position.mapper";
 import type { MapPositionResult } from "#shared/contracts";
 
 export interface GetPositionParams {

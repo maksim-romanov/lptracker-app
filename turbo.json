@@ -1,21 +1,76 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "globalPassThroughEnv": ["ANDROID_HOME", "ANDROID_SDK_ROOT", "JAVA_HOME"],
+  "globalPassThroughEnv": [
+    "ANDROID_HOME",
+    "ANDROID_SDK_ROOT",
+    "JAVA_HOME"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "codegen"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", "build/**", "_site/**"]
+      "dependsOn": [
+        "^build",
+        "codegen"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**",
+        "_site/**"
+      ]
     },
-    "lint": { "dependsOn": ["^lint"] },
-    "lint:fix": { "dependsOn": ["^lint:fix"] },
-    "typecheck": { "dependsOn": ["^typecheck", "codegen"] },
-    "dev": { "cache": false, "persistent": true },
-    "dev:ios": { "with": ["server#dev", "tokens-data#dev", "server#css:dev", "server#js:dev"], "cache": false, "persistent": true },
-    "dev:android": { "with": ["server#dev", "tokens-data#dev", "server#css:dev", "server#js:dev"], "cache": false, "persistent": true },
-    "server#css:dev": { "cache": false, "persistent": true },
-    "server#js:dev": { "cache": false, "persistent": true },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ]
+    },
+    "lint:fix": {
+      "dependsOn": [
+        "^lint:fix"
+      ]
+    },
+    "lint:deps": {},
+    "typecheck": {
+      "dependsOn": [
+        "^typecheck",
+        "codegen"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:ios": {
+      "with": [
+        "server#dev",
+        "tokens-data#dev",
+        "server#css:dev",
+        "server#js:dev"
+      ],
+      "cache": false,
+      "persistent": true
+    },
+    "dev:android": {
+      "with": [
+        "server#dev",
+        "tokens-data#dev",
+        "server#css:dev",
+        "server#js:dev"
+      ],
+      "cache": false,
+      "persistent": true
+    },
+    "server#css:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "server#js:dev": {
+      "cache": false,
+      "persistent": true
+    },
     "codegen": {
       "outputs": [
         "apps/server/openapi/**",
@@ -27,17 +82,38 @@
         "apps/mobile/src/core/tokens-data/generated.d.ts",
         "packages/theme/dist/**"
       ],
-      "env": ["GRAPH_API_KEY"]
+      "env": [
+        "GRAPH_API_KEY"
+      ]
     },
     "server#codegen": {
-      "dependsOn": ["tokens-data#codegen", "@depthly/theme#codegen"]
+      "dependsOn": [
+        "tokens-data#codegen",
+        "@depthly/theme#codegen"
+      ]
     },
     "mobile#codegen": {
-      "dependsOn": ["server#codegen"]
+      "dependsOn": [
+        "server#codegen"
+      ]
     },
-    "test": { "dependsOn": ["build"] },
-    "deploy": { "dependsOn": ["build", "test"], "cache": false },
-    "docker:up": { "cache": false },
-    "docker:down": { "cache": false }
+    "test": {
+      "dependsOn": [
+        "build"
+      ]
+    },
+    "deploy": {
+      "dependsOn": [
+        "build",
+        "test"
+      ],
+      "cache": false
+    },
+    "docker:up": {
+      "cache": false
+    },
+    "docker:down": {
+      "cache": false
+    }
   }
 }
