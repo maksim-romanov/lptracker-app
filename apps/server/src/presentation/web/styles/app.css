@@ -26,6 +26,7 @@
 @import "./components/position-modal.css";
 @import "./components/position-list.css";
 @import "./components/toast.css";
+@import "./components/window.css";
 @import "./components/theme-toggle.css";
 
 /* Aliases the runtime custom properties from @depthly/theme/css/depthly.css into Tailwind's
@@ -33,6 +34,8 @@
    Tailwind utilities that stay reactive to the active [data-theme]. */
 @theme inline {
   --color-surface: var(--color-surface);
+  --color-surface-dim: var(--color-surface-dim);
+  --color-surface-bright: var(--color-surface-bright);
   --color-surface-container: var(--color-surface-container);
   --color-surface-variant: var(--color-surface-variant);
   --color-on-surface: var(--color-on-surface);

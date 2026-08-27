@@ -102,7 +102,10 @@ describe("web positions", () => {
   it("Positions renders a table with real column headers under the table layout", () => {
     const html = s(Positions({ cards: [card], layout: "table" }));
     expect(html).toContain("uniswap-v3:1:42");
-    expect(html).toContain("<table");
+    // the window frame is the table's border now; a wrapper of its own would double the
+    // chrome and re-inset the cells the frame already insets
+    expect(html).toStartWith("<table");
+    expect(html).toContain("window-bleed");
     expect(html).toContain("<caption");
     expect(html).toContain('<th scope="col"');
     for (const column of ["Pool", "Range", "Principal", "Status"]) {

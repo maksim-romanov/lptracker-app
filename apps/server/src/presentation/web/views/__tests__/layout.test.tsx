@@ -60,4 +60,27 @@ describe("Layout", () => {
     expect(html).toContain("depthly:toast@document-&gt;toast#show");
     expect(html).toContain('data-toast-target="message"');
   });
+
+  it("hosts the board inside a decorative window frame", async () => {
+    const app = new Hono();
+    app.get("/", (c) => c.html(<Layout />));
+    const res = await app.request("/");
+    const html = await res.text();
+
+    // the frame is chrome, not a control surface: the traffic lights cannot be operated,
+    // so they are hidden from assistive tech instead of posing as three unnamed buttons
+    const titleBar = html.slice(html.indexOf("<main"), html.indexOf("</h2>"));
+    expect(titleBar).toContain('aria-hidden="true"');
+    expect(titleBar).toContain("traffic-light-close");
+    expect(titleBar).toContain("traffic-light-minimize");
+    expect(titleBar).toContain("traffic-light-zoom");
+    expect(titleBar).not.toContain("<button");
+
+    // the title is a real heading — the page had no h2, so this is what makes the board
+    // reachable by heading navigation
+    expect(html).toContain(">Positions</h2>");
+
+    // the board is swapped inside the frame, so the chrome never re-renders
+    expect(html.indexOf("window-content")).toBeLessThan(html.indexOf('id="board"'));
+  });
 });

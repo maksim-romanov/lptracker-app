@@ -16,29 +16,29 @@ const COLUMNS = [
   { label: "Status", class: undefined },
 ];
 
+// The window frame is the table's border, and `window-bleed` spans the frame's gutters so
+// the dividers reach its edge — the cell padding is the only horizontal inset left.
 const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
-  <div class="rounded-md border border-outline bg-surface-container">
-    <table class="position-table w-full table-fixed">
-      <caption class="sr-only">Uniswap v3 positions</caption>
-      <thead>
-        <tr>
-          {COLUMNS.map((column) => (
-            <th scope="col" class={cn(HEAD_CELL, "text-left font-normal", column.class)}>
-              {column.label}
-            </th>
-          ))}
-          <th scope="col" class={cn(HEAD_CELL, "w-12")}>
-            <span class="sr-only">Actions</span>
+  <table class="position-table window-bleed w-full table-fixed">
+    <caption class="sr-only">Uniswap v3 positions</caption>
+    <thead>
+      <tr>
+        {COLUMNS.map((column) => (
+          <th scope="col" class={cn(HEAD_CELL, "text-left font-normal", column.class)}>
+            {column.label}
           </th>
-        </tr>
-      </thead>
-      <tbody>
-        {cards.map((card) => (
-          <PositionInfoRow card={card} />
         ))}
-      </tbody>
-    </table>
-  </div>
+        <th scope="col" class={cn(HEAD_CELL, "w-12")}>
+          <span class="sr-only">Actions</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {cards.map((card) => (
+        <PositionInfoRow card={card} />
+      ))}
+    </tbody>
+  </table>
 );
 
 const PositionsCards = ({ cards }: { cards: ICardVM[] }) => (

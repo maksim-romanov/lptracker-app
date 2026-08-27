@@ -18,6 +18,11 @@ export default {
         onSecondaryContainer: palette("color.palette.neonPink.100"),
         surface: palette("color.palette.black"),
         onSurface: palette("color.palette.neutral.100"),
+        // dim/bright are the page and the raised content it holds. The ramp runs in
+        // opposite directions per theme, so each mode has one of the pair coincide with
+        // an adjacent role — as in M3's own baseline. They are not aliases of it.
+        surfaceDim: palette("color.palette.black"),
+        surfaceBright: { $value: "#16181C" },
         surfaceContainer: { $value: "#16181C" },
         surfaceVariant: { $value: "#202327" },
         onSurfaceVariant: { $value: "#8B8F95" },
@@ -50,6 +55,8 @@ export default {
         onSecondaryContainer: palette("color.palette.neonPink.900"),
         surface: palette("color.palette.white"),
         onSurface: palette("color.palette.neutral.900"),
+        surfaceDim: { $value: "#F7F9F9" },
+        surfaceBright: palette("color.palette.white"),
         surfaceContainer: { $value: "#F7F9F9" },
         surfaceVariant: { $value: "#EFF3F4" },
         onSurfaceVariant: { $value: "#536471" },

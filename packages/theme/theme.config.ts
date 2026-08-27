@@ -27,6 +27,8 @@ const pxVars = (prefix: string, tokens: Record<string, number>): Record<string, 
 
 const semanticColors = (mode: Tree["color"]["depthly"]["light"]) => ({
   "--color-surface": mode.surface,
+  "--color-surface-dim": mode.surfaceDim,
+  "--color-surface-bright": mode.surfaceBright,
   "--color-surface-container": mode.surfaceContainer,
   "--color-surface-variant": mode.surfaceVariant,
   "--color-on-surface": mode.onSurface,

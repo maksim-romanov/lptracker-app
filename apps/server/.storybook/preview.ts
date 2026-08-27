@@ -11,7 +11,7 @@ app.register("range", RangeController);
 
 const withThemeSurface: Decorator = (story) => {
   const container = document.createElement("div");
-  container.className = "bg-surface text-on-surface";
+  container.className = "bg-surface-dim text-on-surface";
   container.style.padding = "1rem";
   // `.append(string)` inserts a literal text node, not parsed HTML — unlike `.innerHTML =`.
   // Stories that `render()` a string (per @storybook/html-vite's `string | Node` contract)

@@ -1,17 +1,24 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
 import type { TPositionsLayout } from "../../../positions-layout";
+import { WindowFrame } from "../../components/WindowFrame/WindowFrame";
 import { closed, inRange, outOfRange } from "../__stories__/mocks";
 import { Positions } from "./Positions";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 type Args = { cards: ICardVM[]; layout: TPositionsLayout };
 
+// Rendered inside the frame it ships in: the table bleeds to the frame's edge, so on its
+// own it would be missing the border its dividers are meant to meet.
 const renderPositions = ({ cards, layout }: Args): HTMLElement => {
-  const wrapper = document.createElement("div");
-  if (layout === "cards") wrapper.className = "max-w-sm";
-  wrapper.innerHTML = String(Positions({ cards, layout }));
-  return wrapper;
+  const host = document.createElement("div");
+  if (layout === "cards") host.className = "max-w-[24rem]";
+  host.innerHTML = String(
+    <WindowFrame title="Positions">
+      <Positions cards={cards} layout={layout} />
+    </WindowFrame>,
+  );
+  return host;
 };
 
 const meta: Meta<Args> = {

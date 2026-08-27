@@ -7,7 +7,7 @@ import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web
 // A bare <li> needs a list parent to be parsed, and the card is styled as a list item.
 const renderCard = (card: ICardVM): HTMLElement => {
   const list = document.createElement("ul");
-  list.className = "flex max-w-sm flex-col gap-3";
+  list.className = "flex max-w-[24rem] flex-col gap-3";
   list.innerHTML = String(PositionInfoCard({ card }));
   return list;
 };
