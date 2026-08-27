@@ -10,15 +10,19 @@ if (!existsSync(distDir)) {
 
 // Remove stale outputs so old hashed files don't accumulate.
 for (const file of readdirSync(distDir)) {
-  if (/^app.*\.(js|css)$/.test(file) || file === "manifest.json") {
+  if (/^(app|theme-init).*\.(js|css)$/.test(file) || file === "manifest.json") {
     rmSync(join(distDir, file));
   }
 }
 
 // ── JS ───────────────────────────────────────────────────────────────────────
 
+const clientDir = join(import.meta.dir, "../src/presentation/web/client");
+
 const jsResult = await Bun.build({
-  entrypoints: [join(import.meta.dir, "../src/presentation/web/client/application.ts")],
+  // theme-init is a second entry because it must load render-blocking (see Layout.tsx),
+  // while application.ts stays deferred.
+  entrypoints: [join(clientDir, "application.ts"), join(clientDir, "theme-init.ts")],
   outdir: distDir,
   naming: dev ? "[name].[ext]" : "[name]-[hash].[ext]",
   minify: !dev,
@@ -33,12 +37,19 @@ if (!jsResult.success) {
   process.exit(1);
 }
 
-const jsArtifact = jsResult.outputs.find((o) => o.kind === "entry-point");
-if (!jsArtifact) {
-  console.error("No entry-point artifact found in Bun.build output");
-  process.exit(1);
-}
-const jsName = jsArtifact.path.split("/").pop()!;
+const entryNames = jsResult.outputs.filter((output) => output.kind === "entry-point").map((output) => output.path.split("/").pop() ?? "");
+
+const entryName = (prefix: string): string => {
+  const name = entryNames.find((candidate) => candidate.startsWith(prefix));
+  if (!name) {
+    console.error(`No "${prefix}" entry-point artifact found in Bun.build output`);
+    process.exit(1);
+  }
+  return name;
+};
+
+const jsName = entryName("application");
+const themeInitName = entryName("theme-init");
 
 // ── CSS ──────────────────────────────────────────────────────────────────────
 
@@ -84,7 +95,11 @@ if (dev) {
 
 // ── Manifest ─────────────────────────────────────────────────────────────────
 
-const manifest = { js: `/static/dist/${jsName}`, css: `/static/dist/${cssName}` };
+const manifest = {
+  js: `/static/dist/${jsName}`,
+  css: `/static/dist/${cssName}`,
+  themeInit: `/static/dist/${themeInitName}`,
+};
 writeFileSync(join(distDir, "manifest.json"), JSON.stringify(manifest, null, 2));
 
-console.log(`assets built [${dev ? "dev" : "prod"}]: ${jsName}, ${cssName}`);
+console.log(`assets built [${dev ? "dev" : "prod"}]: ${jsName}, ${themeInitName}, ${cssName}`);

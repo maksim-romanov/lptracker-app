@@ -5,7 +5,7 @@
     "build": "bun run scripts/build-assets.ts",
     "build:dev": "bun run scripts/build-assets.ts --dev",
     "css:dev": "tailwindcss -i src/presentation/web/styles/app.css -o src/static/dist/app.css --watch",
-    "js:dev": "bun build src/presentation/web/client/application.ts --outfile src/static/dist/application.js --format=iife --watch",
+    "js:dev": "bun build src/presentation/web/client/application.ts src/presentation/web/client/theme-init.ts --outdir src/static/dist --format=iife --watch",
     "dev": "bun run --watch src/index.ts",
     "predev": "bun run build:dev",
     "start": "bun run src/index.ts",

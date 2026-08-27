@@ -20,6 +20,10 @@ export const PositionCard = ({ card }: { card: ICardVM }) => {
     <article
       class="position-card @container flex cursor-pointer @md:flex-row flex-col @md:items-center @md:gap-4 gap-3 rounded-md border border-outline p-4"
       tabindex={0}
+      data-controller="card"
+      // htmx compiles hx-trigger key filters with `new Function`, which script-src 'self'
+      // forbids; Stimulus matches against a lookup table, so the filter survives the CSP.
+      data-action="keydown.enter->card#open:prevent keydown.space->card#open:prevent"
       aria-haspopup="dialog"
       aria-label={`View ${card.pair.base.symbol} / ${card.pair.quote.symbol} details`}
       hx-get={`/positions/${card.ref}/detail?inverted=${card.inverted ? "1" : "0"}`}

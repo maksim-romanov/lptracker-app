@@ -17,10 +17,14 @@ export const Layout = ({ children }: PropsWithChildren) => (
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Depthly</title>
+        {/* Render-blocking on purpose: settles data-theme before the first paint so a
+            dark-mode visitor never sees a flash of the light theme. Everything else
+            boots from the deferred bundle below. */}
+        <script src={assets.themeInit} />
         <link rel="stylesheet" href={assets.css} />
         <script src={assets.js} defer />
       </head>
-      <body class="flex min-h-dvh flex-col bg-surface text-on-surface" data-controller="wallet">
+      <body class="flex min-h-dvh flex-col bg-surface text-on-surface" data-controller="wallet" data-wallet-dialog-outlet="#wallet-sidebar">
         <header data-controller="theme" class="flex items-center justify-between gap-4 border-outline border-b p-4">
           <h1 class="font-bold text-base">Depthly</h1>
           <div class="flex items-center gap-2">
@@ -63,7 +67,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
 
         <footer class="border-outline border-t p-4">Anonymous · positions stored in your browser</footer>
 
-        <Sidebar id="wallet-sidebar" data-wallet-target="sidebar">
+        <Sidebar id="wallet-sidebar">
           <WalletConnect />
         </Sidebar>
 
@@ -71,8 +75,17 @@ export const Layout = ({ children }: PropsWithChildren) => (
           Loading position…
         </Toast>
 
-        <Modal id="position-modal" title="Position details" controller="modal" bodyClass="flex w-full max-w-[640px] flex-col gap-4 p-4">
-          <div id="position-modal-box" data-modal-target="box" class="flex flex-col gap-3" />
+        <Toast id="app-toast" type="error" indicator={false} data-controller="toast" data-action="depthly:toast@document->toast#show">
+          <span data-toast-target="message" />
+        </Toast>
+
+        <Modal
+          id="position-modal"
+          title="Position details"
+          action="htmx:afterSwap->dialog#open"
+          bodyClass="flex w-full max-w-[640px] flex-col gap-4 p-4"
+        >
+          <div id="position-modal-box" class="flex flex-col gap-3" />
         </Modal>
       </body>
     </html>

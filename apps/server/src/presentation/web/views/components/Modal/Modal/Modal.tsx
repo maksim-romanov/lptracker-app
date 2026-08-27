@@ -7,16 +7,18 @@ type Props = PropsWithChildren<
   JSX.IntrinsicElements["dialog"] & {
     id: string;
     title?: string;
-    controller?: string;
+    action?: string;
     bodyClass?: string;
   }
 >;
 
-export const Modal = ({ id, title, controller, class: className, bodyClass, children, ...rest }: Props) => (
+export const Modal = ({ id, title, action, class: className, bodyClass, children, ...rest }: Props) => (
   <dialog
     id={id}
     data-animate="dialog"
-    data-controller={controller ? `click-outside ${controller}` : "click-outside"}
+    data-controller="dialog"
+    // `:self` resolves to `element === event.target`, i.e. a backdrop click.
+    data-action={`click->dialog#close:self${action ? ` ${action}` : ""}`}
     aria-labelledby={title ? `${id}-title` : undefined}
     class={`rounded-md border border-outline bg-surface-container p-0 text-on-surface${className ? ` ${className}` : ""}`}
     {...rest}

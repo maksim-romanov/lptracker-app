@@ -1,4 +1,4 @@
-import { WalletEntry } from "../wallet.entity";
+import { shortAddress, WalletEntry } from "../wallet.entity";
 import { describe, expect, it } from "bun:test";
 
 const A = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd";
@@ -44,8 +44,10 @@ describe("WalletEntry.parse / toString", () => {
   it("is consumed implicitly by Array.join", () => {
     expect([WalletEntry.parse(`${A}:1`), WalletEntry.parse(`${B}:137`)].join("|")).toBe(`${A}:1|${B}:137`);
   });
+});
 
-  it("shortLabel truncates the address for chip display", () => {
-    expect(WalletEntry.parse(`${A}:1`).shortLabel()).toBe(`${A.slice(0, 6)}…${A.slice(-4)}`);
+describe("shortAddress", () => {
+  it("truncates the address for chip display", () => {
+    expect(shortAddress(A)).toBe(`${A.slice(0, 6)}…${A.slice(-4)}`);
   });
 });

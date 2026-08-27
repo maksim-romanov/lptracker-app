@@ -3,10 +3,11 @@ import "./htmx-params";
 import { Application } from "@hotwired/stimulus";
 import htmx from "htmx.org";
 
-import ClickOutsideController from "./controllers/click_outside_controller";
-import ModalController from "./controllers/modal_controller";
+import CardController from "./controllers/card_controller";
+import DialogController from "./controllers/dialog_controller";
 import RangeController from "./controllers/range_controller";
 import ThemeController from "./controllers/theme_controller";
+import ToastController from "./controllers/toast_controller";
 import WalletController from "./controllers/wallet_controller";
 import { positionPrefs } from "./lib/position-prefs.store";
 import { walletStore } from "./lib/wallet.store";
@@ -27,9 +28,13 @@ export async function start(): Promise<void> {
   const app = Application.start();
   app.register("wallet", WalletController);
   app.register("theme", ThemeController);
-  app.register("modal", ModalController);
+  app.register("toast", ToastController);
+  app.register("dialog", DialogController);
   app.register("range", RangeController);
-  app.register("click-outside", ClickOutsideController);
+  app.register("card", CardController);
 }
 
-void start();
+// hydrate() is failure-proof by contract (collection.store.ts), so this should not
+// fire — but a rejection here would silently leave the page with zero controllers,
+// which is worth a console trace rather than an unhandled rejection.
+void start().catch((error) => console.error("app init failed", error));

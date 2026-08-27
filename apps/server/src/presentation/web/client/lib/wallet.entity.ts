@@ -1,5 +1,7 @@
 const ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
 
+export const shortAddress = (address: string): string => `${address.slice(0, 6)}…${address.slice(-4)}`;
+
 // Immutable value object for a tracked wallet. Construct only via the static
 // factories: `create` validates raw user input, `parse` rehydrates a persisted
 // `address:chainId,chainId` string. `toString` is the inverse of `parse`, so
@@ -22,9 +24,5 @@ export class WalletEntry {
 
   toString(): string {
     return `${this.address}:${this.chainIds.join(",")}`;
-  }
-
-  shortLabel(): string {
-    return `${this.address.slice(0, 6)}…${this.address.slice(-4)}`;
   }
 }

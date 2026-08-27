@@ -21,6 +21,19 @@
     }
   }
 
+  /* Controller-driven toasts (Toast `indicator={false}`) hide via opacity alone, never
+     display/visibility: the element must stay in the a11y tree so that writing into
+     role="alert" is what triggers the announcement. */
+  [data-animate="toast"]:not(.htmx-indicator) {
+    pointer-events: none;
+  }
+
+  [data-animate="toast"][data-open] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-animate="toast"] {
       transition: none;
