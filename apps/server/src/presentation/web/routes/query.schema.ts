@@ -1,5 +1,7 @@
 import * as v from "valibot";
 
+import { DEFAULT_POSITIONS_LAYOUT, POSITIONS_LAYOUTS } from "../positions-layout";
+
 const WALLET_ITEM_REGEX = /^0x[a-fA-F0-9]{40}:\d+(?:,\d+)*$/;
 
 const walletItemSchema = v.pipe(
@@ -33,6 +35,8 @@ export const webPositionsQuerySchema = v.object({
     ),
   ),
   status: v.optional(v.picklist(["open", "closed", "all"]), "open"),
+  // Set by the client from the viewport width (client/lib/layout.ts).
+  layout: v.optional(v.picklist(POSITIONS_LAYOUTS), DEFAULT_POSITIONS_LAYOUT),
   inverted: v.optional(
     v.pipe(
       v.string(),

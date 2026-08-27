@@ -1,17 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
 import { closed, inRange, longAddressNoIcon, noFees, outOfRange } from "../__stories__/mocks";
-import { PositionCard } from "./PositionCard";
+import { PositionInfoCard } from "./PositionInfoCard";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
+// A bare <li> needs a list parent to be parsed, and the card is styled as a list item.
 const renderCard = (card: ICardVM): HTMLElement => {
-  const wrapper = document.createElement("div");
-  wrapper.innerHTML = String(PositionCard({ card }));
-  return wrapper;
+  const list = document.createElement("ul");
+  list.className = "flex max-w-sm flex-col gap-3";
+  list.innerHTML = String(PositionInfoCard({ card }));
+  return list;
 };
 
 const meta: Meta<{ card: ICardVM }> = {
-  title: "Positions/PositionCard",
+  title: "Positions/PositionInfoCard",
   render: ({ card }) => renderCard(card),
 };
 export default meta;

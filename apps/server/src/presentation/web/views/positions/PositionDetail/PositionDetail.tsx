@@ -1,18 +1,11 @@
-import type { TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
-
 import { Icon } from "../../components/Icon/Icon";
 import { NetworkLogo } from "../../components/NetworkLogo/NetworkLogo";
 import { Tag } from "../../components/Tag/Tag";
 import { explorerAddressUrl, networkLabel, uniswapPositionUrl } from "../../networks";
+import { pairLabel, statusLabel } from "../labels";
 import { PositionRange } from "../PositionRange/PositionRange";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
-
-const STATUS: Record<TUniswapV3RangeStatus, string> = {
-  "in-range": "In range",
-  "out-of-range": "Out of range",
-  closed: "Closed",
-};
 
 const shortenAddress = (addr: string) => (addr.length > 12 ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : addr);
 
@@ -26,15 +19,13 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
           <TokenIcon url={card.pair.quote.iconUrl} symbol={card.pair.quote.symbol} class="h-8 w-8" />
         </span>
         <div class="flex flex-col">
-          <div>
-            {card.pair.base.symbol} / {card.pair.quote.symbol}
-          </div>
+          <div>{pairLabel(card.pair)}</div>
           <div>{card.feeTierLabel} fee tier</div>
         </div>
       </header>
 
       <div class="flex flex-wrap gap-2 border-outline border-b pb-3">
-        <Tag>{STATUS[card.status]}</Tag>
+        <Tag>{statusLabel(card.status)}</Tag>
         <Tag>
           <NetworkLogo chainId={card.chainId} size={14} />
           {networkLabel(card.chainId)}

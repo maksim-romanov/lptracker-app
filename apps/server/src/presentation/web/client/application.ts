@@ -3,12 +3,12 @@ import "./htmx-params";
 import { Application } from "@hotwired/stimulus";
 import htmx from "htmx.org";
 
-import CardController from "./controllers/card_controller";
 import DialogController from "./controllers/dialog_controller";
 import RangeController from "./controllers/range_controller";
 import ThemeController from "./controllers/theme_controller";
 import ToastController from "./controllers/toast_controller";
 import WalletController from "./controllers/wallet_controller";
+import { onLayoutChange } from "./lib/layout";
 import { positionPrefs } from "./lib/position-prefs.store";
 import { walletStore } from "./lib/wallet.store";
 
@@ -31,7 +31,11 @@ export async function start(): Promise<void> {
   app.register("toast", ToastController);
   app.register("dialog", DialogController);
   app.register("range", RangeController);
-  app.register("card", CardController);
+
+  // The board renders as a table or as cards depending on viewport width, and that
+  // choice is made server-side from a request parameter — so crossing the breakpoint
+  // has to refetch. #board already listens for this event (Layout.tsx).
+  onLayoutChange(() => document.body.dispatchEvent(new CustomEvent("board:refresh")));
 }
 
 // hydrate() is failure-proof by contract (collection.store.ts), so this should not

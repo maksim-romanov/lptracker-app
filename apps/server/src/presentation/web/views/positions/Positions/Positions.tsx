@@ -1,21 +1,55 @@
+import type { TPositionsLayout } from "../../../positions-layout";
+import { cn } from "../../utils/cn";
 import { NoPositions } from "../NoPositions/NoPositions";
-import { PositionCard } from "../PositionCard/PositionCard";
+import { PositionInfoCard } from "../PositionInfoCard/PositionInfoCard";
+import { PositionInfoRow } from "../PositionInfoRow/PositionInfoRow";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
-export const Positions = ({ cards }: { cards: ICardVM[] }) =>
-  cards.length === 0 ? (
-    <NoPositions />
-  ) : (
-    <div class="@container flex flex-col gap-3 md:rounded-md md:border md:border-outline md:bg-surface-container md:p-4">
-      <div aria-hidden="true" class="hidden gap-4 border-outline border-b pb-2 text-sm md:flex">
-        <span class="flex-1">Pool</span>
-        <span class="flex-1">Range</span>
-        <span class="flex-1">Principal</span>
-        <span>Status</span>
-        <span class="w-8" />
-      </div>
-      {cards.map((card) => (
-        <PositionCard card={card} />
-      ))}
-    </div>
-  );
+const HEAD_CELL = "border-outline border-b px-4 pt-3 pb-2 text-sm";
+
+// The only place column widths are declared: `table-fixed` makes the header row
+// size every column, so rows can no longer drift out of alignment with it.
+const COLUMNS = [
+  { label: "Pool", class: "w-[26%]" },
+  { label: "Range", class: "w-[30%]" },
+  { label: "Principal", class: "w-[26%]" },
+  { label: "Status", class: undefined },
+];
+
+const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
+  <div class="rounded-md border border-outline bg-surface-container">
+    <table class="position-table w-full table-fixed">
+      <caption class="sr-only">Uniswap v3 positions</caption>
+      <thead>
+        <tr>
+          {COLUMNS.map((column) => (
+            <th scope="col" class={cn(HEAD_CELL, "text-left font-normal", column.class)}>
+              {column.label}
+            </th>
+          ))}
+          <th scope="col" class={cn(HEAD_CELL, "w-12")}>
+            <span class="sr-only">Actions</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {cards.map((card) => (
+          <PositionInfoRow card={card} />
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+const PositionsCards = ({ cards }: { cards: ICardVM[] }) => (
+  <ul aria-label="Uniswap v3 positions" class="flex flex-col gap-3">
+    {cards.map((card) => (
+      <PositionInfoCard card={card} />
+    ))}
+  </ul>
+);
+
+export const Positions = ({ cards, layout }: { cards: ICardVM[]; layout: TPositionsLayout }) => {
+  if (cards.length === 0) return <NoPositions />;
+  return layout === "table" ? <PositionsTable cards={cards} /> : <PositionsCards cards={cards} />;
+};

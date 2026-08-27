@@ -3,9 +3,10 @@ import { validator } from "hono-openapi";
 import * as v from "valibot";
 
 import { POSITION_REF_REGEX, parsePositionRef } from "../../v1/schemas/request.schemas";
+import { DEFAULT_POSITIONS_LAYOUT, POSITIONS_LAYOUTS } from "../positions-layout";
 import { ErrorBanner } from "../views/components/Banner/ErrorBanner/ErrorBanner";
-import { PositionCard } from "../views/positions/PositionCard/PositionCard";
 import { PositionDetail } from "../views/positions/PositionDetail/PositionDetail";
+import { PositionItem } from "../views/positions/PositionItem/PositionItem";
 import { Positions } from "../views/positions/Positions/Positions";
 import { NoWallets } from "../views/wallets/NoWallets/NoWallets";
 import { webPositionsQuerySchema } from "./query.schema";
@@ -22,8 +23,9 @@ const refParamSchema = v.object({
   ref: v.pipe(v.string(), v.regex(POSITION_REF_REGEX, "invalid position ref")),
 });
 
-const cardQuerySchema = v.object({
+const positionQuerySchema = v.object({
   inverted: v.optional(v.picklist(["0", "1"]), "0"),
+  layout: v.optional(v.picklist(POSITIONS_LAYOUTS), DEFAULT_POSITIONS_LAYOUT),
 });
 
 webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValidationHook), async (c) => {
@@ -55,7 +57,7 @@ webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValid
   return c.html(
     <>
       {partialFailures.length > 0 && <ErrorBanner message={`${partialFailures.length} source(s) failed to load — showing partial results.`} />}
-      <Positions cards={cards} />
+      <Positions cards={cards} layout={query.layout} />
     </>,
   );
 });
@@ -85,19 +87,21 @@ const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> 
 };
 
 webRoutes.get(
-  "/positions/:ref/card",
+  "/positions/:ref/item",
   validator("param", refParamSchema, webValidationHook),
-  validator("query", cardQuerySchema, webValidationHook),
+  validator("query", positionQuerySchema, webValidationHook),
   async (c) => {
-    const r = await loadCardVM(c.req.valid("param").ref, c.req.valid("query").inverted === "1");
-    return "error" in r ? c.html(r.error, r.status) : c.html(<PositionCard card={r.card} />);
+    const query = c.req.valid("query");
+    const r = await loadCardVM(c.req.valid("param").ref, query.inverted === "1");
+    if ("error" in r) return c.html(r.error, r.status);
+    return c.html(<PositionItem card={r.card} layout={query.layout} />);
   },
 );
 
 webRoutes.get(
   "/positions/:ref/detail",
   validator("param", refParamSchema, webValidationHook),
-  validator("query", cardQuerySchema, webValidationHook),
+  validator("query", positionQuerySchema, webValidationHook),
   async (c) => {
     const r = await loadCardVM(c.req.valid("param").ref, c.req.valid("query").inverted === "1");
     return "error" in r ? c.html(r.error, r.status) : c.html(<PositionDetail card={r.card} />);

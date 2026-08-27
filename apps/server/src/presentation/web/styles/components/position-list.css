@@ -1,0 +1,50 @@
+/* Whole-item activation, shared by both presentations: a real <button> carries the
+   interaction and a pseudo-element stretches it over the row / card. The focus ring is
+   drawn on that pseudo-element, so it traces the actual hit area in either layout. A
+   click handler on the container would instead announce every field as clickable, and
+   role="grid" would impose a whole keyboard model this list does not need. */
+@layer components {
+  .position-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .position-overlay:focus {
+    outline: none;
+  }
+
+  .position-overlay:focus-visible::after {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  /* Table presentation. WebKit only fixed `position: relative` on table rows in April
+     2026 (webkit.org/b/240961) and iOS webviews track the OS, so the overlay anchors to
+     its cell instead and is widened back across the row, clipped by the table. */
+  .position-table {
+    overflow: clip;
+  }
+
+  .position-row-actions {
+    position: relative;
+  }
+
+  .position-row .position-overlay::after {
+    left: auto;
+    width: 100vw;
+  }
+
+  .position-row:hover > * {
+    background-color: var(--color-surface-variant);
+  }
+
+  /* Card presentation. A card is an ordinary block box, so it anchors the overlay itself. */
+  .position-card {
+    position: relative;
+  }
+
+  .position-card:hover {
+    background-color: var(--color-surface-container);
+  }
+}

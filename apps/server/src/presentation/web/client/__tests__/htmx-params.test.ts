@@ -74,7 +74,7 @@ describe("htmx-params", () => {
 
     it("sets inverted=1 and saves the ref on first invert-toggle (guarantee c)", async () => {
       await seed({ inverted: [] });
-      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/card", "data-invert": "uniswap-v3:1:42" });
+      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/item", "data-invert": "uniswap-v3:1:42" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.inverted).toBe("1");
       expect(positionPrefs.serializeInverted()).toBe("uniswap-v3:1:42");
@@ -82,7 +82,7 @@ describe("htmx-params", () => {
 
     it("sets inverted=0 and removes the ref when toggling an already-inverted ref (guarantee c)", async () => {
       await seed({ inverted: ["uniswap-v3:1:42"] });
-      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/card", "data-invert": "uniswap-v3:1:42" });
+      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/item", "data-invert": "uniswap-v3:1:42" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.inverted).toBe("0");
       expect(positionPrefs.serializeInverted()).toBe("");
@@ -94,6 +94,20 @@ describe("htmx-params", () => {
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.wallets).toBeUndefined();
       expect(evt.detail.parameters.inverted).toBeUndefined();
+    });
+
+    // The board and the per-position swap must agree on the presentation, or an
+    // invert would drop a <tr> into a card list (or the reverse).
+    it("sends layout on the board request and on the invert swap", async () => {
+      await seed({ wallets: ["0xabc:1"] });
+
+      const board = makeEvt({ "hx-get": "/positions" });
+      inject(board as unknown as Event);
+      expect(board.detail.parameters.layout).toBe("cards");
+
+      const invert = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/item", "data-invert": "uniswap-v3:1:42" });
+      inject(invert as unknown as Event);
+      expect(invert.detail.parameters.layout).toBe("cards");
     });
   });
 });
