@@ -1,12 +1,7 @@
 import { Hono } from "hono";
 import { validator } from "hono-openapi";
-import { TokensMapBuilder } from "shared/tokens/tokens-map";
 import * as v from "valibot";
 
-import { listPositions } from "../../../app/positions/list-positions";
-import { protocolRegistry } from "../../../app/protocols/registry";
-import { UNISWAP_V3_EXTENSION_TYPE } from "../../../features/uniswap-v3/presentation/schemas/extension.schema";
-import { mapPositionToCardVM } from "../../../features/uniswap-v3/presentation/web/position.web-mapper";
 import { POSITION_REF_REGEX, parsePositionRef } from "../../v1/schemas/request.schemas";
 import { ErrorBanner } from "../views/components/Banner/ErrorBanner/ErrorBanner";
 import { PositionCard } from "../views/positions/PositionCard/PositionCard";
@@ -15,6 +10,11 @@ import { Positions } from "../views/positions/Positions/Positions";
 import { NoWallets } from "../views/wallets/NoWallets/NoWallets";
 import { webPositionsQuerySchema } from "./query.schema";
 import { webValidationHook } from "./validation";
+import { listPositions } from "#app/positions/list-positions";
+import { protocolRegistry } from "#app/protocols/registry";
+import { UNISWAP_V3_EXTENSION_TYPE } from "#features/uniswap-v3/presentation/schemas/extension.schema";
+import { mapPositionToCardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+import { TokensMapBuilder } from "#shared/tokens/tokens-map";
 
 export const webRoutes = new Hono();
 

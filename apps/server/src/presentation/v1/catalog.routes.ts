@@ -3,10 +3,10 @@ import "reflect-metadata";
 import { PROTOCOLS_META } from "@depthly/catalog";
 import { Hono } from "hono";
 import { describeRoute, resolver } from "hono-openapi";
-import { type CatalogResponse, catalogResponseSchema, errorResponseSchema } from "shared/contracts";
 
-import { networkCatalog } from "../../app/networks/catalog";
-import { protocolRegistry } from "../../app/protocols/registry";
+import { networkCatalog } from "#app/networks/catalog";
+import { protocolRegistry } from "#app/protocols/registry";
+import { type CatalogResponse, catalogResponseSchema, errorResponseSchema } from "#shared/contracts";
 
 export const catalogRoutes = new Hono();
 

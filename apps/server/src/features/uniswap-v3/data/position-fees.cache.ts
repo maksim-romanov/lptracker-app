@@ -1,8 +1,8 @@
-import { BaseCache } from "shared/cache/base-cache";
 import { singleton } from "tsyringe";
 
 import type { PositionEntity } from "../domain/entities/position.entity";
 import type { ComputedFees } from "../domain/utils/fee-math";
+import { BaseCache } from "#shared/cache/base-cache";
 
 @singleton()
 export class PositionFeesCache extends BaseCache<ComputedFees> {

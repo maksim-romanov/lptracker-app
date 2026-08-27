@@ -1,12 +1,12 @@
 import { getLogger } from "@depthly/logger";
 import type { Result } from "neverthrow";
-import type { MapPositionResult, Position, TokensMap, WalletScopeEntry } from "shared/contracts";
-import type { DomainError } from "shared/errors/base.error";
-import { TokensMapBuilder } from "shared/tokens/tokens-map";
 
 import { isKnownChainId } from "../networks/catalog";
 import { protocolRegistry } from "../protocols/registry";
 import type { ProtocolEntry } from "../protocols/types";
+import type { MapPositionResult, Position, TokensMap, WalletScopeEntry } from "#shared/contracts";
+import type { DomainError } from "#shared/errors/base.error";
+import { TokensMapBuilder } from "#shared/tokens/tokens-map";
 
 const logger = getLogger(["server", "list-positions"]);
 

@@ -2,12 +2,12 @@ import "reflect-metadata";
 
 import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
-import { config } from "shared/config";
 import { container } from "tsyringe";
 
 import { TokensDataClient } from "../../data/tokens-data-client";
 import { cacheKey } from "../../domain/types";
 import { type PriceParams, type PriceQuery, priceParamsSchema, priceQuerySchema } from "../schemas/request.schemas";
+import { config } from "#shared/config";
 
 export const routes = new Hono();
 

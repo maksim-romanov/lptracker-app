@@ -1,9 +1,9 @@
-import { buildTokenRef, type MapPositionResult, type Position, type TokenMetaInput } from "shared/contracts";
 import { formatUnits } from "viem";
 
 import type { PositionEntity } from "../../domain/entities/position.entity";
 import type { TokenEntity } from "../../domain/entities/token.entity";
 import { UNISWAP_V3_EXTENSION_TYPE, type UniswapV3Extension } from "../schemas/extension.schema";
+import { buildTokenRef, type MapPositionResult, type Position, type TokenMetaInput } from "#shared/contracts";
 
 export interface MapperUnclaimedFees {
   /** Raw fee amount for token0 as a base-10 integer string */

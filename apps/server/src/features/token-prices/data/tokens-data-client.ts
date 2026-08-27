@@ -1,5 +1,6 @@
-import { config } from "shared/config";
 import { singleton } from "tsyringe";
+
+import { config } from "#shared/config";
 
 type BatchPricesResponse = {
   prices: Record<string, { priceUSD: number; confidence: number } | null>;

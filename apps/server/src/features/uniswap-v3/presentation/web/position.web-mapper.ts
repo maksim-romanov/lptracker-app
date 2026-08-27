@@ -1,8 +1,8 @@
 import { formatPrice, formatTokenAmount } from "@depthly/protocol-math/format";
 import { deriveStatus, priceRangeFromTicks, type TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
-import type { Position, PositionToken, TokensMap } from "shared/contracts";
 
 import { UNISWAP_V3_EXTENSION_TYPE, type UniswapV3Extension } from "../schemas/extension.schema";
+import type { Position, PositionToken, TokensMap } from "#shared/contracts";
 
 export interface ITokenSideVM {
   tokenRef: string;

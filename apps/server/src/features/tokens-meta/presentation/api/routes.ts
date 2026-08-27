@@ -2,11 +2,11 @@ import "reflect-metadata";
 
 import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
-import { config } from "shared/config";
 import { container } from "tsyringe";
 import * as v from "valibot";
 
 import { TokensDataClient } from "../../../token-prices/data/tokens-data-client";
+import { config } from "#shared/config";
 
 const logoParamsSchema = v.object({
   chainId: v.pipe(v.string(), v.transform(Number), v.integer()),

@@ -1,5 +1,5 @@
-import { buildTokenIconUrl } from "shared/adapters/tokens-data.urls";
-import { buildTokenRef, type TokenMeta, type TokenMetaInput, type TokensMap } from "shared/contracts";
+import { buildTokenIconUrl } from "#shared/adapters/tokens-data.urls";
+import { buildTokenRef, type TokenMeta, type TokenMetaInput, type TokensMap } from "#shared/contracts";
 
 const STABLECOIN_SYMBOLS = new Set(["USDC", "USDT", "DAI", "FRAX", "TUSD", "BUSD", "USDP", "LUSD", "PYUSD", "USDE", "GUSD", "FDUSD", "USDD"]);
 

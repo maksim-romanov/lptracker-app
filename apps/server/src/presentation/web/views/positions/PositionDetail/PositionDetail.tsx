@@ -1,12 +1,12 @@
 import type { TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
 
-import type { ICardVM } from "../../../../../features/uniswap-v3/presentation/web/position.web-mapper";
 import { Icon } from "../../components/Icon/Icon";
 import { NetworkLogo } from "../../components/NetworkLogo/NetworkLogo";
 import { Tag } from "../../components/Tag/Tag";
 import { explorerAddressUrl, networkLabel, uniswapPositionUrl } from "../../networks";
 import { PositionRange } from "../PositionRange/PositionRange";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
+import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 const STATUS: Record<TUniswapV3RangeStatus, string> = {
   "in-range": "In range",

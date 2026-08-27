@@ -1,4 +1,4 @@
-import { DomainError, type DomainErrorOpts } from "shared/errors/base.error";
+import { DomainError, type DomainErrorOpts } from "#shared/errors/base.error";
 
 export enum PositionErrorCode {
   POSITION_NOT_FOUND = "POSITION_NOT_FOUND",

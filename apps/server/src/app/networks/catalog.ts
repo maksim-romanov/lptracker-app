@@ -1,5 +1,6 @@
 import { NETWORKS } from "@depthly/catalog";
-import type { Network } from "shared/contracts";
+
+import type { Network } from "#shared/contracts";
 
 export const networkCatalog: Network[] = NETWORKS.map((seed) => ({ ...seed }));
 

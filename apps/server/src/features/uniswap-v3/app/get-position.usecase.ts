@@ -1,5 +1,4 @@
 import { err, ok, type Result } from "neverthrow";
-import type { MapPositionResult } from "shared/contracts";
 import { inject, injectable } from "tsyringe";
 
 import type { PositionFeesCache } from "../data/position-fees.cache";
@@ -10,6 +9,7 @@ import type { PositionError } from "../domain/errors/position.error";
 import type { ComputedFees } from "../domain/utils/fee-math";
 import { computeUnclaimedFees } from "../domain/utils/fee-math";
 import { type MapperUnclaimedFees, mapV3PositionToContract } from "../presentation/mappers/position.mapper";
+import type { MapPositionResult } from "#shared/contracts";
 
 export interface GetPositionParams {
   id: string;

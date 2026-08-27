@@ -1,10 +1,10 @@
 import { getLogger } from "@depthly/logger";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { ERROR_CODES, type ErrorCode, type ErrorResponse } from "shared/contracts";
-import { DomainError } from "shared/errors/base.error";
 
-import { protocolRegistry } from "../../app/protocols/registry";
+import { protocolRegistry } from "#app/protocols/registry";
+import { ERROR_CODES, type ErrorCode, type ErrorResponse } from "#shared/contracts";
+import { DomainError } from "#shared/errors/base.error";
 
 const logger = getLogger(["server", "http"]);
 

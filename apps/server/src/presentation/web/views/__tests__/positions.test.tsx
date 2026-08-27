@@ -1,8 +1,8 @@
-import type { ICardVM } from "../../../../features/uniswap-v3/presentation/web/position.web-mapper";
 import { ErrorBanner } from "../components/Banner/ErrorBanner/ErrorBanner";
 import { PositionCard } from "../positions/PositionCard/PositionCard";
 import { Positions } from "../positions/Positions/Positions";
 import { describe, expect, it, mock } from "bun:test";
+import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 const card: ICardVM = {
   ref: "uniswap-v3:1:42",

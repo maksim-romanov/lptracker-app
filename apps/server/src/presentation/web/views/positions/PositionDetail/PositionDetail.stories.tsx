@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
-import type { ICardVM } from "../../../../../features/uniswap-v3/presentation/web/position.web-mapper";
 import { closed, inRange, longAddressNoIcon, noFees, outOfRange } from "../__stories__/mocks";
 import { PositionDetail } from "./PositionDetail";
+import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 const renderDetail = (card: ICardVM): HTMLElement => {
   const wrapper = document.createElement("div");

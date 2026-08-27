@@ -1,6 +1,6 @@
-import type { ICardVM } from "../../../../../features/uniswap-v3/presentation/web/position.web-mapper";
 import { NoPositions } from "../NoPositions/NoPositions";
 import { PositionCard } from "../PositionCard/PositionCard";
+import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 export const Positions = ({ cards }: { cards: ICardVM[] }) =>
   cards.length === 0 ? (

@@ -1,4 +1,4 @@
-import type { ICardVM } from "../../../../../features/uniswap-v3/presentation/web/position.web-mapper";
+import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 export const PositionRange = ({ range }: { range: ICardVM["priceRange"] }) => (
   <div

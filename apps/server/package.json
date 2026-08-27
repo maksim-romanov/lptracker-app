@@ -62,5 +62,15 @@
     "tailwindcss": "^4.3.1",
     "typed-htmx": "^0.3.1",
     "vite": "^8.2.2"
+  },
+  "imports": {
+    "#app/*": "./src/app/*.ts",
+    "#features/icons/presentation/api": "./src/features/icons/presentation/api/index.ts",
+    "#features/token-prices/presentation/api": "./src/features/token-prices/presentation/api/index.ts",
+    "#features/tokens-meta/presentation/api": "./src/features/tokens-meta/presentation/api/index.ts",
+    "#features/*": "./src/features/*.ts",
+    "#shared/config": "./src/shared/config/index.ts",
+    "#shared/contracts": "./src/shared/contracts/index.ts",
+    "#shared/*": "./src/shared/*.ts"
   }
 }

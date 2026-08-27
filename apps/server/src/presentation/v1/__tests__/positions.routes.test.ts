@@ -1,12 +1,12 @@
 import "reflect-metadata";
 
 import { ok, type Result } from "neverthrow";
-import type { MapPositionResult, Position } from "shared/contracts";
-import type { DomainError } from "shared/errors/base.error";
 
-import { protocolRegistry } from "../../../app/protocols/registry";
 import { positionsRoutes } from "../positions.routes";
 import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
+import { protocolRegistry } from "#app/protocols/registry";
+import type { MapPositionResult, Position } from "#shared/contracts";
+import type { DomainError } from "#shared/errors/base.error";
 
 // Build a minimal Position for a given ref/updatedAt.
 const makePosition = (ref: string, updatedAt: string): Position => ({
@@ -95,7 +95,7 @@ describe("GET /api/v1/positions (characterization)", () => {
 
   it("emits Warning + X-Partial-Failures only when a source fails", async () => {
     const { err } = await import("neverthrow");
-    const { DomainError } = await import("shared/errors/base.error");
+    const { DomainError } = await import("#shared/errors/base.error");
     // DomainError is abstract — create a minimal concrete subclass for the stub.
     class StubError extends DomainError<string> {}
     fakeProtocol.listPositionsForChain.mockImplementation(async ({ chainId }: { chainId: number }) =>

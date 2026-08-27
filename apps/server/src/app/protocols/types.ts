@@ -1,6 +1,7 @@
 import type { Result } from "neverthrow";
-import type { ExtensionVariantSchema, MapPositionResult } from "shared/contracts";
-import type { DomainError } from "shared/errors/base.error";
+
+import type { ExtensionVariantSchema, MapPositionResult } from "#shared/contracts";
+import type { DomainError } from "#shared/errors/base.error";
 
 export interface ProtocolListParams {
   ownerAddress: string;

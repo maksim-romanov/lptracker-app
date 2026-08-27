@@ -2,6 +2,12 @@ import "reflect-metadata";
 
 import { Hono } from "hono";
 import { describeRoute, resolver, validator } from "hono-openapi";
+
+import { badRequest, mapErrorToHttpResponse, notFound, validationHook } from "./error-mapper";
+import { positionSchema } from "./schemas/position.schema";
+import { parsePositionRef, positionRefParamSchema, positionsListQuerySchema } from "./schemas/request.schemas";
+import { listPositions } from "#app/positions/list-positions";
+import { protocolRegistry } from "#app/protocols/registry";
 import {
   type DetailResponse,
   detailResponseSchema,
@@ -10,15 +16,9 @@ import {
   type ListResponse,
   listResponseSchema,
   type Position,
-} from "shared/contracts";
-import { DomainError } from "shared/errors/base.error";
-import { TokensMapBuilder } from "shared/tokens/tokens-map";
-
-import { listPositions } from "../../app/positions/list-positions";
-import { protocolRegistry } from "../../app/protocols/registry";
-import { badRequest, mapErrorToHttpResponse, notFound, validationHook } from "./error-mapper";
-import { positionSchema } from "./schemas/position.schema";
-import { parsePositionRef, positionRefParamSchema, positionsListQuerySchema } from "./schemas/request.schemas";
+} from "#shared/contracts";
+import { DomainError } from "#shared/errors/base.error";
+import { TokensMapBuilder } from "#shared/tokens/tokens-map";
 
 export const positionsRoutes = new Hono();
 

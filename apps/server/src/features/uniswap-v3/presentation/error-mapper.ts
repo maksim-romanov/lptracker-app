@@ -1,8 +1,7 @@
-import { ERROR_CODES } from "shared/contracts";
-import type { DomainError } from "shared/errors/base.error";
-import { PositionError, PositionErrorCode } from "uniswap-v3/domain/errors/position.error";
-
-import type { MappedError } from "../../../app/protocols/types";
+import type { MappedError } from "#app/protocols/types";
+import { PositionError, PositionErrorCode } from "#features/uniswap-v3/domain/errors/position.error";
+import { ERROR_CODES } from "#shared/contracts";
+import type { DomainError } from "#shared/errors/base.error";
 
 export function mapV3Error(error: DomainError): MappedError | undefined {
   if (!PositionError.isInstance(error)) return undefined;

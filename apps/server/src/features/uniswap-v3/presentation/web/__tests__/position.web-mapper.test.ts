@@ -1,7 +1,6 @@
-import type { Position, TokensMap } from "shared/contracts";
-
 import { mapPositionToCardVM } from "../position.web-mapper";
 import { describe, expect, it } from "bun:test";
+import type { Position, TokensMap } from "#shared/contracts";
 
 const tokens: TokensMap = {
   "1:0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": { symbol: "WETH", decimals: 18, iconUrl: "weth.png" },
