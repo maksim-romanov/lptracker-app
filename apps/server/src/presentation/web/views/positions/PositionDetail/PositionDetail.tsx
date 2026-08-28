@@ -40,7 +40,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
             {range.currentLabel} {range.quoteSymbol}
           </span>
         </div>
-        <PositionRange range={range} />
+        <PositionRange range={range} tone={card.rangeTone} />
         <div class="flex justify-between gap-2 text-sm">
           <span>{range.minLabel}</span>
           <span>{range.maxLabel}</span>
@@ -48,7 +48,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
       </section>
 
       <section class="flex flex-col gap-2 border-outline border-b pb-3">
-        <div class="text-sm">Principal</div>
+        <div class="text-sm">Balance</div>
         <dl class="flex flex-col gap-1">
           {card.principal.map((p) => (
             <div class="flex justify-between gap-2">

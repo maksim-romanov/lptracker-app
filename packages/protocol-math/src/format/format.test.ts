@@ -1,4 +1,4 @@
-import { formatPrice, formatTokenAmount } from "./format";
+import { formatPrice, formatTokenAmount, formatTokenAmountShort } from "./format";
 import { describe, expect, it } from "bun:test";
 
 describe("formatPrice", () => {
@@ -77,5 +77,36 @@ describe("formatTokenAmount", () => {
     expect(formatTokenAmount("499876954.71")).toBe("499.88M");
     expect(formatTokenAmount("500000000")).toBe("500M");
     expect(formatTokenAmount("12345678901")).toBe("12.35B");
+  });
+});
+
+describe("formatTokenAmountShort", () => {
+  it("caps the decimals by magnitude, so no amount grows a long tail", () => {
+    expect(formatTokenAmountShort("5.165909")).toBe("5.1659");
+    expect(formatTokenAmountShort("2.357094")).toBe("2.3571");
+    expect(formatTokenAmountShort("0.020515")).toBe("0.0205");
+    expect(formatTokenAmountShort("0.008439")).toBe("0.0084");
+  });
+
+  it("drops to two decimals once an amount reaches the thousands", () => {
+    expect(formatTokenAmountShort("3707.59")).toBe("3,707.59");
+    expect(formatTokenAmountShort("36130.887")).toBe("36,130.89");
+  });
+
+  it("trims trailing zeros rather than padding to the mantissa", () => {
+    expect(formatTokenAmountShort("1.0")).toBe("1");
+    expect(formatTokenAmountShort("2480.00")).toBe("2,480");
+    expect(formatTokenAmountShort("0.02")).toBe("0.02");
+  });
+
+  it("collapses dust rather than printing decimals the ladder cannot show", () => {
+    expect(formatTokenAmountShort("0.00002")).toBe("< 0.0001");
+    expect(formatTokenAmountShort("0")).toBe("0");
+    expect(formatTokenAmountShort("not-a-number")).toBe("0");
+  });
+
+  it("shares compact (K/M/B/T) handling with formatTokenAmount", () => {
+    expect(formatTokenAmountShort("1500000")).toBe("1.5M");
+    expect(formatTokenAmountShort("12345678901")).toBe("12.35B");
   });
 });

@@ -12,11 +12,12 @@ const card: ICardVM = {
   nftTokenId: "42",
   feeTierLabel: "0.3%",
   status: "in-range",
+  rangeTone: "in-range",
   inverted: false,
   chainId: 1,
   protocolLabel: "Uniswap V3",
   pair: { base: { tokenRef: "1:0xa", symbol: "WETH", iconUrl: "" }, quote: { tokenRef: "1:0xb", symbol: "USDC", iconUrl: "" } },
-  principal: [{ tokenRef: "1:0xa", symbol: "WETH", formatted: "1.0", iconUrl: "" }],
+  principal: [{ tokenRef: "1:0xa", symbol: "WETH", formatted: "5.165909", formattedShort: "5.1659", iconUrl: "" }],
   fees: [],
   priceRange: {
     minLabel: "1,800",
@@ -79,8 +80,49 @@ describe("web positions", () => {
     // Browsers keep table roles across display changes, so restating them as role=
     // would be redundant ARIA that also masks the a11y lint rules.
     expect(html).not.toContain("role=");
-    // the column headers name every field, so the row must not repeat them
-    expect(html).not.toContain("sr-only");
+  });
+
+  it("PositionInfoRow shows the range as a bar named by visible text, not by colour alone", () => {
+    const html = s(PositionInfoRow({ card }));
+    expect(html).toContain('data-controller="range"');
+    // colour is the only thing separating the bar's states, so the label beside it is
+    // what carries the state for anyone who cannot tell the hues apart
+    expect(html).toContain("In range");
+    expect(html).not.toContain('<span class="sr-only">In range</span>');
+    // the exact bounds belong to the detail view the row opens
+    for (const numeric of ["1,800", "2,000", "2,200"]) {
+      expect(html).not.toContain(numeric);
+    }
+  });
+
+  it("PositionInfoRow names the bound a near-edge position is approaching", () => {
+    const html = s(PositionInfoRow({ card: { ...card, rangeTone: "near-upper" } }));
+    // which bound is being approached decides which way the position is rebalanced,
+    // so the two near-edge tones must not collapse into one label
+    expect(html).toContain("Near upper bound");
+    expect(html).not.toContain("In range");
+  });
+
+  it("PositionInfoRow carries the network and both token amounts", () => {
+    const html = s(PositionInfoRow({ card }));
+    // the network lost its column to a badge on the icon cluster, which is an unnamed
+    // mark on its own — the word has to survive somewhere in the accessibility tree
+    expect(html).toContain("Ethereum");
+    expect(html).not.toContain(">Ethereum<");
+    // the list columns are one narrow slot per amount, so they take the width-bounded
+    // rendering; the full-precision one belongs to the detail view
+    expect(html).toContain("5.1659");
+    expect(html).not.toContain("5.165909");
+    // fees are empty on this card, so the cell falls back to a dash that is not read aloud
+    expect(html).toContain('<span class="sr-only">None</span>');
+
+    const withFees = s(
+      PositionInfoRow({
+        card: { ...card, fees: [{ tokenRef: "1:0xb", symbol: "USDC", formatted: "8.40", formattedShort: "8.4", iconUrl: "" }] },
+      }),
+    );
+    expect(withFees).toContain("8.4");
+    expect(withFees).not.toContain('<span class="sr-only">None</span>');
   });
 
   it("PositionInfoCard names its own fields through a description list", () => {
@@ -88,10 +130,15 @@ describe("web positions", () => {
     expect(html).toStartWith("<li");
     // No header row here, so every field is a <dt>/<dd> pair. An adjacent sr-only
     // <span> would read the same aloud but carry no programmatic association.
-    for (const label of ["Range", "Principal", "Status"]) {
-      expect(html).toContain(`<dt class="sr-only">${label}</dt>`);
+    // the range block names its own state on screen, so its <dt> stays hidden; the two
+    // amount fields are bare stacked numbers and need their names visible
+    expect(html).toContain('<dt class="sr-only">Range</dt>');
+    for (const label of ["Balance", "Fees"]) {
+      expect(html).toContain(`>${label}</dt>`);
+      // a field name announced from an adjacent span reads the same aloud but carries no
+      // programmatic association, so it must come from the <dt> and nowhere else
+      expect(html).not.toContain(`<span class="sr-only">${label}</span>`);
     }
-    expect(html).not.toContain('<span class="sr-only">');
   });
 
   it("PositionItem hands back the markup that matches the requested layout", () => {
@@ -108,9 +155,12 @@ describe("web positions", () => {
     expect(html).toContain("window-bleed");
     expect(html).toContain("<caption");
     expect(html).toContain('<th scope="col"');
-    for (const column of ["Pool", "Range", "Principal", "Status"]) {
+    for (const column of ["Pool", "Range", "Balance", "Fees"]) {
       expect(html).toContain(`>${column}</th>`);
     }
+    // the network moved into the Pool cell as a badge; a column of its own repeated the
+    // same word on nearly every row for a sixth of the table's width
+    expect(html).not.toContain(">Network</th>");
     // the old markup hid the header row from assistive tech and restated every column
     // as an sr-only label inside each item; real column headers replace both
     expect(html.match(/<thead[^>]*>/)?.[0]).not.toContain("aria-hidden");

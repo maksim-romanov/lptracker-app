@@ -1,4 +1,4 @@
-import { mapPositionToCardVM } from "../position.web-mapper";
+import { deriveRangeTone, mapPositionToCardVM } from "../position.web-mapper";
 import { describe, expect, it } from "bun:test";
 import type { Position, TokensMap } from "#shared/contracts";
 
@@ -65,5 +65,34 @@ describe("mapPositionToCardVM", () => {
     // USDC is a stablecoin → displayDecimals 2; formatTokenAmount must apply it.
     const usdc = vm.principal.find((p) => p.symbol === "USDC");
     expect(usdc?.formatted).toBe("2,500");
+  });
+});
+
+// Only the three geometry fields matter here; the labels ride along untouched.
+const bar = (thumbPct: number): Parameters<typeof deriveRangeTone>[1] =>
+  ({ bandLeftPct: 20, bandWidthPct: 60, thumbPct }) as Parameters<typeof deriveRangeTone>[1];
+
+describe("deriveRangeTone", () => {
+  it("keeps a price away from either bound plain in-range", () => {
+    expect(deriveRangeTone("in-range", bar(50))).toBe("in-range");
+  });
+
+  it("names the bound a price within a tenth of the band is approaching", () => {
+    expect(deriveRangeTone("in-range", bar(24))).toBe("near-lower");
+    expect(deriveRangeTone("in-range", bar(76))).toBe("near-upper");
+  });
+
+  it("treats the tenth as inclusive on both sides", () => {
+    expect(deriveRangeTone("in-range", bar(26))).toBe("near-lower");
+    expect(deriveRangeTone("in-range", bar(74))).toBe("near-upper");
+    expect(deriveRangeTone("in-range", bar(27))).toBe("in-range");
+    expect(deriveRangeTone("in-range", bar(73))).toBe("in-range");
+  });
+
+  it("passes a position that is not in range straight through", () => {
+    // proximity is meaningless once the price has left the band, and closed positions
+    // have no live price at all
+    expect(deriveRangeTone("out-of-range", bar(95))).toBe("out-of-range");
+    expect(deriveRangeTone("closed", bar(50))).toBe("closed");
   });
 });

@@ -39,6 +39,17 @@
     background-color: var(--color-surface-variant);
   }
 
+  /* The overlapping token icons and the network badge are cut out of whatever the item's
+     background currently is, so the cut-out colour has to track hover instead of being
+     pinned to the resting surface. */
+  .position-item {
+    --item-bg: var(--color-surface);
+  }
+
+  .position-row:hover {
+    --item-bg: var(--color-surface-variant);
+  }
+
   /* Card presentation. A card is an ordinary block box, so it anchors the overlay itself. */
   .position-card {
     position: relative;
@@ -46,5 +57,6 @@
 
   .position-card:hover {
     background-color: var(--color-surface-container);
+    --item-bg: var(--color-surface-container);
   }
 }

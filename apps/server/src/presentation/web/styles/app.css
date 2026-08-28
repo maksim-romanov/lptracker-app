@@ -41,6 +41,7 @@
   --color-on-surface: var(--color-on-surface);
   --color-on-surface-variant: var(--color-on-surface-variant);
   --color-outline: var(--color-outline);
+  --color-outline-variant: var(--color-outline-variant);
   --color-primary: var(--color-primary);
   --color-on-primary: var(--color-on-primary);
   --color-secondary: var(--color-secondary);

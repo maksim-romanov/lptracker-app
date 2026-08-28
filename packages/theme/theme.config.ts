@@ -34,6 +34,7 @@ const semanticColors = (mode: Tree["color"]["depthly"]["light"]) => ({
   "--color-on-surface": mode.onSurface,
   "--color-on-surface-variant": mode.onSurfaceVariant,
   "--color-outline": mode.outline,
+  "--color-outline-variant": mode.outlineVariant,
   "--color-primary": mode.primary,
   "--color-on-primary": mode.onPrimary,
   "--color-secondary": mode.secondary,

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/html-vite";
 
 import type { TPositionsLayout } from "../../../positions-layout";
 import { WindowFrame } from "../../components/WindowFrame/WindowFrame";
-import { closed, inRange, outOfRange } from "../__stories__/mocks";
+import { closed, inRange, nearUpperBound, outOfRange } from "../__stories__/mocks";
 import { Positions } from "./Positions";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
@@ -29,7 +29,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const every = [inRange, outOfRange, closed];
+const every = [inRange, nearUpperBound, outOfRange, closed];
 
 export const NoCards = { args: { cards: [], layout: "cards" } } as Story;
 export const TableLayout = { args: { cards: every, layout: "table" } } as Story;

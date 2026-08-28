@@ -21,13 +21,15 @@ const baseFees: ICardVM["fees"] = [
   {
     tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     symbol: "WETH",
-    formatted: "0.012",
+    formatted: "0.008439",
+    formattedShort: "0.0084",
     iconUrl: "https://assets.uniswap.org/weth.png",
   },
   {
     tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     symbol: "USDC",
-    formatted: "8.40",
+    formatted: "23.54",
+    formattedShort: "23.54",
     iconUrl: "https://assets.uniswap.org/usdc.png",
   },
 ];
@@ -37,13 +39,26 @@ export const inRange: ICardVM = {
   nftTokenId: "1001",
   feeTierLabel: "0.3%",
   status: "in-range",
+  rangeTone: "in-range",
   inverted: false,
   chainId: 1,
   protocolLabel: "Uniswap V3",
   pair: basePair,
   principal: [
-    { tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", symbol: "WETH", formatted: "1.24", iconUrl: basePair.base.iconUrl },
-    { tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", symbol: "USDC", formatted: "2,480.00", iconUrl: basePair.quote.iconUrl },
+    {
+      tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      symbol: "WETH",
+      formatted: "5.165909",
+      formattedShort: "5.1659",
+      iconUrl: basePair.base.iconUrl,
+    },
+    {
+      tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      symbol: "USDC",
+      formatted: "3,707.59",
+      formattedShort: "3,707.59",
+      iconUrl: basePair.quote.iconUrl,
+    },
   ],
   fees: baseFees,
   priceRange: basePriceRange,
@@ -55,6 +70,7 @@ export const outOfRange: ICardVM = {
   ref: "uniswap-v3:1:1002",
   nftTokenId: "1002",
   status: "out-of-range",
+  rangeTone: "out-of-range",
   priceRange: { ...basePriceRange, currentLabel: "2,350", bandLeftPct: 5, bandWidthPct: 40, thumbPct: 92, inRange: false },
 };
 
@@ -63,6 +79,7 @@ export const closed: ICardVM = {
   ref: "uniswap-v3:1:1003",
   nftTokenId: "1003",
   status: "closed",
+  rangeTone: "closed",
   fees: [],
   principal: [],
 };
@@ -84,4 +101,20 @@ export const longAddressNoIcon: ICardVM = {
     quote: { tokenRef: "8453:0xb", symbol: "USDC", iconUrl: "" },
   },
   poolAddress: "0x1234567890abcdef1234567890abcdef12345678",
+};
+
+export const nearUpperBound: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1006",
+  nftTokenId: "1006",
+  rangeTone: "near-upper",
+  priceRange: { ...basePriceRange, currentLabel: "2,170", thumbPct: 80 },
+};
+
+export const nearLowerBound: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1007",
+  nftTokenId: "1007",
+  rangeTone: "near-lower",
+  priceRange: { ...basePriceRange, currentLabel: "1,830", thumbPct: 20 },
 };

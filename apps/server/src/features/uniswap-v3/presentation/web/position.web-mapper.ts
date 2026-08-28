@@ -1,4 +1,4 @@
-import { formatPrice, formatTokenAmount } from "@depthly/protocol-math/format";
+import { formatPrice, formatTokenAmount, formatTokenAmountShort } from "@depthly/protocol-math/format";
 import { deriveStatus, priceRangeFromTicks, type TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
 
 import { UNISWAP_V3_EXTENSION_TYPE, type UniswapV3Extension } from "../schemas/extension.schema";
@@ -7,7 +7,10 @@ import type { Position, PositionToken, TokensMap } from "#shared/contracts";
 export interface ITokenSideVM {
   tokenRef: string;
   symbol: string;
+  // The amount at the token's own display precision, and at a width a list column can
+  // hold. The list layouts give every amount one narrow slot; the detail view does not.
   formatted: string;
+  formattedShort: string;
   iconUrl: string;
 }
 
@@ -17,11 +20,14 @@ export interface IPairSideVM {
   iconUrl: string;
 }
 
+export type TPositionRangeTone = "in-range" | "near-lower" | "near-upper" | "out-of-range" | "closed";
+
 export interface ICardVM {
   ref: string;
   nftTokenId: string;
   feeTierLabel: string;
   status: TUniswapV3RangeStatus;
+  rangeTone: TPositionRangeTone;
   inverted: boolean;
   chainId: number;
   protocolLabel: string;
@@ -49,9 +55,15 @@ const tokenSide = (positionToken: PositionToken, tokens: TokensMap): ITokenSideV
     tokenRef: positionToken.tokenRef,
     symbol: meta?.symbol ?? positionToken.tokenRef,
     formatted: formatTokenAmount(positionToken.balance.formatted, meta?.displayDecimals),
+    formattedShort: formatTokenAmountShort(positionToken.balance.formatted),
     iconUrl: meta?.iconUrl ?? "",
   };
 };
+
+// Both amount lists are rendered as bare numbers whose slots the pair names, so they
+// have to follow the pair through an inversion or the two swap places without it.
+const displayOrder = (positionTokens: PositionToken[], inverted: boolean): PositionToken[] =>
+  inverted ? [positionTokens[1], positionTokens[0]].filter((token): token is PositionToken => Boolean(token)) : positionTokens;
 
 const derivePair = (principals: PositionToken[], tokens: TokensMap, inverted: boolean): ICardVM["pair"] => {
   const baseRef = principals[inverted ? 1 : 0]?.tokenRef ?? "";
@@ -106,6 +118,18 @@ const computeRangeBar = (
   return { bandLeftPct: bandLeft * 100, bandWidthPct: bandWidth * 100, thumbPct: thumb * 100, inRange };
 };
 
+// Ticks are log-price, so a fixed fraction of the band is a fixed proportional move of the
+// price — the same warning distance whether the range is wide or narrow.
+const NEAR_EDGE_FRACTION = 0.1;
+
+export const deriveRangeTone = (status: TUniswapV3RangeStatus, bar: ICardVM["priceRange"]): TPositionRangeTone => {
+  if (status !== "in-range") return status;
+  const positionInBand = (bar.thumbPct - bar.bandLeftPct) / bar.bandWidthPct;
+  if (positionInBand <= NEAR_EDGE_FRACTION) return "near-lower";
+  if (positionInBand >= 1 - NEAR_EDGE_FRACTION) return "near-upper";
+  return "in-range";
+};
+
 const derivePriceRange = (principals: PositionToken[], ext: UniswapV3Extension, tokens: TokensMap, inverted: boolean): ICardVM["priceRange"] => {
   const baseRef = principals[0]?.tokenRef ?? "";
   const quoteRef = principals[1]?.tokenRef ?? "";
@@ -142,20 +166,25 @@ export const mapPositionToCardVM = (position: Position, tokens: TokensMap, opts:
   const { inverted } = opts;
 
   const principals = position.tokens.filter((t) => t.role === "principal");
-  const orderedPrincipals = inverted ? [principals[1], principals[0]].filter((t): t is PositionToken => Boolean(t)) : principals;
+  const status = deriveStatus(position.status.state);
+  const priceRange = derivePriceRange(principals, ext, tokens, inverted);
 
   return {
     ref: position.ref,
     nftTokenId: ext.nftTokenId,
     feeTierLabel: ext.feeTierLabel,
-    status: deriveStatus(position.status.state),
+    status,
+    rangeTone: deriveRangeTone(status, priceRange),
     inverted,
     chainId: Number(position.ref.split(":")[1]),
     protocolLabel: "Uniswap V3",
     pair: derivePair(principals, tokens, inverted),
-    principal: orderedPrincipals.map((t) => tokenSide(t, tokens)),
-    fees: position.tokens.filter((t) => t.role === "fee").map((t) => tokenSide(t, tokens)),
-    priceRange: derivePriceRange(principals, ext, tokens, inverted),
+    principal: displayOrder(principals, inverted).map((t) => tokenSide(t, tokens)),
+    fees: displayOrder(
+      position.tokens.filter((t) => t.role === "fee"),
+      inverted,
+    ).map((t) => tokenSide(t, tokens)),
+    priceRange,
     poolAddress: ext.pool.address,
   };
 };

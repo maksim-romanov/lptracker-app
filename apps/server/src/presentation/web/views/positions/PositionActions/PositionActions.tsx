@@ -26,7 +26,10 @@ export const PositionActions = ({ card, pairLabel }: { card: ICardVM; pairLabel:
       hx-swap="outerHTML"
       hx-indicator="this"
       aria-label="Invert price"
-      class="relative z-1 p-1.5"
+      // Muted and unframed at rest so a secondary action stops competing with the row's
+      // data, and never hidden behind hover alone — that would strand it on touch. The
+      // border stays declared, only transparent, so nothing shifts when it comes back.
+      class="relative z-1 border-transparent p-1.5 text-on-surface-variant focus-visible:border-outline focus-visible:text-on-surface group-hover:border-outline group-hover:text-on-surface"
     >
       <Icon name="invert" size={16} />
     </Button>

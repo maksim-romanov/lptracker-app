@@ -21,6 +21,25 @@ export function formatTokenAmount(raw: string, displayDecimals?: number): string
   return numbro(value).format({ thousandSeparated: true, mantissa, trimMantissa: true });
 }
 
+const SHORT_MIN = 1e-4;
+const SHORT_THOUSANDS_MANTISSA = 2;
+const SHORT_MANTISSA = 4;
+
+// The same magnitude ladder the widget formats prices with (PriceMath.format) — the two
+// surfaces show the same position side by side, so a balance must not read as a different
+// number in each. `formatTokenAmount` fixes the decimals per token instead, which is right
+// where the amount stands alone but puts a 6-decimal balance next to a 2-decimal one in a
+// list column that has to hold both.
+export function formatTokenAmountShort(raw: string): string {
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value === 0) return "0";
+  const abs = Math.abs(value);
+  if (abs < SHORT_MIN) return "< 0.0001";
+  if (abs >= COMPACT_THRESHOLD) return formatCompact(value);
+  const mantissa = abs >= 1000 ? SHORT_THOUSANDS_MANTISSA : SHORT_MANTISSA;
+  return numbro(value).format({ thousandSeparated: true, mantissa, trimMantissa: true });
+}
+
 export function formatPrice(price: number): string {
   if (!Number.isFinite(price) || price <= 0) return "—";
   if (price >= 1e15) return "∞";
