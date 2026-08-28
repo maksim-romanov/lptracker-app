@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "deny": ["Read(./generated/**)", "Read(./build/**)"]
+  },
+  "worktree": {
+    "sparsePaths": [".claude", "apps/subgraphs/slipstream"]
+  }
+}
