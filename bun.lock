@@ -24,6 +24,7 @@
       "name": "landing",
       "dependencies": {
         "@11ty/eleventy": "^3.0.0",
+        "@depthly/theme": "workspace:*",
         "lenis": "^1.1.20",
         "ogl": "^1.0.11",
       },

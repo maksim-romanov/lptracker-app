@@ -1,4 +1,4 @@
-import { type FaceName, type FamilyName, faces, families } from "../fonts/manifest";
+import { type FaceName, type FamilyName, faces, fallbackFamily, families } from "../fonts/manifest";
 import { tokenAlias } from "../kit/alias";
 
 // Native platforms resolve a face by its PostScript name; the web picks a family and lets
@@ -9,8 +9,13 @@ const fontFamily = Object.fromEntries(Object.entries(faces).map(([name, face]) =
   { $value: string }
 >;
 
+// The metric-matched stand-in sits between the webfont and the generic families, so text that
+// paints before the webfont arrives already occupies the space the webfont will take.
 const fontStack = Object.fromEntries(
-  Object.entries(families).map(([name, family]) => [name, { $value: `"${family.cssFamily}", ${family.fallbacks}` }]),
+  Object.entries(families).map(([name, family]) => [
+    name,
+    { $value: `"${family.cssFamily}", "${fallbackFamily(family)}", ${family.fallbacks}` },
+  ]),
 ) as Record<FamilyName, { $value: string }>;
 
 const font = tokenAlias({ typography: { fontFamily } });

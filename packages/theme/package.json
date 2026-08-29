@@ -13,7 +13,9 @@
     "./themes/*": "./dist/js/themes/*.ts",
     "./css/depthly.css": "./dist/css/depthly.css",
     "./css/spacing.css": "./dist/css/spacing.css",
-    "./css/typography.css": "./dist/css/typography.css"
+    "./css/typography.css": "./dist/css/typography.css",
+    "./css/fonts-app.css": "./dist/css/fonts-app.css",
+    "./css/fonts-landing.css": "./dist/css/fonts-landing.css"
   },
   "scripts": {
     "codegen": "bun run scripts/generate-tokens.ts",

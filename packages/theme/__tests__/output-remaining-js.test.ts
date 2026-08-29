@@ -20,7 +20,7 @@ describe("generated typography.ts / spacing.ts / networks.ts", () => {
     // makes React Native fall back to the system font without erroring.
     expect(content).toContain('sansSemiBold: "IBMPlexSans-SmBld"');
     expect(content).toContain('monoMedium: "IBMPlexMono-Medm"');
-    expect(content).toContain(String.raw`sans: "\"IBM Plex Sans\", ui-sans-serif, system-ui, sans-serif"`);
+    expect(content).toContain(String.raw`sans: "\"IBM Plex Sans\", \"IBM Plex Sans Fallback\", ui-sans-serif, system-ui, sans-serif"`);
   });
 
   test("figures are set in the mono family, words in the sans", async () => {

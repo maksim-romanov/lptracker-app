@@ -2,7 +2,7 @@ import StyleDictionary from "style-dictionary";
 import type { Config } from "style-dictionary/types";
 
 import { type Resolved, resolveTree } from "./tree";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 export interface GeneratedFile {
@@ -13,6 +13,12 @@ export interface GeneratedFile {
 
 export interface TokensPlugin<T> {
   name: string;
+  /**
+   * Directories this plugin fully owns. Emptied before its files are written, so renaming an
+   * output cannot leave an orphan behind — which nobody would notice, since these directories
+   * are gitignored on the receiving side.
+   */
+  cleanDirs?(tree: Resolved<T>): string[];
   files(tree: Resolved<T>): GeneratedFile[];
 }
 
@@ -47,6 +53,9 @@ export async function build<T extends object>(config: TokensConfig<T>): Promise<
   const tree = resolveTree(dictionary.tokens) as Resolved<T>;
 
   for (const plugin of config.plugins) {
+    for (const dir of plugin.cleanDirs?.(tree) ?? []) {
+      await rm(dir, { recursive: true, force: true });
+    }
     for (const file of plugin.files(tree)) {
       await mkdir(dirname(file.path), { recursive: true });
       await writeFile(file.path, file.contents);

@@ -25,8 +25,8 @@ describe("generated typography.css", () => {
   test("emits both families and one Tailwind text utility per role", async () => {
     const content = await Bun.file(`${import.meta.dir}/../dist/css/typography.css`).text();
     expect(content).toContain("@theme {");
-    expect(content).toContain('--font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;');
-    expect(content).toContain('--font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;');
+    expect(content).toContain('--font-sans: "IBM Plex Sans", "IBM Plex Sans Fallback", ui-sans-serif, system-ui, sans-serif;');
+    expect(content).toContain('--font-mono: "IBM Plex Mono", "IBM Plex Mono Fallback", ui-monospace, SFMono-Regular, Menlo, monospace;');
 
     expect(content).toContain("--text-display: 34px;");
     expect(content).toContain("--text-display--line-height: 40px;");

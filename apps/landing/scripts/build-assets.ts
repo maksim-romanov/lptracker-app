@@ -143,9 +143,9 @@ const popupOptions: esbuild.BuildOptions = {
 
 await run("bun", ["scripts/sample-silhouette.ts"]);
 await run("bun", ["scripts/build-token-atlas.ts"]);
-await cleanOld(JS_DIR, /^hero\.([a-z0-9]+|bundle)\.js$/);
-await cleanOld(JS_DIR, /^popup\.([a-z0-9]+|bundle)\.js$/);
-await cleanOld(CSS_DIR, /^main\.([a-z0-9]+|bundle)\.css$/);
+await cleanOld(JS_DIR, /^hero\.([A-Za-z0-9]+|bundle)\.js$/);
+await cleanOld(JS_DIR, /^popup\.([A-Za-z0-9]+|bundle)\.js$/);
+await cleanOld(CSS_DIR, /^main\.([A-Za-z0-9]+|bundle)\.css$/);
 
 if (isWatch) {
   const heroCtx = await esbuild.context({
