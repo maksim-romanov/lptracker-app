@@ -17,11 +17,11 @@ Bun workspaces (`apps/*`, `apps/subgraphs/*`, `packages/*`) + Turborepo. Read th
 | [`apps/tokens-data`](apps/tokens-data/CLAUDE.md) | Standalone Hono/Bun sidecar producing token metadata; consumed only via `server#codegen`. |
 | [`apps/landing`](apps/landing/CLAUDE.md) | 11ty static site with a custom esbuild pipeline and a WebGL particle hero. |
 | [`apps/subgraphs`](apps/subgraphs/CLAUDE.md) | The Graph indexers in AssemblyScript — [`uniswap-v3`](apps/subgraphs/uniswap-v3/CLAUDE.md), [`uniswap-v4`](apps/subgraphs/uniswap-v4/CLAUDE.md). |
-| [`packages/catalog`](packages/catalog/CLAUDE.md) | Network + protocol reference data. |
+| `packages/catalog` | Network + protocol reference data. |
 | [`packages/theme`](packages/theme/CLAUDE.md) | Design tokens, generated via Style Dictionary — shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget. |
-| [`packages/protocol-math`](packages/protocol-math/CLAUDE.md) | Uniswap v3 tick/price math + number formatting. |
-| [`packages/logger`](packages/logger/CLAUDE.md) | `logtape` wrapper used by `server` and `tokens-data`. |
-| [`packages/typescript-config`](packages/typescript-config/CLAUDE.md) | Shared `tsconfig` bases. |
+| `packages/protocol-math` | Uniswap v3 tick/price math + number formatting. |
+| `packages/logger` | `logtape` wrapper used by `server` and `tokens-data`. |
+| `packages/typescript-config` | Shared `tsconfig` bases. |
 
 **v4 isn't wired up above the subgraph yet:** `packages/catalog`'s `PROTOCOLS_META` only registers `uniswap-v3`. Neither `apps/server` nor `apps/mobile`'s protocol-plugin registry can reference v4 until a `uniswap-v4` entry is added there — the v4 subgraph itself is deployed and indexing, it's just not consumed anywhere yet.
 

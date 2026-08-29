@@ -3,6 +3,7 @@
     "deny": ["Read(./_site/**)"]
   },
   "worktree": {
-    "sparsePaths": [".claude", "apps/landing", "packages/typescript-config"]
+    "symlinkDirectories": ["node_modules"],
+    "sparsePaths": [".claude", ".agents", "apps/landing", "packages/typescript-config"]
   }
 }

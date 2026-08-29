@@ -11,8 +11,10 @@
     ]
   },
   "worktree": {
+    "symlinkDirectories": ["node_modules"],
     "sparsePaths": [
       ".claude",
+      ".agents",
       "apps/server",
       "apps/tokens-data",
       "packages/catalog",

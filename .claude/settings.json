@@ -10,11 +10,18 @@
       "Read(./apps/subgraphs/*/build/**)",
       "Read(./apps/tokens-data/generated/**)",
       "Read(./apps/landing/_site/**)",
+      "Read(./apps/server/src/static/dist/**)",
+      "Read(./apps/server/storybook-static/**)",
+      "Read(./packages/theme/dist/**)",
       "Read(./**/.impeccable/**)"
     ]
   },
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true
+  },
   "worktree": {
-    "sparsePaths": [".claude", ".agents", "apps", "packages"]
+    "sparsePaths": [".claude", ".agents", "apps", "packages"],
+    "symlinkDirectories": ["node_modules"]
   },
   "hooks": {
     "PostToolUse": [
