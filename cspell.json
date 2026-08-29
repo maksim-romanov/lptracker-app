@@ -23,40 +23,115 @@
     "tokens-words"
   ],
   "dictionaryDefinitions": [
-    { "name": "base-words", "path": "./cspell/base.txt", "addWords": true },
-    { "name": "eth-words", "path": "./cspell/eth.txt", "addWords": true },
-    { "name": "defi-words", "path": "./cspell/defi.txt", "addWords": true },
-    { "name": "tokens-words", "path": "./cspell/tokens.txt", "addWords": true },
-    { "name": "server-words", "path": "./apps/server/cspell-words.txt", "addWords": true },
-    { "name": "mobile-words", "path": "./apps/mobile/cspell-words.txt", "addWords": true },
-    { "name": "tokens-data-words", "path": "./apps/tokens-data/cspell-words.txt", "addWords": true },
-    { "name": "subgraph-words", "path": "./apps/subgraphs/cspell-words.txt", "addWords": true },
-    { "name": "landing-words", "path": "./apps/landing/cspell-words.txt", "addWords": true }
+    {
+      "name": "base-words",
+      "path": "./cspell/base.txt",
+      "addWords": true
+    },
+    {
+      "name": "eth-words",
+      "path": "./cspell/eth.txt",
+      "addWords": true
+    },
+    {
+      "name": "defi-words",
+      "path": "./cspell/defi.txt",
+      "addWords": true
+    },
+    {
+      "name": "tokens-words",
+      "path": "./cspell/tokens.txt",
+      "addWords": true
+    },
+    {
+      "name": "server-words",
+      "path": "./apps/server/cspell-words.txt",
+      "addWords": true
+    },
+    {
+      "name": "mobile-words",
+      "path": "./apps/mobile/cspell-words.txt",
+      "addWords": true
+    },
+    {
+      "name": "tokens-data-words",
+      "path": "./apps/tokens-data/cspell-words.txt",
+      "addWords": true
+    },
+    {
+      "name": "subgraph-words",
+      "path": "./apps/subgraphs/cspell-words.txt",
+      "addWords": true
+    },
+    {
+      "name": "landing-words",
+      "path": "./apps/landing/cspell-words.txt",
+      "addWords": true
+    }
   ],
   "overrides": [
     {
-      "filename": ["apps/server/**", "packages/logger/**"],
-      "dictionaries": ["server-words"]
+      "filename": [
+        "apps/server/**",
+        "packages/logger/**"
+      ],
+      "dictionaries": [
+        "server-words"
+      ]
     },
     {
-      "filename": ["apps/mobile/**", "packages/theme/**"],
-      "dictionaries": ["mobile-words"]
+      "filename": [
+        "apps/mobile/**",
+        "packages/theme/**"
+      ],
+      "dictionaries": [
+        "mobile-words"
+      ]
     },
     {
-      "filename": ["apps/tokens-data/**"],
-      "dictionaries": ["tokens-data-words"]
+      "filename": [
+        "apps/tokens-data/**"
+      ],
+      "dictionaries": [
+        "tokens-data-words"
+      ]
     },
     {
-      "filename": ["apps/subgraphs/**"],
-      "dictionaries": ["subgraph-words"]
+      "filename": [
+        "apps/subgraphs/**"
+      ],
+      "dictionaries": [
+        "subgraph-words"
+      ]
     },
     {
-      "filename": ["apps/landing/**"],
-      "dictionaries": ["landing-words"]
+      "filename": [
+        "apps/landing/**"
+      ],
+      "dictionaries": [
+        "landing-words"
+      ]
     },
     {
-      "filename": ["docs/**", "CLAUDE.md", "README.md", "package.json", "biome.json", "lefthook.yml", "cspell.json", ".github/**"],
-      "dictionaries": ["server-words", "mobile-words", "tokens-data-words", "subgraph-words", "landing-words"]
+      "filename": [
+        "docs/**",
+        "CLAUDE.md",
+        "README.md",
+        "package.json",
+        "biome.json",
+        "lefthook.yml",
+        "cspell.json",
+        ".github/**",
+        "DESIGN.md",
+        "PRODUCT.md"
+      ],
+      "dictionaries": [
+        "server-words",
+        "mobile-words",
+        "tokens-data-words",
+        "subgraph-words",
+        "landing-words"
+      ]
     }
   ],
   "ignorePaths": [
@@ -118,6 +193,12 @@
     "skills-lock.json",
     "dump.rdb"
   ],
-  "ignoreRegExpList": ["0x[0-9a-fA-F]+", "https?://\\S+", "[a-zA-Z0-9+/]{40,}={0,2}", "[a-f0-9]{32,}", "[\\u0400-\\u04FF]+"],
+  "ignoreRegExpList": [
+    "0x[0-9a-fA-F]+",
+    "https?://\\S+",
+    "[a-zA-Z0-9+/]{40,}={0,2}",
+    "[a-f0-9]{32,}",
+    "[\\u0400-\\u04FF]+"
+  ],
   "useGitignore": true
 }

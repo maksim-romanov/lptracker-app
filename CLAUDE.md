@@ -4,6 +4,9 @@ Guidance for Claude Code when working in this repository.
 
 > **Brand:** `Depthly`. Workspace package scopes are `@depthly/*`.
 
+Before any UI work, read [PRODUCT.md](PRODUCT.md) for who this is for and what it must not look
+like, then [DESIGN.md](DESIGN.md) for the visual system every surface shares.
+
 ## Big picture
 
 DeFi portfolio monitoring. Data flows **Blockchain → Subgraphs (The Graph) + tokens-data → Hono API → Mobile app**.

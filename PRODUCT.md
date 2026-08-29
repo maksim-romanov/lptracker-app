@@ -14,7 +14,7 @@ This is a Turborepo monorepo with several design surfaces. PRODUCT.md anchors th
 - **Apple Watch** _(planned)_ — wrist-glance complications for followed positions. An extension of the widget's ambient-presence thesis.
 - **Blog** _(planned)_ — long-form content. Brand register when it lands.
 
-All three built surfaces share one system: colours, spacing, radius and type roles come from
+All three built surfaces share one system: colors, spacing, radius and type roles come from
 `packages/theme`. A surface may set less than the full system, never something different.
 
 The widget / Watch / Telegram surfaces are constrained spaces — design for them as glanceable, single-purpose readouts, not shrunk-down dashboards.

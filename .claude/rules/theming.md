@@ -8,6 +8,10 @@ paths:
 
 # Shared design tokens
 
+The rules these values serve — palette doctrine, the two type families, elevation, what not to
+build — are in [DESIGN.md](../../DESIGN.md). This file covers only how the tokens are generated
+and consumed.
+
 `packages/theme` is the single source for colour, spacing, radius **and typography** across
 mobile, `/app` (SSR), the landing, and the iOS widget. Edit `packages/theme/tokens/`, then
 `bun run codegen` from the root — never hand-edit `dist/js/*.ts`, `dist/css/*.css`, or the
