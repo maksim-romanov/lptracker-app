@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@depthly/typescript-config": "workspace:*",
-    "daisyui": "^5.1.30",
     "style-dictionary": "^5.5.0"
   }
 }

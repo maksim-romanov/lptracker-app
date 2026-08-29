@@ -12,7 +12,7 @@ Bun workspaces (`apps/*`, `apps/subgraphs/*`, `packages/*`) + Turborepo. Read th
 
 | Path | What it is |
 | --- | --- |
-| [`apps/server`](apps/server/CLAUDE.md) | Hono API on Bun. Clean Architecture (domain → data → app → presentation), tsyringe DI, neverthrow `Result` error handling. Also serves a small Tailwind/daisyUI/HTMX SSR web app. |
+| [`apps/server`](apps/server/CLAUDE.md) | Hono API on Bun. Clean Architecture (domain → data → app → presentation), tsyringe DI, neverthrow `Result` error handling. Also serves a small Tailwind/HTMX SSR web app. |
 | [`apps/mobile`](apps/mobile/CLAUDE.md) | React Native 0.83 / Expo 55 / React 19. DDD feature modules, tsyringe DI, MobX + TanStack Query, react-native-unistyles. Ships an iOS home-screen widget. |
 | [`apps/tokens-data`](apps/tokens-data/CLAUDE.md) | Standalone Hono/Bun sidecar producing token metadata; consumed only via `server#codegen`. |
 | [`apps/landing`](apps/landing/CLAUDE.md) | 11ty static site with a custom esbuild pipeline and a WebGL particle hero. |
