@@ -1,65 +1,34 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "globalPassThroughEnv": [
-    "ANDROID_HOME",
-    "ANDROID_SDK_ROOT",
-    "JAVA_HOME"
-  ],
+  "globalPassThroughEnv": ["ANDROID_HOME", "ANDROID_SDK_ROOT", "JAVA_HOME"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build",
-        "codegen"
-      ],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env*"
-      ],
-      "outputs": [
-        "dist/**",
-        "build/**",
-        "_site/**"
-      ]
+      "dependsOn": ["^build", "codegen"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**", "build/**", "_site/**"]
     },
     "lint": {
-      "dependsOn": [
-        "^lint"
-      ]
+      "dependsOn": ["^lint"]
     },
     "lint:fix": {
-      "dependsOn": [
-        "^lint:fix"
-      ]
+      "dependsOn": ["^lint:fix"]
     },
     "lint:deps": {},
     "typecheck": {
-      "dependsOn": [
-        "^typecheck",
-        "codegen"
-      ]
+      "dependsOn": ["^typecheck", "codegen"]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "dev:ios": {
-      "with": [
-        "server#dev",
-        "tokens-data#dev",
-        "server#css:dev",
-        "server#js:dev"
-      ],
+      "with": ["server#dev", "tokens-data#dev", "server#css:dev", "server#js:dev"],
       "cache": false,
       "persistent": true
     },
     "dev:android": {
-      "with": [
-        "server#dev",
-        "tokens-data#dev",
-        "server#css:dev",
-        "server#js:dev"
-      ],
+      "with": ["server#dev", "tokens-data#dev", "server#css:dev", "server#js:dev"],
       "cache": false,
       "persistent": true
     },
@@ -72,41 +41,13 @@
       "persistent": true
     },
     "codegen": {
-      "outputs": [
-        "apps/server/openapi/**",
-        "apps/server/src/features/uniswap-v3/data/gql/**",
-        "apps/server/src/features/token-prices/data/tokens-data.generated.ts",
-        "apps/tokens-data/generated/**",
-        "apps/mobile/src/core/api-client/generated/**",
-        "apps/mobile/src/features/uniswap-v3/data/generated/**",
-        "apps/mobile/src/core/tokens-data/generated.d.ts",
-        "packages/theme/dist/**"
-      ],
-      "env": [
-        "GRAPH_API_KEY"
-      ]
-    },
-    "server#codegen": {
-      "dependsOn": [
-        "tokens-data#codegen",
-        "@depthly/theme#codegen"
-      ]
-    },
-    "mobile#codegen": {
-      "dependsOn": [
-        "server#codegen"
-      ]
+      "env": ["GRAPH_API_KEY"]
     },
     "test": {
-      "dependsOn": [
-        "build"
-      ]
+      "dependsOn": ["build"]
     },
     "deploy": {
-      "dependsOn": [
-        "build",
-        "test"
-      ],
+      "dependsOn": ["build", "test"],
       "cache": false
     },
     "docker:up": {

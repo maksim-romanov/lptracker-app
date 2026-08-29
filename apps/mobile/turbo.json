@@ -1,0 +1,10 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "codegen": {
+      "dependsOn": ["server#codegen"],
+      "outputs": ["src/core/api-client/generated/**", "src/features/uniswap-v3/data/generated/**", "src/core/tokens-data/generated.d.ts"]
+    }
+  }
+}

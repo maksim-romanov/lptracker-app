@@ -1,0 +1,10 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "codegen": {
+      "dependsOn": ["tokens-data#codegen", "@depthly/theme#codegen"],
+      "outputs": ["openapi/**", "src/features/uniswap-v3/data/gql/**", "src/features/token-prices/data/tokens-data.generated.ts"]
+    }
+  }
+}
