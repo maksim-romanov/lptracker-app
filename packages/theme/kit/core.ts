@@ -7,7 +7,8 @@ import { dirname } from "node:path";
 
 export interface GeneratedFile {
   path: string;
-  contents: string;
+  /** Binary for plugins that distribute assets rather than emit source. */
+  contents: string | Uint8Array;
 }
 
 export interface TokensPlugin<T> {

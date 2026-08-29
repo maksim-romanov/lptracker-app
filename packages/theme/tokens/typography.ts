@@ -1,25 +1,17 @@
+import { type FaceName, type FamilyName, faces, families } from "../fonts/manifest";
 import { tokenAlias } from "../kit/alias";
 
-// React Native resolves a face by its PostScript name, which for IBM Plex abbreviates the
-// style token — `-Medm`, not `-Medium`; `-SmBld`, not `-SemiBold`. Getting these wrong makes
-// the platform fall back to the system font silently. Verified with `fc-scan` against the
-// shipped files in apps/mobile/assets/fonts.
-const fontFamily = {
-  sans: { $value: "IBMPlexSans" },
-  sansMedium: { $value: "IBMPlexSans-Medm" },
-  sansSemiBold: { $value: "IBMPlexSans-SmBld" },
-  sansBold: { $value: "IBMPlexSans-Bold" },
-  mono: { $value: "IBMPlexMono" },
-  monoMedium: { $value: "IBMPlexMono-Medm" },
-  monoSemiBold: { $value: "IBMPlexMono-SmBld" },
-};
+// Native platforms resolve a face by its PostScript name; the web picks a family and lets
+// the weight choose the face. Both shapes are derived from fonts/manifest.ts so a face is
+// declared exactly once, next to the file it names.
+const fontFamily = Object.fromEntries(Object.entries(faces).map(([name, face]) => [name, { $value: face.postScriptName }])) as Record<
+  FaceName,
+  { $value: string }
+>;
 
-// The web selects a family and lets the weight pick the face, so it needs the human family
-// name plus a fallback chain — a different shape from the PostScript names above.
-const fontStack = {
-  sans: { $value: '"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif' },
-  mono: { $value: '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace' },
-};
+const fontStack = Object.fromEntries(
+  Object.entries(families).map(([name, family]) => [name, { $value: `"${family.cssFamily}", ${family.fallbacks}` }]),
+) as Record<FamilyName, { $value: string }>;
 
 const font = tokenAlias({ typography: { fontFamily } });
 

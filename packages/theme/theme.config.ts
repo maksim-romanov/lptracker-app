@@ -1,5 +1,7 @@
+import { targets as fontTargets } from "./fonts/manifest";
 import { defineTokens } from "./kit/core";
 import { cssVariablesTheme } from "./kit/plugins/css-variables";
+import { fontAssets } from "./kit/plugins/font-assets";
 import { iosColorsets } from "./kit/plugins/ios-colorsets";
 import { jsModules } from "./kit/plugins/js-modules";
 import type { Resolved } from "./kit/tree";
@@ -187,6 +189,7 @@ export default defineTokens({
       headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/typography.ts */"],
       blocks: (tree) => [{ selector: "@theme", declarations: typographyVars(tree.typography) }],
     }),
+    fontAssets<Tokens>({ sourceDir: "fonts", targets: fontTargets }),
     iosColorsets<Tokens>({
       outDir: "../../apps/mobile/targets/positions-widget/Assets.xcassets",
       author: "depthly-theme-codegen",
