@@ -1,3 +1,9 @@
+---
+paths:
+  - "packages/theme/tokens/**"
+  - "packages/theme/kit/**"
+---
+
 # Design token authoring (`packages/theme/tokens/`)
 
 Two color layers, following Material 3's `ref`/`sys` split and the DTCG format:

@@ -58,3 +58,5 @@ dump.rdb
 
 ios/
 android/
+# Agent skills: files live in .agents/skills, .claude/skills holds symlinks for Claude Code
+!.claude/skills

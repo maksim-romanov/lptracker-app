@@ -1,17 +1,11 @@
 {
   "version": 1,
   "skills": {
-    "daisyui": {
-      "source": "saadeghi/daisyui",
+    "turborepo": {
+      "source": "vercel/turborepo",
       "sourceType": "github",
-      "skillPath": "skills/daisyui/SKILL.md",
-      "computedHash": "85ad75b7c89a34891786d2bc561aa4a1fa009eb519c6481e8ecab3a43bd2174a"
-    },
-    "swiftui-expert-skill": {
-      "source": "avdlee/swiftui-agent-skill",
-      "sourceType": "github",
-      "skillPath": "swiftui-expert-skill/SKILL.md",
-      "computedHash": "ffe7adc4c442d2e75985b61ab281e3e303fe201c077ed05d82c0198a18fb1a25"
+      "skillPath": "skills/turborepo/SKILL.md",
+      "computedHash": "9fc79a6ea6cfab14b048a83818991ed3fcb681a205baf35343e0ab378c239b5f"
     }
   }
 }

@@ -14,6 +14,20 @@
     ]
   },
   "worktree": {
-    "sparsePaths": [".claude", "apps", "packages"]
+    "sparsePaths": [".claude", ".agents", "apps", "packages"]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); [ -n \"$f\" ] || exit 0; out=$(bunx --bun biome check --write --no-errors-on-unmatched --files-ignore-unknown=true \"$f\" 2>&1); case \"$out\" in *'No fixes applied'*) ;; *) echo \"$out\" ;; esac; exit 0",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
   }
 }
