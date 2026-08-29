@@ -12,8 +12,7 @@
       "Read(./apps/landing/_site/**)",
       "Read(./apps/server/src/static/dist/**)",
       "Read(./apps/server/storybook-static/**)",
-      "Read(./packages/theme/dist/**)",
-      "Read(./**/.impeccable/**)"
+      "Read(./packages/theme/dist/**)"
     ]
   },
   "enabledPlugins": {

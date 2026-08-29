@@ -11,16 +11,7 @@
         "organizeImports": {
           "level": "on",
           "options": {
-            "groups": [
-              [
-                "react",
-                "react-native"
-              ],
-              ":BLANK_LINE:",
-              ":PACKAGE:",
-              ":BLANK_LINE:",
-              ":PATH:"
-            ]
+            "groups": [["react", "react-native"], ":BLANK_LINE:", ":PACKAGE:", ":BLANK_LINE:", ":PATH:"]
           }
         }
       }
@@ -34,12 +25,8 @@
         "useSortedClasses": {
           "level": "warn",
           "options": {
-            "attributes": [
-              "class"
-            ],
-            "functions": [
-              "cn"
-            ]
+            "attributes": ["class"],
+            "functions": ["cn"]
           }
         }
       }
@@ -67,18 +54,15 @@
       "!apps/landing/_site",
       "!apps/landing/src/assets/js/hero.bundle.js",
       "!apps/server/src/static/htmx.min.js",
-      "!**/.impeccable/**",
-      "!.claude/skills/**",
-      "!.agents/skills/**",
+      "!.claude/skills",
+      "!.agents/skills",
       "!skills-lock.json",
-      "!**/.omc/**"
+      "!**/.omc"
     ]
   },
   "overrides": [
     {
-      "includes": [
-        "apps/server/src/presentation/web/styles/**/*.css"
-      ],
+      "includes": ["apps/server/src/presentation/web/styles/**/*.css"],
       "linter": {
         "rules": {
           "correctness": {
@@ -88,10 +72,7 @@
       }
     },
     {
-      "includes": [
-        "apps/subgraphs/**/src/**",
-        "apps/subgraphs/**/tests/**"
-      ],
+      "includes": ["apps/subgraphs/**/src/**", "apps/subgraphs/**/tests/**"],
       "linter": {
         "rules": {
           "style": {
