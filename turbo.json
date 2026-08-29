@@ -8,15 +8,18 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", "build/**", "_site/**"]
     },
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["transit"]
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"]
+      "dependsOn": ["transit"]
     },
     "lint:deps": {},
     "typecheck": {
-      "dependsOn": ["^typecheck", "codegen"]
+      "dependsOn": ["transit", "codegen"]
     },
     "dev": {
       "cache": false,

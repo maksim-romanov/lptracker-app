@@ -1,0 +1,17 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "outputs": [
+        "_site/**",
+        "src/assets/js/hero.*.js",
+        "src/assets/js/popup.*.js",
+        "src/assets/css/main.*.css",
+        "src/assets/data/**",
+        "src/assets/img/token-atlas.webp",
+        "src/_data/assets.json"
+      ]
+    }
+  }
+}
