@@ -18,59 +18,13 @@ export const Text = ({ children, style, variant, color, weight, uppercase, cente
 
 const styles = StyleSheet.create((theme) => ({
   text: {
-    fontFamily: "Satoshi-Regular",
-    fontSize: 15,
-    lineHeight: 20,
+    ...theme.typography.body,
     color: theme.onSurface,
 
     variants: {
-      variant: {
-        body: { fontSize: 15, lineHeight: 21 },
-
-        display: {
-          fontFamily: "Satoshi-Black",
-          fontSize: 34,
-          lineHeight: 40,
-          letterSpacing: -0.6,
-        },
-
-        title: {
-          fontFamily: "Satoshi-Bold",
-          fontSize: 22,
-          lineHeight: 28,
-          letterSpacing: -0.3,
-        },
-
-        headline: {
-          fontFamily: "Satoshi-Bold",
-          fontSize: 17,
-          lineHeight: 23,
-          letterSpacing: -0.1,
-        },
-
-        bodySmall: {
-          fontSize: 13,
-          lineHeight: 19,
-        },
-
-        label: {
-          fontFamily: "Satoshi-Medium",
-          fontSize: 12,
-          lineHeight: 16,
-          letterSpacing: 0.5,
-        },
-
-        caption: {
-          fontSize: 11,
-          lineHeight: 14,
-        },
-
-        mono: {
-          fontFamily: "Menlo",
-          fontSize: 14,
-          lineHeight: 20,
-        },
-      },
+      // Every role comes straight from packages/theme, so a size can only ever be changed
+      // in the token tree — there is nowhere here to drift away from it.
+      variant: { ...theme.typography },
 
       color: {
         muted: { color: theme.onSurfaceVariant },
@@ -81,11 +35,14 @@ const styles = StyleSheet.create((theme) => ({
         warning: { color: theme.warning },
       },
 
+      // Emphasis within the sans family. Applying this on top of a figure role (display,
+      // figure, figureSmall) swaps the mono face out for the sans one and breaks column
+      // alignment — those roles already pin their own weight.
       weight: {
-        regular: { fontFamily: "Satoshi-Regular" },
-        medium: { fontFamily: "Satoshi-Medium" },
-        bold: { fontFamily: "Satoshi-Bold" },
-        black: { fontFamily: "Satoshi-Black" },
+        regular: { fontFamily: theme.fontFamily.sans },
+        medium: { fontFamily: theme.fontFamily.sansMedium },
+        semibold: { fontFamily: theme.fontFamily.sansSemiBold },
+        bold: { fontFamily: theme.fontFamily.sansBold },
       },
 
       uppercase: {

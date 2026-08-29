@@ -1,4 +1,4 @@
-import { type ColorTokens, depthlyDark, depthlyLight, radius, spacing, typography } from "@depthly/theme";
+import { type ColorTokens, depthlyDark, depthlyLight, fontFamily, radius, spacing, typography } from "@depthly/theme";
 import { StyleSheet } from "react-native-unistyles";
 
 const stacks = {
@@ -10,6 +10,7 @@ export type AppTheme = ColorTokens & {
   spacing: typeof spacing;
   radius: typeof radius;
   typography: typeof typography;
+  fontFamily: typeof fontFamily;
   stacks: typeof stacks;
 };
 
@@ -18,6 +19,7 @@ const createTheme = (colors: ColorTokens): AppTheme => ({
   spacing,
   radius,
   typography,
+  fontFamily,
   stacks,
 });
 

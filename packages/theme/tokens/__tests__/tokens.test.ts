@@ -41,9 +41,24 @@ describe("token source files", () => {
     expect(networks.color.networks.ethereum.base.$value).toBe("#627EEA");
   });
 
-  test("typography has all 8 roles", () => {
+  test("typography has all 11 roles", () => {
     expect(Object.keys(typography.typography.role).sort()).toEqual(
-      ["body", "bodySmall", "button", "display", "headline", "input", "label", "title"].sort(),
+      ["body", "bodySmall", "button", "caption", "display", "figure", "figureSmall", "headline", "input", "label", "title"].sort(),
+    );
+  });
+
+  test("every role resolves to a family the repo actually ships", () => {
+    const shipped = new Set(Object.values(typography.typography.fontFamily).map((face) => face.$value));
+    expect(shipped).toEqual(
+      new Set([
+        "IBMPlexSans",
+        "IBMPlexSans-Medm",
+        "IBMPlexSans-SmBld",
+        "IBMPlexSans-Bold",
+        "IBMPlexMono",
+        "IBMPlexMono-Medm",
+        "IBMPlexMono-SmBld",
+      ]),
     );
   });
 

@@ -22,6 +22,10 @@ export const Layout = ({ children }: PropsWithChildren) => (
             dark-mode visitor never sees a flash of the light theme. Everything else
             boots from the deferred bundle below. */}
         <script src={assets.themeInit} />
+        {/* The stylesheet only reveals which faces are needed once it has parsed; preloading
+            the two that every screen uses keeps the first paint from swapping fonts. */}
+        <link rel="preload" href="/static/fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/static/fonts/IBMPlexMono-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="stylesheet" href={assets.css} />
         <script src={assets.js} defer />
       </head>

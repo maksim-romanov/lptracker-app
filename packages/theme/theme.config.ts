@@ -25,6 +25,23 @@ const generatedHeader = (source: string) => `// GENERATED FILE — do not edit. 
 const pxVars = (prefix: string, tokens: Record<string, number>): Record<string, string> =>
   Object.fromEntries(Object.entries(tokens).map(([key, value]) => [`--${prefix}-${key}`, `${value}px`]));
 
+const kebab = (role: string) => role.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+
+// Tailwind v4 reads `--text-<name>` plus `--text-<name>--<property>` modifiers out of @theme
+// and builds a `text-<name>` utility from them, so one role emits as one utility.
+const typographyVars = (typography: Tree["typography"]): Record<string, string> => ({
+  "--font-sans": typography.fontStack.sans,
+  "--font-mono": typography.fontStack.mono,
+  ...Object.entries(typography.role).reduce<Record<string, string>>((vars, [role, style]) => {
+    const name = `--text-${kebab(role)}`;
+    vars[name] = `${style.fontSize}px`;
+    vars[`${name}--line-height`] = `${style.lineHeight}px`;
+    vars[`${name}--letter-spacing`] = `${style.letterSpacing}px`;
+    vars[`${name}--font-weight`] = style.fontWeight;
+    return vars;
+  }, {}),
+});
+
 const semanticColors = (mode: Tree["color"]["depthly"]["light"]) => ({
   "--color-surface": mode.surface,
   "--color-surface-dim": mode.surfaceDim,
@@ -115,6 +132,7 @@ export default defineTokens({
               ),
               typeAlias("TypographyTokens", objectType(Object.keys(roles).map((role) => [role, "TextStyleType"] as const))),
               constExport("fontFamily", tree.typography.fontFamily, { asConst: true }),
+              constExport("fontStack", tree.typography.fontStack, { asConst: true }),
               constExport("lineHeight", tree.typography.lineHeight, { asConst: true }),
               constExport("letterSpacing", tree.typography.letterSpacing, { asConst: true }),
               constExport("typography", roles, { type: "TypographyTokens" }),
@@ -163,6 +181,11 @@ export default defineTokens({
       outFile: "dist/css/spacing.css",
       headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/spacing.ts */"],
       blocks: (tree) => [{ selector: "@theme", declarations: { ...pxVars("spacing", tree.spacing), ...pxVars("radius", tree.radius) } }],
+    }),
+    cssVariablesTheme<Tokens>({
+      outFile: "dist/css/typography.css",
+      headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/typography.ts */"],
+      blocks: (tree) => [{ selector: "@theme", declarations: typographyVars(tree.typography) }],
     }),
     iosColorsets<Tokens>({
       outDir: "../../apps/mobile/targets/positions-widget/Assets.xcassets",

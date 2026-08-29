@@ -93,7 +93,7 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   wordmark: {
-    fontFamily: "Satoshi-Black",
+    fontFamily: theme.fontFamily.sansBold,
     fontSize: 56,
     lineHeight: 60,
     letterSpacing: -2,

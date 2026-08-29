@@ -62,9 +62,7 @@ export const PositionStickyPill = function PositionStickyPill({ vm, chainId, scr
                 {vm.pair.quote.symbol}
               </Text>
             </Box>
-            <Text variant="mono" weight="bold">
-              {vm.priceRange.currentLabel}
-            </Text>
+            <Text variant="figure">{vm.priceRange.currentLabel}</Text>
           </Box>
           <Inline space={1} alignY="center">
             <NetworkBadge chainId={chainId} size="sm" />
@@ -110,6 +108,6 @@ const styles = StyleSheet.create((theme) => ({
 
   pairSlash: {
     color: theme.onSurfaceVariant,
-    fontFamily: "Satoshi-Medium",
+    fontFamily: theme.fontFamily.sansMedium,
   },
 }));

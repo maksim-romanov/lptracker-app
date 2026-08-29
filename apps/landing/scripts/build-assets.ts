@@ -129,6 +129,9 @@ const cssOptions: esbuild.BuildOptions = {
   minify: isProd,
   metafile: true,
   logLevel: "info",
+  // Site-absolute urls are served by Eleventy's src/assets → /assets passthrough, so they
+  // resolve at runtime, not at build time. Without this esbuild treats them as file paths.
+  external: ["/assets/*"],
 };
 
 const popupOptions: esbuild.BuildOptions = {
