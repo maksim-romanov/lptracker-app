@@ -22,10 +22,16 @@ Generated per surface:
 | Output | Consumed by |
 | --- | --- |
 | `dist/js/{colors,typography,spacing,networks}.ts` | mobile, via the unistyles theme |
-| `dist/css/depthly.css` | `/app` — semantic colour custom properties |
+| `dist/css/depthly.css` | `/app` — semantic colour custom properties, per theme |
+| `dist/css/tailwind-theme.css` | `/app` — aliases every one of those roles into Tailwind's colour namespace |
 | `dist/css/spacing.css` | `/app` — Tailwind `@theme` spacing + radius |
 | `dist/css/typography.css` | `/app` — Tailwind `@theme` font stacks + one `text-*` utility per role |
+| `dist/css/fonts-{app,landing}.css` | `/app`, the landing — `@font-face` per face per subset |
 | `Assets.xcassets/*.colorset` | iOS widget |
+
+The alias block is generated rather than written by hand: Tailwind only builds a utility for a
+name declared in `@theme`, so a role added to the tree and a role exposed to CSS were two lists
+that could drift, and the drift showed up only as a utility that silently resolved to nothing.
 
 ## Typography
 
@@ -48,8 +54,17 @@ Faces are shipped per target and are not interchangeable: `.ttf` for React Nativ
 widgets, `.woff2` self-hosted for `/app` and the landing. The landing carries only the two
 sans cuts it actually sets.
 
+## Contrast is a gate, not a report
+
+`packages/theme/__tests__/contrast.test.ts` flattens every alpha against every surface and holds
+text to 4.5:1, control boundaries and status marks to 3:1, in both themes. A new colour role goes
+into one of its role lists in the same change that introduces it. If a value fails, move the
+value — don't loosen the threshold, and don't carve the pairing out unless the product genuinely
+never renders it, in which case say which surface and why in the carve-out's comment.
+
 ## Not yet in the token tree
 
-Elevation and motion are still per-surface. `/app` is mid-redesign and deliberately flat —
-hairline borders, no radius, no shadows. Don't infer that mobile's current look is canonical,
-and don't backport SSR-only values into `packages/theme` without a design decision first.
+Motion is still per-surface. Elevation is only half in: `shadow` (the colored glow) and
+`shadowOverlay` (the one grey shadow, for dialogs and popovers) are roles, but the offsets and
+radii that use them are still written per surface. Don't backport other SSR-only values into
+`packages/theme` without a design decision first.

@@ -47,7 +47,7 @@ What sets Depthly apart from existing LP/portfolio trackers (Revert Finance, Kry
 
 ## Brand Personality
 
-Sleek, premium, minimal. The voice is an expert instrument, not a salesperson — calm, precise, and confident, assuming the user is competent. Restraint is the signature: monochrome chrome stays quiet so live data and the single neon-pink accent carry all the meaning. Premium feel comes from what's omitted and how exact the numbers read, never from decoration. Emotional goal: quiet confidence and control over capital that's in motion.
+Sleek, premium, minimal. The voice is an expert instrument, not a salesperson — calm, precise, and confident, assuming the user is competent. Restraint is the signature: neutral chrome stays quiet so live data and the single violet accent carry all the meaning. Premium feel comes from what's omitted and how exact the numbers read, never from decoration. Emotional goal: quiet confidence and control over capital that's in motion.
 
 ## Anti-references
 
@@ -57,12 +57,12 @@ _(Inferred from the theme's own intent and the "sleek, premium, minimal" directi
 - **Corporate fintech**: navy-and-white bank UI, sterile and safe, stock-photo trust signals.
 - **Web3 maximalist**: gradient soup, decorative glassmorphism, floating 3D coins, glow on everything.
 - **Toy / playful consumer**: rounded mascots, pastel gradients, gamified confetti (Robinhood-lite).
-- Per the theme contract: anything tinted pink that isn't a deliberate accent — pink belongs to CTAs, active state, focus, and brand glow only; everywhere else pulls the design off the wireframe.
+- Per the theme contract: anything tinted with the accent that isn't a deliberate accent — violet belongs to CTAs, active state, focus, and brand glow only; everywhere else pulls the design off the wireframe.
 
 ## Design Principles
 
 1. **Instrument, not toy.** Every element is an affordance for reading or acting on capital. If it doesn't help the user understand or move money, it doesn't ship.
-2. **Silence, then signal.** Chrome is monochrome and quiet on purpose. The neon accent and the live numbers are the only things allowed to speak loudly — and only when they mean something.
+2. **Silence, then signal.** Chrome is neutral and quiet on purpose. The accent and the live numbers are the only things allowed to speak loudly — and only when they mean something.
 3. **The data is the hero.** Positions, fees, and P&L are the content. Layout and chrome recede so the figures lead; never let decoration compete with a number.
 4. **Restraint is the luxury.** Premium comes from omission and precision, not ornament. When in doubt, remove.
 5. **Never mislead.** Onchain numbers must be exact and unambiguous. P&L and status are never signalled by color alone — pair red/green with icon, label, or sign so the meaning survives color blindness and a glance.

@@ -9,39 +9,75 @@ Telegram mini app at `/app`, and the landing. Strategy, audience and anti-refere
 may never use something different. If a surface needs a value the system lacks, the value goes
 into the token tree — not into that surface's stylesheet.
 
-> `/app` is mid-redesign and deliberately unfinished: hairline borders, no radius, no elevation.
-> This document describes where it is going, not where it is. Mobile is the reference
-> implementation today.
+> `/app` is the surface this system was rebuilt on and is the closest thing to a reference
+> implementation of the colour rules below. `apps/mobile` compiles against the same tokens and
+> has been recoloured by them, but its screens have not been reviewed since — treat a mobile
+> screen as unreviewed until someone has actually looked at it.
 
 ## Color
 
-Pure black canvas, monochrome chrome, one neon signal. Depth comes from tonal steps, never from
-gray shadows.
+Near-black canvas, alpha neutrals, one accent. Depth comes from tonal steps, never from gray
+shadows.
+
+Six hue families, five steps each — `light` `pastel` `base` `vibrant` `dark` — with the role of
+each step fixed across families, and each family owning one meaning:
+
+| Family | Means |
+| --- | --- |
+| violet | identity |
+| pink | live value |
+| blue | chain, info |
+| green | earning |
+| amber | at risk |
+| rose | stopped |
 
 | Role | Dark | Light |
 | --- | --- | --- |
-| `surface` | `#000000` | `#FFFFFF` |
-| `surfaceContainer` | `#16181C` | `#F7F9F9` |
-| `surfaceVariant` | `#202327` | `#EFF3F4` |
-| `onSurface` | `#E7E9EA` | `#0F1419` |
-| `onSurfaceVariant` | `#8B8F95` | `#536471` |
-| `outline` | `#4A4D52` | `#B5BEC4` |
-| `outlineVariant` | `#33363A` | `#DFE4E7` |
-| `primary` | `#FF007A` | `#CC0062` |
+| `surfaceDim` — the page | `#0E0C12` | `#F6F5FA` |
+| `surface` — the panel on it | `#121016` | `#FFFFFF` |
+| `surfaceContainer` | `#1C1922` | `#F8F7FB` |
+| `surfaceVariant` — a control's fill | `#332F3D` | `#EDEBF3` |
+| `onSurface` | `#FFFFFF` | `#121016` |
+| `onSurfaceVariant` | 64% white | 62% black |
+| `onSurfaceMuted` | 56% white | 66% black |
+| `outline` — a control's boundary | 40% white | 52% black |
+| `outlineVariant` — a hairline | 10% white | 7% black |
+| `primary` — accent as a fill | `#8B4DFF` | `#8B4DFF` |
+| `primaryText` — accent as type | `#A56BFF` | `#7A1FFF` |
 
-Status: `success #00FFA1`, `warning #FFD60A`, `error #F4212E`, `info #00D4FF`.
+**Neutrals are alpha, not grey.** Text tints with whatever surface it lands on, so a card never
+needs a grey of its own. The alphas are not free: `onSurfaceMuted` is the lowest step that still
+clears 4.5:1 on every surface in its theme, and light needs a heavier one than dark because it
+composites against a brighter ground.
+
+**One accent, but only as a fill.** `#8B4DFF` holds one value in both themes, which is what makes
+the product read as the same thing light or dark. As *text* on the near-black ground it lands at
+4.14:1, so accent-coloured type takes `primaryText`, which steps per theme.
+
+**Two border roles, on purpose.** `outline` is the boundary that identifies a control and is held
+to 3:1; `outlineVariant` is a divider between rows and is deliberately not. Using the first for
+decoration makes every card shout.
+
+**The ramps are not luminance-aligned across hues** — `violet.vibrant` is dark where
+`green.vibrant` is bright. Which step a semantic role takes is decided per hue by
+`packages/theme/__tests__/contrast.test.ts`, never by the step's name. That test is the gate: it
+flattens every alpha against every surface and holds text to 4.5:1, control boundaries and status
+marks to 3:1. Move a value and it tells you what broke.
 
 Chain identity is its own axis, never mixed with status: ethereum `#627EEA`, base `#0052FF`,
 arbitrum `#28A0F0`, optimism `#FF0420`, polygon `#8247E5`, bnb `#F3BA2F`, avalanche `#E84142`.
+Protocol brand colours are the same kind of thing — asset data, not theme roles — and they ride a
+mark rather than the text beside it, because a logo colour is picked for a logo, not for a
+contrast ratio.
 
-Dark is the default and the one that is designed. Light exists in the token tree and is
-under-specified — treat a light-mode screen as unreviewed until someone has actually looked at it.
+Both themes are designed, and both answer to the same gate.
 
-**The One Voice Rule.** Signature Pink appears on ≤10% of any screen. It belongs to CTAs, active
-state, focus, and glow — nothing else. The moment a second thing is pink, the signal is gone.
+**The One Voice Rule.** The accent appears on ≤10% of any screen. It belongs to CTAs, active
+state, focus, and glow — nothing else. The moment a second thing is violet, the signal is gone.
 
 **The Color-Is-Information Rule.** Every non-neutral color on screen must mean something:
-emphasis (pink), status (mint/amber/red), or identity (network). Color for mood gets deleted.
+emphasis (violet), status (green/amber/rose), value (pink), or identity (network, protocol).
+Color for mood gets deleted.
 
 ## Typography
 
@@ -85,8 +121,8 @@ value between steps.
 ## Elevation
 
 **Flat by doctrine.** Resting surfaces cast no shadow. Depth is tonal layering —
-`#000000` → `#16181C` → `#202327` — plus hairline outlines. This is enforced in the token tree:
-the `shadow` role resolves to Signature Pink in *both* themes, so there is no gray to reach for.
+`#0E0C12` → `#121016` → `#1C1922` — plus hairline outlines. This is enforced in the token tree:
+the `shadow` role resolves to the accent in *both* themes, so there is no gray to reach for.
 
 The one lift in the system is a **colored glow**: a focal element casts a shadow tinted with the
 accent or a status hue. Focal glow is `shadowOpacity 0.45`, `shadowRadius 14–16`, offset `0 0`.
@@ -95,7 +131,10 @@ Tinted fills and borders step through a fixed alpha vocabulary — `14` (≈8%) 
 fills, `26` (≈15%) for stronger fills, `40` (≈25%) and `66` (≈40%) for borders. Reuse these exact
 steps.
 
-**The No-Dark-Shadow Rule.** A shadow here is a colored glow or it is a bug.
+**The No-Dark-Shadow Rule.** A shadow on a resting surface is a colored glow or it is a bug.
+The single exception is an overlay that has left the page plane — a `<dialog>`, a popover — which
+takes `shadowOverlay`. On a near-black ground a hairline alone does not say "this is above
+everything"; nothing that rests on the page gets it.
 
 **The Glow-Means-Now Rule.** Glow marks the single focal moment on a surface — an empty-state
 prompt, an alert, the position that needs attention. Glow on everything is web3 maximalism; glow
@@ -118,35 +157,41 @@ structure, nothing raising its voice until the accent does.
 
 Mobile ships the fuller library (`apps/mobile/src/core/presentation/components/`): `Button`,
 `Card`, `Tag`, `ListItem`, `StatRow`, `EmptyState`, `GlowBanner`, `SegmentedControl`, `Skeleton`,
-`NetworkBadge`, `TokenAmountRow` and others. `/app` is rebuilding its own against Storybook
+`NetworkBadge`, `TokenAmountRow` and others. `/app` has its own against Storybook
 (`apps/server/src/presentation/web/views/`) — check what exists there before adding markup, and
 follow `.claude/rules/storybook.md` for where a new component belongs.
 
-The **price-range bar** is the signature element: a rail, the position's band, and a thumb at the
-current price. It is the one thing that says at a glance whether capital is working, and it is
-what a widget shows when it has room for exactly one idea.
+The **price-range bar** is the signature element: a rail, the position's band, its bounds
+anchored to the band's own ends, and a thumb labelled with the current price. It is the one thing
+that says at a glance whether capital is working, and it is what a widget shows when it has room
+for exactly one idea. It also carries the most redundant encoding on any surface — fill, label,
+anchored numbers, and a word for the state beside it — because it is the mark most likely to be
+read by colour alone.
 
 ## Do
 
-- Keep the canvas pure black and the chrome monochrome; build depth from tonal steps and outlines.
-- Spend Signature Pink like it is rare — CTA, active, focus, glow, nothing else.
+- Keep the canvas near-black and the chrome neutral; build depth from tonal steps and outlines.
+- Spend the accent like it is rare — CTA, active, focus, glow, nothing else.
+- Reach for `primaryText` whenever the accent is type, and `primary` whenever it is a fill.
 - Set every figure in mono and every word in sans.
 - Pair status and P&L color with a sign, icon, or label.
+- Put a new colour through the contrast test in the same change that introduces it.
 - Reuse the alpha ramp (`14`/`1F`/`26`/`40`/`66`) for tinted fills and borders.
 - Keep pressables fully pill-shaped; cards and fields on the 12–16 radius family.
 - Teach in empty states: an icon, the reason, and the next action.
 
 ## Don't
 
-- Tint anything pink that is not a deliberate accent.
+- Tint anything with the accent that is not a deliberate accent.
 - Build a generic crypto dashboard — a sea of identical cards, dense tables with no hierarchy.
 - Drift toward corporate fintech: navy-and-white, sterile, stock-photo trust signals.
 - Apply web3 maximalism — gradient soup, decorative glassmorphism, glow on everything.
 - Go toy-playful: rounded mascots, pastel gradients, gamified confetti.
-- Use a dark or gray drop-shadow anywhere.
+- Use a dark or gray drop-shadow on anything that rests on the page.
 - Reach for a modal first; try an inline prompt or progressive disclosure.
 - Nest a card inside a card, or use a colored left-edge stripe as an accent.
 - Set prose in mono, or bring in a third typeface for flavor.
+- Loosen a contrast threshold, or carve a pairing out of the gate, to keep a value you liked.
 
 ## Where the values live
 
