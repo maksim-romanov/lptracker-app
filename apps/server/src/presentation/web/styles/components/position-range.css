@@ -1,0 +1,147 @@
+@layer components {
+  /* The highest-signal mark in a row, so it carries the most redundant encoding: a filled band
+     in a muted track, a labelled thumb, bounds anchored to the band's own ends, and a word for
+     the state beside the pair name. Never colour alone.
+     Geometry comes in as three percentages on custom properties (range_controller) because CSP
+     allows no inline style; every offset below is derived from those. The tone comes in as
+     `color` on the element, so a status needs one class, not five.
+     `--item-bg` is whatever the row or card is currently painted — the thumb and the band's end
+     notches are cut out of it, so it has to track hover rather than be pinned to the resting
+     surface. */
+  .range {
+    position: relative;
+    height: 2.75rem;
+  }
+
+  .range-track {
+    position: absolute;
+    inset-inline: 0;
+    top: 1.125rem;
+    height: 0.5rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-outline-variant);
+  }
+
+  /* Flat, not a ramp: a gradient reads as a direction the band does not have — the range is the
+     same range at both ends, and only the thumb says where inside it the price sits. */
+  .range-band {
+    position: absolute;
+    inset-block: 0;
+    left: var(--band-left);
+    width: var(--band-width);
+    border-radius: var(--radius-full);
+    background-color: currentColor;
+  }
+
+  .range-band-off {
+    background-color: var(--color-surface-variant);
+  }
+
+  /* Cut out of the item's own background rather than drawn in a colour: the notch reads as the
+     band ending, not as a third mark competing with the thumb. */
+  .range-edge {
+    position: absolute;
+    top: -0.1875rem;
+    width: 2px;
+    height: 0.875rem;
+    border-radius: 1px;
+    background-color: var(--item-bg, var(--color-surface));
+    opacity: 0.7;
+    transform: translateX(-50%);
+  }
+
+  .range-edge-min {
+    left: var(--band-left);
+  }
+
+  .range-edge-max {
+    left: calc(var(--band-left) + var(--band-width));
+  }
+
+  .range-thumb {
+    position: absolute;
+    top: 50%;
+    left: var(--thumb);
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-on-surface);
+    border: 2px solid var(--item-bg, var(--color-surface));
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 28%, transparent);
+  }
+
+  /* Out of range: the dot itself takes the status colour, so the state survives even where the
+     halo is too faint to register. */
+  .range-thumb-warn {
+    background-color: currentColor;
+  }
+
+  /* Marks the price as live rather than as a snapshot. It is the only motion on the board, so it
+     stays slow and small; anyone who has asked for less gets the halo without it. */
+  .range-thumb-live {
+    animation: range-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes range-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 28%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 10%, transparent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .range-thumb-live {
+      animation: none;
+    }
+  }
+
+  /* A pill with a tail, not floating text: the number belongs to the thumb under it, and at this
+     size a caption sitting loose above a track reads as a column header. */
+  .range-value {
+    position: absolute;
+    bottom: calc(100% - 1.125rem + 0.5rem);
+    left: clamp(0%, var(--thumb), 100%);
+    padding: 0.125rem 0.4375rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-variant);
+    color: var(--color-on-surface);
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  .range-value::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--color-surface-variant);
+    transform: translateX(-50%);
+  }
+
+  /* Anchored to the band's ends and pulled inside its span rather than centred on them: centred,
+     the lower bound hangs off the left of a cell whose band starts at 0%. */
+  .range-bound {
+    position: absolute;
+    top: 1.875rem;
+    white-space: nowrap;
+  }
+
+  .range-bound-min {
+    left: var(--band-left);
+  }
+
+  .range-bound-max {
+    left: calc(var(--band-left) + var(--band-width));
+    transform: translateX(-100%);
+  }
+
+  .range-closed .range-edge,
+  .range-closed .range-bound {
+    opacity: 0.55;
+  }
+}

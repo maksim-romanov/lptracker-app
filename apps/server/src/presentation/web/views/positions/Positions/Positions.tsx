@@ -5,48 +5,60 @@ import { PositionInfoCard } from "../PositionInfoCard/PositionInfoCard";
 import { PositionInfoRow } from "../PositionInfoRow/PositionInfoRow";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
-// Subordinate to the data it names: at the body's own size and colour a header row reads
-// as a first row of values rather than as a legend.
-const HEAD_CELL = "border-outline-variant border-b px-4 pt-2 pb-2 font-medium text-on-surface-variant text-xs";
+// A filled bar rather than a ruled row: it names the columns without drawing a line the rows
+// then have to answer with lines of their own. Rounded at both ends so it reads as one object
+// sitting above the list, not as a first row of it.
+const HEAD_CELL = "bg-surface-container px-3 py-2.5 text-caption font-normal text-on-surface-variant";
 
-// The only place column widths are declared: `table-fixed` makes the header row
-// size every column, so rows can no longer drift out of alignment with it.
-// A numeric column's label is right-aligned with its digits — a left-aligned header over
-// right-aligned numbers detaches the two.
+// The only place column widths are declared: `table-fixed` makes the header row size every
+// column, so rows can no longer drift out of alignment with it. A numeric column's label is
+// right-aligned with its digits — a left-aligned header over right-aligned numbers detaches
+// the two.
 const COLUMNS = [
-  { label: "Pool", class: "w-[24%] text-left" },
-  { label: "Range", class: "w-[26%] text-left" },
-  { label: "Balance", class: "w-[22%] text-right" },
-  { label: "Fees", class: "text-right" },
+  { label: "Position", class: "w-[34%] text-left" },
+  { label: "Range", class: "w-[30%] text-left" },
+  { label: "Amounts", class: "w-[18%] text-right" },
+  { label: "Unclaimed fees", class: "text-right" },
 ];
 
-// The window frame is the table's border, and `window-bleed` spans the frame's gutters so
-// the dividers reach its edge — the cell padding is the only horizontal inset left.
+const CAPTION_ID = "positions-table-caption";
+
+// The shell is the table's border, and `shell-bleed` spans the shell's gutters so the dividers
+// reach its edge — the cell padding is the only horizontal inset left.
+// The scroller is focusable and named because it is one: the viewport used to be the only
+// thing choosing this presentation, so it was never narrower than the table. Now that someone
+// can ask for the table on a phone, a region that scrolls has to be reachable without a mouse
+// (WCAG 2.1.1). A named <section> already is a region, and it borrows the caption's wording
+// rather than inventing a second name for the same thing.
 const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
-  <table class="position-table window-bleed w-full table-fixed">
-    <caption class="sr-only">Uniswap v3 positions</caption>
-    <thead>
-      <tr>
-        {COLUMNS.map((column) => (
-          <th scope="col" class={cn(HEAD_CELL, column.class)}>
-            {column.label}
-          </th>
+  <section class="shell-bleed overflow-x-auto" tabindex={0} aria-labelledby={CAPTION_ID}>
+    <table class="position-table w-full min-w-[52rem] table-fixed">
+      <caption id={CAPTION_ID} class="sr-only">
+        Uniswap v3 positions
+      </caption>
+      <thead>
+        <tr>
+          {COLUMNS.map((column, index) => (
+            <th scope="col" class={cn(HEAD_CELL, column.class, index === 0 && "rounded-s-md", index === COLUMNS.length - 1 && "rounded-e-md")}>
+              {column.label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {cards.map((card) => (
+          <PositionInfoRow card={card} />
         ))}
-        <th scope="col" class={cn(HEAD_CELL, "w-12")}>
-          <span class="sr-only">Actions</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      {cards.map((card) => (
-        <PositionInfoRow card={card} />
-      ))}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </section>
 );
 
+// Auto-fill rather than auto-fit: with two positions left, auto-fit would stretch each card to
+// half the board, and a card whose width depends on how many neighbours it has is a card whose
+// contents reflow every time one closes.
 const PositionsCards = ({ cards }: { cards: ICardVM[] }) => (
-  <ul aria-label="Uniswap v3 positions" class="flex flex-col gap-3">
+  <ul aria-label="Uniswap v3 positions" class="grid grid-cols-[repeat(auto-fill,minmax(19rem,1fr))] gap-3">
     {cards.map((card) => (
       <PositionInfoCard card={card} />
     ))}

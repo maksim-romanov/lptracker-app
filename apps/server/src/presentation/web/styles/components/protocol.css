@@ -1,0 +1,14 @@
+@layer components {
+  /* Brand colours are asset data, not theme roles: a protocol's colour belongs to the
+     protocol and does not invert with the theme. One class per known slug because CSP allows
+     no `style` attribute in markup — keep in step with PROTOCOLS_META in @depthly/catalog. An
+     unregistered slug simply inherits currentColor, so a new protocol degrades to a neutral
+     mark instead of vanishing. */
+  .protocol-uniswap-v3 {
+    --protocol-color: #ff007a;
+  }
+
+  .protocol-dot {
+    background-color: var(--protocol-color, currentColor);
+  }
+}

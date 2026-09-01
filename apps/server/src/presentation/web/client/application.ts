@@ -4,11 +4,13 @@ import { Application } from "@hotwired/stimulus";
 import htmx from "htmx.org";
 
 import DialogController from "./controllers/dialog_controller";
+import LayoutController from "./controllers/layout_controller";
 import RangeController from "./controllers/range_controller";
 import ThemeController from "./controllers/theme_controller";
 import ToastController from "./controllers/toast_controller";
 import WalletController from "./controllers/wallet_controller";
 import { onLayoutChange } from "./lib/layout";
+import { layoutPrefs } from "./lib/layout-prefs.store";
 import { positionPrefs } from "./lib/position-prefs.store";
 import { walletStore } from "./lib/wallet.store";
 
@@ -23,7 +25,7 @@ export async function start(): Promise<void> {
   // htmx:configRequest reads them synchronously and cannot await. Stores default
   // to localStorage (hydrate settles on the next microtask, well before
   // DOMContentLoaded); a real async backend would instead need to gate the #board load.
-  await Promise.all([walletStore.hydrate(), positionPrefs.hydrate()]);
+  await Promise.all([walletStore.hydrate(), positionPrefs.hydrate(), layoutPrefs.hydrate()]);
 
   const app = Application.start();
   app.register("wallet", WalletController);
@@ -31,11 +33,16 @@ export async function start(): Promise<void> {
   app.register("toast", ToastController);
   app.register("dialog", DialogController);
   app.register("range", RangeController);
+  app.register("layout", LayoutController);
 
-  // The board renders as a table or as cards depending on viewport width, and that
-  // choice is made server-side from a request parameter — so crossing the breakpoint
-  // has to refetch. #board already listens for this event (Layout.tsx).
-  onLayoutChange(() => document.body.dispatchEvent(new CustomEvent("board:refresh")));
+  // The board renders as a table or as cards depending on viewport width — unless the user
+  // has picked one, in which case crossing the breakpoint changes nothing. Either way the
+  // choice is made server-side from a request parameter, so it has to refetch. #board already
+  // listens for this event (Layout.tsx).
+  // Bubbling on purpose: #board hears this at the target (hx-trigger="... from:body"), but the
+  // layout toggle listens on the document, and a non-bubbling event left its pressed state
+  // showing a presentation the board had already stopped rendering.
+  onLayoutChange(() => document.body.dispatchEvent(new CustomEvent("board:refresh", { bubbles: true })));
 }
 
 // hydrate() is failure-proof by contract (collection.store.ts), so this should not

@@ -1,0 +1,19 @@
+@layer components {
+  /* The app's ground: a dot grid rather than a flat fill. It reads as a plane the panels sit
+     on, which is what lets every surface above it stay borderless and still feel placed. The
+     dot colour is a theme role, so it inverts with the theme instead of being a pale grey that
+     only works in one of them. */
+  .surface-grid {
+    background-image: radial-gradient(var(--color-grid) 1px, transparent 1px);
+    background-size: calc(var(--spacing) * 6) calc(var(--spacing) * 6);
+  }
+
+  /* Reduced-transparency users get the plane without the texture: the dots carry no
+     information, and at this density they are exactly the kind of background pattern that
+     makes text harder to hold onto. */
+  @media (prefers-reduced-transparency: reduce) {
+    .surface-grid {
+      background-image: none;
+    }
+  }
+}

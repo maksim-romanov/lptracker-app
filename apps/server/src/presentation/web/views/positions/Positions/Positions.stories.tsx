@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
 import type { TPositionsLayout } from "../../../positions-layout";
-import { WindowFrame } from "../../components/WindowFrame/WindowFrame";
+import { AppShell } from "../../components/AppShell/AppShell";
 import { closed, inRange, nearUpperBound, outOfRange } from "../__stories__/mocks";
 import { Positions } from "./Positions";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
@@ -14,9 +14,9 @@ const renderPositions = ({ cards, layout }: Args): HTMLElement => {
   const host = document.createElement("div");
   if (layout === "cards") host.className = "max-w-[24rem]";
   host.innerHTML = String(
-    <WindowFrame title="Positions">
+    <AppShell class="shell-grid shell-content">
       <Positions cards={cards} layout={layout} />
-    </WindowFrame>,
+    </AppShell>,
   );
   return host;
 };

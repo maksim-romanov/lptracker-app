@@ -1,0 +1,75 @@
+@layer components {
+  /* The brand mark. A gradient is the one place two hues are allowed to meet without one of
+     them meaning something — identity is what it is for. */
+  .logo-mark {
+    background-image: linear-gradient(140deg, var(--color-primary), var(--color-secondary));
+  }
+
+  /* A region of the shell laid out on its gutters. Children sit in the middle column; a
+     `shell-bleed` child spans the gutters as well, so its own padding becomes the inset and
+     its dividers meet the frame. The gutter is a track, not an offset that something
+     subtracts from itself later — shrink it to zero and every child simply goes flush, none
+     of them can end up outside the frame. */
+  .shell-grid {
+    --shell-gutter: calc(var(--spacing) * 5);
+
+    display: grid;
+    row-gap: calc(var(--spacing) * 4);
+    grid-template-columns: [bleed-start] var(--shell-gutter) [content-start] 1fr [content-end] var(--shell-gutter) [bleed-end];
+  }
+
+  .shell-grid > * {
+    grid-column: content;
+  }
+
+  .shell-grid > .shell-bleed {
+    grid-column: bleed;
+  }
+
+  /* Derived from the gutter so the four sides cannot drift apart. A `shell-bleed` child still
+     spans the gutter tracks, so it reaches this padding — its dividers run wider than the
+     text, as a list inside a panel does. */
+  .shell-content {
+    padding: calc(var(--shell-gutter) * 1.5) 0 var(--shell-gutter);
+  }
+
+  /* Identity, not status: the hue is derived from the address so the same wallet keeps the
+     same dot, and it is set through CSSOM by wallet_controller because the value is per
+     wallet and CSP allows no `style` attribute in markup. */
+  .wallet-dot {
+    background-image: linear-gradient(140deg, hsl(var(--chip-hue) 70% 62%), hsl(calc(var(--chip-hue) + 40) 78% 58%));
+  }
+
+  /* Decorative shapes behind the onboarding panel, `aria-hidden` in the markup. Positions are
+     off any scale on purpose — they are a composition, not a layout, and rounding them to the
+     spacing steps would line them up into a pattern. The opacity is capped: at 0.35 the
+     panel's own text still clears 4.5:1 where it crosses a shape (4.75:1 in dark, the worse
+     of the two), and raising it puts the copy below AA. */
+  .blob {
+    position: absolute;
+    color: var(--color-on-primary-container);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .blob-1 {
+    left: -0.5rem;
+    top: 1.25rem;
+    width: 3.25rem;
+  }
+  .blob-2 {
+    left: 14%;
+    bottom: 0.5rem;
+    width: 4.25rem;
+  }
+  .blob-3 {
+    right: 16%;
+    top: 0.75rem;
+    width: 4rem;
+  }
+  .blob-4 {
+    right: 1.5rem;
+    bottom: 1rem;
+    width: 3.5rem;
+  }
+}

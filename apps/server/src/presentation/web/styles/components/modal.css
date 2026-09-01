@@ -26,7 +26,7 @@
   /* Transitioning background-color (alpha channel) rather than opacity — more consistent
      across browsers than opacity on a ::backdrop pseudo-element. */
   [data-animate="dialog"]::backdrop {
-    background-color: rgb(0 0 0 / 0%);
+    background-color: transparent;
     transition:
       background-color 200ms ease-out,
       overlay 200ms ease-out allow-discrete,
@@ -34,12 +34,12 @@
   }
 
   [data-animate="dialog"][open]::backdrop {
-    background-color: rgb(0 0 0 / 40%);
+    background-color: color-mix(in srgb, var(--color-scrim) 40%, transparent);
   }
 
   @starting-style {
     [data-animate="dialog"][open]::backdrop {
-      background-color: rgb(0 0 0 / 0%);
+      background-color: transparent;
     }
   }
 

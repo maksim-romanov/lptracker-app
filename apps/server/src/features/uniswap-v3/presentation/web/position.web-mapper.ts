@@ -1,3 +1,4 @@
+import { PROTOCOLS_META } from "@depthly/catalog";
 import { formatPrice, formatTokenAmount, formatTokenAmountShort } from "@depthly/protocol-math/format";
 import { deriveStatus, priceRangeFromTicks, type TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
 
@@ -30,7 +31,10 @@ export interface ICardVM {
   rangeTone: TPositionRangeTone;
   inverted: boolean;
   chainId: number;
-  protocolLabel: string;
+  // Which protocol runs this pool was nowhere in the UI: "v3 / 0.30%" reads as Uniswap by
+  // default, and that breaks the moment a position sits on a fork. The slug is what selects
+  // the mark's colour, the label is what is always spelled out beside it.
+  protocol: { slug: string; label: string };
   pair: { base: IPairSideVM; quote: IPairSideVM };
   principal: ITokenSideVM[];
   fees: ITokenSideVM[];
@@ -47,6 +51,14 @@ export interface ICardVM {
     inRange: boolean;
   };
   poolAddress: string;
+  // A position belongs to one of several tracked wallets and was opened at some point; neither
+  // was answerable from the detail panel before, and both are what tell two otherwise
+  // identical positions apart.
+  ownerAddress: string;
+  openedAtLabel: string | null;
+  // Whether the fee column has earned anything. Derived from the raw balances rather than from
+  // the formatted strings, which round a dust amount to "0.0000" and would read as nothing.
+  hasUnclaimedFees: boolean;
 }
 
 const tokenSide = (positionToken: PositionToken, tokens: TokensMap): ITokenSideVM => {
@@ -158,6 +170,23 @@ const derivePriceRange = (principals: PositionToken[], ext: UniswapV3Extension, 
   };
 };
 
+// Pinned to en-US rather than the host's locale: this renders on the server, so "the user's
+// locale" is whichever machine happens to be serving, and a date that changes format with the
+// deployment is worse than one that is consistently American.
+const openedAt = (iso: string | null): string | null => {
+  if (!iso) return null;
+  const parsed = new Date(iso);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+};
+
+// The label was hardcoded here while the catalog already owned it, so a rename in one place
+// would not have reached the other. An unregistered slug falls back to the slug itself rather
+// than to a wrong protocol's name.
+const protocolOf = (slug: string): ICardVM["protocol"] => ({
+  slug,
+  label: PROTOCOLS_META[slug as keyof typeof PROTOCOLS_META]?.label ?? slug,
+});
+
 export const mapPositionToCardVM = (position: Position, tokens: TokensMap, opts: { inverted: boolean }): ICardVM => {
   if (position.extension.type !== UNISWAP_V3_EXTENSION_TYPE) {
     throw new Error(`mapPositionToCardVM: expected uniswap-v3 extension, got "${position.extension.type}"`);
@@ -169,6 +198,8 @@ export const mapPositionToCardVM = (position: Position, tokens: TokensMap, opts:
   const status = deriveStatus(position.status.state);
   const priceRange = derivePriceRange(principals, ext, tokens, inverted);
 
+  const feeTokens = position.tokens.filter((t) => t.role === "fee");
+
   return {
     ref: position.ref,
     nftTokenId: ext.nftTokenId,
@@ -177,14 +208,14 @@ export const mapPositionToCardVM = (position: Position, tokens: TokensMap, opts:
     rangeTone: deriveRangeTone(status, priceRange),
     inverted,
     chainId: Number(position.ref.split(":")[1]),
-    protocolLabel: "Uniswap V3",
+    protocol: protocolOf(position.protocol),
     pair: derivePair(principals, tokens, inverted),
     principal: displayOrder(principals, inverted).map((t) => tokenSide(t, tokens)),
-    fees: displayOrder(
-      position.tokens.filter((t) => t.role === "fee"),
-      inverted,
-    ).map((t) => tokenSide(t, tokens)),
+    fees: displayOrder(feeTokens, inverted).map((t) => tokenSide(t, tokens)),
     priceRange,
     poolAddress: ext.pool.address,
+    ownerAddress: position.address,
+    openedAtLabel: openedAt(position.createdAt),
+    hasUnclaimedFees: feeTokens.some((token) => Number(token.balance.formatted) > 0),
   };
 };

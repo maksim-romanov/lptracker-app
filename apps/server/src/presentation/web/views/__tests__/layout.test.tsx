@@ -18,8 +18,8 @@ describe("Layout", () => {
     // since that is what settles data-theme before the first paint
     expect(html).toMatch(/<script src="\/static\/dist\/theme-init[^"]*\.js"><\/script>/);
 
-    // single-wallet connect flow, header-hosted (see wallet_controller.ts)
-    expect(html).toContain('data-controller="wallet"');
+    // single-wallet connect flow, nav-hosted (see wallet_controller.ts)
+    expect(html).toContain('data-controller="wallet theme"');
     expect(html).toContain('data-wallet-target="connectButton"');
     expect(html).toContain('data-action="wallet#openSidebar"');
     expect(html).toContain('data-wallet-target="walletPill"');
@@ -61,26 +61,31 @@ describe("Layout", () => {
     expect(html).toContain('data-toast-target="message"');
   });
 
-  it("hosts the board inside a decorative window frame", async () => {
+  it("hosts the board inside the app shell, under real navigation", async () => {
     const app = new Hono();
     app.get("/", (c) => c.html(<Layout />));
     const res = await app.request("/");
     const html = await res.text();
 
-    // the frame is chrome, not a control surface: the traffic lights cannot be operated,
-    // so they are hidden from assistive tech instead of posing as three unnamed buttons
-    const titleBar = html.slice(html.indexOf("<main"), html.indexOf("</h2>"));
-    expect(titleBar).toContain('aria-hidden="true"');
-    expect(titleBar).toContain("traffic-light-close");
-    expect(titleBar).toContain("traffic-light-minimize");
-    expect(titleBar).toContain("traffic-light-zoom");
-    expect(titleBar).not.toContain("<button");
+    // Only destinations that exist. Positions is the page you are on; Wallets is a <button>
+    // because it opens a panel over this page rather than navigating anywhere.
+    const nav = html.slice(html.indexOf("<nav"), html.indexOf("</nav>"));
+    expect(nav).toContain('aria-label="Sections"');
+    expect(nav).toContain('aria-current="page"');
+    expect(nav).toContain('aria-haspopup="dialog"');
+    expect(nav).not.toContain("Activity");
 
-    // the title is a real heading — the page had no h2, so this is what makes the board
-    // reachable by heading navigation
-    expect(html).toContain(">Positions</h2>");
+    // The document outline starts at the screen's own subject, not at the product name —
+    // the wordmark beside the mark is a label, not a heading.
+    expect(html).toContain('<h1 class="text-title">Every position, every chain</h1>');
+    expect(html).toContain(">Your positions</h2>");
 
-    // the board is swapped inside the frame, so the chrome never re-renders
-    expect(html.indexOf("window-content")).toBeLessThan(html.indexOf('id="board"'));
+    // Wallet chips are a client-filled list: the server ships the container and the one
+    // control that is always there, and never learns a wallet's nickname.
+    expect(html).toContain('data-wallet-target="chips"');
+    expect(html).toContain('data-wallet-target="chipsEnd"');
+
+    // The board is swapped inside the shell, so the nav and hero never re-render.
+    expect(html.indexOf("shell-content")).toBeLessThan(html.indexOf('id="board"'));
   });
 });

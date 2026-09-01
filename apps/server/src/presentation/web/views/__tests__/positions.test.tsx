@@ -15,7 +15,7 @@ const card: ICardVM = {
   rangeTone: "in-range",
   inverted: false,
   chainId: 1,
-  protocolLabel: "Uniswap V3",
+  protocol: { slug: "uniswap-v3", label: "Uniswap V3" },
   pair: { base: { tokenRef: "1:0xa", symbol: "WETH", iconUrl: "" }, quote: { tokenRef: "1:0xb", symbol: "USDC", iconUrl: "" } },
   principal: [{ tokenRef: "1:0xa", symbol: "WETH", formatted: "5.165909", formattedShort: "5.1659", iconUrl: "" }],
   fees: [],
@@ -31,6 +31,9 @@ const card: ICardVM = {
     inRange: true,
   },
   poolAddress: "0xpool",
+  ownerAddress: "0x71c7656ec7ab88b098defb751b7401b5f6d8976f",
+  openedAtLabel: "Mar 12, 2026",
+  hasUnclaimedFees: false,
 };
 
 const s = (node: unknown) => String(node);
@@ -72,6 +75,16 @@ describe("web positions", () => {
     });
   }
 
+  it("PositionInfoRow anchors the activation overlay to its first cell", () => {
+    const html = s(PositionInfoRow({ card }));
+    // A <tr> could not be the positioned ancestor until WebKit fixed it in 2026, and iOS
+    // webviews track the OS — so the overlay hangs off a cell and is widened across the row.
+    // It is the first cell now that the trailing actions column is gone.
+    const firstCell = html.slice(html.indexOf("<th"), html.indexOf("</th>"));
+    expect(firstCell).toContain("position-row-anchor");
+    expect(firstCell).toContain("position-overlay");
+  });
+
   it("PositionInfoRow is a table row of native elements, with no ARIA patching", () => {
     const html = s(PositionInfoRow({ card }));
     expect(html).toStartWith("<tr");
@@ -79,20 +92,27 @@ describe("web positions", () => {
     expect(html).toContain("<td");
     // Browsers keep table roles across display changes, so restating them as role=
     // would be redundant ARIA that also masks the a11y lint rules.
-    expect(html).not.toContain("role=");
+    for (const patched of ['role="row"', 'role="cell"', 'role="rowheader"', 'role="grid"', 'role="table"']) {
+      expect(html).not.toContain(patched);
+    }
   });
 
   it("PositionInfoRow shows the range as a bar named by visible text, not by colour alone", () => {
     const html = s(PositionInfoRow({ card }));
     expect(html).toContain('data-controller="range"');
-    // colour is the only thing separating the bar's states, so the label beside it is
-    // what carries the state for anyone who cannot tell the hues apart
+    // colour is the only thing separating the bar's states, so the state is printed as a
+    // word beside the pair for anyone who cannot tell the hues apart
     expect(html).toContain("In range");
     expect(html).not.toContain('<span class="sr-only">In range</span>');
-    // the exact bounds belong to the detail view the row opens
+    // bounds are anchored to the band's own ends, so the row answers "how far from which
+    // edge" without opening the detail
     for (const numeric of ["1,800", "2,000", "2,200"]) {
-      expect(html).not.toContain(numeric);
+      expect(html).toContain(numeric);
     }
+    // three numbers pinned to percentages read as a bare list without one sentence naming
+    // what they are
+    expect(html).toContain('role="img"');
+    expect(html).toContain('aria-label="Price range 1,800 to 2,200 USDC per WETH, current price 2,000. In range."');
   });
 
   it("PositionInfoRow names the bound a near-edge position is approaching", () => {
@@ -113,6 +133,11 @@ describe("web positions", () => {
     // rendering; the full-precision one belongs to the detail view
     expect(html).toContain("5.1659");
     expect(html).not.toContain("5.165909");
+    // each amount names its own token on screen. They used to be bare numbers whose slots
+    // the pair named a few columns to the left, with the symbol only in the a11y tree —
+    // true, and a lot to ask of anyone reading down a column of them.
+    expect(html).toContain("5.1659 WETH");
+    expect(html).not.toContain('<span class="sr-only">WETH </span>');
     // fees are empty on this card, so the cell falls back to a dash that is not read aloud
     expect(html).toContain('<span class="sr-only">None</span>');
 
@@ -125,20 +150,20 @@ describe("web positions", () => {
     expect(withFees).not.toContain('<span class="sr-only">None</span>');
   });
 
-  it("PositionInfoCard names its own fields through a description list", () => {
+  it("PositionInfoCard names its amounts through real row and column headers", () => {
     const html = s(PositionInfoCard({ card }));
     expect(html).toStartWith("<li");
-    // No header row here, so every field is a <dt>/<dd> pair. An adjacent sr-only
-    // <span> would read the same aloud but carry no programmatic association.
-    // the range block names its own state on screen, so its <dt> stays hidden; the two
-    // amount fields are bare stacked numbers and need their names visible
-    expect(html).toContain('<dt class="sr-only">Range</dt>');
-    for (const label of ["Balance", "Fees"]) {
-      expect(html).toContain(`>${label}</dt>`);
-      // a field name announced from an adjacent span reads the same aloud but carries no
-      // programmatic association, so it must come from the <dt> and nowhere else
-      expect(html).not.toContain(`<span class="sr-only">${label}</span>`);
+    // Each number is a token crossed with a measure, which a description list cannot
+    // express — it names one value per term, and here every token has two.
+    for (const column of ["Token", "Amount", "Unclaimed fees"]) {
+      expect(html).toContain(`>${column}</th>`);
     }
+    expect(html).toContain('<th scope="row"');
+    // full precision here: the card has one wide slot per amount, unlike the table's columns
+    expect(html).toContain("5.165909");
+    // a field name announced from an adjacent span reads the same aloud but carries no
+    // programmatic association, so it must come from the header cell and nowhere else
+    expect(html).not.toContain('<span class="sr-only">Amount</span>');
   });
 
   it("PositionItem hands back the markup that matches the requested layout", () => {
@@ -149,18 +174,24 @@ describe("web positions", () => {
   it("Positions renders a table with real column headers under the table layout", () => {
     const html = s(Positions({ cards: [card], layout: "table" }));
     expect(html).toContain("uniswap-v3:1:42");
-    // the window frame is the table's border now; a wrapper of its own would double the
-    // chrome and re-inset the cells the frame already insets
-    expect(html).toStartWith("<table");
-    expect(html).toContain("window-bleed");
-    expect(html).toContain("<caption");
+    // The shell is the table's border; the only wrapper is the scroller, which is focusable
+    // and named because someone can now ask for the table on a viewport narrower than it
+    // (WCAG 2.1.1) — and it borrows the caption rather than inventing a second name.
+    expect(html).toStartWith("<section");
+    expect(html).toContain('tabindex="0"');
+    expect(html).toContain('aria-labelledby="positions-table-caption"');
+    expect(html).toContain("shell-bleed");
+    expect(html).toContain('<caption id="positions-table-caption"');
     expect(html).toContain('<th scope="col"');
-    for (const column of ["Pool", "Range", "Balance", "Fees"]) {
+    for (const column of ["Position", "Range", "Amounts", "Unclaimed fees"]) {
       expect(html).toContain(`>${column}</th>`);
     }
-    // the network moved into the Pool cell as a badge; a column of its own repeated the
+    // the network moved into the Position cell as a badge; a column of its own repeated the
     // same word on nearly every row for a sixth of the table's width
     expect(html).not.toContain(">Network</th>");
+    // and the invert button moved next to the pair it inverts, so there is no column left
+    // holding a single icon
+    expect(html).not.toContain(">Actions</span>");
     // the old markup hid the header row from assistive tech and restated every column
     // as an sr-only label inside each item; real column headers replace both
     expect(html.match(/<thead[^>]*>/)?.[0]).not.toContain("aria-hidden");
@@ -171,7 +202,8 @@ describe("web positions", () => {
     expect(html).toContain("uniswap-v3:1:42");
     expect(html).toStartWith("<ul");
     expect(html).toContain('aria-label="Uniswap v3 positions"');
-    expect(html).not.toContain("<table");
+    // the board itself is a list here — the only table is the card's own amounts
+    expect(html).not.toContain('<th scope="col" class="border-outline-variant');
   });
 
   it("Positions renders NoPositions when there are no cards, in either layout", () => {
@@ -204,7 +236,7 @@ describe("web route validation XSS regression", () => {
     const res = await webRoutes.request("/positions?protocols=nonexistent");
     expect(res.status).toBe(200);
     const body = await res.text();
-    expect(body).toContain("Connect a wallet");
+    expect(body).toContain("Watch a wallet without connecting it");
   });
 
   it("rejects a layout outside the two known presentations", async () => {

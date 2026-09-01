@@ -1,0 +1,36 @@
+import { POSITIONS_LAYOUTS, type TPositionsLayout } from "../../positions-layout";
+import { CollectionStore } from "./collection.store";
+
+const isLayout = (value: unknown): value is TPositionsLayout => POSITIONS_LAYOUTS.includes(value as TPositionsLayout);
+
+// The presentation the user picked, or null for "follow the viewport". Null is a real state,
+// not an absent one: someone who has never touched the control should keep getting the layout
+// that fits their screen when they rotate a phone or resize a window, and someone who has
+// touched it should not have that choice quietly overridden.
+class LayoutPrefsStore extends CollectionStore {
+  private override: TPositionsLayout | null = null;
+
+  constructor() {
+    super("positionsLayout");
+  }
+
+  protected load(raw: string | null): void {
+    const parsed = this.parse<unknown>(raw, null);
+    this.override = isLayout(parsed) ? parsed : null;
+  }
+
+  protected dump(): string {
+    return JSON.stringify(this.override);
+  }
+
+  get(): TPositionsLayout | null {
+    return this.override;
+  }
+
+  set(layout: TPositionsLayout): void {
+    this.override = layout;
+    this.persist();
+  }
+}
+
+export const layoutPrefs = new LayoutPrefsStore();

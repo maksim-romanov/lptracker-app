@@ -42,7 +42,7 @@ export const inRange: ICardVM = {
   rangeTone: "in-range",
   inverted: false,
   chainId: 1,
-  protocolLabel: "Uniswap V3",
+  protocol: { slug: "uniswap-v3", label: "Uniswap V3" },
   pair: basePair,
   principal: [
     {
@@ -63,6 +63,9 @@ export const inRange: ICardVM = {
   fees: baseFees,
   priceRange: basePriceRange,
   poolAddress: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+  ownerAddress: "0x71c7656ec7ab88b098defb751b7401b5f6d8976f",
+  openedAtLabel: "Mar 12, 2026",
+  hasUnclaimedFees: true,
 };
 
 export const outOfRange: ICardVM = {
@@ -82,6 +85,7 @@ export const closed: ICardVM = {
   rangeTone: "closed",
   fees: [],
   principal: [],
+  hasUnclaimedFees: false,
 };
 
 export const noFees: ICardVM = {
@@ -89,6 +93,7 @@ export const noFees: ICardVM = {
   ref: "uniswap-v3:1:1004",
   nftTokenId: "1004",
   fees: [],
+  hasUnclaimedFees: false,
 };
 
 export const longAddressNoIcon: ICardVM = {

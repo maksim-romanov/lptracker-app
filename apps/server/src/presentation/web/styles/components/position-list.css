@@ -4,6 +4,16 @@
    click handler on the container would instead announce every field as clickable, and
    role="grid" would impose a whole keyboard model this list does not need. */
 @layer components {
+  /* Takes no room in flow: the button is a hit target drawn entirely by its ::after, and as an
+     inline-block it contributed an empty line box that made every row 24px taller than its
+     content. It stays statically positioned so ::after resolves against the item, not against
+     the button. */
+  .position-overlay {
+    display: block;
+    width: 0;
+    height: 0;
+  }
+
   .position-overlay::after {
     content: "";
     position: absolute;
@@ -21,33 +31,40 @@
 
   /* Table presentation. WebKit only fixed `position: relative` on table rows in April
      2026 (webkit.org/b/240961) and iOS webviews track the OS, so the overlay anchors to
-     its cell instead and is widened back across the row, clipped by the table. */
+     its cell instead and is widened across the row, clipped by the table. The anchor is the
+     first cell, so it stretches to the right; when it lived in a trailing actions column it
+     stretched left. */
   .position-table {
     overflow: clip;
   }
 
-  .position-row-actions {
+  .position-row-anchor {
     position: relative;
   }
 
   .position-row .position-overlay::after {
-    left: auto;
+    right: auto;
     width: 100vw;
   }
 
+  /* An opaque step rather than the alpha state layer: --item-bg below is the colour the token
+     icons and the range bar's notches are cut out of, and a cut-out has to be given a solid
+     colour to match. surfaceContainer lands within a percent of a 6% white wash over the
+     surface, so the lift reads the same either way. */
   .position-row:hover > * {
-    background-color: var(--color-surface-variant);
+    background-color: var(--color-surface-container);
   }
 
   /* The overlapping token icons and the network badge are cut out of whatever the item's
      background currently is, so the cut-out colour has to track hover instead of being
-     pinned to the resting surface. */
+     pinned to the resting surface — and has to stay opaque, which is why hover steps to a
+     solid surface here rather than laying `surfaceHover` over one. */
   .position-item {
     --item-bg: var(--color-surface);
   }
 
   .position-row:hover {
-    --item-bg: var(--color-surface-variant);
+    --item-bg: var(--color-surface-container);
   }
 
   /* Card presentation. A card is an ordinary block box, so it anchors the overlay itself. */

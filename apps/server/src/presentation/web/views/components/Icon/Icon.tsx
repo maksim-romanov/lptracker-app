@@ -1,6 +1,20 @@
 import { cn } from "../../utils/cn";
 
-export type TIconName = "invert" | "close" | "check" | "plus" | "sun" | "moon" | "wallet" | "inbox" | "external" | "alert";
+export type TIconName =
+  | "invert"
+  | "close"
+  | "check"
+  | "plus"
+  | "sun"
+  | "moon"
+  | "wallet"
+  | "inbox"
+  | "external"
+  | "alert"
+  | "rows"
+  | "cards"
+  | "copy"
+  | "trash";
 export type TIconSize = 12 | 15 | 16 | 18 | 20 | 28 | 32;
 
 type Props = { name: TIconName; size?: TIconSize; class?: string };

@@ -1,5 +1,8 @@
 /* `dialog.sidebar` (class, not an id) ties :modal's UA specificity so this applies to any
-   <Sidebar> instance. position: fixed is explicit — see position-modal.css for why. */
+   <Sidebar> instance. position: fixed is explicit, not left to the UA :modal rule — :modal
+   stops matching the instant .close() runs, so during the allow-discrete exit transition the
+   dialog would otherwise fall back to non-modal positioning (absolute, near document y=0) and
+   visibly jump before fading out. */
 @layer components {
   dialog.sidebar {
     --dialog-enter-transform: translateX(1rem);
@@ -13,6 +16,24 @@
     max-width: none;
     overflow: hidden;
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 1.5rem 3.75rem var(--color-shadow-overlay);
     will-change: opacity, transform;
+  }
+
+  /* Docked is the starting point and centring is the exception, so the same content component
+     is one panel in two chrome shells rather than two panels that happen to look alike. A
+     phone has no room to centre a dialog and still show it whole; a wide screen does, and a
+     detail that arrives from the edge there reads as a drawer nobody asked for. */
+  @media (width >= 48rem) {
+    dialog.sidebar-centered {
+      --dialog-enter-transform: translateY(0.5rem) scale(0.98);
+
+      inset: 0;
+      margin: auto;
+      width: min(40rem, calc(100vw - 2rem));
+      height: auto;
+      max-height: calc(100dvh - 2rem);
+      padding-bottom: 0;
+    }
   }
 }

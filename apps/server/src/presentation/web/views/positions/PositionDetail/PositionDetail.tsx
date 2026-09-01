@@ -1,92 +1,87 @@
+import type { Child } from "hono/jsx";
+
 import { Icon } from "../../components/Icon/Icon";
 import { NetworkLogo } from "../../components/NetworkLogo/NetworkLogo";
-import { Tag } from "../../components/Tag/Tag";
 import { explorerAddressUrl, networkLabel, uniswapPositionUrl } from "../../networks";
-import { pairLabel, statusLabel } from "../labels";
+import { pairLabel } from "../labels";
+import { PositionAmounts } from "../PositionAmounts/PositionAmounts";
 import { PositionRange } from "../PositionRange/PositionRange";
+import { PositionStatus } from "../PositionStatus/PositionStatus";
+import { ProtocolBadge } from "../ProtocolBadge/ProtocolBadge";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
-const shortenAddress = (addr: string) => (addr.length > 12 ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : addr);
+const shortenAddress = (address: string) => (address.length > 12 ? `${address.slice(0, 6)}…${address.slice(-4)}` : address);
+
+const Spec = ({ label, children }: { label: string; children: Child }) => (
+  <div class="flex items-baseline justify-between gap-4 text-body-small">
+    <dt class="text-on-surface-variant">{label}</dt>
+    <dd class="text-right font-mono text-figure-small">{children}</dd>
+  </div>
+);
 
 export const PositionDetail = ({ card }: { card: ICardVM }) => {
   const range = card.priceRange;
   return (
     <>
-      <header class="flex items-center gap-3 border-outline border-b pb-3">
+      <header class="flex items-center gap-3">
         <span class="flex -space-x-2">
-          <TokenIcon url={card.pair.base.iconUrl} symbol={card.pair.base.symbol} class="h-8 w-8" />
-          <TokenIcon url={card.pair.quote.iconUrl} symbol={card.pair.quote.symbol} class="h-8 w-8" />
+          <TokenIcon url={card.pair.base.iconUrl} symbol={card.pair.base.symbol} class="h-8 w-8 rounded-full" />
+          <TokenIcon url={card.pair.quote.iconUrl} symbol={card.pair.quote.symbol} class="h-8 w-8 rounded-full" />
         </span>
-        <div class="flex flex-col">
-          <div>{pairLabel(card.pair)}</div>
-          <div>{card.feeTierLabel} fee tier</div>
+        <div class="flex min-w-0 flex-col gap-1">
+          <span class="text-headline">{pairLabel(card.pair)}</span>
+          <span class="flex flex-wrap items-center gap-x-2 gap-y-1 text-caption text-on-surface-variant">
+            <ProtocolBadge protocol={card.protocol} />
+            <span class="font-mono">{card.feeTierLabel}</span>
+            <PositionStatus tone={card.rangeTone} />
+          </span>
         </div>
       </header>
 
-      <div class="flex flex-wrap gap-2 border-outline border-b pb-3">
-        <Tag>{statusLabel(card.status)}</Tag>
-        <Tag>
-          <NetworkLogo chainId={card.chainId} size={14} />
-          {networkLabel(card.chainId)}
-        </Tag>
-        <Tag>{card.protocolLabel}</Tag>
-      </div>
-
-      <section class="flex flex-col gap-2 border-outline border-b pb-3">
-        <div class="flex justify-between gap-2 text-sm">
-          <span>Price range</span>
-          <span>
-            {range.currentLabel} {range.quoteSymbol}
-          </span>
-        </div>
+      <section class="flex flex-col gap-2 border-outline-variant border-t pt-4">
+        <h3 class="text-caption text-on-surface-variant">Price range</h3>
         <PositionRange range={range} tone={card.rangeTone} />
-        <div class="flex justify-between gap-2 text-sm">
-          <span>{range.minLabel}</span>
-          <span>{range.maxLabel}</span>
+        <p class="text-body-small text-on-surface-variant">
+          Priced in {range.quoteSymbol} per {range.baseSymbol}.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-2 border-outline-variant border-t pt-4">
+        <h3 class="text-caption text-on-surface-variant">Amounts</h3>
+        <PositionAmounts card={card} />
+      </section>
+
+      <dl class="flex flex-col gap-2 border-outline-variant border-t pt-4">
+        <Spec label="Wallet">{shortenAddress(card.ownerAddress)}</Spec>
+        <div class="flex items-baseline justify-between gap-4 text-body-small">
+          <dt class="text-on-surface-variant">Network</dt>
+          <dd class="flex items-center gap-1.5">
+            <NetworkLogo chainId={card.chainId} size={14} />
+            {networkLabel(card.chainId)}
+          </dd>
         </div>
-      </section>
+        {card.openedAtLabel && <Spec label="Opened">{card.openedAtLabel}</Spec>}
+        <Spec label="Position">#{card.nftTokenId}</Spec>
+        <Spec label="Pool">
+          <a
+            href={explorerAddressUrl(card.chainId, card.poolAddress)}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 hover:text-primary-text"
+          >
+            {shortenAddress(card.poolAddress)}
+            <Icon name="external" size={12} />
+          </a>
+        </Spec>
+      </dl>
 
-      <section class="flex flex-col gap-2 border-outline border-b pb-3">
-        <div class="text-sm">Balance</div>
-        <dl class="flex flex-col gap-1">
-          {card.principal.map((p) => (
-            <div class="flex justify-between gap-2">
-              <dt>{p.symbol}</dt>
-              <dd>{p.formatted}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      {card.fees.length > 0 && (
-        <section class="flex flex-col gap-2 border-outline border-b pb-3">
-          <div class="text-sm">Unclaimed fees</div>
-          <dl class="flex flex-col gap-1">
-            {card.fees.map((f) => (
-              <div class="flex justify-between gap-2">
-                <dt>{f.symbol}</dt>
-                <dd>{f.formatted}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-      )}
-
-      <footer class="flex items-center justify-between gap-2 border-outline border-b pb-3">
-        <span class="text-sm">Pool</span>
-        <a href={explorerAddressUrl(card.chainId, card.poolAddress)} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1">
-          {shortenAddress(card.poolAddress)}
-          <Icon name="external" size={12} />
-        </a>
-      </footer>
-
-      <div class="flex justify-end">
+      <div class="flex justify-end border-outline-variant border-t pt-4">
         <a
           href={uniswapPositionUrl(card.chainId, card.nftTokenId)}
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-1 rounded-sm border border-outline px-3 py-2"
+          class="inline-flex items-center gap-2 rounded-full border border-outline px-4 py-2 text-button"
         >
           View on Uniswap
           <Icon name="external" size={15} />

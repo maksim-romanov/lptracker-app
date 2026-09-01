@@ -55,6 +55,22 @@
     -webkit-mask-image: url(/static/icons/alert.svg);
     mask-image: url(/static/icons/alert.svg);
   }
+  .icon-rows {
+    -webkit-mask-image: url(/static/icons/rows.svg);
+    mask-image: url(/static/icons/rows.svg);
+  }
+  .icon-cards {
+    -webkit-mask-image: url(/static/icons/cards.svg);
+    mask-image: url(/static/icons/cards.svg);
+  }
+  .icon-copy {
+    -webkit-mask-image: url(/static/icons/copy.svg);
+    mask-image: url(/static/icons/copy.svg);
+  }
+  .icon-trash {
+    -webkit-mask-image: url(/static/icons/trash.svg);
+    mask-image: url(/static/icons/trash.svg);
+  }
 
   .icon-size-12 {
     width: 0.75rem;

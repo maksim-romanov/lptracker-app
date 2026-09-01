@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "@depthly/theme/css/spacing.css";
 @import "@depthly/theme/css/depthly.css";
+/* Aliases every role from depthly.css into Tailwind's color namespace, so `bg-surface`,
+   `text-on-surface-muted`, `border-outline` are ordinary utilities that stay reactive to the
+   active [data-theme]. Generated from the same token tree the roles come from — a role added
+   there is a utility here, with no second list to keep in step. */
+@import "@depthly/theme/css/tailwind-theme.css";
 @import "@depthly/theme/css/typography.css";
 /* Self-hosted and split by unicode-range: no third-party origin, no font-src exception in the
    CSP, and a subset is fetched only when a character in its range is actually rendered. */
@@ -11,6 +16,15 @@
   html {
     color-scheme: light dark;
     font-family: var(--font-sans);
+  }
+
+  /* One ring for everything focusable. The UA default is a hairline that all but disappears
+     on the near-black ground, and only two components styled their own — so keyboard focus
+     was invisible on most of the app. Components that draw a ring on a pseudo-element (the
+     position overlay) still opt out with `outline: none` from @layer components. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 }
 
@@ -25,38 +39,13 @@
   opacity: 1;
 }
 
+@import "./components/ground.css";
 @import "./components/icon.css";
 @import "./components/modal.css";
 @import "./components/sidebar.css";
-@import "./components/position-modal.css";
 @import "./components/position-list.css";
+@import "./components/position-range.css";
+@import "./components/protocol.css";
 @import "./components/toast.css";
-@import "./components/window.css";
+@import "./components/shell.css";
 @import "./components/theme-toggle.css";
-
-/* Aliases the runtime custom properties from @depthly/theme/css/depthly.css into Tailwind's
-   color namespace, so `bg-surface`, `text-on-surface`, `border-outline`, etc. are ordinary
-   Tailwind utilities that stay reactive to the active [data-theme]. */
-@theme inline {
-  --color-surface: var(--color-surface);
-  --color-surface-dim: var(--color-surface-dim);
-  --color-surface-bright: var(--color-surface-bright);
-  --color-surface-container: var(--color-surface-container);
-  --color-surface-variant: var(--color-surface-variant);
-  --color-on-surface: var(--color-on-surface);
-  --color-on-surface-variant: var(--color-on-surface-variant);
-  --color-outline: var(--color-outline);
-  --color-outline-variant: var(--color-outline-variant);
-  --color-primary: var(--color-primary);
-  --color-on-primary: var(--color-on-primary);
-  --color-secondary: var(--color-secondary);
-  --color-on-secondary: var(--color-on-secondary);
-  --color-success: var(--color-success);
-  --color-on-success: var(--color-on-success);
-  --color-warning: var(--color-warning);
-  --color-on-warning: var(--color-on-warning);
-  --color-error: var(--color-error);
-  --color-on-error: var(--color-on-error);
-  --color-info: var(--color-info);
-  --color-on-info: var(--color-on-info);
-}
