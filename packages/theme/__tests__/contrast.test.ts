@@ -84,7 +84,15 @@ const ON_SOLID: [text: string, fill: string][] = [
 // WCAG 1.4.11: a border or a status mark is not text, but it still has to be perceivable.
 // `outline` is the boundary that identifies a control and is held to this on every surface;
 // `outlineVariant` is a decorative hairline between rows and is deliberately not.
-const MARKS = ["primary", "success", "warning", "error", "info", "secondary"] as const;
+const MARKS = ["primary", "success", "error", "info", "secondary"] as const;
+
+// `warning` is not in that list, and only `warning`. Yellow at full chroma is light — an amber
+// dark enough to reach 3:1 on white is the olive nobody wants, and Radix ships its amber solid
+// the same way for the same reason. What carries the state accessibly is not this fill: every
+// row prints the state as a word in the badge beside the pair, held to the full text threshold,
+// and the bar's own reading comes from where the fill sits on the track rather than its hue.
+// This floor only catches a value that has effectively vanished into the surface.
+const AMBER_FLOOR = 1.7;
 
 const AA_TEXT = 4.5;
 const AA_NON_TEXT = 3;
@@ -165,6 +173,16 @@ describe.each([
         (measured) => measured.value < AA_NON_TEXT,
       ),
     );
+
+    expect(failures.map((f) => `${f.pair} = ${f.value.toFixed(2)}:1`)).toEqual([]);
+  });
+
+  test("the warning fill stays visible against its surfaces", () => {
+    const theme = themeOf();
+    const failures = MARK_SURFACES.map((surface) => ({
+      pair: `warning on ${surface}`,
+      value: ratio(theme.warning, theme[surface]),
+    })).filter((measured) => measured.value < AMBER_FLOOR);
 
     expect(failures.map((f) => `${f.pair} = ${f.value.toFixed(2)}:1`)).toEqual([]);
   });
