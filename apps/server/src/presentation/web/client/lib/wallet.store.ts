@@ -1,7 +1,9 @@
 import { CollectionStore } from "./collection.store";
-import { WalletEntry } from "./wallet.entity";
+import { type TWalletSource, WalletEntry } from "./wallet.entity";
 
-// Wallets are unique by address → keyed Map (dedup is intrinsic).
+// Wallets are unique by address → keyed Map (dedup is intrinsic). At most one of them is the
+// signer: connecting a second wallet replaces the first, but it must not touch the watched
+// addresses, which is what `clear()` used to do to the whole list.
 class WalletStore extends CollectionStore {
   private entries = new Map<string, WalletEntry>();
 
@@ -11,20 +13,39 @@ class WalletStore extends CollectionStore {
 
   protected load(raw: string | null): void {
     this.entries = new Map(
-      this.parse<string[]>(raw, []).map((s) => {
-        const entry = WalletEntry.parse(s);
-        return [entry.address, entry] as const;
-      }),
+      this.parse<unknown[]>(raw, [])
+        .map((value) => WalletEntry.fromStored(value))
+        .filter((entry): entry is WalletEntry => entry !== null)
+        .map((entry) => [entry.address, entry] as const),
     );
   }
 
   protected dump(): string {
-    return JSON.stringify([...this.entries.values()].map(String));
+    return JSON.stringify([...this.entries.values()].map((entry) => entry.toStored()));
   }
 
-  add(entry: WalletEntry): void {
-    if (this.entries.has(entry.address)) return; // keep the existing entry on duplicate address
+  // Watching an address already being watched keeps the existing entry, nickname and all.
+  // Watching the connected one would silently demote it, so it is left alone.
+  watch(entry: WalletEntry): void {
+    if (this.entries.has(entry.address)) return;
     this.entries.set(entry.address, entry);
+    this.persist();
+  }
+
+  // Connecting promotes the address if it was already being watched, so the same wallet never
+  // appears in both groups.
+  connect(entry: WalletEntry): void {
+    for (const [address, existing] of this.entries) {
+      if (existing.source === "connected") this.entries.delete(address);
+    }
+    this.entries.set(entry.address, (this.entries.get(entry.address) ?? entry).withSource("connected"));
+    this.persist();
+  }
+
+  disconnect(): void {
+    for (const [address, entry] of this.entries) {
+      if (entry.source === "connected") this.entries.delete(address);
+    }
     this.persist();
   }
 
@@ -32,15 +53,10 @@ class WalletStore extends CollectionStore {
     if (this.entries.delete(address.toLowerCase())) this.persist();
   }
 
-  // Single-wallet mode: connecting a wallet replaces whatever was tracked
-  // before, rather than adding to a list.
-  replace(entry: WalletEntry): void {
-    this.entries = new Map([[entry.address, entry]]);
-    this.persist();
-  }
-
-  clear(): void {
-    this.entries = new Map();
+  rename(address: string, label: string): void {
+    const entry = this.entries.get(address.toLowerCase());
+    if (!entry) return;
+    this.entries.set(entry.address, WalletEntry.create(entry.address, entry.chainIds, entry.source, label.trim() || null) ?? entry);
     this.persist();
   }
 
@@ -50,6 +66,10 @@ class WalletStore extends CollectionStore {
 
   list(): WalletEntry[] {
     return [...this.entries.values()];
+  }
+
+  bySource(source: TWalletSource): WalletEntry[] {
+    return this.list().filter((entry) => entry.source === source);
   }
 }
 

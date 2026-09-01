@@ -9,4 +9,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default = { render: () => String(<WalletConnect />) } as Story;
+// The empty state is all the server renders. Both groups and their rows are cloned from the
+// <template> by wallet_controller out of the client-side store, which Storybook does not boot
+// — a nickname never leaves the browser, so there is nothing here for the server to know.
+export const Empty = { render: () => String(<WalletConnect />) } as Story;
