@@ -44,11 +44,14 @@ export default {
         dark: { $value: "#33101A" },
       },
       // A sixth family the five-hue set has no room for: status needs three levels —
-      // earning, at risk, stopped — and green/rose only cover the ends. A position that
-      // is still earning but near its bound is the one the user can still act on.
+      // earning, at risk, stopped — and green/rose only cover the ends. A position that is
+      // still earning but near its bound is the one the user can still act on.
+      // `base` leans orange rather than gold. Yellow is intrinsically light, so darkening it
+      // far enough to be a visible mark on white turns it olive; pushing the hue toward orange
+      // buys the same luminance while still reading as a warning, and stays clear of rose.
       amber: {
         light: { $value: "#FFF8E8" },
-        base: { $value: "#966100" },
+        base: { $value: "#B85C00" },
         vibrant: { $value: "#FFC53D" },
         dark: { $value: "#33240A" },
       },
