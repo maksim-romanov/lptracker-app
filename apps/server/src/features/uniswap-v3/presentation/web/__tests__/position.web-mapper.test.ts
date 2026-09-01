@@ -68,31 +68,49 @@ describe("mapPositionToCardVM", () => {
   });
 });
 
-// Only the three geometry fields matter here; the labels ride along untouched.
-const bar = (thumbPct: number): Parameters<typeof deriveRangeTone>[1] =>
-  ({ bandLeftPct: 20, bandWidthPct: 60, thumbPct }) as Parameters<typeof deriveRangeTone>[1];
+// A ±10% band: 1,906 ticks wide. Narrower than the ~±19% at which the fixed 5% cap starts to
+// bind, so its edge is a share of the range — 286 ticks, about a 2.9% move.
+const TIGHT = { lower: -953, upper: 953 };
+// A full-range position: the whole tick space, which is what every "max ∞" position looks like.
+const FULL = { lower: -887220, upper: 887220 };
 
 describe("deriveRangeTone", () => {
   it("keeps a price away from either bound plain in-range", () => {
-    expect(deriveRangeTone("in-range", bar(50))).toBe("in-range");
+    expect(deriveRangeTone("in-range", { ...TIGHT, current: 0 })).toBe("in-range");
   });
 
-  it("names the bound a price within a tenth of the band is approaching", () => {
-    expect(deriveRangeTone("in-range", bar(24))).toBe("near-lower");
-    expect(deriveRangeTone("in-range", bar(76))).toBe("near-upper");
+  it("names the bound a price is approaching", () => {
+    expect(deriveRangeTone("in-range", { ...TIGHT, current: -800 })).toBe("near-lower");
+    expect(deriveRangeTone("in-range", { ...TIGHT, current: 800 })).toBe("near-upper");
   });
 
-  it("treats the tenth as inclusive on both sides", () => {
-    expect(deriveRangeTone("in-range", bar(26))).toBe("near-lower");
-    expect(deriveRangeTone("in-range", bar(74))).toBe("near-upper");
-    expect(deriveRangeTone("in-range", bar(27))).toBe("in-range");
-    expect(deriveRangeTone("in-range", bar(73))).toBe("in-range");
+  it("measures the edge in price, so a wide range is not permanently at its bound", () => {
+    // A fraction-of-the-band rule put every full-range position at "near lower bound" for good:
+    // a tenth of that span is a fifty-million-fold price move, so nothing could ever leave it.
+    expect(deriveRangeTone("in-range", { ...FULL, current: -887220 + 5000 })).toBe("in-range");
+    // Sitting a hair above the floor is still worth naming, whatever the span.
+    expect(deriveRangeTone("in-range", { ...FULL, current: -887220 + 100 })).toBe("near-lower");
+    expect(deriveRangeTone("in-range", { ...FULL, current: 887220 - 100 })).toBe("near-upper");
+  });
+
+  it("falls back to a share of the range when the range is narrower than the price threshold", () => {
+    // A ±0.5% band is 200 ticks wide; a fixed 488 would cover it end to end and the warning
+    // could never switch off.
+    const narrow = { lower: -100, upper: 100 };
+    expect(deriveRangeTone("in-range", { ...narrow, current: 0 })).toBe("in-range");
+    expect(deriveRangeTone("in-range", { ...narrow, current: -90 })).toBe("near-lower");
+  });
+
+  it("names the bound the reader is looking at, which swaps when the pair is inverted", () => {
+    const nearLower = { ...TIGHT, current: -800 };
+    expect(deriveRangeTone("in-range", nearLower)).toBe("near-lower");
+    expect(deriveRangeTone("in-range", nearLower, true)).toBe("near-upper");
   });
 
   it("passes a position that is not in range straight through", () => {
     // proximity is meaningless once the price has left the band, and closed positions
     // have no live price at all
-    expect(deriveRangeTone("out-of-range", bar(95))).toBe("out-of-range");
-    expect(deriveRangeTone("closed", bar(50))).toBe("closed");
+    expect(deriveRangeTone("out-of-range", { ...TIGHT, current: 5000 })).toBe("out-of-range");
+    expect(deriveRangeTone("closed", { ...TIGHT, current: 0 })).toBe("closed");
   });
 });

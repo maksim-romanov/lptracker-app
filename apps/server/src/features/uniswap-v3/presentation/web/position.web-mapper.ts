@@ -23,6 +23,12 @@ export interface IPairSideVM {
 
 export type TPositionRangeTone = "in-range" | "near-lower" | "near-upper" | "out-of-range" | "closed";
 
+export interface ITickRange {
+  current: number;
+  lower: number;
+  upper: number;
+}
+
 export interface ICardVM {
   ref: string;
   nftTokenId: string;
@@ -130,15 +136,33 @@ const computeRangeBar = (
   return { bandLeftPct: bandLeft * 100, bandWidthPct: bandWidth * 100, thumbPct: thumb * 100, inRange };
 };
 
-// Ticks are log-price, so a fixed fraction of the band is a fixed proportional move of the
-// price — the same warning distance whether the range is wide or narrow.
-const NEAR_EDGE_FRACTION = 0.1;
+// "Near a bound" has to be a distance in price, not a fraction of the range. As a fraction it
+// read identically on a ±1% range and on a full-range position — and on a full-range one, 10% of
+// the span is a fifty-million-fold price move, so every such position sat permanently at "near
+// lower bound" no matter where the price actually was. That is what turned the warning into the
+// board's default state.
+// Ticks are log-price, so a fixed count of them is a fixed proportional move: 488 ticks ≈ 5%.
+const NEAR_EDGE_TICKS = 488;
 
-export const deriveRangeTone = (status: TUniswapV3RangeStatus, bar: ICardVM["priceRange"]): TPositionRangeTone => {
+// On a range narrower than about 6.5% that 5% would swallow the whole thing and the warning
+// could never switch off, so on a tight range the edge is a share of the range instead.
+const NEAR_EDGE_MAX_SHARE = 0.15;
+
+// The bounds a person is looking at, which swap when the pair is read the other way round.
+const orient = (ticks: ITickRange, inverted: boolean) =>
+  inverted
+    ? { current: -ticks.current, lower: -ticks.upper, upper: -ticks.lower }
+    : { current: ticks.current, lower: ticks.lower, upper: ticks.upper };
+
+export const deriveRangeTone = (status: TUniswapV3RangeStatus, ticks: ITickRange, inverted = false): TPositionRangeTone => {
   if (status !== "in-range") return status;
-  const positionInBand = (bar.thumbPct - bar.bandLeftPct) / bar.bandWidthPct;
-  if (positionInBand <= NEAR_EDGE_FRACTION) return "near-lower";
-  if (positionInBand >= 1 - NEAR_EDGE_FRACTION) return "near-upper";
+
+  const { current, lower, upper } = orient(ticks, inverted);
+  const span = Math.max(1, upper - lower);
+  const edge = Math.min(NEAR_EDGE_TICKS, span * NEAR_EDGE_MAX_SHARE);
+
+  if (current - lower <= edge) return "near-lower";
+  if (upper - current <= edge) return "near-upper";
   return "in-range";
 };
 
@@ -205,7 +229,7 @@ export const mapPositionToCardVM = (position: Position, tokens: TokensMap, opts:
     nftTokenId: ext.nftTokenId,
     feeTierLabel: ext.feeTierLabel,
     status,
-    rangeTone: deriveRangeTone(status, priceRange),
+    rangeTone: deriveRangeTone(status, { current: ext.pool.currentTick, lower: ext.tickLower, upper: ext.tickUpper }, inverted),
     inverted,
     chainId: Number(position.ref.split(":")[1]),
     protocol: protocolOf(position.protocol),
