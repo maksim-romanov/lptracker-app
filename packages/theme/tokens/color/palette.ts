@@ -9,9 +9,10 @@ export default {
       // so forcing one amber to satisfy both turns it olive; Radix documents the same thing
       // from the other side, singling out Sky, Mint, Lime, Yellow and Amber as the scales
       // whose solid step takes dark foreground text rather than white.
-      // `amber.solid` is deliberately the brightest of the solids. What reads as a dirty amber
-      // is darkness, not low chroma — the olive it replaced was 94% saturated, this is 92% —
-      // so the only way to fix it is to stop darkening it.
+      // `amber.solid` is deliberately the brightest of the solids, and sits at full chroma:
+      // hue 40, saturation 100. What reads as a dirty amber is darkness, not low chroma — the
+      // olive this replaced was 94% saturated — so the only way to fix it is to stop
+      // darkening it. Going any further trades gold for orange, which is a different signal.
       // `solid` steps are therefore NOT matched on lightness — green sits at L*60, rose at 54,
       // amber at 60 — because a designed set follows each hue to its own purest point. `base`
       // steps are matched, because type has to hold one weight down a column.
@@ -67,7 +68,7 @@ export default {
       amber: {
         light: { $value: "#FFF8E8" },
         base: { $value: "#B05800" },
-        solid: { $value: "#F59E0B" },
+        solid: { $value: "#FFA800" },
         vibrant: { $value: "#FFC53D" },
         dark: { $value: "#33240A" },
       },
