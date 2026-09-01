@@ -15,6 +15,25 @@ shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget.
 - `theme.config.ts` — the Depthly manifest: token tree + every output file declared through kit plugins.
 - `dist/` — generated (gitignored, denied). `src/index.ts` re-exports from here — never edit `dist/` by hand.
 
+## Color system
+
+Five hue families plus amber, five steps each (`light` `pastel` `base` `vibrant` `dark`), with
+the role of each step fixed across families. Neutrals are alpha (`#RRGGBBAA`), not grey, so text
+tints with whatever surface it lands on.
+
+The ramps are **not** luminance-aligned across hues — `violet.vibrant` is dark where
+`green.vibrant` is bright — so which step a semantic role takes is decided per hue by
+`__tests__/contrast.test.ts`, never by the step's name. That test is the gate: it flattens every
+alpha against every surface and holds text to 4.5:1, control boundaries and status marks to 3:1.
+Change an alpha or a ramp step and it tells you what broke.
+
+Two roles the M3 names don't cover, both born from that test:
+
+- `primary` is a **fill** role and holds one value in both themes; `primaryText` is accent-coloured
+  *type* and steps per theme, because no single violet clears AA as text on both grounds.
+- `outline` is the boundary that identifies a control and is held to 3:1; `outlineVariant` is a
+  decorative hairline and is not.
+
 ## Generated targets
 
 - **JS** (`dist/js/*.ts`) — mirrors the pre-migration hand-written module shape exactly, so

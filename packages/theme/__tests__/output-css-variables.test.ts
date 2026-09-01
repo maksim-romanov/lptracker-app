@@ -7,6 +7,13 @@ beforeAll(async () => {
 });
 
 describe("generated depthly.css", () => {
+  test("camelCase roles become kebab-case custom properties", async () => {
+    const content = await Bun.file(`${import.meta.dir}/../dist/css/depthly.css`).text();
+    expect(content).toContain("--color-on-surface-muted:");
+    expect(content).toContain("--color-surface-hover:");
+    expect(content).not.toContain("--color-onSurfaceMuted");
+  });
+
   test("has :root, prefers-color-scheme, and both [data-theme] blocks", async () => {
     const content = await Bun.file(`${import.meta.dir}/../dist/css/depthly.css`).text();
     expect(content).not.toContain("@plugin");
@@ -14,10 +21,11 @@ describe("generated depthly.css", () => {
     expect(content).toContain("@media (prefers-color-scheme: dark) {");
     expect(content).toContain('[data-theme="depthly-light"] {');
     expect(content).toContain('[data-theme="depthly-dark"] {');
-    expect(content).toContain("--color-primary: #CC0062;");
-    expect(content).toContain("--color-primary: #FF007A;");
-    expect(content).toContain("--color-outline: #B5BEC4;");
-    expect(content).toContain("--color-outline: #4A4D52;");
+    expect(content).toContain("--color-primary: #8B4DFF;");
+    expect(content).toContain("--color-primary-text: #7A1FFF;");
+    expect(content).toContain("--color-primary-text: #A56BFF;");
+    expect(content).toContain("--color-outline: #12101685;");
+    expect(content).toContain("--color-outline: #FFFFFF66;");
   });
 });
 

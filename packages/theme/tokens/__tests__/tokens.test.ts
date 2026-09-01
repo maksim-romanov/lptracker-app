@@ -7,17 +7,32 @@ import { describe, expect, test } from "bun:test";
 
 describe("token source files", () => {
   test("palette has the expected ramps and singles", () => {
-    expect(palette.color.palette.neonPink["500"].$value).toBe("#FF007A");
+    expect(palette.color.palette.violet.accent.$value).toBe("#8B4DFF");
     expect(palette.color.palette.white.$value).toBe("#FFFFFF");
-    expect(palette.color.palette.neutral["900"].$value).toBe("#0F1419");
+    expect(palette.color.palette.neutral["900"].$value).toBe("#121016");
+  });
+
+  test("every hue family carries the four steps the semantic layer draws from", () => {
+    const families = ["violet", "pink", "blue", "green", "rose", "amber"] as const;
+    for (const family of families) {
+      const steps = Object.keys(palette.color.palette[family]).sort();
+      expect(steps, family).toEqual(expect.arrayContaining(["light", "base", "vibrant", "dark"]));
+    }
+    // The brand ramp is the one kept whole — pastel and the theme-invariant accent are
+    // only referenced by violet's own roles.
+    expect(Object.keys(palette.color.palette.violet).sort()).toEqual(["accent", "base", "dark", "light", "pastel", "vibrant"]);
   });
 
   test("depthly dark/light have matching field sets", () => {
     const darkKeys = Object.keys(depthly.color.depthly.dark).sort();
     const lightKeys = Object.keys(depthly.color.depthly.light).sort();
     expect(darkKeys).toEqual(lightKeys);
-    expect(depthly.color.depthly.dark.primary.$value).toBe("{color.palette.neonPink.500}");
-    expect(depthly.color.depthly.light.primary.$value).toBe("{color.palette.neonPink.700}");
+    // One accent, both themes — the whole point of the role. Accent-coloured *text* is a
+    // separate role because a single value cannot clear AA as type in both modes.
+    expect(depthly.color.depthly.dark.primary.$value).toBe("{color.palette.violet.accent}");
+    expect(depthly.color.depthly.light.primary.$value).toBe("{color.palette.violet.accent}");
+    expect(depthly.color.depthly.dark.primaryText.$value).toBe("{color.palette.violet.base}");
+    expect(depthly.color.depthly.light.primaryText.$value).toBe("{color.palette.violet.vibrant}");
   });
 
   test("every palette reference in depthly points at an existing palette token", () => {

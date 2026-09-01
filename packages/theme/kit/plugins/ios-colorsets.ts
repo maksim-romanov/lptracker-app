@@ -9,13 +9,19 @@ export interface IosColorsetsOptions<T> {
   entries(tree: Resolved<T>): Record<string, { light: string; dark: string }>;
 }
 
+// #RRGGBB or #RRGGBBAA. Anything else is a typo in the token tree rather than a colour
+// this plugin should guess at, and a silent NaN would reach Xcode as an unreadable asset.
 const hexToComponents = (hex: string): { red: number; green: number; blue: number; alpha: number } => {
   const normalized = hex.replace("#", "");
+  if (!/^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(normalized)) {
+    throw new Error(`iosColorsets: "${hex}" is not a #RRGGBB or #RRGGBBAA colour`);
+  }
+  const channel = (offset: number) => Number.parseInt(normalized.slice(offset, offset + 2), 16) / 255;
   return {
-    red: Number.parseInt(normalized.slice(0, 2), 16) / 255,
-    green: Number.parseInt(normalized.slice(2, 4), 16) / 255,
-    blue: Number.parseInt(normalized.slice(4, 6), 16) / 255,
-    alpha: 1,
+    red: channel(0),
+    green: channel(2),
+    blue: channel(4),
+    alpha: normalized.length === 8 ? channel(6) : 1,
   };
 };
 

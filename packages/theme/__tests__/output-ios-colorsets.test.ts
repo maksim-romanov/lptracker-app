@@ -13,10 +13,18 @@ describe("generated iOS colorsets", () => {
     const content = await Bun.file(`${assetsDir}/bgPrimary.colorset/Contents.json`).text();
     const parsed = JSON.parse(content);
     expect(parsed.colors[0].color.components).toEqual({ red: 1, green: 1, blue: 1, alpha: 1 });
-    expect(parsed.colors[1].color.components).toEqual({ red: 0, green: 0, blue: 0, alpha: 1 });
+    expect(parsed.colors[1].color.components).toEqual({ red: 18 / 255, green: 16 / 255, blue: 22 / 255, alpha: 1 });
     expect(parsed.colors[1].appearances).toEqual([{ appearance: "luminosity", value: "dark" }]);
     expect(parsed.colors[0].color["color-space"]).toBe("srgb");
     expect(parsed.colors[1].color["color-space"]).toBe("srgb");
+  });
+
+  // The alpha-based neutrals reach the widget as real alpha, not as a flattened grey — the
+  // colorset composites against whatever it is drawn on, exactly as on the web.
+  test("textMuted carries the neutral's alpha through to the asset catalog", async () => {
+    const parsed = JSON.parse(await Bun.file(`${assetsDir}/textMuted.colorset/Contents.json`).text());
+    expect(parsed.colors[0].color.components.alpha).toBeCloseTo(158 / 255, 10);
+    expect(parsed.colors[1].color.components.alpha).toBeCloseTo(163 / 255, 10);
   });
 
   test("chainEthereum (network-mapped) has identical light/dark components", async () => {

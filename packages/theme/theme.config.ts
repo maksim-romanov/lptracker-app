@@ -45,29 +45,11 @@ const typographyVars = (typography: Tree["typography"]): Record<string, string> 
   }, {}),
 });
 
-const semanticColors = (mode: Tree["color"]["depthly"]["light"]) => ({
-  "--color-surface": mode.surface,
-  "--color-surface-dim": mode.surfaceDim,
-  "--color-surface-bright": mode.surfaceBright,
-  "--color-surface-container": mode.surfaceContainer,
-  "--color-surface-variant": mode.surfaceVariant,
-  "--color-on-surface": mode.onSurface,
-  "--color-on-surface-variant": mode.onSurfaceVariant,
-  "--color-outline": mode.outline,
-  "--color-outline-variant": mode.outlineVariant,
-  "--color-primary": mode.primary,
-  "--color-on-primary": mode.onPrimary,
-  "--color-secondary": mode.secondary,
-  "--color-on-secondary": mode.onSecondary,
-  "--color-success": mode.success,
-  "--color-on-success": mode.onSuccess,
-  "--color-warning": mode.warning,
-  "--color-on-warning": mode.onWarning,
-  "--color-error": mode.error,
-  "--color-on-error": mode.onError,
-  "--color-info": mode.info,
-  "--color-on-info": mode.onInfo,
-});
+// Every semantic role becomes `--color-<kebab-name>`, derived rather than listed: a role
+// added to the token tree and a role exposed to CSS were two lists that could drift, and
+// the drift only showed up as a utility that silently resolved to nothing.
+const semanticColors = (mode: Tree["color"]["depthly"]["light"]): Record<string, string> =>
+  Object.fromEntries(Object.entries(mode).map(([role, value]) => [`--color-${kebab(role)}`, value]));
 
 // depthly.{light,dark} field each colorset maps to.
 const semanticColorsets = {
@@ -178,6 +160,23 @@ export default defineTokens({
         { selector: ":root", declarations: semanticColors(tree.color.depthly.dark), media: "(prefers-color-scheme: dark)" },
         { selector: '[data-theme="depthly-light"]', declarations: semanticColors(tree.color.depthly.light) },
         { selector: '[data-theme="depthly-dark"]', declarations: semanticColors(tree.color.depthly.dark) },
+      ],
+    }),
+    // Tailwind only builds a `bg-x`/`text-x` utility for names declared in @theme, so the
+    // role list existed twice: once here and once by hand in apps/server's app.css. That
+    // second copy is what silently dropped a utility whenever a role was added. Emitting the
+    // alias block from the same tree removes the copy — `@theme inline` keeps each name
+    // pointing at the runtime custom property, so utilities stay reactive to [data-theme].
+    cssVariablesTheme<Tokens>({
+      outFile: "dist/css/tailwind-theme.css",
+      headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/color/depthly.ts */"],
+      blocks: (tree) => [
+        {
+          selector: "@theme inline",
+          declarations: Object.fromEntries(
+            Object.keys(tree.color.depthly.dark).map((role) => [`--color-${kebab(role)}`, `var(--color-${kebab(role)})`]),
+          ),
+        },
       ],
     }),
     cssVariablesTheme<Tokens>({

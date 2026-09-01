@@ -11,8 +11,9 @@ describe("generated themes/depthly.ts", () => {
     const content = await Bun.file(`${import.meta.dir}/../dist/js/themes/depthly.ts`).text();
     expect(content).toContain('import type { ColorTokens } from "../colors";');
     expect(content).toContain("export const depthlyDark: ColorTokens = {");
-    expect(content).toContain('primary: "#FF007A",');
+    expect(content).toContain('primary: "#8B4DFF",');
+    expect(content).toContain('primaryText: "#A56BFF",');
     expect(content).toContain("export const depthlyLight: ColorTokens = {");
-    expect(content).toContain('primary: "#CC0062",');
+    expect(content).toContain('primaryText: "#7A1FFF",');
   });
 });

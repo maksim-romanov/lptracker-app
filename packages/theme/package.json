@@ -12,6 +12,7 @@
     "./spacing": "./dist/js/spacing.ts",
     "./themes/*": "./dist/js/themes/*.ts",
     "./css/depthly.css": "./dist/css/depthly.css",
+    "./css/tailwind-theme.css": "./dist/css/tailwind-theme.css",
     "./css/spacing.css": "./dist/css/spacing.css",
     "./css/typography.css": "./dist/css/typography.css",
     "./css/fonts-app.css": "./dist/css/fonts-app.css",

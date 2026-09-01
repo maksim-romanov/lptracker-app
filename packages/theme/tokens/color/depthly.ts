@@ -3,80 +3,134 @@ import paletteTokens from "./palette";
 
 const palette = tokenAlias(paletteTokens);
 
+// Neutrals are alpha, not grey: text tints with whatever surface it lands on, so a card
+// never needs a grey of its own. The alphas are not free — `onSurfaceMuted` is the lowest
+// step that still clears 4.5:1 on every surface in its theme, and light needs a heavier
+// one than dark because it composites against a brighter ground. contrast.test.ts owns
+// those thresholds; move an alpha and it tells you.
+const whiteAlpha = {
+  variant: "#FFFFFFA3", // 64%
+  muted: "#FFFFFF8F", // 56%
+  outline: "#FFFFFF66", // 40%
+  outlineVariant: "#FFFFFF1A", // 10%
+  hover: "#FFFFFF0F", // 6%
+  grid: "#FFFFFF0B", // 4.5%
+};
+
+const inkAlpha = {
+  variant: "#1210169E", // 62%
+  muted: "#121016A8", // 66%
+  outline: "#12101685", // 52%
+  outlineVariant: "#12101612", // 7%
+  hover: "#1210160A", // 4%
+  grid: "#1210160D", // 5%
+};
+
 export default {
   color: {
     depthly: {
       $type: "color",
       dark: {
-        primary: palette("color.palette.neonPink.500"),
+        // The accent holds one value in both themes. It is a fill role only: as text on a
+        // near-black ground it lands at 4.14:1, so accent-coloured type takes `primaryText`,
+        // which steps per theme.
+        primary: palette("color.palette.violet.accent"),
         onPrimary: palette("color.palette.white"),
-        primaryContainer: { $value: "#33001A" },
-        onPrimaryContainer: palette("color.palette.neonPink.100"),
-        secondary: palette("color.palette.neonPink.300"),
-        onSecondary: { $value: "#0A0A0B" },
-        secondaryContainer: { $value: "#330014" },
-        onSecondaryContainer: palette("color.palette.neonPink.100"),
-        surface: palette("color.palette.black"),
-        onSurface: palette("color.palette.neutral.100"),
-        // dim/bright are the page and the raised content it holds. The ramp runs in
-        // opposite directions per theme, so each mode has one of the pair coincide with
+        primaryText: palette("color.palette.violet.base"),
+        primaryWash: { $value: "#8B4DFF1A" },
+        primaryContainer: palette("color.palette.violet.dark"),
+        onPrimaryContainer: palette("color.palette.violet.pastel"),
+        secondary: palette("color.palette.pink.base"),
+        onSecondary: palette("color.palette.neutral.900"),
+        secondaryContainer: palette("color.palette.pink.dark"),
+        onSecondaryContainer: palette("color.palette.pink.base"),
+        // dim is the page the app card sits on; surface is the card itself. The ramp runs
+        // in opposite directions per theme, so each mode has one of the pair coincide with
         // an adjacent role — as in M3's own baseline. They are not aliases of it.
-        surfaceDim: palette("color.palette.black"),
-        surfaceBright: { $value: "#16181C" },
-        surfaceContainer: { $value: "#16181C" },
-        surfaceVariant: { $value: "#202327" },
-        onSurfaceVariant: { $value: "#8B8F95" },
-        outline: { $value: "#4A4D52" },
-        outlineVariant: { $value: "#33363A" },
-        error: palette("color.palette.red.500"),
-        onError: palette("color.palette.white"),
-        errorContainer: { $value: "#3A0A0E" },
-        onErrorContainer: { $value: "#FFD6D9" },
-        success: { $value: "#00FFA1" },
-        onSuccess: { $value: "#001F0F" },
-        warning: { $value: "#FFD60A" },
-        onWarning: { $value: "#1A1500" },
-        info: { $value: "#00D4FF" },
-        onInfo: { $value: "#001A26" },
+        surface: { $value: "#121016" },
+        surfaceDim: { $value: "#0E0C12" },
+        surfaceBright: { $value: "#1C1922" },
+        surfaceContainer: { $value: "#1C1922" },
+        surfaceVariant: { $value: "#332F3D" },
+        surfaceHover: { $value: whiteAlpha.hover },
+        onSurface: palette("color.palette.white"),
+        onSurfaceVariant: { $value: whiteAlpha.variant },
+        onSurfaceMuted: { $value: whiteAlpha.muted },
+        outline: { $value: whiteAlpha.outline },
+        outlineVariant: { $value: whiteAlpha.outlineVariant },
+        grid: { $value: whiteAlpha.grid },
+        error: palette("color.palette.rose.vibrant"),
+        onError: palette("color.palette.rose.dark"),
+        errorContainer: palette("color.palette.rose.dark"),
+        onErrorContainer: palette("color.palette.rose.vibrant"),
+        success: palette("color.palette.green.vibrant"),
+        onSuccess: palette("color.palette.green.dark"),
+        successContainer: palette("color.palette.green.dark"),
+        onSuccessContainer: palette("color.palette.green.vibrant"),
+        warning: palette("color.palette.amber.vibrant"),
+        onWarning: palette("color.palette.amber.dark"),
+        warningContainer: palette("color.palette.amber.dark"),
+        onWarningContainer: palette("color.palette.amber.vibrant"),
+        info: palette("color.palette.blue.base"),
+        onInfo: palette("color.palette.blue.dark"),
+        infoContainer: palette("color.palette.blue.dark"),
+        onInfoContainer: palette("color.palette.blue.base"),
         inverseSurface: palette("color.palette.neutral.100"),
         inverseOnSurface: palette("color.palette.neutral.900"),
-        inversePrimary: palette("color.palette.neonPink.700"),
+        inversePrimary: palette("color.palette.violet.vibrant"),
         scrim: palette("color.palette.black"),
-        shadow: palette("color.palette.neonPink.500"),
+        // Resting surfaces stay flat; the one lift in the system is a colored glow, so the
+        // shadow role resolves to the accent and there is no grey to reach for.
+        shadow: palette("color.palette.violet.accent"),
+        // The single exception, and only for overlays that leave the page plane —
+        // <dialog>, popovers. A card never gets this.
+        shadowOverlay: { $value: "#00000066" },
       },
       light: {
-        primary: palette("color.palette.neonPink.700"),
+        primary: palette("color.palette.violet.accent"),
         onPrimary: palette("color.palette.white"),
-        primaryContainer: palette("color.palette.neonPink.100"),
-        onPrimaryContainer: palette("color.palette.neonPink.900"),
-        secondary: palette("color.palette.neonPink.500"),
+        primaryText: palette("color.palette.violet.vibrant"),
+        primaryWash: { $value: "#8B4DFF1A" },
+        primaryContainer: palette("color.palette.violet.light"),
+        onPrimaryContainer: palette("color.palette.violet.dark"),
+        secondary: palette("color.palette.pink.vibrant"),
         onSecondary: palette("color.palette.white"),
-        secondaryContainer: { $value: "#FFEBF3" },
-        onSecondaryContainer: palette("color.palette.neonPink.900"),
+        secondaryContainer: palette("color.palette.pink.light"),
+        onSecondaryContainer: palette("color.palette.pink.dark"),
         surface: palette("color.palette.white"),
-        onSurface: palette("color.palette.neutral.900"),
-        surfaceDim: { $value: "#F7F9F9" },
+        surfaceDim: { $value: "#F6F5FA" },
         surfaceBright: palette("color.palette.white"),
-        surfaceContainer: { $value: "#F7F9F9" },
-        surfaceVariant: { $value: "#EFF3F4" },
-        onSurfaceVariant: { $value: "#536471" },
-        outline: { $value: "#B5BEC4" },
-        outlineVariant: { $value: "#DFE4E7" },
-        error: palette("color.palette.red.500"),
+        surfaceContainer: { $value: "#F8F7FB" },
+        surfaceVariant: { $value: "#EDEBF3" },
+        surfaceHover: { $value: inkAlpha.hover },
+        onSurface: palette("color.palette.neutral.900"),
+        onSurfaceVariant: { $value: inkAlpha.variant },
+        onSurfaceMuted: { $value: inkAlpha.muted },
+        outline: { $value: inkAlpha.outline },
+        outlineVariant: { $value: inkAlpha.outlineVariant },
+        grid: { $value: inkAlpha.grid },
+        error: palette("color.palette.rose.base"),
         onError: palette("color.palette.white"),
-        errorContainer: { $value: "#FFE0E3" },
-        onErrorContainer: { $value: "#5F0010" },
-        success: { $value: "#10B981" },
+        errorContainer: palette("color.palette.rose.light"),
+        onErrorContainer: palette("color.palette.rose.dark"),
+        success: palette("color.palette.green.base"),
         onSuccess: palette("color.palette.white"),
-        warning: { $value: "#F59E0B" },
-        onWarning: { $value: "#1A1500" },
-        info: { $value: "#0EA5E9" },
+        successContainer: palette("color.palette.green.light"),
+        onSuccessContainer: palette("color.palette.green.dark"),
+        warning: palette("color.palette.amber.base"),
+        onWarning: palette("color.palette.white"),
+        warningContainer: palette("color.palette.amber.light"),
+        onWarningContainer: palette("color.palette.amber.dark"),
+        info: palette("color.palette.blue.vibrant"),
         onInfo: palette("color.palette.white"),
+        infoContainer: palette("color.palette.blue.light"),
+        onInfoContainer: palette("color.palette.blue.dark"),
         inverseSurface: palette("color.palette.neutral.900"),
         inverseOnSurface: palette("color.palette.neutral.100"),
-        inversePrimary: palette("color.palette.neonPink.500"),
+        inversePrimary: palette("color.palette.violet.base"),
         scrim: palette("color.palette.black"),
-        shadow: palette("color.palette.neonPink.500"),
+        shadow: palette("color.palette.violet.accent"),
+        shadowOverlay: { $value: "#12101626" },
       },
     },
   },
