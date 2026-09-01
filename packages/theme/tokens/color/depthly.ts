@@ -3,6 +3,10 @@ import paletteTokens from "./palette";
 
 const palette = tokenAlias(paletteTokens);
 
+// A status is a fill role and a type role, never one value doing both. `success` fills a band
+// or a dot and follows its hue to the purest point it has; `successText` is the same status set
+// as words on a page surface and has to be dark enough to read there. Collapsing the two is
+// what turned amber into olive — yellow is light, and only one of the two jobs tolerates that.
 // A container's text is the family's loud step in both themes, not its darkest one. Near-black
 // text on a pale tint is legible and says nothing — the badge loses the hue that was the reason
 // for tinting it in the first place. Prose on a tinted panel is the exception and takes the
@@ -67,18 +71,22 @@ export default {
         onError: palette("color.palette.rose.dark"),
         errorContainer: palette("color.palette.rose.dark"),
         onErrorContainer: palette("color.palette.rose.vibrant"),
+        errorText: palette("color.palette.rose.vibrant"),
         success: palette("color.palette.green.vibrant"),
         onSuccess: palette("color.palette.green.dark"),
         successContainer: palette("color.palette.green.dark"),
         onSuccessContainer: palette("color.palette.green.vibrant"),
+        successText: palette("color.palette.green.vibrant"),
         warning: palette("color.palette.amber.vibrant"),
         onWarning: palette("color.palette.amber.dark"),
         warningContainer: palette("color.palette.amber.dark"),
         onWarningContainer: palette("color.palette.amber.vibrant"),
+        warningText: palette("color.palette.amber.vibrant"),
         info: palette("color.palette.blue.base"),
         onInfo: palette("color.palette.blue.dark"),
         infoContainer: palette("color.palette.blue.dark"),
         onInfoContainer: palette("color.palette.blue.base"),
+        infoText: palette("color.palette.blue.base"),
         inverseSurface: palette("color.palette.neutral.100"),
         inverseOnSurface: palette("color.palette.neutral.900"),
         inversePrimary: palette("color.palette.violet.vibrant"),
@@ -113,22 +121,26 @@ export default {
         outline: { $value: inkAlpha.outline },
         outlineVariant: { $value: inkAlpha.outlineVariant },
         grid: { $value: inkAlpha.grid },
-        error: palette("color.palette.rose.base"),
-        onError: palette("color.palette.white"),
+        error: palette("color.palette.rose.solid"),
+        onError: palette("color.palette.rose.dark"),
         errorContainer: palette("color.palette.rose.light"),
         onErrorContainer: palette("color.palette.rose.base"),
-        success: palette("color.palette.green.base"),
-        onSuccess: palette("color.palette.white"),
+        errorText: palette("color.palette.rose.base"),
+        success: palette("color.palette.green.solid"),
+        onSuccess: palette("color.palette.green.dark"),
         successContainer: palette("color.palette.green.light"),
         onSuccessContainer: palette("color.palette.green.base"),
-        warning: palette("color.palette.amber.base"),
-        onWarning: palette("color.palette.white"),
+        successText: palette("color.palette.green.base"),
+        warning: palette("color.palette.amber.solid"),
+        onWarning: palette("color.palette.amber.dark"),
         warningContainer: palette("color.palette.amber.light"),
         onWarningContainer: palette("color.palette.amber.base"),
+        warningText: palette("color.palette.amber.base"),
         info: palette("color.palette.blue.vibrant"),
         onInfo: palette("color.palette.white"),
         infoContainer: palette("color.palette.blue.light"),
         onInfoContainer: palette("color.palette.blue.vibrant"),
+        infoText: palette("color.palette.blue.vibrant"),
         inverseSurface: palette("color.palette.neutral.900"),
         inverseOnSurface: palette("color.palette.neutral.100"),
         inversePrimary: palette("color.palette.violet.base"),

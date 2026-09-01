@@ -17,11 +17,13 @@ const TYPE_ROLE: Record<ToastType, "alert" | "status"> = {
   error: "alert",
 };
 
+// Border takes the fill role, the message takes the type role. A status solid follows its hue
+// to the purest point it has, which is not a value prose can be set in.
 const TYPE_CLASS: Record<ToastType, string> = {
   loading: "border-outline",
-  info: "border-info text-info",
-  warning: "border-warning text-warning",
-  error: "border-error text-error",
+  info: "border-info text-info-text",
+  warning: "border-warning text-warning-text",
+  error: "border-error text-error-text",
 };
 
 type Props = PropsWithChildren<

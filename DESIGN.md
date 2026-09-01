@@ -44,15 +44,27 @@ each step fixed across families, and each family owning one meaning:
 | `outlineVariant` — a hairline | 10% white | 7% black |
 | `primary` — accent as a fill | `#8B4DFF` | `#8B4DFF` |
 | `primaryText` — accent as type | `#A56BFF` | `#7A1FFF` |
+| `success` / `warning` / `error` — filled marks | `#2EDC84` `#FFC53D` `#FF5470` | `#2F9F69` `#D27306` `#E5484D` |
+| `successText` / `warningText` / `errorText` | same as the fills | `#088147` `#B05800` `#D81B3A` |
 
 **Neutrals are alpha, not grey.** Text tints with whatever surface it lands on, so a card never
 needs a grey of its own. The alphas are not free: `onSurfaceMuted` is the lowest step that still
 clears 4.5:1 on every surface in its theme, and light needs a heavier one than dark because it
 composites against a brighter ground.
 
-**One accent, but only as a fill.** `#8B4DFF` holds one value in both themes, which is what makes
-the product read as the same thing light or dark. As *text* on the near-black ground it lands at
-4.14:1, so accent-coloured type takes `primaryText`, which steps per theme.
+**A colour is a fill or it is type, never one value doing both.** `primary` `#8B4DFF` holds one
+value in both themes, which is what makes the product read as the same thing light or dark — but
+as *text* on the near-black ground it lands at 4.14:1, so accent-coloured type takes `primaryText`.
+Every status works the same way: `success` fills a band or a dot and follows its hue to the purest
+point that hue has; `successText` is the same status set as words on a page surface and has to be
+dark enough to read there.
+
+Yellow is where collapsing the two shows first and worst. It is intrinsically light, so one amber
+forced to satisfy both jobs ends up olive — and a light theme's filled marks are therefore *not*
+matched on lightness (green sits at L\*58, rose at 54, amber at 58 by hue, not by decree). Radix
+documents the same thing from the other side, singling out Sky, Mint, Lime, Yellow and Amber as
+the scales whose solid step takes dark foreground text rather than white. Type roles *are* matched
+on lightness, because words have to hold one weight down a column.
 
 **Two border roles, on purpose.** `outline` is the boundary that identifies a control and is held
 to 3:1; `outlineVariant` is a divider between rows and is deliberately not. Using the first for
@@ -172,7 +184,7 @@ read by colour alone.
 
 - Keep the canvas near-black and the chrome neutral; build depth from tonal steps and outlines.
 - Spend the accent like it is rare — CTA, active, focus, glow, nothing else.
-- Reach for `primaryText` whenever the accent is type, and `primary` whenever it is a fill.
+- Reach for the `*Text` role whenever a colour is type, and the plain role whenever it is a fill.
 - Set every figure in mono and every word in sans.
 - Pair status and P&L color with a sign, icon, or label.
 - Put a new colour through the contrast test in the same change that introduces it.

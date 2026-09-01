@@ -63,15 +63,22 @@ const ON_FILL: [text: string, fill: string][] = [
   ["onPrimaryContainer", "primaryContainer"],
   ["onSecondary", "secondary"],
   ["onSecondaryContainer", "secondaryContainer"],
-  ["onSuccess", "success"],
   ["onSuccessContainer", "successContainer"],
-  ["onWarning", "warning"],
   ["onWarningContainer", "warningContainer"],
-  ["onError", "error"],
   ["onErrorContainer", "errorContainer"],
-  ["onInfo", "info"],
   ["onInfoContainer", "infoContainer"],
   ["inverseOnSurface", "inverseSurface"],
+];
+
+// A status solid is a filled mark that carries a short label, not a paragraph — and it follows
+// its hue to the purest point that hue has, which for amber is light enough that no foreground
+// reaches 4.5:1 on it. Held to the large-text floor instead. Nothing in /app renders one today;
+// the pairing anyone actually reads is the container one above, which keeps the full threshold.
+const ON_SOLID: [text: string, fill: string][] = [
+  ["onSuccess", "success"],
+  ["onWarning", "warning"],
+  ["onError", "error"],
+  ["onInfo", "info"],
 ];
 
 // WCAG 1.4.11: a border or a status mark is not text, but it still has to be perceivable.
@@ -115,6 +122,28 @@ describe.each([
       { pair: `primaryText on ${surface}`, value: ratio(theme.primaryText, theme[surface]) },
       { pair: `primaryText on primaryWash over ${surface}`, value: ratio(theme.primaryText, flatten(theme.primaryWash, theme[surface])) },
     ]).filter((measured) => measured.value < AA_TEXT);
+
+    expect(failures.map((f) => `${f.pair} = ${f.value.toFixed(2)}:1`)).toEqual([]);
+  });
+
+  // The other half of the fill/type split: a status set as words has to read on a page surface,
+  // which is a different job from filling a band and needs a different value to do it.
+  test("status text roles clear AA on the surfaces they are set on", () => {
+    const theme = themeOf();
+    const failures = MARK_SURFACES.flatMap((surface) =>
+      ["successText", "warningText", "errorText", "infoText"]
+        .map((role) => ({ pair: `${role} on ${surface}`, value: ratio(theme[role], theme[surface]) }))
+        .filter((measured) => measured.value < AA_TEXT),
+    );
+
+    expect(failures.map((f) => `${f.pair} = ${f.value.toFixed(2)}:1`)).toEqual([]);
+  });
+
+  test("a status solid carries its label at the large-text floor", () => {
+    const theme = themeOf();
+    const failures = ON_SOLID.map(([text, fill]) => ({ pair: `${text} on ${fill}`, value: ratio(theme[text], theme[fill]) })).filter(
+      (measured) => measured.value < AA_NON_TEXT,
+    );
 
     expect(failures.map((f) => `${f.pair} = ${f.value.toFixed(2)}:1`)).toEqual([]);
   });

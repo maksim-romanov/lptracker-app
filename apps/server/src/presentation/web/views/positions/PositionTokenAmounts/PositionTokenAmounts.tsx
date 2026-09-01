@@ -26,7 +26,8 @@ export const PositionTokenAmounts = ({ tokens, earning = false, class: className
           class={cn(
             "text-figure-small",
             index === 0 ? "text-on-surface" : "text-caption text-on-surface-variant",
-            earning && (index === 0 ? "text-success" : "text-success/75"),
+            // The type role, not the fill one: these are words on the row, not a filled mark.
+            earning && (index === 0 ? "text-success-text" : "text-success-text/75"),
           )}
         >
           {token.formattedShort} {token.symbol}

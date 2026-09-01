@@ -2,10 +2,16 @@ export default {
   color: {
     palette: {
       $type: "color",
-      // The steps a light theme uses as its loud one are tuned as a set, not one at a time:
-      // matched in CIE lightness so no status shouts louder than another, and each one dark
-      // enough to carry text on its own `light` fill — which is what lets a badge be coloured
-      // rather than near-black on a tint.
+      // `solid` is the light theme's filled mark — a band, a dot, a chip. `base` is the same
+      // status as *type*. They are different values because one colour cannot be both: a fill
+      // wants the hue at its purest, and type on white wants it dark enough to read.
+      // Yellow is where ignoring that split shows first and worst. It is intrinsically light,
+      // so forcing one amber to satisfy both turns it olive; Radix documents the same thing
+      // from the other side, singling out Sky, Mint, Lime, Yellow and Amber as the scales
+      // whose solid step takes dark foreground text rather than white.
+      // `solid` steps are therefore NOT matched on lightness — green sits at L*60, rose at 54,
+      // amber at 60 — because a designed set follows each hue to its own purest point. `base`
+      // steps are matched, because type has to hold one weight down a column.
       // Five steps per hue, with the role of each step fixed across every family:
       // `light` tints a page, `pastel` fills, `base` reads on light grounds, `vibrant`
       // reads on dark ones, `dark` backs a tinted container. The ramps are NOT aligned
@@ -38,12 +44,14 @@ export default {
       green: {
         light: { $value: "#ECFBF2" },
         base: { $value: "#088147" },
+        solid: { $value: "#2F9F69" },
         vibrant: { $value: "#2EDC84" },
         dark: { $value: "#0C2A1A" },
       },
       rose: {
         light: { $value: "#FFF1F2" },
         base: { $value: "#D81B3A" },
+        solid: { $value: "#E5484D" },
         vibrant: { $value: "#FF5470" },
         dark: { $value: "#33101A" },
       },
@@ -56,6 +64,7 @@ export default {
       amber: {
         light: { $value: "#FFF8E8" },
         base: { $value: "#B05800" },
+        solid: { $value: "#D27306" },
         vibrant: { $value: "#FFC53D" },
         dark: { $value: "#33240A" },
       },
