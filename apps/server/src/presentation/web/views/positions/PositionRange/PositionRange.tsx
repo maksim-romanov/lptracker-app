@@ -2,9 +2,13 @@ import { cn } from "../../utils/cn";
 import { rangeToneLabel } from "../labels";
 import type { ICardVM, TPositionRangeTone } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
-// Out of range earns the error role rather than warning: the position has stopped accruing fees,
-// while warning is what a position still earning but close to its bound gets, and the two need
-// to be told apart at a glance.
+// Three states, not five: the band answers "is this earning" — yes, no, or finished. Which bound
+// a live position is drifting toward is a qualifier on that yes, and it belongs to the badge
+// beside the pair, which is where the reader is already looking for the state in words.
+// It used to have its own colour here, and the result was a board where most rows were amber:
+// one-sided liquidity starts at spot by construction, so it sits at its lower bound as a matter
+// of design, not as a thing going wrong. A warning that is always on is not a warning, and at
+// the size of this bar it drowns the two states that do differ.
 // The tone is carried as `color` on the container, so the band's fill, the thumb's halo and the
 // out-of-range dot all read it from one place (position-range.css).
 // The closed band is drawn as a flat neutral fill. `computeRangeBar` places the thumb from the
@@ -12,8 +16,8 @@ import type { ICardVM, TPositionRangeTone } from "#features/uniswap-v3/presentat
 // live one and the hue would otherwise be the only thing separating them.
 const TONE: Record<TPositionRangeTone, string> = {
   "in-range": "text-success",
-  "near-lower": "text-warning",
-  "near-upper": "text-warning",
+  "near-lower": "text-success",
+  "near-upper": "text-success",
   "out-of-range": "text-error",
   closed: "text-on-surface-variant",
 };
