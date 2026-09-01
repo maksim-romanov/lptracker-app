@@ -3,6 +3,10 @@ import paletteTokens from "./palette";
 
 const palette = tokenAlias(paletteTokens);
 
+// A container's text is the family's loud step in both themes, not its darkest one. Near-black
+// text on a pale tint is legible and says nothing — the badge loses the hue that was the reason
+// for tinting it in the first place. Prose on a tinted panel is the exception and takes the
+// ordinary text role, because a paragraph is not a badge.
 // Neutrals are alpha, not grey: text tints with whatever surface it lands on, so a card
 // never needs a grey of its own. The alphas are not free — `onSurfaceMuted` is the lowest
 // step that still clears 4.5:1 on every surface in its theme, and light needs a heavier
@@ -39,7 +43,7 @@ export default {
         primaryText: palette("color.palette.violet.base"),
         primaryWash: { $value: "#8B4DFF1A" },
         primaryContainer: palette("color.palette.violet.dark"),
-        onPrimaryContainer: palette("color.palette.violet.pastel"),
+        onPrimaryContainer: palette("color.palette.violet.base"),
         secondary: palette("color.palette.pink.base"),
         onSecondary: palette("color.palette.neutral.900"),
         secondaryContainer: palette("color.palette.pink.dark"),
@@ -92,11 +96,11 @@ export default {
         primaryText: palette("color.palette.violet.vibrant"),
         primaryWash: { $value: "#8B4DFF1A" },
         primaryContainer: palette("color.palette.violet.light"),
-        onPrimaryContainer: palette("color.palette.violet.dark"),
+        onPrimaryContainer: palette("color.palette.violet.vibrant"),
         secondary: palette("color.palette.pink.vibrant"),
         onSecondary: palette("color.palette.white"),
         secondaryContainer: palette("color.palette.pink.light"),
-        onSecondaryContainer: palette("color.palette.pink.dark"),
+        onSecondaryContainer: palette("color.palette.pink.vibrant"),
         surface: palette("color.palette.white"),
         surfaceDim: { $value: "#F6F5FA" },
         surfaceBright: palette("color.palette.white"),
@@ -112,19 +116,19 @@ export default {
         error: palette("color.palette.rose.base"),
         onError: palette("color.palette.white"),
         errorContainer: palette("color.palette.rose.light"),
-        onErrorContainer: palette("color.palette.rose.dark"),
+        onErrorContainer: palette("color.palette.rose.base"),
         success: palette("color.palette.green.base"),
         onSuccess: palette("color.palette.white"),
         successContainer: palette("color.palette.green.light"),
-        onSuccessContainer: palette("color.palette.green.dark"),
+        onSuccessContainer: palette("color.palette.green.base"),
         warning: palette("color.palette.amber.base"),
         onWarning: palette("color.palette.white"),
         warningContainer: palette("color.palette.amber.light"),
-        onWarningContainer: palette("color.palette.amber.dark"),
+        onWarningContainer: palette("color.palette.amber.base"),
         info: palette("color.palette.blue.vibrant"),
         onInfo: palette("color.palette.white"),
         infoContainer: palette("color.palette.blue.light"),
-        onInfoContainer: palette("color.palette.blue.dark"),
+        onInfoContainer: palette("color.palette.blue.vibrant"),
         inverseSurface: palette("color.palette.neutral.900"),
         inverseOnSurface: palette("color.palette.neutral.100"),
         inversePrimary: palette("color.palette.violet.base"),

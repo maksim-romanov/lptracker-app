@@ -2,6 +2,10 @@ export default {
   color: {
     palette: {
       $type: "color",
+      // The steps a light theme uses as its loud one are tuned as a set, not one at a time:
+      // matched in CIE lightness so no status shouts louder than another, and each one dark
+      // enough to carry text on its own `light` fill — which is what lets a badge be coloured
+      // rather than near-black on a tint.
       // Five steps per hue, with the role of each step fixed across every family:
       // `light` tints a page, `pastel` fills, `base` reads on light grounds, `vibrant`
       // reads on dark ones, `dark` backs a tinted container. The ramps are NOT aligned
@@ -22,7 +26,7 @@ export default {
       pink: {
         light: { $value: "#FFF1FB" },
         base: { $value: "#FF74D4" },
-        vibrant: { $value: "#D12697" },
+        vibrant: { $value: "#CF1490" },
         dark: { $value: "#33102A" },
       },
       blue: {
@@ -33,13 +37,13 @@ export default {
       },
       green: {
         light: { $value: "#ECFBF2" },
-        base: { $value: "#0F864C" },
+        base: { $value: "#088147" },
         vibrant: { $value: "#2EDC84" },
         dark: { $value: "#0C2A1A" },
       },
       rose: {
         light: { $value: "#FFF1F2" },
-        base: { $value: "#D23B54" },
+        base: { $value: "#D81B3A" },
         vibrant: { $value: "#FF5470" },
         dark: { $value: "#33101A" },
       },
@@ -51,7 +55,7 @@ export default {
       // buys the same luminance while still reading as a warning, and stays clear of rose.
       amber: {
         light: { $value: "#FFF8E8" },
-        base: { $value: "#B85C00" },
+        base: { $value: "#B05800" },
         vibrant: { $value: "#FFC53D" },
         dark: { $value: "#33240A" },
       },

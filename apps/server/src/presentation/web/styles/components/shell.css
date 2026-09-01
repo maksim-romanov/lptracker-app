@@ -42,13 +42,13 @@
 
   /* Decorative shapes behind the onboarding panel, `aria-hidden` in the markup. Positions are
      off any scale on purpose — they are a composition, not a layout, and rounding them to the
-     spacing steps would line them up into a pattern. The opacity is capped: at 0.35 the
-     panel's own text still clears 4.5:1 where it crosses a shape (4.75:1 in dark, the worse
-     of the two), and raising it puts the copy below AA. */
+     spacing steps would line them up into a pattern. The opacity is capped: the panel's copy
+     still clears 9.5:1 where it crosses a shape, and the cap is what keeps that true — the
+     shapes darken the ground, and text that runs over them has nothing else holding it up. */
   .blob {
     position: absolute;
     color: var(--color-on-primary-container);
-    opacity: 0.35;
+    opacity: 0.3;
     pointer-events: none;
   }
 
