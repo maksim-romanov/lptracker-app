@@ -84,7 +84,7 @@ const ON_SOLID: [text: string, fill: string][] = [
 // WCAG 1.4.11: a border or a status mark is not text, but it still has to be perceivable.
 // `outline` is the boundary that identifies a control and is held to this on every surface;
 // `outlineVariant` is a decorative hairline between rows and is deliberately not.
-const MARKS = ["primary", "success", "error", "info", "secondary"] as const;
+const MARKS = ["primary", "success", "error", "info", "secondary", "brandDot"] as const;
 
 // `warning` is not in that list, and only `warning`. Yellow at full chroma is light — an amber
 // dark enough to reach 3:1 on white is the olive nobody wants, and Radix ships its amber solid

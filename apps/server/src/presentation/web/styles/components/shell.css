@@ -1,8 +1,14 @@
 @layer components {
-  /* The brand mark. A gradient is the one place two hues are allowed to meet without one of
-     them meaning something — identity is what it is for. */
-  .logo-mark {
-    background-image: linear-gradient(140deg, var(--color-primary), var(--color-secondary));
+  /* The wordmark's full stop. Sized and spaced in em so it follows the type rather than a
+     fixed pixel size, and left on the baseline as an empty inline-block — which is exactly
+     where a period sits — instead of being centred against the cap height. */
+  .logo-dot {
+    display: inline-block;
+    width: 0.3em;
+    height: 0.3em;
+    margin-inline-start: 0.1em;
+    border-radius: 9999px;
+    background-color: var(--color-brand-dot);
   }
 
   /* A region of the shell laid out on its gutters. Children sit in the middle column; a

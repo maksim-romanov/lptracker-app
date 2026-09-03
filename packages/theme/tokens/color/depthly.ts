@@ -42,6 +42,10 @@ export default {
         // The accent holds one value in both themes. It is a fill role only: as text on a
         // near-black ground it lands at 4.14:1, so accent-coloured type takes `primaryText`,
         // which steps per theme.
+        // The wordmark's full stop. One value in both themes, like the accent, because a
+        // logotype that changes hue with the page is two logos. Not the error role it sits
+        // near in hue: a brand mark that borrows a status colour starts reading as a status.
+        brandDot: { $value: "#FF3B30" },
         primary: palette("color.palette.violet.accent"),
         onPrimary: palette("color.palette.white"),
         primaryText: palette("color.palette.violet.base"),
@@ -99,6 +103,10 @@ export default {
         shadowOverlay: { $value: "#00000066" },
       },
       light: {
+        // The wordmark's full stop. One value in both themes, like the accent, because a
+        // logotype that changes hue with the page is two logos. Not the error role it sits
+        // near in hue: a brand mark that borrows a status colour starts reading as a status.
+        brandDot: { $value: "#FF3B30" },
         primary: palette("color.palette.violet.accent"),
         onPrimary: palette("color.palette.white"),
         primaryText: palette("color.palette.violet.vibrant"),
