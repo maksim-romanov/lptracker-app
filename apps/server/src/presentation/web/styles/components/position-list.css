@@ -4,27 +4,16 @@
    click handler on the container would instead announce every field as clickable, and
    role="grid" would impose a whole keyboard model this list does not need. */
 @layer components {
-  /* Takes no room in flow: the button is a hit target drawn entirely by its ::after, and as an
-     inline-block it contributed an empty line box that made every row 24px taller than its
-     content. It stays statically positioned so ::after resolves against the item, not against
-     the button. */
+  /* The button IS the hit area rather than projecting one through a pseudo-element: as a
+     participant in flow it kept costing the layout something — an empty line box that made
+     every table row taller, then a whole flex gap in the card. Absolute takes it out of both.
+     The focus ring goes on the button itself, so it traces the real target. */
   .position-overlay {
-    display: block;
-    width: 0;
-    height: 0;
-  }
-
-  .position-overlay::after {
-    content: "";
     position: absolute;
     inset: 0;
   }
 
-  .position-overlay:focus {
-    outline: none;
-  }
-
-  .position-overlay:focus-visible::after {
+  .position-overlay:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: -2px;
   }
@@ -42,7 +31,7 @@
     position: relative;
   }
 
-  .position-row .position-overlay::after {
+  .position-row .position-overlay {
     right: auto;
     width: 100vw;
   }

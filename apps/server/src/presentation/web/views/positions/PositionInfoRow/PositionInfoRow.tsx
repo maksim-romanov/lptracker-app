@@ -7,8 +7,9 @@ import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web
 
 // No rules between rows: hover is what separates them, and a line under every row turns a list
 // of four into a grid of twenty. HEAD_CELL in Positions.tsx must keep the same horizontal
-// padding or the header labels stop lining up with the column contents.
-const CELL = "px-3 py-4 align-middle";
+// padding, including the wider outer edges, or the header labels stop lining up with the
+// column contents.
+const CELL = "px-3 py-4 align-middle first:ps-5 last:pe-5";
 
 export const PositionInfoRow = ({ card }: { card: ICardVM }) => (
   <tr class="group position-item position-row">

@@ -13,7 +13,9 @@ export const PositionInfoCard = ({ card }: { card: ICardVM }) => (
     <PositionPair card={card} />
     <PositionRange range={card.priceRange} tone={card.rangeTone} />
 
-    <div class="border-outline-variant border-t pt-3">
+    {/* A closed position has no tokens to list, and without a floor its card stood shorter than
+        the ones beside it in the grid. 76px is the rule, the header row and two token rows. */}
+    <div class="min-h-19 border-outline-variant border-t pt-3">
       <PositionAmounts card={card} />
     </div>
   </li>

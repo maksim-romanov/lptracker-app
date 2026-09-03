@@ -3,6 +3,7 @@ import type { Child } from "hono/jsx";
 import { Icon } from "../../components/Icon/Icon";
 import { NetworkLogo } from "../../components/NetworkLogo/NetworkLogo";
 import { explorerAddressUrl, networkLabel, uniswapPositionUrl } from "../../networks";
+import { cn } from "../../utils/cn";
 import { pairLabel } from "../labels";
 import { PositionAmounts } from "../PositionAmounts/PositionAmounts";
 import { PositionRange } from "../PositionRange/PositionRange";
@@ -13,10 +14,12 @@ import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web
 
 const shortenAddress = (address: string) => (address.length > 12 ? `${address.slice(0, 6)}…${address.slice(-4)}` : address);
 
-const Spec = ({ label, children }: { label: string; children: Child }) => (
-  <div class="flex items-baseline justify-between gap-4 text-body-small">
+// One shell for every row, including the one with a chain mark in it. Written by hand, that row
+// sat two pixels above its own label and broke the rhythm the other four kept.
+const Spec = ({ label, mono = true, children }: { label: string; mono?: boolean; children: Child }) => (
+  <div class="flex items-center justify-between gap-4 text-body-small">
     <dt class="text-on-surface-variant">{label}</dt>
-    <dd class="text-right font-mono text-figure-small">{children}</dd>
+    <dd class={cn("flex items-center justify-end gap-1.5 text-right", mono && "font-mono text-figure-small")}>{children}</dd>
   </div>
 );
 
@@ -54,13 +57,10 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
 
       <dl class="flex flex-col gap-2 border-outline-variant border-t pt-4">
         <Spec label="Wallet">{shortenAddress(card.ownerAddress)}</Spec>
-        <div class="flex items-baseline justify-between gap-4 text-body-small">
-          <dt class="text-on-surface-variant">Network</dt>
-          <dd class="flex items-center gap-1.5">
-            <NetworkLogo chainId={card.chainId} size={14} />
-            {networkLabel(card.chainId)}
-          </dd>
-        </div>
+        <Spec label="Network" mono={false}>
+          <NetworkLogo chainId={card.chainId} size={14} />
+          {networkLabel(card.chainId)}
+        </Spec>
         {card.openedAtLabel && <Spec label="Opened">{card.openedAtLabel}</Spec>}
         <Spec label="Position">#{card.nftTokenId}</Spec>
         <Spec label="Pool">

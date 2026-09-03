@@ -14,5 +14,7 @@ const TONE: Record<TPositionRangeTone, string> = {
 };
 
 export const PositionStatus = ({ tone, class: className }: { tone: TPositionRangeTone; class?: string }) => (
-  <span class={cn("inline-flex items-center rounded-full px-2 py-0.5 text-caption", TONE[tone], className)}>{rangeToneLabel(tone)}</span>
+  <span class={cn("inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2 py-0.5 text-caption", TONE[tone], className)}>
+    {rangeToneLabel(tone)}
+  </span>
 );

@@ -20,7 +20,9 @@ export const PositionInvert = ({ card }: { card: ICardVM }) => (
     // Muted and unframed at rest so a secondary action stops competing with the row's data, and
     // never hidden behind hover alone — that would strand it on touch. The border stays
     // declared, only transparent, so nothing shifts when it comes back.
-    class="relative z-1 shrink-0 border-transparent p-1 text-on-surface-variant focus-visible:border-outline focus-visible:text-on-surface group-hover:border-outline group-hover:text-on-surface"
+    // `leading-none` because the button sits inside the pair's heading and would otherwise
+    // inherit its line-height, wrapping a 16px icon in a 34px box and stretching the row.
+    class="relative z-1 shrink-0 border-transparent p-1 text-on-surface-variant leading-none focus-visible:border-outline focus-visible:text-on-surface group-hover:border-outline group-hover:text-on-surface"
   >
     <Icon name="invert" size={16} />
   </Button>

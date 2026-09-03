@@ -8,15 +8,18 @@
      `--item-bg` is whatever the row or card is currently painted — the thumb and the band's end
      notches are cut out of it, so it has to track hover rather than be pinned to the resting
      surface. */
+  /* Tall enough to hold everything it draws. The price pill used to hang 8px above this box,
+     which cost nothing in a table cell with slack to spare and ate half the gap above the bar
+     in a card. */
   .range {
     position: relative;
-    height: 2.75rem;
+    height: 3.5rem;
   }
 
   .range-track {
     position: absolute;
     inset-inline: 0;
-    top: 1.125rem;
+    top: 1.625rem;
     height: 0.5rem;
     border-radius: var(--radius-full);
     background-color: var(--color-outline-variant);
@@ -103,7 +106,7 @@
      size a caption sitting loose above a track reads as a column header. */
   .range-value {
     position: absolute;
-    bottom: calc(100% - 1.125rem + 0.5rem);
+    top: 0;
     left: clamp(0%, var(--thumb), 100%);
     padding: 0.125rem 0.4375rem;
     border-radius: var(--radius-full);
@@ -127,7 +130,7 @@
      the lower bound hangs off the left of a cell whose band starts at 0%. */
   .range-bound {
     position: absolute;
-    top: 1.875rem;
+    top: 2.5rem;
     white-space: nowrap;
   }
 

@@ -17,13 +17,15 @@ export const PositionAmounts = ({ card, class: className }: { card: ICardVM; cla
   if (rows.length === 0) return <p class={cn("text-body-small text-on-surface-variant", className)}>This position holds no tokens.</p>;
 
   return (
-    <table class={cn("w-full", className)}>
+    // `table-fixed` with declared widths so a column lands in the same place on every card. Left
+    // to size itself, each card measured its own figures and the grid came out ragged.
+    <table class={cn("w-full table-fixed", className)}>
       <thead>
         <tr class="text-caption text-on-surface-variant">
-          <th scope="col" class="pb-1 text-left font-normal">
+          <th scope="col" class="w-[32%] pb-1 text-left font-normal">
             Token
           </th>
-          <th scope="col" class="pb-1 text-right font-normal">
+          <th scope="col" class="w-[30%] pb-1 text-right font-normal">
             Amount
           </th>
           <th scope="col" class="pb-1 text-right font-normal">

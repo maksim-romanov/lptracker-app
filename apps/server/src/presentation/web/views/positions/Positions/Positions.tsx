@@ -6,9 +6,13 @@ import { PositionInfoRow } from "../PositionInfoRow/PositionInfoRow";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 // A filled bar rather than a ruled row: it names the columns without drawing a line the rows
-// then have to answer with lines of their own. Rounded at both ends so it reads as one object
-// sitting above the list, not as a first row of it.
-const HEAD_CELL = "bg-surface-container px-3 py-2.5 text-caption font-normal text-on-surface-variant";
+// then have to answer with lines of their own. It runs the full width of the panel, as the
+// hover on a row does, so it is not rounded — an end cap sitting on the panel's own edge reads
+// as an object that failed to reach it.
+// The outer cells carry the shell's gutter so every figure in the table starts on the same line
+// as the heading above it; the inner ones only need to separate columns from each other. The
+// table used to take 12px on both, which put all of it 8px left of everything else on the page.
+const HEAD_CELL = "bg-surface-container px-3 py-2.5 text-caption font-normal text-on-surface-variant first:ps-5 last:pe-5";
 
 // The only place column widths are declared: `table-fixed` makes the header row size every
 // column, so rows can no longer drift out of alignment with it. A numeric column's label is
@@ -23,8 +27,9 @@ const COLUMNS = [
 
 const CAPTION_ID = "positions-table-caption";
 
-// The shell is the table's border, and `shell-bleed` spans the shell's gutters so the dividers
-// reach its edge — the cell padding is the only horizontal inset left.
+// `shell-bleed` spans the shell's gutters so the header band and a row's hover run the full
+// width of the panel; the gutter is given back by the outer cells' padding, so the content
+// still lines up with everything else on the page.
 // The scroller is focusable and named because it is one: the viewport used to be the only
 // thing choosing this presentation, so it was never narrower than the table. Now that someone
 // can ask for the table on a phone, a region that scrolls has to be reachable without a mouse
@@ -38,8 +43,8 @@ const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
       </caption>
       <thead>
         <tr>
-          {COLUMNS.map((column, index) => (
-            <th scope="col" class={cn(HEAD_CELL, column.class, index === 0 && "rounded-s-md", index === COLUMNS.length - 1 && "rounded-e-md")}>
+          {COLUMNS.map((column) => (
+            <th scope="col" class={cn(HEAD_CELL, column.class)}>
               {column.label}
             </th>
           ))}

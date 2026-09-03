@@ -6,8 +6,8 @@ import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web
 // name is always spelled out beside it — the same split PositionStatus makes, and for the same
 // reason: a brand colour is chosen for a logo, not for a contrast ratio.
 export const ProtocolBadge = ({ protocol, class: className }: { protocol: ICardVM["protocol"]; class?: string }) => (
-  <span class={cn("inline-flex items-center gap-1.5", `protocol-${protocol.slug}`, className)}>
+  <span class={cn("inline-flex min-w-0 items-center gap-1.5", `protocol-${protocol.slug}`, className)}>
     <span aria-hidden="true" class="protocol-dot size-1.5 shrink-0 rounded-full" />
-    {protocol.label}
+    <span class="truncate">{protocol.label}</span>
   </span>
 );

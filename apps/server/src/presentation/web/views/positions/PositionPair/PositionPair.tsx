@@ -36,9 +36,12 @@ export const PositionPair = ({ card }: { card: ICardVM }) => (
         </span>
         <PositionInvert card={card} />
       </span>
-      <span class="flex flex-wrap items-center gap-x-2 gap-y-1 text-caption text-on-surface-variant">
+      {/* Never wraps: the row's height must not depend on how long a status happens to be
+          called, and "Near upper bound" was pushing its own row 10px taller than its
+          neighbours. The protocol name is the one part that gives way. */}
+      <span class="flex min-w-0 items-center gap-x-2 text-caption text-on-surface-variant">
         <ProtocolBadge protocol={card.protocol} />
-        <span class="font-mono">{card.feeTierLabel}</span>
+        <span class="shrink-0 font-mono">{card.feeTierLabel}</span>
         <PositionStatus tone={card.rangeTone} />
       </span>
     </span>

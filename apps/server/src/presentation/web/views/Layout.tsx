@@ -19,7 +19,7 @@ const NavActions = () => (
     <Button
       data-wallet-target="connectButton"
       data-action="wallet#openSidebar"
-      class="rounded-full border-transparent bg-primary px-4 py-2 text-button text-on-primary"
+      class="whitespace-nowrap rounded-full border-transparent bg-primary px-4 py-2 text-button text-on-primary"
     >
       Connect Wallet
     </Button>
@@ -28,7 +28,7 @@ const NavActions = () => (
       data-wallet-target="walletPill"
       data-action="wallet#disconnectWallet"
       aria-label="Disconnect wallet"
-      class="flex items-center gap-2 rounded-full px-4 py-2 text-label"
+      class="flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-label"
     >
       <Icon name="wallet" size={16} />
       <span data-wallet-target="walletAddress" />
