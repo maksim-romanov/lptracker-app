@@ -61,6 +61,7 @@ pnpm
 postscriptname
 pressable
 pressables
+recognised
 recoloured
 romanov
 stringly
