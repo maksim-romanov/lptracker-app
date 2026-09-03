@@ -28,15 +28,21 @@
   }
 }
 
-/* htmx.config.includeIndicatorStyles = false (CSP) — this is that show/hide rule. */
-.htmx-indicator {
-  display: none;
-  opacity: 0;
-}
-.htmx-request.htmx-indicator,
-.htmx-request .htmx-indicator {
-  display: flex;
-  opacity: 1;
+/* htmx.config.includeIndicatorStyles = false (CSP) — this is that show/hide rule.
+   In @layer base, and carrying `display` only. Unlayered it outranked every layered rule, so
+   its `opacity: 1` also supplied the before-change value that @starting-style in toast.css was
+   trying to set — the toast had no entry or exit transition at all and snapped in and out.
+   Layered and stripped to `display`, the indicator decides whether an element participates and
+   the component decides how it arrives. */
+@layer base {
+  .htmx-indicator {
+    display: none;
+  }
+
+  .htmx-request.htmx-indicator,
+  .htmx-request .htmx-indicator {
+    display: flex;
+  }
 }
 
 @import "./components/ground.css";
@@ -49,3 +55,5 @@
 @import "./components/toast.css";
 @import "./components/shell.css";
 @import "./components/theme-toggle.css";
+@import "./components/token-icon.css";
+@import "./components/tooltip.css";

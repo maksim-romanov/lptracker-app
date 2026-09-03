@@ -4,15 +4,14 @@ import { Icon } from "../../components/Icon/Icon";
 import { NetworkLogo } from "../../components/NetworkLogo/NetworkLogo";
 import { explorerAddressUrl, networkLabel, uniswapPositionUrl } from "../../networks";
 import { cn } from "../../utils/cn";
-import { pairLabel } from "../labels";
+import { pairLabel, shortenAddress } from "../labels";
 import { PositionAmounts } from "../PositionAmounts/PositionAmounts";
+import { PositionInvert } from "../PositionInvert/PositionInvert";
 import { PositionRange } from "../PositionRange/PositionRange";
 import { PositionStatus } from "../PositionStatus/PositionStatus";
 import { ProtocolBadge } from "../ProtocolBadge/ProtocolBadge";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
-
-const shortenAddress = (address: string) => (address.length > 12 ? `${address.slice(0, 6)}…${address.slice(-4)}` : address);
 
 // One shell for every row, including the one with a chain mark in it. Written by hand, that row
 // sat two pixels above its own label and broke the rhythm the other four kept.
@@ -23,17 +22,45 @@ const Spec = ({ label, mono = true, children }: { label: string; mono?: boolean;
   </div>
 );
 
+// Every address in this panel is a destination, and they all take the same shape: the shortened
+// form to read, the whole thing on hover, and the explorer a click away.
+const ExplorerLink = ({ chainId, address }: { chainId: number; address: string }) => (
+  <a
+    href={explorerAddressUrl(chainId, address)}
+    target="_blank"
+    rel="noopener noreferrer"
+    data-tooltip={address}
+    class="inline-flex items-center gap-1 hover:text-primary-text"
+  >
+    {shortenAddress(address)}
+    <Icon name="external" size={12} />
+  </a>
+);
+
 export const PositionDetail = ({ card }: { card: ICardVM }) => {
   const range = card.priceRange;
   return (
     <>
       <header class="flex items-center gap-3">
         <span class="flex -space-x-2">
-          <TokenIcon url={card.pair.base.iconUrl} symbol={card.pair.base.symbol} class="h-8 w-8 rounded-full" />
-          <TokenIcon url={card.pair.quote.iconUrl} symbol={card.pair.quote.symbol} class="h-8 w-8 rounded-full" />
+          <TokenIcon
+            url={card.pair.base.iconUrl}
+            symbol={card.pair.base.symbol}
+            tokenRef={card.pair.base.tokenRef}
+            class="h-8 w-8 rounded-full"
+          />
+          <TokenIcon
+            url={card.pair.quote.iconUrl}
+            symbol={card.pair.quote.symbol}
+            tokenRef={card.pair.quote.tokenRef}
+            class="h-8 w-8 rounded-full"
+          />
         </span>
-        <div class="flex min-w-0 flex-col gap-1">
-          <span class="text-headline">{pairLabel(card.pair)}</span>
+        <div class="group flex min-w-0 flex-col gap-1">
+          <span class="flex items-center gap-1">
+            <span class="truncate text-headline">{pairLabel(card.pair)}</span>
+            <PositionInvert card={card} surface="detail" />
+          </span>
           <span class="flex flex-wrap items-center gap-x-2 gap-y-1 text-caption text-on-surface-variant">
             <ProtocolBadge protocol={card.protocol} />
             <span class="font-mono">{card.feeTierLabel}</span>
@@ -52,11 +79,13 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
 
       <section class="flex flex-col gap-2 border-outline-variant border-t pt-4">
         <h3 class="text-caption text-on-surface-variant">Amounts</h3>
-        <PositionAmounts card={card} />
+        <PositionAmounts card={card} withContract />
       </section>
 
       <dl class="flex flex-col gap-2 border-outline-variant border-t pt-4">
-        <Spec label="Wallet">{shortenAddress(card.ownerAddress)}</Spec>
+        <Spec label="Wallet">
+          <ExplorerLink chainId={card.chainId} address={card.ownerAddress} />
+        </Spec>
         <Spec label="Network" mono={false}>
           <NetworkLogo chainId={card.chainId} size={14} />
           {networkLabel(card.chainId)}
@@ -64,15 +93,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
         {card.openedAtLabel && <Spec label="Opened">{card.openedAtLabel}</Spec>}
         <Spec label="Position">#{card.nftTokenId}</Spec>
         <Spec label="Pool">
-          <a
-            href={explorerAddressUrl(card.chainId, card.poolAddress)}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-1 hover:text-primary-text"
-          >
-            {shortenAddress(card.poolAddress)}
-            <Icon name="external" size={12} />
-          </a>
+          <ExplorerLink chainId={card.chainId} address={card.poolAddress} />
         </Spec>
       </dl>
 

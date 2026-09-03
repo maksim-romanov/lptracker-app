@@ -1,3 +1,4 @@
+import { itemDomId } from "../labels";
 import { PositionAmounts } from "../PositionAmounts/PositionAmounts";
 import { PositionOverlay } from "../PositionOverlay/PositionOverlay";
 import { PositionPair } from "../PositionPair/PositionPair";
@@ -7,8 +8,12 @@ import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web
 // The card is the narrow-viewport presentation of the same data, not a second design. Scan order
 // follows how a financial card is actually read: identity and state first, then the range, then
 // the numbers — and every card keeps the same blocks so heights do not wobble.
-export const PositionInfoCard = ({ card }: { card: ICardVM }) => (
-  <li class="group position-item position-card flex flex-col gap-4 rounded-lg border border-outline-variant p-4">
+export const PositionInfoCard = ({ card, oob = false }: { card: ICardVM; oob?: boolean }) => (
+  <li
+    id={itemDomId(card.ref)}
+    class="group position-item position-card flex flex-col gap-4 rounded-lg border border-outline-variant p-4"
+    hx-swap-oob={oob ? "true" : undefined}
+  >
     <PositionOverlay card={card} />
     <PositionPair card={card} />
     <PositionRange range={card.priceRange} tone={card.rangeTone} />

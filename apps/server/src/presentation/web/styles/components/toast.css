@@ -1,24 +1,26 @@
-/* Same technique as modal.css's [data-animate="dialog"]. */
 @layer components {
+  /* No fade. The toast switches state outright — the transition is here only for its timing,
+     which is why the duration is zero and the delays are not.
+     Entry waits 200ms so a board that comes back fast never shows a toast at all. Exit waits
+     400ms, which is the one that matters: htmx drops `htmx-request` the moment the response
+     lands, and a second refresh — the layout toggle clicked twice, an invert while the board is
+     still settling — arrives about 300ms later. Without the wait the toast fell out and jumped
+     straight back in. With it, the pending exit is simply cancelled and the toast stays up
+     across both requests.
+     Each delay is declared on the state it is heading towards: the resting rule owns the exit,
+     the active rule owns the entry. `allow-discrete` is what lets `display` wait its turn. */
   [data-animate="toast"] {
     opacity: 0;
-    transform: translateX(1rem);
     transition:
-      opacity 180ms ease-out,
-      transform 180ms ease-out,
-      display 180ms ease-out allow-discrete;
+      opacity 0s 400ms,
+      display 0s 400ms allow-discrete;
   }
 
   .htmx-request[data-animate="toast"] {
     opacity: 1;
-    transform: none;
-  }
-
-  @starting-style {
-    .htmx-request[data-animate="toast"] {
-      opacity: 0;
-      transform: translateX(1rem);
-    }
+    transition:
+      opacity 0s 200ms,
+      display 0s 200ms allow-discrete;
   }
 
   /* Controller-driven toasts (Toast `indicator={false}`) hide via opacity alone, never
@@ -28,16 +30,11 @@
     pointer-events: none;
   }
 
+  /* A controller-driven toast is a reply to something the user just did, so it does not wait. */
   [data-animate="toast"][data-open] {
     opacity: 1;
-    transform: none;
     pointer-events: auto;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-animate="toast"] {
-      transition: none;
-    }
+    transition: none;
   }
 
   /* @scope contains .toast-spinner to inside a toast, so the name can't collide with an

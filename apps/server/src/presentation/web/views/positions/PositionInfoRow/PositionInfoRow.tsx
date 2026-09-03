@@ -1,4 +1,5 @@
 import { cn } from "../../utils/cn";
+import { itemDomId } from "../labels";
 import { PositionOverlay } from "../PositionOverlay/PositionOverlay";
 import { PositionPair } from "../PositionPair/PositionPair";
 import { PositionRange } from "../PositionRange/PositionRange";
@@ -11,8 +12,8 @@ import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web
 // column contents.
 const CELL = "px-3 py-4 align-middle first:ps-5 last:pe-5";
 
-export const PositionInfoRow = ({ card }: { card: ICardVM }) => (
-  <tr class="group position-item position-row">
+export const PositionInfoRow = ({ card, oob = false }: { card: ICardVM; oob?: boolean }) => (
+  <tr id={itemDomId(card.ref)} class="group position-item position-row" hx-swap-oob={oob ? "true" : undefined}>
     {/* The row's activation overlay is anchored here rather than in a column of its own — see
         position-list.css for why it cannot hang off the <tr>. */}
     <th scope="row" class={cn(CELL, "position-row-anchor text-left font-normal")}>

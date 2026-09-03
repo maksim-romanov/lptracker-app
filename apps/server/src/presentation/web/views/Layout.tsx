@@ -61,8 +61,9 @@ export const Layout = ({ children }: PropsWithChildren) => (
       </head>
       <body
         class="flex min-h-dvh flex-col bg-surface-dim text-on-surface"
-        data-controller="wallet theme"
+        data-controller="wallet theme tooltip"
         data-wallet-dialog-outlet="#wallet-sidebar"
+        data-action="mouseover->tooltip#show mouseout->tooltip#hide focusin->tooltip#show focusout->tooltip#hide keydown->tooltip#dismiss"
       >
         <main class="flex-1 p-4">
           {/* The shell is part of the page, so htmx swaps the board inside it and the nav,
@@ -86,9 +87,9 @@ export const Layout = ({ children }: PropsWithChildren) => (
                 <PositionsLayoutToggle />
               </div>
 
-              <div id="board-loader" class="htmx-indicator text-body-small text-on-surface-variant">
-                Loading positions…
-              </div>
+              {/* The board is not emptied while it loads — htmx swaps only once the response is
+                  in hand — so the progress is reported by the toast at the end of this document
+                  rather than by a line of copy standing where the table is about to be. */}
               <div
                 id="board"
                 class="shell-grid shell-bleed"
@@ -106,9 +107,23 @@ export const Layout = ({ children }: PropsWithChildren) => (
 
         <footer class="px-4 pb-4 text-center text-caption text-on-surface-variant">Anonymous · positions stored in your browser</footer>
 
-        <Sidebar id="wallet-sidebar">
+        <Sidebar id="wallet-sidebar" title="Wallets">
           <WalletConnect />
         </Sidebar>
+
+        {/* One bubble for the whole page, moved to whatever is hovered — the board carries
+            hundreds of triggers, and a bubble per row is a few hundred elements that exist to
+            be empty. `popover` puts it in the top layer, which no ancestor's overflow can clip;
+            a pseudo-element on the trigger would be cut off by `.position-table` and by the
+            wallet panel alike.
+            `aria-hidden` because it never says anything new: a truncated label is truncated
+            visually only and its full text is already in the DOM, and a token's symbol is
+            printed as real text beside its icon. */}
+        <div id="app-tooltip" popover="manual" aria-hidden="true" class="tooltip text-caption" data-tooltip-target="bubble" />
+
+        <Toast id="board-loader" type="loading">
+          Loading positions…
+        </Toast>
 
         <Toast id="position-toast-loading" type="loading">
           Loading position…

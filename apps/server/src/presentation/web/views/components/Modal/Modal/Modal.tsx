@@ -27,11 +27,11 @@ export const Modal = ({ id, title, action, class: className, bodyClass, children
     <div class={bodyClass ?? "flex w-full flex-col gap-4 p-4"}>
       <form method="dialog" class={`flex items-center gap-2 ${title ? "justify-between" : "justify-end"}`}>
         {title && (
-          <h2 id={`${id}-title`} class="font-medium text-lg">
+          <h2 id={`${id}-title`} class="text-headline">
             {title}
           </h2>
         )}
-        <Button type="submit" aria-label="Close" class="p-2">
+        <Button type="submit" aria-label="Close" class="rounded-full p-2">
           <Icon name="close" size={18} />
         </Button>
       </form>

@@ -8,6 +8,8 @@ import LayoutController from "./controllers/layout_controller";
 import RangeController from "./controllers/range_controller";
 import ThemeController from "./controllers/theme_controller";
 import ToastController from "./controllers/toast_controller";
+import TokenIconController from "./controllers/token_icon_controller";
+import TooltipController from "./controllers/tooltip_controller";
 import WalletController from "./controllers/wallet_controller";
 import { onLayoutChange } from "./lib/layout";
 import { layoutPrefs } from "./lib/layout-prefs.store";
@@ -19,7 +21,11 @@ export async function start(): Promise<void> {
   // Set before htmx's DOMContentLoaded init runs, so no indicator <style> is
   // injected (keeps style-src 'self' clean).
   htmx.config.includeIndicatorStyles = false;
-  htmx.config.globalViewTransitions = true;
+  // Off, measured rather than assumed: a view transition captures the old and new document and
+  // cross-fades them, and this board is 269 rows and 23,000px tall. Every swap froze one frame
+  // for ~300ms, after htmx:afterSettle — the stall was the capture, not the request. A cut is
+  // what the board wants anyway; the rows are the same rows in a different order.
+  htmx.config.globalViewTransitions = false;
 
   // Hydrate the sync store caches before htmx fires its first request —
   // htmx:configRequest reads them synchronously and cannot await. Stores default
@@ -34,6 +40,8 @@ export async function start(): Promise<void> {
   app.register("dialog", DialogController);
   app.register("range", RangeController);
   app.register("layout", LayoutController);
+  app.register("token-icon", TokenIconController);
+  app.register("tooltip", TooltipController);
 
   // The board renders as a table or as cards depending on viewport width — unless the user
   // has picked one, in which case crossing the breakpoint changes nothing. Either way the

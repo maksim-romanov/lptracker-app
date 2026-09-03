@@ -1,0 +1,77 @@
+/* The disc a token falls back to when it has no logo, or when the one it named does not load.
+   A flat grey circle reads as a hole in the row; a coloured one reads as a token whose mark
+   simply is a monogram. The hue is derived from the token's ref, so the same token keeps the
+   same disc — one of twelve static classes rather than a custom property set from markup,
+   which this app's CSP (`style-src 'self'`) does not allow.
+   Written in OKLCH, not HSL: at a fixed HSL lightness the same number is a far brighter colour
+   at yellow and cyan than it is at blue, so one text lightness that cleared 4.5:1 on half the
+   wheel sat at 3.5:1 on the other half. OKLCH's L is perceptual, so a single pair of lightnesses
+   holds its contrast at all twelve hues. */
+@layer components {
+  .token-icon {
+    container-type: size;
+  }
+
+  .token-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    /* Sized against the disc, not the row: the same component is a 16px icon in the amounts
+       table and a 32px one in the pair, and a monogram fixed in px fits exactly one of them. */
+    font-size: 42cqh;
+    line-height: 1;
+    font-weight: 500;
+    text-transform: uppercase;
+    background-image: linear-gradient(140deg, oklch(0.93 0.05 var(--token-hue)), oklch(0.89 0.06 calc(var(--token-hue) + 28)));
+    color: oklch(0.45 0.14 var(--token-hue));
+  }
+
+  /* The author-level `display: flex` above outranks the UA sheet's rule for [hidden]. */
+  .token-fallback[hidden] {
+    display: none;
+  }
+
+  [data-theme="depthly-dark"] .token-fallback {
+    background-image: linear-gradient(140deg, oklch(0.29 0.05 var(--token-hue)), oklch(0.33 0.06 calc(var(--token-hue) + 28)));
+    color: oklch(0.85 0.12 var(--token-hue));
+  }
+
+  .token-hue-0 {
+    --token-hue: 0;
+  }
+  .token-hue-1 {
+    --token-hue: 30;
+  }
+  .token-hue-2 {
+    --token-hue: 60;
+  }
+  .token-hue-3 {
+    --token-hue: 90;
+  }
+  .token-hue-4 {
+    --token-hue: 120;
+  }
+  .token-hue-5 {
+    --token-hue: 150;
+  }
+  .token-hue-6 {
+    --token-hue: 180;
+  }
+  .token-hue-7 {
+    --token-hue: 210;
+  }
+  .token-hue-8 {
+    --token-hue: 240;
+  }
+  .token-hue-9 {
+    --token-hue: 270;
+  }
+  .token-hue-10 {
+    --token-hue: 300;
+  }
+  .token-hue-11 {
+    --token-hue: 330;
+  }
+}

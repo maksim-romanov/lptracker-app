@@ -1,6 +1,6 @@
 import { createStore } from "mipd";
 
-import { NETWORKS } from "../../views/networks";
+import { explorerAddressUrl, NETWORKS, networkLabel } from "../../views/networks";
 import { shortAddress, type TWalletSource, WalletEntry } from "../lib/wallet.entity";
 import { walletStore } from "../lib/wallet.store";
 import ApplicationController from "./application_controller";
@@ -14,6 +14,12 @@ type TEip1193Provider = {
 const providerStore = createStore();
 
 const ALL_CHAIN_IDS = NETWORKS.map((n) => n.id);
+
+// An EOA carries the same address on every EVM chain, so which explorer a chip points at is a
+// choice rather than a fact. Ethereum wins when it is tracked because that is where an address
+// is most likely to have a history worth reading; otherwise the first chain the user asked for.
+const MAINNET = 1;
+const explorerChainOf = (chainIds: number[]): number => (chainIds.includes(MAINNET) ? MAINNET : (chainIds[0] ?? MAINNET));
 
 // EIP-1193 reserves 4001 for "user rejected the request" — an expected outcome,
 // not a fault worth reporting through handleError.
@@ -185,10 +191,19 @@ export default class WalletController extends ApplicationController {
       // range_controller takes for the price marker.
       dot.style.setProperty("--chip-hue", String(hueOf(entry.address)));
 
-      const label = document.createElement("span");
+      // A link, not the plain span it used to be: an explorer is a real destination, so this is
+      // not the pressable-looking chip the surrounding list deliberately avoids. The whole
+      // address goes in the tooltip — the chip shows a nickname or a shortened form, and neither
+      // is what anyone needs to compare against another window.
+      const label = document.createElement("a");
+      label.href = explorerAddressUrl(explorerChainOf(entry.chainIds), entry.address);
+      label.target = "_blank";
+      label.rel = "noopener noreferrer";
+      label.dataset.tooltip = entry.address;
+      label.setAttribute("aria-label", `${entry.displayName} on ${networkLabel(explorerChainOf(entry.chainIds))}`);
       // Mono is for what comes off the chain. A nickname is prose the user typed, so it only
       // gets the monospaced face when it is standing in for the address itself.
-      label.className = entry.label ? "text-body-small" : "font-mono text-figure-small";
+      label.className = `${entry.label ? "text-body-small" : "font-mono text-figure-small"} hover:text-primary-text`;
       label.textContent = entry.displayName;
 
       chip.append(dot, label);
@@ -229,8 +244,14 @@ export default class WalletController extends ApplicationController {
         label.setAttribute("aria-label", `Nickname for ${shortAddress(entry.address)}`);
       }
 
-      const address = row.querySelector<HTMLElement>('[data-wallet-row="address"]');
-      if (address) address.textContent = shortAddress(entry.address);
+      const address = row.querySelector<HTMLAnchorElement>('[data-wallet-row="address"]');
+      if (address) {
+        const chainId = explorerChainOf(entry.chainIds);
+        address.textContent = shortAddress(entry.address);
+        address.href = explorerAddressUrl(chainId, entry.address);
+        address.dataset.tooltip = entry.address;
+        address.setAttribute("aria-label", `${shortAddress(entry.address)} on ${networkLabel(chainId)}`);
+      }
 
       row.querySelector('[data-wallet-row="copy"]')?.setAttribute("aria-label", `Copy ${shortAddress(entry.address)}`);
       row

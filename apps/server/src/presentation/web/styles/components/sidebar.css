@@ -11,6 +11,8 @@
     inset: 1rem 1rem 1rem auto;
     margin: 0;
     width: min(24rem, calc(100vw - 2rem));
+    /* Full height on purpose, unlike the centred variant below: a drawer is a side of the
+       screen, and WalletConnect pins its connect form to the bottom of one. */
     height: auto;
     max-height: none;
     max-width: none;
@@ -31,7 +33,11 @@
       inset: 0;
       margin: auto;
       width: min(40rem, calc(100vw - 2rem));
-      height: auto;
+      /* `fit-content`, not `auto`: an absolutely positioned box with both `top` and `bottom`
+         set and `height: auto` is not sized by its content — the pair is solved for the height
+         instead, which left a 600px panel standing 728px tall. With a definite height the auto
+         margins have something to centre. */
+      height: fit-content;
       max-height: calc(100dvh - 2rem);
       padding-bottom: 0;
     }

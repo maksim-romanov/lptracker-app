@@ -39,6 +39,10 @@ const byUrgency = (a: ICardVM, b: ICardVM): number => URGENCY[a.rangeTone] - URG
 const positionQuerySchema = v.object({
   inverted: v.optional(v.picklist(["0", "1"]), "0"),
   layout: v.optional(v.picklist(POSITIONS_LAYOUTS), DEFAULT_POSITIONS_LAYOUT),
+  // Set only by the panel's own invert control: the board is still on screen behind the modal,
+  // and its copy of this position has to turn round with the panel or the two disagree the
+  // moment it closes. Opening the panel does not change anything, so it does not ask for this.
+  sync: v.optional(v.picklist(["0", "1"]), "0"),
 });
 
 webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValidationHook), async (c) => {
@@ -117,7 +121,21 @@ webRoutes.get(
   validator("param", refParamSchema, webValidationHook),
   validator("query", positionQuerySchema, webValidationHook),
   async (c) => {
-    const r = await loadCardVM(c.req.valid("param").ref, c.req.valid("query").inverted === "1");
-    return "error" in r ? c.html(r.error, r.status) : c.html(<PositionDetail card={r.card} />);
+    const query = c.req.valid("query");
+    const r = await loadCardVM(c.req.valid("param").ref, query.inverted === "1");
+    if ("error" in r) return c.html(r.error, r.status);
+
+    // The row rides along out of band, wrapped in a <template> because a bare <tr> outside a
+    // table is dropped by the HTML parser before htmx ever sees it.
+    return c.html(
+      <>
+        <PositionDetail card={r.card} />
+        {query.sync === "1" && (
+          <template>
+            <PositionItem card={r.card} layout={query.layout} oob />
+          </template>
+        )}
+      </>,
+    );
   },
 );
