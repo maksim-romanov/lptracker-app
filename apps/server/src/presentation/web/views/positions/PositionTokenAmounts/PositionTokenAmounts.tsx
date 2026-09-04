@@ -12,7 +12,7 @@ type Props = { tokens: ITokenSideVM[]; earning?: boolean; class?: string };
 export const PositionTokenAmounts = ({ tokens, earning = false, class: className }: Props) => {
   if (tokens.length === 0) {
     return (
-      <span class={cn("block text-body-small text-on-surface-variant", className)}>
+      <span class={cn("block text-right text-body-small text-on-surface-variant", className)}>
         <span aria-hidden="true">—</span>
         <span class="sr-only">None</span>
       </span>

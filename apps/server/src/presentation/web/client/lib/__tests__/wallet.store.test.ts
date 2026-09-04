@@ -87,6 +87,16 @@ describe("WalletStore", () => {
     expect(signer?.label).toBe("Cold storage");
   });
 
+  it("reconnecting the already-connected address keeps its nickname", () => {
+    walletStore.connect(connected(A));
+    walletStore.rename(A, "Cold storage");
+    walletStore.connect(connected(A)); // same address reconnects
+
+    const [signer] = walletStore.bySource("connected");
+    expect(signer?.address).toBe(A);
+    expect(signer?.label).toBe("Cold storage");
+  });
+
   it("disconnect removes the signer and keeps everything else", () => {
     walletStore.watch(watched(A));
     walletStore.connect(connected(B));

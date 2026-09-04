@@ -35,10 +35,14 @@ class WalletStore extends CollectionStore {
   // Connecting promotes the address if it was already being watched, so the same wallet never
   // appears in both groups.
   connect(entry: WalletEntry): void {
-    for (const [address, existing] of this.entries) {
-      if (existing.source === "connected") this.entries.delete(address);
+    // Read before the cleanup loop below can delete this same address (reconnecting the
+    // current signer is itself a "connected" entry) — otherwise the lookup misses and the
+    // reconnect silently drops the nickname.
+    const existing = this.entries.get(entry.address);
+    for (const [address, other] of this.entries) {
+      if (other.source === "connected") this.entries.delete(address);
     }
-    this.entries.set(entry.address, (this.entries.get(entry.address) ?? entry).withSource("connected"));
+    this.entries.set(entry.address, (existing ?? entry).withSource("connected"));
     this.persist();
   }
 

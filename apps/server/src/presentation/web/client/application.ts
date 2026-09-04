@@ -27,6 +27,18 @@ export async function start(): Promise<void> {
   // what the board wants anyway; the rows are the same rows in a different order.
   htmx.config.globalViewTransitions = false;
 
+  // webRoutes' error paths (invalid ref, unknown protocol, upstream failure) return a real
+  // ErrorBanner fragment with a 4xx/5xx status — htmx's default responseHandling drops the
+  // swap for those codes, so the fragment never reaches the DOM (and the position-detail
+  // modal's htmx:afterSwap->dialog#open trigger never fires either). These are expected,
+  // handled states (neverthrow Result → HTTP), not faults to hide from the user.
+  htmx.config.responseHandling = [
+    { code: "204", swap: false },
+    { code: "[23]..", swap: true },
+    { code: "[45]..", swap: true, error: false },
+    { code: "...", swap: false },
+  ];
+
   // Hydrate the sync store caches before htmx fires its first request —
   // htmx:configRequest reads them synchronously and cannot await. Stores default
   // to localStorage (hydrate settles on the next microtask, well before

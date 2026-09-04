@@ -16,6 +16,17 @@
   html {
     color-scheme: light dark;
     font-family: var(--font-sans);
+    /* The board's own hover/focus states are deliberate; the UA's grey flash on tap would
+       otherwise flicker across a whole row (position-overlay is a full row/card hit target). */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Removes the ~300ms double-tap-zoom delay on every tappable element. */
+  a,
+  button,
+  input,
+  [role="button"] {
+    touch-action: manipulation;
   }
 
   /* One ring for everything focusable. The UA default is a hairline that all but disappears

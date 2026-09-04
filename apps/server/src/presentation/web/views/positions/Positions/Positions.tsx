@@ -36,7 +36,7 @@ const CAPTION_ID = "positions-table-caption";
 // (WCAG 2.1.1). A named <section> already is a region, and it borrows the caption's wording
 // rather than inventing a second name for the same thing.
 const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
-  <section class="shell-bleed overflow-x-auto" tabindex={0} aria-labelledby={CAPTION_ID}>
+  <section class="position-table-scroll shell-bleed overflow-x-auto" tabindex={0} aria-labelledby={CAPTION_ID}>
     <table class="position-table w-full min-w-[52rem] table-fixed">
       <caption id={CAPTION_ID} class="sr-only">
         Uniswap v3 positions

@@ -18,6 +18,15 @@
     outline-offset: -2px;
   }
 
+  /* This region is shell-bleed — flush with the panel's own overflow:hidden edge — so an
+     outward ring (the app-wide default) has no room on three of its four sides and reads as a
+     stray top line instead of a box. Inset, like .position-overlay's own ring above, it stays
+     inside the section regardless of where in the shell it sits. */
+  .position-table-scroll:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
   /* Table presentation. WebKit only fixed `position: relative` on table rows in April
      2026 (webkit.org/b/240961) and iOS webviews track the OS, so the overlay anchors to
      its cell instead and is widened across the row, clipped by the table. The anchor is the
@@ -29,6 +38,15 @@
 
   .position-row-anchor {
     position: relative;
+  }
+
+  /* Off-screen rows skip render/layout/paint entirely: the board can run to hundreds of rows
+     (see application.ts), and content-visibility is the one lever that scales with it without
+     any JS windowing. The intrinsic size is a rough estimate for the scrollbar only — the
+     browser corrects it once a row has actually rendered. */
+  .position-row {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 4.5rem;
   }
 
   .position-row .position-overlay {
@@ -59,6 +77,8 @@
   /* Card presentation. A card is an ordinary block box, so it anchors the overlay itself. */
   .position-card {
     position: relative;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 12rem;
   }
 
   .position-card:hover {
