@@ -1,10 +1,5 @@
 import { Icon, type TIconName } from "../../components/Icon/Icon";
 
-// Two toggle buttons rather than a radio group: each one is independently operable and reads
-// as "Table view, pressed", which is what it is. A <fieldset> carries the grouping — buttons
-// are form controls, so the element that exists for grouping them is the one to use. The viewport still picks the starting
-// presentation — this only overrides it, and going back to following the viewport is a matter
-// of the option the viewport would have chosen.
 const OPTIONS: { layout: string; icon: TIconName; label: string }[] = [
   { layout: "table", icon: "rows", label: "Table view" },
   { layout: "cards", icon: "cards", label: "Card view" },

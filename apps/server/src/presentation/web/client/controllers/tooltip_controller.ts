@@ -5,11 +5,8 @@ const EDGE = 8;
 
 // Delegated from <body> rather than bound per trigger: the board is replaced wholesale by htmx
 // on every refresh and invert, so anything bound to a row would have to be rebound each time.
-// Two kinds of trigger, one bubble:
-//   - `[data-tooltip]` says what to show. Used where the element is a picture and the thing
-//     worth knowing is not written anywhere near it.
-//   - `.truncate` shows its own text, but only when it is actually clipped. A label that fits
-//     needs no tooltip, and offering one on every label trains people to ignore all of them.
+// Two kinds of trigger: `[data-tooltip]` supplies explicit text (e.g. a picture with no nearby
+// label); `.truncate` shows its own text, but only when actually clipped.
 export default class TooltipController extends Controller<HTMLElement> {
   static targets = ["bubble"];
 
@@ -55,9 +52,8 @@ export default class TooltipController extends Controller<HTMLElement> {
     return element.scrollWidth - element.clientWidth > 1;
   }
 
-  // What the label shows, not everything it contains. A pair name carries the network as
-  // screen-reader-only text inside the same element, and a tooltip that repeats a truncated
-  // "WETH / USDC" as "WETH / USDC on Ethereum" is answering a question nobody asked.
+  // Strips `.sr-only` content — a pair name carries the network as screen-reader-only text in
+  // the same element, which the tooltip shouldn't repeat.
   private visibleText(element: HTMLElement): string {
     if (!element.querySelector(".sr-only")) return element.textContent?.trim() ?? "";
     const visible = element.cloneNode(true) as HTMLElement;

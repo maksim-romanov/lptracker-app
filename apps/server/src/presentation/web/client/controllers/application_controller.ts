@@ -1,8 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Shared base so no controller fails silently: every user-visible failure goes
-// through notify(), every unexpected one through handleError(), which also feeds
-// Stimulus' own error pipeline (application.handleError) for reporting.
+// handleError() also feeds Stimulus' own error pipeline (application.handleError) for reporting.
 export default class ApplicationController extends Controller {
   protected notify(message: string): void {
     this.dispatch("toast", { prefix: "depthly", target: document.documentElement, detail: { message } });

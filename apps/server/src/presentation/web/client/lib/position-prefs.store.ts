@@ -1,7 +1,5 @@
 import { CollectionStore } from "./collection.store";
 
-// Client-side per-position preferences, keyed by position ref. Add new flags
-// (e.g. `following`) as fields here — no new store needed.
 interface IPositionPrefs {
   inverted: boolean;
 }
@@ -29,13 +27,11 @@ class PositionPrefsStore extends CollectionStore {
 
   private update(ref: string, patch: Partial<IPositionPrefs>): void {
     const next = { ...this.of(ref), ...patch };
-    // Drop the ref entirely once no flag is set, so storage stays lean.
     if (Object.values(next).some(Boolean)) this.prefs.set(ref, next);
     else this.prefs.delete(ref);
     this.persist();
   }
 
-  // Flip inverted and report the new state ("1" inverted / "0" normal).
   toggleInverted(ref: string): boolean {
     const inverted = !this.of(ref).inverted;
     this.update(ref, { inverted });

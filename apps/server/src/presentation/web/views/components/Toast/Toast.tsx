@@ -17,8 +17,6 @@ const TYPE_ROLE: Record<ToastType, "alert" | "status"> = {
   error: "alert",
 };
 
-// Border takes the fill role, the message takes the type role. A status solid follows its hue
-// to the purest point it has, which is not a value prose can be set in.
 const TYPE_CLASS: Record<ToastType, string> = {
   loading: "border-outline",
   info: "border-info text-info-text",

@@ -2,27 +2,14 @@ import { Button } from "../../components/Button/Button";
 import { TextInput } from "../../components/form/TextInput/TextInput";
 import { Icon } from "../../components/Icon/Icon";
 
-// 32px rather than the 22px and 26px these two used to be: a row action is the smallest target
-// in the panel, and WCAG 2.5.8 puts the floor at 24. They were also two different sizes sitting
-// in the same row for no reason either of them could give.
 const ICON_BUTTON = "size-8 shrink-0 rounded-full border-transparent p-0 text-on-surface-variant hover:text-on-surface";
 
-// The row lives in the markup as a <template> rather than in the controller as createElement
-// calls: this is what a wallet looks like, and it belongs where the rest of the views are.
-// The controller clones it and fills the four fields.
 const WalletRowTemplate = () => (
   <template data-wallet-target="rowTemplate">
     <li class="flex items-center gap-3 rounded-sm p-2 hover:bg-surface-hover">
       <span aria-hidden="true" data-wallet-row="dot" class="wallet-dot size-8 shrink-0 rounded-full" />
 
       <span class="flex min-w-0 flex-1 flex-col gap-0.5">
-        {/* The address leads, and the nickname sits under it. A wallet always has an address
-            and usually has no nickname, so putting the field first made an empty placeholder
-            the largest text in the row and every wallet appeared to be called "Add a nickname".
-            The nickname is an annotation on an address, and it now reads as one.
-            A link, like the chip in the hero and every address in the position panel — the
-            controller fills href and the full-address tooltip, because only it knows which
-            chains this wallet is tracked on. */}
         <span class="flex items-center gap-1 px-1">
           {/* biome-ignore lint/a11y/useValidAnchor: template slot — wallet_controller sets href per row */}
           {/* biome-ignore lint/a11y/useAnchorContent: template slot — wallet_controller sets the address text per row */}
@@ -37,8 +24,6 @@ const WalletRowTemplate = () => (
           </Button>
         </span>
 
-        {/* Always an input, never a name that turns into one on click: there is no second
-            mode to discover. */}
         <input
           type="text"
           data-wallet-row="label"
@@ -67,11 +52,6 @@ const Group = ({ name, target }: { name: string; target: string }) => (
   </section>
 );
 
-// Grouped by what a wallet can actually do — one signer, N read-only addresses — rather than
-// one flat list with a badge doing all the work of explaining itself. "Connect" and "watch"
-// are two distinct actions at the bottom, not one input trying to mean both.
-// The panel is titled by the Sidebar chrome rather than by a heading of its own, so the name
-// and the close button share one row instead of stacking into two.
 export const WalletConnect = () => (
   <>
     <WalletRowTemplate />

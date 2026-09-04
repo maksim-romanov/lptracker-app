@@ -7,12 +7,6 @@ import type { ICardVM, ITokenSideVM } from "#features/uniswap-v3/presentation/we
 
 type Props = { card: ICardVM; withContract?: boolean; class?: string };
 
-// Only the address is the link. The symbol is the row's name — it labels the amounts beside it
-// and belongs to this table, while the address is the one part of the cell that points somewhere
-// else. Making the whole block clickable put a destination behind a label that is not one.
-// The accessible name says which token and which chain, because "0xC02a…6Cc2" read aloud is
-// neither; the full address rides along as a tooltip, since the shortened form is what fits, not
-// what the reader may need to compare.
 const TokenCell = ({ token, chainId }: { token: ITokenSideVM; chainId: number }) => {
   const address = token.tokenRef.split(":")[1];
   if (!address) return <span class="text-body-small">{token.symbol}</span>;
@@ -35,15 +29,8 @@ const TokenCell = ({ token, chainId }: { token: ITokenSideVM; chainId: number })
   );
 };
 
-// One row per token, principal and its own unclaimed fee side by side. Two mirrored lists — an
-// amounts list, then a repeated fees list — split a token's own numbers across two groups and
-// made the reader match them up by position; here they read together.
-// A real <table>: each cell is a token crossed with a measure, which is what a table is for,
-// and it is what associates "0.0084" with "WETH" and "Fees" for a screen reader. A <dl> can
-// name one value per term, not two.
-// `withContract` is for the detail panel only. The card shows the same table in a grid cell
-// whose height every other card has to match, and a second line per token is two lines the
-// board cannot spare — the panel is where there is room to say which contract this actually is.
+// `withContract` is for the detail panel only — the card renders the same table inside a grid
+// cell whose height every other card must match, and can't spare the extra line per token.
 export const PositionAmounts = ({ card, withContract = false, class: className }: Props) => {
   const rows = card.principal.map((token) => ({
     token,
@@ -53,8 +40,6 @@ export const PositionAmounts = ({ card, withContract = false, class: className }
   if (rows.length === 0) return <p class={cn("text-body-small text-on-surface-variant", className)}>This position holds no tokens.</p>;
 
   return (
-    // `table-fixed` with declared widths so a column lands in the same place on every card. Left
-    // to size itself, each card measured its own figures and the grid came out ragged.
     <table class={cn("w-full table-fixed", className)}>
       <thead>
         <tr class="text-caption text-on-surface-variant">
@@ -74,8 +59,6 @@ export const PositionAmounts = ({ card, withContract = false, class: className }
           <tr>
             <th scope="row" class="py-0.5 text-left font-normal">
               <span class="flex items-center gap-2">
-                {/* The contract line makes this cell two lines tall, and a 16px mark beside a
-                    32px block reads as a bullet rather than a logo. */}
                 <TokenIcon
                   url={token.iconUrl}
                   symbol={token.symbol}

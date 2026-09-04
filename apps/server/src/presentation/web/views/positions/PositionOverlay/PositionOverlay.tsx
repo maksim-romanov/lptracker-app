@@ -2,9 +2,8 @@ import { pairLabel } from "../labels";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 // The row/card-sized click target, stretched over the item by a pseudo-element
-// (position-list.css). A click handler on the container would instead announce every field
-// inside it as clickable, and role="grid" would impose a whole keyboard model this list does
-// not need. It must be a child of whatever the CSS makes the positioned ancestor.
+// (position-list.css). It must be a child of whatever element that CSS makes the positioned
+// ancestor.
 export const PositionOverlay = ({ card }: { card: ICardVM }) => (
   <button
     type="button"

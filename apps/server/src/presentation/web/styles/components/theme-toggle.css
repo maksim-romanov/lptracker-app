@@ -7,4 +7,12 @@
   [data-theme="depthly-light"] [data-theme-target="toggle"] .icon-sun {
     display: none;
   }
+
+  /* theme_controller.ts drives the reveal itself via clip-path on ::view-transition-new(root);
+     the default cross-fade would otherwise run at the same time. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
 }

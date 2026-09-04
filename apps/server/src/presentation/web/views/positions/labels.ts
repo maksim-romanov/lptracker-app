@@ -10,8 +10,6 @@ const STATUS: Record<TUniswapV3RangeStatus, string> = {
 
 export const statusLabel = (status: TUniswapV3RangeStatus): string => STATUS[status];
 
-// The two near-edge tones name the bound the price is approaching, because that is what
-// decides which way a position has to be rebalanced.
 const RANGE_TONE: Record<TPositionRangeTone, string> = {
   "in-range": "In range",
   "near-lower": "Near lower bound",
@@ -22,15 +20,9 @@ const RANGE_TONE: Record<TPositionRangeTone, string> = {
 
 export const rangeToneLabel = (tone: TPositionRangeTone): string => RANGE_TONE[tone];
 
-// How a pool pair reads, in one place: it is rendered as the item's heading and reused
-// verbatim inside the "View … details" accessible name, so the two cannot drift.
 export const pairLabel = (pair: ICardVM["pair"]): string => `${pair.base.symbol} / ${pair.quote.symbol}`;
 
-// Head and tail, never the middle: an address is recognised by its ends, and the ellipsis is
-// what says the rest is still there. Short inputs are returned whole rather than padded.
 export const shortenAddress = (address: string): string => (address.length > 12 ? `${address.slice(0, 6)}\u2026${address.slice(-4)}` : address);
 
-// A position ref is "uniswap-v3:1:1001" — colons are legal in an id but break every selector
-// that would look one up, so they become dashes. The id exists so an out-of-band swap can
-// replace one item without the board being asked to re-render all of them.
+// Colons are legal in a DOM id but break CSS/JS selectors that look one up, so they become dashes.
 export const itemDomId = (ref: string): string => `position-${ref.replace(/:/g, "-")}`;

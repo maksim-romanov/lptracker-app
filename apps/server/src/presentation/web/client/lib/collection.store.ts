@@ -1,20 +1,15 @@
 import { createLocalStorageAdapter, type IStorageAdapter } from "./storage.adapter";
 
-// Base for a single persisted collection: resolves the storage adapter and owns
-// the hydrate/persist lifecycle. The on-disk shape is opaque to the base — each
-// subclass holds its own in-memory structure and (de)serializes via load/dump.
 export abstract class CollectionStore {
   private static adapter: IStorageAdapter = createLocalStorageAdapter();
 
-  // Swap the storage mechanism for ALL stores (e.g. CloudStorage). Default: localStorage.
   static useAdapter(adapter: IStorageAdapter): void {
     CollectionStore.adapter = adapter;
   }
 
   protected constructor(private readonly key: string) {}
 
-  // Never rejects: a hydrate failure must degrade to an empty store, not abort
-  // the boot sequence that awaits it (application.ts).
+  // Must never reject — a hydrate failure degrades to an empty store instead of aborting the boot sequence that awaits it.
   async hydrate(): Promise<void> {
     let raw: string | null = null;
     try {
@@ -40,9 +35,7 @@ export abstract class CollectionStore {
     }
   }
 
-  // Rebuild the in-memory structure from the stored raw string (or null).
   protected abstract load(raw: string | null): void;
 
-  // Serialize the in-memory structure to the raw string to persist.
   protected abstract dump(): string;
 }

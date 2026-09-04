@@ -4,9 +4,8 @@ import type { TPositionsLayout } from "../../positions-layout";
 import { currentLayout } from "../lib/layout";
 import { layoutPrefs } from "../lib/layout-prefs.store";
 
-// The board's presentation is decided server-side from a request parameter, so choosing one is
-// a refetch rather than a class swap. The pressed state is set here on connect instead of by
-// the server: the shell renders before the board and has no idea what the client will ask for.
+// The pressed state is set here on connect rather than server-rendered: the shell renders
+// before the board and has no idea which layout the client will ask for.
 export default class LayoutController extends Controller {
   static targets = ["option"];
 

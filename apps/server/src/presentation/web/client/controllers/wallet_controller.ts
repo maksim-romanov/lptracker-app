@@ -15,9 +15,8 @@ const providerStore = createStore();
 
 const ALL_CHAIN_IDS = NETWORKS.map((n) => n.id);
 
-// An EOA carries the same address on every EVM chain, so which explorer a chip points at is a
-// choice rather than a fact. Ethereum wins when it is tracked because that is where an address
-// is most likely to have a history worth reading; otherwise the first chain the user asked for.
+// An EOA has the same address on every EVM chain, so the explorer link is a choice: Ethereum
+// wins if tracked, otherwise the first chain requested.
 const MAINNET = 1;
 const explorerChainOf = (chainIds: number[]): number => (chainIds.includes(MAINNET) ? MAINNET : (chainIds[0] ?? MAINNET));
 
@@ -25,8 +24,6 @@ const explorerChainOf = (chainIds: number[]): number => (chainIds.includes(MAINN
 // not a fault worth reporting through handleError.
 const isUserRejection = (error: unknown): boolean => typeof error === "object" && error !== null && (error as { code?: unknown }).code === 4001;
 
-// A stable colour per address, so the same wallet is the same dot on every visit. Identity
-// only — the hue says which wallet, never how it is doing.
 const hueOf = (address: string): number => {
   let hash = 0;
   for (let index = 2; index < address.length; index += 1) hash = (hash * 31 + address.charCodeAt(index)) % 360;
@@ -108,12 +105,11 @@ export default class WalletController extends ApplicationController {
       this.addressInputTarget.form?.reset();
       return;
     }
-    // Deliberately leaves the field intact so a typo can be corrected.
+    // Leaves the field intact so a typo can be corrected.
     this.notify("That doesn't look like a wallet address — expected 0x followed by 40 hex characters.");
   }
 
-  // Only the signer goes. The watched addresses were never signed into, so disconnecting has
-  // nothing to do with them — clearing the whole list is how this used to lose them.
+  // Only the signer is cleared — watched addresses were never signed into.
   disconnectWallet(): void {
     walletStore.disconnect();
     this.refresh();
@@ -171,9 +167,8 @@ export default class WalletController extends ApplicationController {
     if (signer) this.walletAddressTarget.textContent = signer.displayName;
   }
 
-  // The chips are the only place the tracked set is visible without opening the panel, so they
-  // are rebuilt from the store rather than patched — there is one per wallet and the list is a
-  // handful of entries.
+  // Rebuilt wholesale rather than patched — chips are few, and this is the only place the
+  // tracked set is visible without opening the panel.
   private renderChips(): void {
     if (!this.hasChipsTarget) return;
 
@@ -191,18 +186,15 @@ export default class WalletController extends ApplicationController {
       // range_controller takes for the price marker.
       dot.style.setProperty("--chip-hue", String(hueOf(entry.address)));
 
-      // A link, not the plain span it used to be: an explorer is a real destination, so this is
-      // not the pressable-looking chip the surrounding list deliberately avoids. The whole
-      // address goes in the tooltip — the chip shows a nickname or a shortened form, and neither
-      // is what anyone needs to compare against another window.
+      // The tooltip carries the full address since the chip label may be a nickname or a
+      // shortened form.
       const label = document.createElement("a");
       label.href = explorerAddressUrl(explorerChainOf(entry.chainIds), entry.address);
       label.target = "_blank";
       label.rel = "noopener noreferrer";
       label.dataset.tooltip = entry.address;
       label.setAttribute("aria-label", `${entry.displayName} on ${networkLabel(explorerChainOf(entry.chainIds))}`);
-      // Mono is for what comes off the chain. A nickname is prose the user typed, so it only
-      // gets the monospaced face when it is standing in for the address itself.
+      // Monospace only for a raw address — a nickname is prose the user typed.
       label.className = `${entry.label ? "text-body-small" : "font-mono text-figure-small"} hover:text-primary-text`;
       label.textContent = entry.displayName;
 
@@ -238,8 +230,8 @@ export default class WalletController extends ApplicationController {
       const label = row.querySelector<HTMLInputElement>('[data-wallet-row="label"]');
       if (label) {
         label.value = entry.label ?? "";
-        // Not the address: it is printed directly below, and repeating it makes an empty
-        // field look filled. The prompt is what tells anyone the field is there at all.
+        // Not the address — that's printed directly below, and repeating it would make an
+        // empty field look filled.
         label.placeholder = "Add a nickname";
         label.setAttribute("aria-label", `Nickname for ${shortAddress(entry.address)}`);
       }

@@ -14,7 +14,7 @@ export default class ThemeController extends Controller {
     this.sync(currentTheme());
   }
 
-  toggle(): void {
+  toggle(event: MouseEvent): void {
     const next: TTheme = currentTheme() === DARK ? LIGHT : DARK;
     storeTheme(next);
 
@@ -23,11 +23,33 @@ export default class ThemeController extends Controller {
       this.sync(next);
     };
 
-    if (document.startViewTransition && !prefersReducedMotion()) {
-      document.startViewTransition(run);
-    } else {
+    if (!document.startViewTransition || prefersReducedMotion()) {
       run();
+      return;
     }
+
+    // Telegram-style reveal, from the button pressed out to the farthest corner. ready rejects
+    // (no wipe, theme still switches via run() above) if the browser skips the transition.
+    const { clientX: x, clientY: y } = event;
+    const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+
+    // Verified live on dpr:2: Chromium paints clip-path on ::view-transition-new(root) against
+    // the snapshot's device-pixel size, though getComputedStyle still reports our CSS-px value
+    // — the circle renders near half our coordinates. Safari has no such mismatch, so this stays
+    // scoped to Chromium rather than applied unconditionally.
+    const chromiumClipPathBug = window.devicePixelRatio > 1 && /Chrome|Chromium|Edg\//.test(navigator.userAgent);
+    const scale = chromiumClipPathBug ? window.devicePixelRatio : 1;
+
+    document.startViewTransition(run).ready.then(
+      () =>
+        document.documentElement.animate(
+          {
+            clipPath: [`circle(0px at ${x * scale}px ${y * scale}px)`, `circle(${endRadius * scale}px at ${x * scale}px ${y * scale}px)`],
+          },
+          { duration: 500, easing: "ease-out", pseudoElement: "::view-transition-new(root)" },
+        ),
+      () => {},
+    );
   }
 
   private sync(theme: TTheme): void {

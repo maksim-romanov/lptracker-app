@@ -2,14 +2,10 @@ import { cn } from "../../utils/cn";
 import { rangeToneLabel } from "../labels";
 import type { ICardVM, TPositionRangeTone } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
-// Out of range earns the error role rather than warning: the position has stopped accruing fees,
-// while warning is what a position still earning but close to its bound gets, and the two need
-// to be told apart at a glance.
 // The tone is carried as `color` on the container, so the band's fill, the thumb's halo and the
 // out-of-range dot all read it from one place (position-range.css).
-// The closed band is drawn as a flat neutral fill. `computeRangeBar` places the thumb from the
-// pool's current tick whatever the status, so a closed position is geometrically identical to a
-// live one and the hue would otherwise be the only thing separating them.
+// `computeRangeBar` places the thumb from the pool's current tick regardless of status, so a
+// closed position renders the same geometry as a live one.
 const TONE: Record<TPositionRangeTone, string> = {
   "in-range": "text-success",
   "near-lower": "text-warning",
@@ -20,8 +16,6 @@ const TONE: Record<TPositionRangeTone, string> = {
 
 type Props = { range: ICardVM["priceRange"]; tone: TPositionRangeTone; class?: string };
 
-// One image with one sentence: the internals are three numbers pinned to percentages, which a
-// screen reader would otherwise announce as a bare list with no idea which is which.
 const describe = (range: ICardVM["priceRange"], tone: TPositionRangeTone): string =>
   `Price range ${range.minLabel} to ${range.maxLabel} ${range.quoteSymbol} per ${range.baseSymbol}, ` +
   `current price ${range.currentLabel}. ${rangeToneLabel(tone)}.`;

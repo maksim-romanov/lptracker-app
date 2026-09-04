@@ -3,10 +3,8 @@ import { CollectionStore } from "./collection.store";
 
 const isLayout = (value: unknown): value is TPositionsLayout => POSITIONS_LAYOUTS.includes(value as TPositionsLayout);
 
-// The presentation the user picked, or null for "follow the viewport". Null is a real state,
-// not an absent one: someone who has never touched the control should keep getting the layout
-// that fits their screen when they rotate a phone or resize a window, and someone who has
-// touched it should not have that choice quietly overridden.
+// `override: null` means "follow the viewport" — a real state, not an absent one, so an
+// explicit choice isn't silently overridden by rotating a phone or resizing a window.
 class LayoutPrefsStore extends CollectionStore {
   private override: TPositionsLayout | null = null;
 

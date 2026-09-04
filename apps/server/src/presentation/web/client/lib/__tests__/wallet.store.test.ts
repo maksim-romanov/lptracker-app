@@ -90,7 +90,7 @@ describe("WalletStore", () => {
   it("reconnecting the already-connected address keeps its nickname", () => {
     walletStore.connect(connected(A));
     walletStore.rename(A, "Cold storage");
-    walletStore.connect(connected(A)); // same address reconnects
+    walletStore.connect(connected(A));
 
     const [signer] = walletStore.bySource("connected");
     expect(signer?.address).toBe(A);

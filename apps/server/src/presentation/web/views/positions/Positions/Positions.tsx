@@ -5,19 +5,8 @@ import { PositionInfoCard } from "../PositionInfoCard/PositionInfoCard";
 import { PositionInfoRow } from "../PositionInfoRow/PositionInfoRow";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
-// A filled bar rather than a ruled row: it names the columns without drawing a line the rows
-// then have to answer with lines of their own. It runs the full width of the panel, as the
-// hover on a row does, so it is not rounded — an end cap sitting on the panel's own edge reads
-// as an object that failed to reach it.
-// The outer cells carry the shell's gutter so every figure in the table starts on the same line
-// as the heading above it; the inner ones only need to separate columns from each other. The
-// table used to take 12px on both, which put all of it 8px left of everything else on the page.
 const HEAD_CELL = "bg-surface-container px-3 py-2.5 text-caption font-normal text-on-surface-variant first:ps-5 last:pe-5";
 
-// The only place column widths are declared: `table-fixed` makes the header row size every
-// column, so rows can no longer drift out of alignment with it. A numeric column's label is
-// right-aligned with its digits — a left-aligned header over right-aligned numbers detaches
-// the two.
 const COLUMNS = [
   { label: "Position", class: "w-[34%] text-left" },
   { label: "Range", class: "w-[30%] text-left" },
@@ -27,14 +16,8 @@ const COLUMNS = [
 
 const CAPTION_ID = "positions-table-caption";
 
-// `shell-bleed` spans the shell's gutters so the header band and a row's hover run the full
-// width of the panel; the gutter is given back by the outer cells' padding, so the content
-// still lines up with everything else on the page.
-// The scroller is focusable and named because it is one: the viewport used to be the only
-// thing choosing this presentation, so it was never narrower than the table. Now that someone
-// can ask for the table on a phone, a region that scrolls has to be reachable without a mouse
-// (WCAG 2.1.1). A named <section> already is a region, and it borrows the caption's wording
-// rather than inventing a second name for the same thing.
+// The scroller carries tabindex={0} and aria-labelledby: a region that scrolls has to be
+// reachable without a mouse (WCAG 2.1.1).
 const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
   <section class="position-table-scroll shell-bleed overflow-x-auto" tabindex={0} aria-labelledby={CAPTION_ID}>
     <table class="position-table w-full min-w-[52rem] table-fixed">
@@ -59,9 +42,6 @@ const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
   </section>
 );
 
-// Auto-fill rather than auto-fit: with two positions left, auto-fit would stretch each card to
-// half the board, and a card whose width depends on how many neighbours it has is a card whose
-// contents reflow every time one closes.
 const PositionsCards = ({ cards }: { cards: ICardVM[] }) => (
   <ul aria-label="Uniswap v3 positions" class="grid grid-cols-[repeat(auto-fill,minmax(19rem,1fr))] gap-3">
     {cards.map((card) => (

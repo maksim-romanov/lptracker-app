@@ -19,8 +19,6 @@ export const inject = (event: Event): void => {
     return;
   }
 
-  // Only the board list gets wallet/inverted injected; per-position requests
-  // carry their own query.
   if (reqPath !== "/positions") return;
   detail.parameters.wallets = walletStore.serialize();
   detail.parameters.inverted = positionPrefs.serializeInverted();

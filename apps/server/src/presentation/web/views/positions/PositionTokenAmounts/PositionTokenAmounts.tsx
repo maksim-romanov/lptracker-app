@@ -3,12 +3,6 @@ import type { ITokenSideVM } from "#features/uniswap-v3/presentation/web/positio
 
 type Props = { tokens: ITokenSideVM[]; earning?: boolean; class?: string };
 
-// Both amounts, each named. They used to be bare numbers on the grounds that the pair names its
-// two slots in the same order a few columns to the left — true, and still a lot to ask of anyone
-// reading down a column of them. The symbol is onchain data, so it stays in the mono face with
-// the figure it belongs to.
-// The second token is set quieter: a position's two sides are rarely equally interesting, and
-// the first one is the one the pair is named for.
 export const PositionTokenAmounts = ({ tokens, earning = false, class: className }: Props) => {
   if (tokens.length === 0) {
     return (
@@ -26,7 +20,6 @@ export const PositionTokenAmounts = ({ tokens, earning = false, class: className
           class={cn(
             "text-figure-small",
             index === 0 ? "text-on-surface" : "text-caption text-on-surface-variant",
-            // The type role, not the fill one: these are words on the row, not a filled mark.
             earning && (index === 0 ? "text-success-text" : "text-success-text/75"),
           )}
         >

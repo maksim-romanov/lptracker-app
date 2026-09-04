@@ -4,9 +4,8 @@ export const DARK = "depthly-dark";
 
 export type TTheme = typeof LIGHT | typeof DARK;
 
-// Synchronous on purpose: theme-init.ts runs as a render-blocking script to keep
-// the first paint from flashing the wrong theme, so it cannot await the async
-// storage adapter the collection stores use.
+// Synchronous on purpose — theme-init.ts runs render-blocking to avoid a flash of the wrong
+// theme, so it can't await the async storage adapter the collection stores use.
 const read = (): string | null => {
   try {
     return localStorage.getItem(THEME_STORAGE_KEY);

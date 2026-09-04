@@ -13,8 +13,6 @@ import { ProtocolBadge } from "../ProtocolBadge/ProtocolBadge";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
-// One shell for every row, including the one with a chain mark in it. Written by hand, that row
-// sat two pixels above its own label and broke the rhythm the other four kept.
 const Spec = ({ label, mono = true, children }: { label: string; mono?: boolean; children: Child }) => (
   <div class="flex items-center justify-between gap-4 text-body-small">
     <dt class="text-on-surface-variant">{label}</dt>
@@ -22,8 +20,6 @@ const Spec = ({ label, mono = true, children }: { label: string; mono?: boolean;
   </div>
 );
 
-// Every address in this panel is a destination, and they all take the same shape: the shortened
-// form to read, the whole thing on hover, and the explorer a click away.
 const ExplorerLink = ({ chainId, address }: { chainId: number; address: string }) => (
   <a
     href={explorerAddressUrl(chainId, address)}

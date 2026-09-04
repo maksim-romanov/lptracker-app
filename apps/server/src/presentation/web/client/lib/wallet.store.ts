@@ -1,9 +1,8 @@
 import { CollectionStore } from "./collection.store";
 import { type TWalletSource, WalletEntry } from "./wallet.entity";
 
-// Wallets are unique by address → keyed Map (dedup is intrinsic). At most one of them is the
-// signer: connecting a second wallet replaces the first, but it must not touch the watched
-// addresses, which is what `clear()` used to do to the whole list.
+// Unique by address (Map dedups). At most one entry is the signer — connecting a second wallet
+// replaces the first but must never touch the watched addresses.
 class WalletStore extends CollectionStore {
   private entries = new Map<string, WalletEntry>();
 
@@ -24,20 +23,17 @@ class WalletStore extends CollectionStore {
     return JSON.stringify([...this.entries.values()].map((entry) => entry.toStored()));
   }
 
-  // Watching an address already being watched keeps the existing entry, nickname and all.
-  // Watching the connected one would silently demote it, so it is left alone.
+  // A no-op if already watched — otherwise re-watching the connected address would demote it.
   watch(entry: WalletEntry): void {
     if (this.entries.has(entry.address)) return;
     this.entries.set(entry.address, entry);
     this.persist();
   }
 
-  // Connecting promotes the address if it was already being watched, so the same wallet never
-  // appears in both groups.
   connect(entry: WalletEntry): void {
-    // Read before the cleanup loop below can delete this same address (reconnecting the
-    // current signer is itself a "connected" entry) — otherwise the lookup misses and the
-    // reconnect silently drops the nickname.
+    // Must read before the cleanup loop below deletes this same address — reconnecting the
+    // current signer is itself a "connected" entry, and reading after the loop would silently
+    // drop its nickname.
     const existing = this.entries.get(entry.address);
     for (const [address, other] of this.entries) {
       if (other.source === "connected") this.entries.delete(address);

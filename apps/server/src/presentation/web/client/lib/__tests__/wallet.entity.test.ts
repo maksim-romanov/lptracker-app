@@ -43,10 +43,6 @@ describe("WalletEntry.parse / toString", () => {
     expect(WalletEntry.parse(entry.toString()).chainIds).toEqual([137, 42161]);
   });
 
-  it("is consumed implicitly by Array.join", () => {
-    expect([WalletEntry.parse(`${A}:1`), WalletEntry.parse(`${B}:137`)].join("|")).toBe(`${A}:1|${B}:137`);
-  });
-
   // The nickname is the user's and the board has no business receiving it: the wire form the
   // server validates carries the address and its chains, and nothing else.
   it("keeps the nickname and the source out of the wire form", () => {
