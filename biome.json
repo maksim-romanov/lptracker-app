@@ -20,7 +20,16 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "nursery": {
+        "useSortedClasses": {
+          "level": "warn",
+          "options": {
+            "attributes": ["class"],
+            "functions": ["cn"]
+          }
+        }
+      }
     }
   },
   "formatter": {
@@ -45,10 +54,10 @@
       "!apps/landing/_site",
       "!apps/landing/src/assets/js/hero.bundle.js",
       "!apps/server/src/static/htmx.min.js",
-      "!**/.impeccable/**",
-      "!.claude/skills/**",
-      "!.agents/skills/**",
-      "!skills-lock.json"
+      "!.claude/skills",
+      "!.agents/skills",
+      "!skills-lock.json",
+      "!**/.omc"
     ]
   },
   "overrides": [

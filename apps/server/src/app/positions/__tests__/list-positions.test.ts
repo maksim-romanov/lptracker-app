@@ -1,11 +1,11 @@
 import "reflect-metadata";
 
 import { err, ok, type Result } from "neverthrow";
-import type { MapPositionResult, Position } from "shared/contracts";
-import { DomainError } from "shared/errors/base.error";
 
 import { listPositions } from "../list-positions";
 import { describe, expect, it, mock } from "bun:test";
+import type { MapPositionResult, Position } from "#shared/contracts";
+import { DomainError } from "#shared/errors/base.error";
 
 class StubError extends DomainError<string> {}
 

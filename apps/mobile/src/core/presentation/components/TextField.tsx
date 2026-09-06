@@ -86,7 +86,7 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   input: {
-    fontFamily: "Satoshi-Regular",
+    fontFamily: theme.fontFamily.sans,
     fontSize: 15,
     lineHeight: 21,
     color: theme.onSurface,

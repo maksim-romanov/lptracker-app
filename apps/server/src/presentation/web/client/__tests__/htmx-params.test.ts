@@ -57,16 +57,16 @@ describe("htmx-params", () => {
   });
 
   describe("inject()", () => {
-    it("derives path from elt.getAttribute('hx-get'), not detail.path (guarantee b)", async () => {
+    it('injects params for the element marked data-htmx-inject="board", not by inspecting hx-get (guarantee b)', async () => {
       await seed({ wallets: ["0xabc:1"] });
-      const evt = makeEvt({ "hx-get": "/positions" });
+      const evt = makeEvt({ "hx-get": "/positions", "data-htmx-inject": "board" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.wallets).toBe("0xabc:1");
     });
 
-    it("injects wallets (pipe-joined) and inverted (comma-joined) for /positions (guarantee d)", async () => {
+    it("injects wallets (pipe-joined) and inverted (comma-joined) for the board element (guarantee d)", async () => {
       await seed({ wallets: ["0xabc:1,8453", "0xdef:42161"], inverted: ["uniswap-v3:1:7"] });
-      const evt = makeEvt({ "hx-get": "/positions" });
+      const evt = makeEvt({ "hx-get": "/positions", "data-htmx-inject": "board" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.wallets).toBe("0xabc:1,8453|0xdef:42161");
       expect(evt.detail.parameters.inverted).toBe("uniswap-v3:1:7");
@@ -74,7 +74,7 @@ describe("htmx-params", () => {
 
     it("sets inverted=1 and saves the ref on first invert-toggle (guarantee c)", async () => {
       await seed({ inverted: [] });
-      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/card", "data-invert": "uniswap-v3:1:42" });
+      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/item", "data-invert": "uniswap-v3:1:42" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.inverted).toBe("1");
       expect(positionPrefs.serializeInverted()).toBe("uniswap-v3:1:42");
@@ -82,18 +82,32 @@ describe("htmx-params", () => {
 
     it("sets inverted=0 and removes the ref when toggling an already-inverted ref (guarantee c)", async () => {
       await seed({ inverted: ["uniswap-v3:1:42"] });
-      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/card", "data-invert": "uniswap-v3:1:42" });
+      const evt = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/item", "data-invert": "uniswap-v3:1:42" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.inverted).toBe("0");
       expect(positionPrefs.serializeInverted()).toBe("");
     });
 
-    it("does nothing for non-/positions paths (guarantee d)", async () => {
+    it("does nothing for an element without the board marker or an invert ref (guarantee d)", async () => {
       await seed({ wallets: ["0xabc:1"] });
       const evt = makeEvt({ "hx-get": "/api/v1/positions" });
       inject(evt as unknown as Event);
       expect(evt.detail.parameters.wallets).toBeUndefined();
       expect(evt.detail.parameters.inverted).toBeUndefined();
+    });
+
+    // The board and the per-position swap must agree on the presentation, or an
+    // invert would drop a <tr> into a card list (or the reverse).
+    it("sends layout on the board request and on the invert swap", async () => {
+      await seed({ wallets: ["0xabc:1"] });
+
+      const board = makeEvt({ "hx-get": "/positions", "data-htmx-inject": "board" });
+      inject(board as unknown as Event);
+      expect(board.detail.parameters.layout).toBe("cards");
+
+      const invert = makeEvt({ "hx-get": "/positions/uniswap-v3:1:42/item", "data-invert": "uniswap-v3:1:42" });
+      inject(invert as unknown as Event);
+      expect(invert.detail.parameters.layout).toBe("cards");
     });
   });
 });

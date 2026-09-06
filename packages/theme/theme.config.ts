@@ -1,5 +1,8 @@
+import { targets as fontTargets, type WebTarget } from "./fonts/manifest";
 import { defineTokens } from "./kit/core";
-import { daisyuiTheme } from "./kit/plugins/daisyui";
+import { cssVariablesTheme } from "./kit/plugins/css-variables";
+import { fontAssets } from "./kit/plugins/font-assets";
+import { fontFaceCss } from "./kit/plugins/font-face-css";
 import { iosColorsets } from "./kit/plugins/ios-colorsets";
 import { jsModules } from "./kit/plugins/js-modules";
 import type { Resolved } from "./kit/tree";
@@ -22,41 +25,31 @@ type Tree = Resolved<Tokens>;
 
 const generatedHeader = (source: string) => `// GENERATED FILE — do not edit. Source: ${source}`;
 
-const daisyuiColors = (mode: Tree["color"]["depthly"]["light"]) => ({
-  "--color-base-100": mode.surface,
-  "--color-base-200": mode.surfaceContainer,
-  "--color-base-300": mode.surfaceVariant,
-  "--color-base-content": mode.onSurface,
-  "--color-primary": mode.primary,
-  "--color-primary-content": mode.onPrimary,
-  "--color-secondary": mode.secondary,
-  "--color-secondary-content": mode.onSecondary,
-  "--color-accent": mode.secondary,
-  "--color-accent-content": mode.onSecondary,
-  "--color-neutral": mode.surfaceVariant,
-  "--color-neutral-content": mode.onSurfaceVariant,
-  "--color-info": mode.secondary,
-  "--color-info-content": mode.onSecondary,
-  "--color-success": mode.success,
-  "--color-success-content": mode.onSuccess,
-  "--color-warning": mode.warning,
-  "--color-warning-content": mode.onWarning,
-  "--color-error": mode.error,
-  "--color-error-content": mode.onError,
+const pxVars = (prefix: string, tokens: Record<string, number>): Record<string, string> =>
+  Object.fromEntries(Object.entries(tokens).map(([key, value]) => [`--${prefix}-${key}`, `${value}px`]));
+
+const kebab = (role: string) => role.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+
+// Tailwind v4 reads `--text-<name>` plus `--text-<name>--<property>` modifiers out of @theme
+// and builds a `text-<name>` utility from them, so one role emits as one utility.
+const typographyVars = (typography: Tree["typography"]): Record<string, string> => ({
+  "--font-sans": typography.fontStack.sans,
+  "--font-mono": typography.fontStack.mono,
+  ...Object.entries(typography.role).reduce<Record<string, string>>((vars, [role, style]) => {
+    const name = `--text-${kebab(role)}`;
+    vars[name] = `${style.fontSize}px`;
+    vars[`${name}--line-height`] = `${style.lineHeight}px`;
+    vars[`${name}--letter-spacing`] = `${style.letterSpacing}px`;
+    vars[`${name}--font-weight`] = style.fontWeight;
+    return vars;
+  }, {}),
 });
 
-// SSR-local structural constants — not sourced from tokens yet (same in both modes today).
-// Pending the future re-skin phase — see apps/server/design-system/depthly-app/MASTER.md.
-const ssrStructuralDeclarations = {
-  "--radius-selector": "0.75rem",
-  "--radius-field": "2rem",
-  "--radius-box": "1.5rem",
-  "--size-selector": "0.28125rem",
-  "--size-field": "0.28125rem",
-  "--border": "1px",
-  "--depth": "1",
-  "--noise": "0",
-};
+// Every semantic role becomes `--color-<kebab-name>`, derived rather than listed: a role
+// added to the token tree and a role exposed to CSS were two lists that could drift, and
+// the drift only showed up as a utility that silently resolved to nothing.
+const semanticColors = (mode: Tree["color"]["depthly"]["light"]): Record<string, string> =>
+  Object.fromEntries(Object.entries(mode).map(([role, value]) => [`--color-${kebab(role)}`, value]));
 
 // depthly.{light,dark} field each colorset maps to.
 const semanticColorsets = {
@@ -124,6 +117,7 @@ export default defineTokens({
               ),
               typeAlias("TypographyTokens", objectType(Object.keys(roles).map((role) => [role, "TextStyleType"] as const))),
               constExport("fontFamily", tree.typography.fontFamily, { asConst: true }),
+              constExport("fontStack", tree.typography.fontStack, { asConst: true }),
               constExport("lineHeight", tree.typography.lineHeight, { asConst: true }),
               constExport("letterSpacing", tree.typography.letterSpacing, { asConst: true }),
               constExport("typography", roles, { type: "TypographyTokens" }),
@@ -156,29 +150,47 @@ export default defineTokens({
         },
       },
     }),
-    daisyuiTheme<Tokens>({
+    cssVariablesTheme<Tokens>({
       outFile: "dist/css/depthly.css",
-      headerComments: [
-        "/* GENERATED FILE — do not edit. Source: packages/theme/tokens/color/depthly.ts */",
-        "/* radius/depth/border/noise below are SSR-local constants, not yet from @depthly/theme */",
+      headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/color/depthly.ts */"],
+      // :root + prefers-color-scheme give a correct first paint before theme_controller.ts sets
+      // data-theme on connect(); the [data-theme] blocks are what it switches afterward.
+      blocks: (tree) => [
+        { selector: ":root", declarations: semanticColors(tree.color.depthly.light) },
+        { selector: ":root", declarations: semanticColors(tree.color.depthly.dark), media: "(prefers-color-scheme: dark)" },
+        { selector: '[data-theme="depthly-light"]', declarations: semanticColors(tree.color.depthly.light) },
+        { selector: '[data-theme="depthly-dark"]', declarations: semanticColors(tree.color.depthly.dark) },
       ],
-      themes: (tree) => [
+    }),
+    // Tailwind only builds a `bg-x`/`text-x` utility for names declared in @theme, so the
+    // role list existed twice: once here and once by hand in apps/server's app.css. That
+    // second copy is what silently dropped a utility whenever a role was added. Emitting the
+    // alias block from the same tree removes the copy — `@theme inline` keeps each name
+    // pointing at the runtime custom property, so utilities stay reactive to [data-theme].
+    cssVariablesTheme<Tokens>({
+      outFile: "dist/css/tailwind-theme.css",
+      headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/color/depthly.ts */"],
+      blocks: (tree) => [
         {
-          name: "depthly-light",
-          colorScheme: "light",
-          default: true,
-          colors: daisyuiColors(tree.color.depthly.light),
-          extra: ssrStructuralDeclarations,
-        },
-        {
-          name: "depthly-dark",
-          colorScheme: "dark",
-          prefersdark: true,
-          colors: daisyuiColors(tree.color.depthly.dark),
-          extra: ssrStructuralDeclarations,
+          selector: "@theme inline",
+          declarations: Object.fromEntries(
+            Object.keys(tree.color.depthly.dark).map((role) => [`--color-${kebab(role)}`, `var(--color-${kebab(role)})`]),
+          ),
         },
       ],
     }),
+    cssVariablesTheme<Tokens>({
+      outFile: "dist/css/spacing.css",
+      headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/spacing.ts */"],
+      blocks: (tree) => [{ selector: "@theme", declarations: { ...pxVars("spacing", tree.spacing), ...pxVars("radius", tree.radius) } }],
+    }),
+    cssVariablesTheme<Tokens>({
+      outFile: "dist/css/typography.css",
+      headerComments: ["/* GENERATED FILE — do not edit. Source: packages/theme/tokens/typography.ts */"],
+      blocks: (tree) => [{ selector: "@theme", declarations: typographyVars(tree.typography) }],
+    }),
+    fontAssets<Tokens>({ sourceDir: "fonts", licenseFile: "LICENSE-OFL-1.1.txt", targets: fontTargets }),
+    fontFaceCss<Tokens>({ targets: fontTargets.filter((target): target is WebTarget => target.kind === "web") }),
     iosColorsets<Tokens>({
       outDir: "../../apps/mobile/targets/positions-widget/Assets.xcassets",
       author: "depthly-theme-codegen",

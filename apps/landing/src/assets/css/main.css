@@ -1,5 +1,6 @@
 @layer reset, tokens, base, components;
 
+@import "@depthly/theme/css/fonts-landing.css";
 @import url("reset.css") layer(reset);
 @import url("tokens.css") layer(tokens);
 @import url("base.css") layer(base);

@@ -5,21 +5,10 @@
     "strict": true,
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "baseUrl": "src",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "paths": {
-      "features/*": ["features/*"],
-      "routes/*": ["routes/*"],
-      "shared/*": ["shared/*"],
-
-      "uniswap-v3/*": ["features/uniswap-v3/*", "features/uniswap-v3"],
-      "token-prices/*": ["features/token-prices/*", "features/token-prices"],
-      "tokens-meta/*": ["features/tokens-meta/*", "features/tokens-meta"],
-      "icons/*": ["features/icons/*", "features/icons"]
-    }
+    "emitDecoratorMetadata": true
   },
   "exclude": ["scripts"]
 }

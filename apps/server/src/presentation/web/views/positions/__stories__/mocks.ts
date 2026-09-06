@@ -1,0 +1,125 @@
+import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+
+const basePair: ICardVM["pair"] = {
+  base: { tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", symbol: "WETH", iconUrl: "https://assets.uniswap.org/weth.png" },
+  quote: { tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", symbol: "USDC", iconUrl: "https://assets.uniswap.org/usdc.png" },
+};
+
+const basePriceRange: ICardVM["priceRange"] = {
+  minLabel: "1,800",
+  currentLabel: "2,000",
+  maxLabel: "2,200",
+  quoteSymbol: "USDC",
+  baseSymbol: "WETH",
+  bandLeftPct: 15,
+  bandWidthPct: 70,
+  thumbPct: 50,
+  inRange: true,
+};
+
+const baseFees: ICardVM["fees"] = [
+  {
+    tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    symbol: "WETH",
+    formatted: "0.008439",
+    formattedShort: "0.0084",
+    iconUrl: "https://assets.uniswap.org/weth.png",
+  },
+  {
+    tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    symbol: "USDC",
+    formatted: "23.54",
+    formattedShort: "23.54",
+    iconUrl: "https://assets.uniswap.org/usdc.png",
+  },
+];
+
+export const inRange: ICardVM = {
+  ref: "uniswap-v3:1:1001",
+  nftTokenId: "1001",
+  feeTierLabel: "0.3%",
+  status: "in-range",
+  rangeTone: "in-range",
+  inverted: false,
+  chainId: 1,
+  protocol: { slug: "uniswap-v3", label: "Uniswap V3" },
+  pair: basePair,
+  principal: [
+    {
+      tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      symbol: "WETH",
+      formatted: "5.165909",
+      formattedShort: "5.1659",
+      iconUrl: basePair.base.iconUrl,
+    },
+    {
+      tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      symbol: "USDC",
+      formatted: "3,707.59",
+      formattedShort: "3,707.59",
+      iconUrl: basePair.quote.iconUrl,
+    },
+  ],
+  fees: baseFees,
+  priceRange: basePriceRange,
+  poolAddress: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+  ownerAddress: "0x71c7656ec7ab88b098defb751b7401b5f6d8976f",
+  openedAtLabel: "Mar 12, 2026",
+  hasUnclaimedFees: true,
+};
+
+export const outOfRange: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1002",
+  nftTokenId: "1002",
+  status: "out-of-range",
+  rangeTone: "out-of-range",
+  priceRange: { ...basePriceRange, currentLabel: "2,350", bandLeftPct: 5, bandWidthPct: 40, thumbPct: 92, inRange: false },
+};
+
+export const closed: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1003",
+  nftTokenId: "1003",
+  status: "closed",
+  rangeTone: "closed",
+  fees: [],
+  principal: [],
+  hasUnclaimedFees: false,
+};
+
+export const noFees: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1004",
+  nftTokenId: "1004",
+  fees: [],
+  hasUnclaimedFees: false,
+};
+
+export const longAddressNoIcon: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:8453:1005",
+  nftTokenId: "1005",
+  chainId: 8453,
+  pair: {
+    base: { tokenRef: "8453:0xa", symbol: "WETH", iconUrl: "" },
+    quote: { tokenRef: "8453:0xb", symbol: "USDC", iconUrl: "" },
+  },
+  poolAddress: "0x1234567890abcdef1234567890abcdef12345678",
+};
+
+export const nearUpperBound: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1006",
+  nftTokenId: "1006",
+  rangeTone: "near-upper",
+  priceRange: { ...basePriceRange, currentLabel: "2,170", thumbPct: 80 },
+};
+
+export const nearLowerBound: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1007",
+  nftTokenId: "1007",
+  rangeTone: "near-lower",
+  priceRange: { ...basePriceRange, currentLabel: "1,830", thumbPct: 20 },
+};

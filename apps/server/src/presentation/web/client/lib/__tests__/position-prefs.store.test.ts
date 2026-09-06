@@ -28,7 +28,7 @@ describe("PositionPrefsStore", () => {
 
     expect(positionPrefs.toggleInverted("r1")).toBe(false);
     expect(positionPrefs.serializeInverted()).toBe("");
-    expect(JSON.parse(kv.positionPrefs ?? "{}")).toEqual({}); // pruned
+    expect(JSON.parse(kv.positionPrefs ?? "{}")).toEqual({});
   });
 
   it("serializeInverted lists only inverted refs, comma-joined", async () => {

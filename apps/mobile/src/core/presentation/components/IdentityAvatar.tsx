@@ -40,8 +40,10 @@ const at = (hash: number, shift: number, mod: number) => Math.abs((hash >>> shif
 type Blob = { id: string; hue: number; cx: number; cy: number; r: number; lightness: number };
 type Mesh = { id: string; baseHue: number; baseLightness: number; blobs: Blob[] };
 
-// Hue range: pink (340) ← magenta ← purple ← indigo ← blue → cyan (200).
-// Anchored to the brand pink (#FF007A ≈ 332°) and spans the cool/magenta half.
+// Hue range: pink (340) ← magenta ← violet ← indigo ← blue → cyan (200).
+// Centred on the brand violet (#8B4DFF ≈ 261°) and spans the cool/magenta half. The endpoints
+// are unchanged from when the accent was pink — 261° already sits at the middle of them, and
+// moving the range would reshuffle the avatar of every address anyone has already seen.
 const HUE_MIN = 200;
 const HUE_SPAN = 140;
 const hueAt = (hash: number, shift: number) => HUE_MIN + at(hash, shift, HUE_SPAN);

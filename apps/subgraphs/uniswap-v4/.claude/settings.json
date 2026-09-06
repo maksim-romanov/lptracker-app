@@ -3,6 +3,7 @@
     "deny": ["Read(./generated/**)", "Read(./build/**)"]
   },
   "worktree": {
-    "sparsePaths": [".claude", "apps/subgraphs/uniswap-v4"]
+    "symlinkDirectories": ["node_modules"],
+    "sparsePaths": [".claude", ".agents", "apps/subgraphs/uniswap-v4"]
   }
 }

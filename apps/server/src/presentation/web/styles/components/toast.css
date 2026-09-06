@@ -1,0 +1,55 @@
+@layer components {
+  /* No fade. The toast switches state outright — the transition is here only for its timing,
+     which is why the duration is zero and the delays are not.
+     Entry waits 200ms so a board that comes back fast never shows a toast at all. Exit waits
+     400ms, which is the one that matters: htmx drops `htmx-request` the moment the response
+     lands, and a second refresh — the layout toggle clicked twice, an invert while the board is
+     still settling — arrives about 300ms later. Without the wait the toast fell out and jumped
+     straight back in. With it, the pending exit is simply cancelled and the toast stays up
+     across both requests.
+     Each delay is declared on the state it is heading towards: the resting rule owns the exit,
+     the active rule owns the entry. `allow-discrete` is what lets `display` wait its turn. */
+  [data-animate="toast"] {
+    opacity: 0;
+    transition:
+      opacity 0s 400ms,
+      display 0s 400ms allow-discrete;
+  }
+
+  .htmx-request[data-animate="toast"] {
+    opacity: 1;
+    transition:
+      opacity 0s 200ms,
+      display 0s 200ms allow-discrete;
+  }
+
+  /* Controller-driven toasts (Toast `indicator={false}`) hide via opacity alone, never
+     display/visibility: the element must stay in the a11y tree so that writing into
+     role="alert" is what triggers the announcement. */
+  [data-animate="toast"]:not(.htmx-indicator) {
+    pointer-events: none;
+  }
+
+  /* A controller-driven toast is a reply to something the user just did, so it does not wait. */
+  [data-animate="toast"][data-open] {
+    opacity: 1;
+    pointer-events: auto;
+    transition: none;
+  }
+
+  /* @scope contains .toast-spinner to inside a toast, so the name can't collide with an
+     unrelated element elsewhere reusing it. */
+  @scope ([data-animate="toast"]) {
+    .toast-spinner {
+      background: conic-gradient(from 0deg, transparent, currentColor);
+      -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
+      mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toast-spinner {
+        animation: none;
+      }
+    }
+  }
+}

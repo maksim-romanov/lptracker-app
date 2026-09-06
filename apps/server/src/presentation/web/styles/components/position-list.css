@@ -1,0 +1,124 @@
+/* Whole-item activation, shared by both presentations: a real <button> carries the
+   interaction and a pseudo-element stretches it over the row / card. The focus ring is
+   drawn on that pseudo-element, so it traces the actual hit area in either layout. A
+   click handler on the container would instead announce every field as clickable, and
+   role="grid" would impose a whole keyboard model this list does not need. */
+@layer components {
+  /* The button IS the hit area rather than projecting one through a pseudo-element: as a
+     participant in flow it kept costing the layout something — an empty line box that made
+     every table row taller, then a whole flex gap in the card. Absolute takes it out of both.
+     The focus ring goes on the button itself, so it traces the real target. */
+  .position-overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .position-overlay:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  /* This region is shell-bleed — flush with the panel's own overflow:hidden edge — so an
+     outward ring (the app-wide default) has no room on three of its four sides and reads as a
+     stray top line instead of a box. Inset, like .position-overlay's own ring above, it stays
+     inside the section regardless of where in the shell it sits. */
+  .position-table-scroll:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  /* Table presentation. WebKit only fixed `position: relative` on table rows in April
+     2026 (webkit.org/b/240961) and iOS webviews track the OS, so the overlay anchors to
+     its cell instead and is widened across the row, clipped by the table. The anchor is the
+     first cell, so it stretches to the right; when it lived in a trailing actions column it
+     stretched left. */
+  .position-table {
+    overflow: clip;
+  }
+
+  .position-row-anchor {
+    position: relative;
+  }
+
+  /* Off-screen rows skip render/layout/paint entirely: the board can run to hundreds of rows
+     (see application.ts), and content-visibility is the one lever that scales with it without
+     any JS windowing. The intrinsic size is a rough estimate for the scrollbar only — the
+     browser corrects it once a row has actually rendered. */
+  .position-row {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 4.5rem;
+  }
+
+  .position-row .position-overlay {
+    right: auto;
+    width: 100vw;
+  }
+
+  /* An opaque step rather than the alpha state layer: --item-bg below is the colour the token
+     icons and the range bar's notches are cut out of, and a cut-out has to be given a solid
+     colour to match. surfaceContainer lands within a percent of a 6% white wash over the
+     surface, so the lift reads the same either way. */
+  .position-row:hover > * {
+    background-color: var(--color-surface-container);
+  }
+
+  /* The overlapping token icons and the network badge are cut out of whatever the item's
+     background currently is, so the cut-out colour has to track hover instead of being
+     pinned to the resting surface — and has to stay opaque, which is why hover steps to a
+     solid surface here rather than laying `surfaceHover` over one. */
+  .position-item {
+    --item-bg: var(--color-surface);
+  }
+
+  .position-row:hover {
+    --item-bg: var(--color-surface-container);
+  }
+
+  /* Card presentation. A card is an ordinary block box, so it anchors the overlay itself. */
+  .position-card {
+    position: relative;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 12rem;
+  }
+
+  .position-card:hover {
+    background-color: var(--color-surface-container);
+    --item-bg: var(--color-surface-container);
+  }
+}
+
+/* The invert control's hover bubble. A disc that grows in behind the icon rather than a colour
+   that snaps on: the button is 26px, and at that size a fill appearing all at once reads as a
+   flicker. It is a ::before at z-index -1 inside the button's own stacking context, so it stays
+   behind the icon without falling behind the row-sized activation overlay the button sits on. */
+@layer components {
+  .invert-bubble {
+    isolation: isolate;
+  }
+
+  .invert-bubble::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 9999px;
+    background-color: var(--color-primary-wash);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      transform 180ms cubic-bezier(0.2, 0.8, 0.3, 1),
+      opacity 140ms ease-out;
+  }
+
+  .invert-bubble:hover::before,
+  .invert-bubble:focus-visible::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .invert-bubble::before {
+      transition: none;
+    }
+  }
+}

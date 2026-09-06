@@ -2,7 +2,7 @@
 paths:
   - "**/CLAUDE.md"
   - ".claude/rules/**"
-  - ".claude/skills/**/SKILL.md"
+  - "**/.claude/skills/**/SKILL.md"
 ---
 
 # Writing CLAUDE.md / rules / skills in this repo

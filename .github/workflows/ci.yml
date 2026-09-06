@@ -19,6 +19,8 @@ jobs:
         run: bunx turbo run codegen
       - name: Lint
         run: bun run lint
+      - name: Dependency rules
+        run: bunx turbo run lint:deps
       - name: Type check
         run: bun run typecheck
 

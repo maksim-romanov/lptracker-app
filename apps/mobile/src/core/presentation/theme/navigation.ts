@@ -14,9 +14,9 @@ export const createNavigationTheme = (theme: AppTheme, isDark: boolean): Theme =
     notification: theme.error,
   },
   fonts: {
-    regular: { fontFamily: fontFamily.regular, fontWeight: "400" },
-    medium: { fontFamily: fontFamily.medium, fontWeight: "500" },
-    bold: { fontFamily: fontFamily.bold, fontWeight: "700" },
-    heavy: { fontFamily: fontFamily.bold, fontWeight: "700" },
+    regular: { fontFamily: fontFamily.sans, fontWeight: "400" },
+    medium: { fontFamily: fontFamily.sansMedium, fontWeight: "500" },
+    bold: { fontFamily: fontFamily.sansSemiBold, fontWeight: "600" },
+    heavy: { fontFamily: fontFamily.sansBold, fontWeight: "700" },
   },
 });

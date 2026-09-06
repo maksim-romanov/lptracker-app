@@ -35,7 +35,7 @@ export const AiPredictCard = function AiPredictCard() {
               <Text variant="label" color="primary" weight="bold" uppercase style={styles.eyebrow}>
                 AI Predict
               </Text>
-              <Text variant="display" weight="black" style={styles.hook}>
+              <Text variant="title" weight="bold" style={styles.hook}>
                 Tomorrow's range,{"\n"}today.
               </Text>
               <Text variant="bodySmall" color="muted">

@@ -41,7 +41,7 @@ const styles = StyleSheet.create((theme) => ({
   },
 
   label: {
-    fontFamily: "Satoshi-Bold",
+    fontFamily: theme.fontFamily.sansBold,
     fontSize: 15,
     color: META.brandColor,
     letterSpacing: -0.1,

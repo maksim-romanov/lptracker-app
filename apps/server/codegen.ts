@@ -7,7 +7,7 @@ interface FeatureConfig {
 
 const featureConfigs: Record<string, FeatureConfig> = {
   "uniswap-v3": {
-    schema: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.1.0",
+    schema: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.1.1",
     headers: {
       Authorization: `Bearer ${process.env.GRAPH_API_KEY}`,
     },

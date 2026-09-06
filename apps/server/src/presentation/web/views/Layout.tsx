@@ -2,9 +2,43 @@ import { raw } from "hono/html";
 import type { PropsWithChildren } from "hono/jsx";
 
 import { assets } from "../asset-manifest";
-import { IconCheck, IconClose, IconMoon, IconPlus, IconSun, IconWallet } from "./Icons";
-import { NetworkLogo } from "./NetworkLogo";
-import { NETWORKS } from "./networks";
+import { AppNav } from "./components/AppNav/AppNav";
+import { AppShell } from "./components/AppShell/AppShell";
+import { Button } from "./components/Button/Button";
+import { Hero } from "./components/Hero/Hero";
+import { Icon } from "./components/Icon/Icon";
+import { Modal } from "./components/Modal/Modal/Modal";
+import { Sidebar } from "./components/Modal/Sidebar/Sidebar";
+import { Toast } from "./components/Toast/Toast";
+import { PositionsLayoutToggle } from "./positions/PositionsLayoutToggle/PositionsLayoutToggle";
+import { WalletChips } from "./wallets/WalletChips/WalletChips";
+import { WalletConnect } from "./wallets/WalletConnect/WalletConnect";
+
+const NavActions = () => (
+  <>
+    <Button
+      data-wallet-target="connectButton"
+      data-action="wallet#openSidebar"
+      class="whitespace-nowrap rounded-full border-transparent bg-primary px-4 py-2 text-button text-on-primary"
+    >
+      Connect Wallet
+    </Button>
+    <Button
+      hidden
+      data-wallet-target="walletPill"
+      data-action="wallet#openSidebar"
+      aria-label="Manage wallets"
+      class="flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-label"
+    >
+      <Icon name="wallet" size={16} />
+      <span data-wallet-target="walletAddress" />
+    </Button>
+    <Button data-action="theme#toggle" data-theme-target="toggle" aria-label="Toggle dark mode" aria-pressed="false" class="rounded-full p-2">
+      <Icon name="moon" size={18} />
+      <Icon name="sun" size={18} />
+    </Button>
+  </>
+);
 
 export const Layout = ({ children }: PropsWithChildren) => (
   <>
@@ -14,121 +48,150 @@ export const Layout = ({ children }: PropsWithChildren) => (
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Depthly</title>
+        {/* Render-blocking on purpose: settles data-theme before the first paint so a
+            dark-mode visitor never sees a flash of the light theme. Everything else
+            boots from the deferred bundle below. */}
+        <script src={assets.themeInit} />
+        {/* The stylesheet only reveals which faces are needed once it has parsed; preloading
+            the two that every screen uses keeps the first paint from swapping fonts. */}
+        <link rel="preload" href="/static/fonts/IBMPlexSans-Regular-Latin1.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/static/fonts/IBMPlexMono-Regular-Latin1.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="stylesheet" href={assets.css} />
         <script src={assets.js} defer />
       </head>
-      <body class="bg-base-100 text-base-content">
-        <header class="app-header" data-controller="theme">
-          <div class="app-header__inner">
-            <strong class="brand">Depthly</strong>
-            <button
-              type="button"
-              data-action="theme#toggle"
-              data-theme-target="toggle"
-              class="btn btn-ghost btn-sm btn-square theme-toggle"
-              aria-label="Toggle dark mode"
-              aria-pressed="false"
-            >
-              <IconMoon size={18} class="theme-toggle__moon" />
-              <IconSun size={18} class="theme-toggle__sun" />
-            </button>
-          </div>
-        </header>
+      <body
+        class="flex min-h-dvh flex-col bg-surface-dim text-on-surface"
+        data-controller="wallet theme tooltip paste-watch"
+        data-wallet-dialog-outlet="#wallet-sidebar"
+        data-paste-watch-dialog-outlet="#paste-watch-dialog"
+        data-action="mouseover->tooltip#show mouseout->tooltip#hide focusin->tooltip#show focusout->tooltip#hide keydown->tooltip#dismiss paste->paste-watch#paste wallet:paste->wallet#trackPasted"
+      >
+        <main class="flex-1 p-4">
+          {/* The shell is part of the page, so htmx swaps the board inside it and the nav,
+              hero and section heading never re-render. */}
+          <AppShell class="mx-auto max-w-[64rem]">
+            <AppNav actions={<NavActions />} />
 
-        <main class="app-main" data-controller="wallet">
-          <section class="wallet-panel">
-            <div class="wallet-panel__head">
-              <h1 class="wallet-panel__title display">Track a wallet</h1>
-              <p class="wallet-panel__sub">Paste an address to monitor its Uniswap V3 positions across chains.</p>
-            </div>
+            <div class="shell-grid shell-content">
+              <Hero title="Every position, every chain" description="Fees, balances and range across every wallet you track.">
+                <WalletChips />
+              </Hero>
 
-            <form data-action="submit->wallet#add" class="wallet-form">
-              <div class="wallet-form__row">
-                <label class="input input-bordered wallet-input">
-                  <IconWallet size={18} class="wallet-input__icon" />
-                  <input
-                    name="address"
-                    data-wallet-target="address"
-                    placeholder="0x… wallet address"
-                    autocomplete="off"
-                    spellcheck={false}
-                    required
-                    pattern="^0x[a-fA-F0-9]{40}$"
-                    aria-label="Wallet address"
-                  />
-                </label>
-                <button type="submit" class="btn btn-primary btn-circle wallet-form__submit" aria-label="Add wallet">
-                  <IconPlus size={20} />
-                </button>
-              </div>
-              <fieldset class="chains">
-                <legend class="chains__legend">Networks</legend>
-                <div class="chains__list">
-                  {NETWORKS.map((chain) => (
-                    <label class="chain">
-                      <input type="checkbox" name="chain" data-wallet-target="chain" value={String(chain.id)} checked class="chain__input" />
-                      <NetworkLogo chainId={chain.id} size={16} />
-                      <span>{chain.label}</span>
-                      <IconCheck size={14} class="chain__check" />
-                    </label>
-                  ))}
+              {/* The note qualifies the heading, so it sits with it. Pushed to the far edge it
+                  read as a separate column of copy on a wide screen; the right side of this
+                  row belongs to the list's own controls. */}
+              <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h2 class="text-headline">Your positions</h2>
+                  <p class="text-caption text-on-surface-variant">Amounts are per-token — Depthly doesn't total them in dollars.</p>
                 </div>
-              </fieldset>
-            </form>
+                <PositionsLayoutToggle />
+              </div>
 
-            <div class="tracked">
-              <p class="tracked__label">Tracked wallets</p>
-              <div id="wallets" class="wallet-chips" data-wallet-target="chips" />
+              {/* The board is not emptied while it loads — htmx swaps only once the response is
+                  in hand — so the progress is reported by the toast at the end of this document
+                  rather than by a line of copy standing where the table is about to be. */}
+              <div
+                id="board"
+                class="shell-grid shell-bleed"
+                aria-live="polite"
+                data-htmx-inject="board"
+                hx-get="/positions"
+                hx-trigger="load, board:refresh from:body"
+                hx-sync="this:replace"
+                hx-indicator="#board-loader"
+              >
+                {children}
+              </div>
             </div>
-            <template data-wallet-target="chipTemplate">
-              <span class="wallet-chip">
-                <IconWallet size={14} class="wallet-chip__icon" />
-                <span class="wallet-chip__addr" data-chip-label />
-                <button type="button" data-action="wallet#remove" aria-label="Remove wallet" class="wallet-chip__remove">
-                  <IconClose size={14} />
-                </button>
-              </span>
-            </template>
-          </section>
-
-          <div class="board-region">
-            <div id="board-loader" class="htmx-indicator board-loader">
-              <span class="loading loading-spinner loading-sm" />
-              Loading positions…
-            </div>
-            <div
-              id="board"
-              class="board"
-              hx-get="/positions"
-              hx-trigger="load, board:refresh from:body"
-              hx-sync="this:replace"
-              hx-indicator="#board-loader"
-            >
-              {children}
-            </div>
-          </div>
+          </AppShell>
         </main>
 
-        <footer class="app-footer">Anonymous · positions stored in your browser</footer>
+        <footer class="px-4 pb-4 text-center text-caption text-on-surface-variant">Anonymous · positions stored in your browser</footer>
 
-        <dialog id="position-modal" class="modal position-modal" data-controller="modal">
-          <div class="modal-box">
-            <form method="dialog" class="close">
-              <button type="submit" class="btn btn-sm btn-circle btn-ghost" aria-label="Close">
-                <IconClose size={18} />
-              </button>
-            </form>
-            <div id="position-modal-loading" class="loader htmx-indicator">
-              <span class="loading loading-spinner loading-lg" />
-            </div>
-            <div id="position-modal-box" class="modal-detail" data-modal-target="box" />
+        <Sidebar id="wallet-sidebar" title="Wallets">
+          <WalletConnect />
+        </Sidebar>
+
+        {/* One bubble for the whole page, moved to whatever is hovered — the board carries
+            hundreds of triggers, and a bubble per row is a few hundred elements that exist to
+            be empty. `popover` puts it in the top layer, which no ancestor's overflow can clip;
+            a pseudo-element on the trigger would be cut off by `.position-table` and by the
+            wallet panel alike.
+            `aria-hidden` because it never says anything new: a truncated label is truncated
+            visually only and its full text is already in the DOM, and a token's symbol is
+            printed as real text beside its icon. */}
+        <div id="app-tooltip" popover="manual" aria-hidden="true" class="tooltip text-caption" data-tooltip-target="bubble" />
+
+        <Toast id="board-loader" type="loading">
+          Loading positions…
+        </Toast>
+
+        <Toast id="position-toast-loading" type="loading">
+          Loading position…
+        </Toast>
+
+        <Toast
+          id="app-toast-info"
+          type="info"
+          indicator={false}
+          data-controller="toast"
+          data-toast-kind-value="info"
+          data-action="depthly:toast@document->toast#show"
+        >
+          <span data-toast-target="message" />
+        </Toast>
+
+        <Toast
+          id="app-toast-error"
+          type="error"
+          indicator={false}
+          data-controller="toast"
+          data-toast-kind-value="error"
+          data-action="depthly:toast@document->toast#show"
+        >
+          <span data-toast-target="message" />
+        </Toast>
+
+        {/* The same panel in two chrome shells: docked to the edge where there is no room to
+            centre it, centred where there is. `sidebar` carries the docked geometry the wallet
+            panel also uses, so the two cannot drift apart. */}
+        <Modal
+          id="position-modal"
+          class="sidebar sidebar-centered"
+          title="Position details"
+          action="htmx:afterSwap->dialog#open"
+          bodyClass="flex max-h-[inherit] w-full flex-col gap-4 overflow-y-auto p-4"
+        >
+          <div id="position-modal-box" class="flex flex-col gap-3" />
+        </Modal>
+
+        {/* No `sidebar`/`sidebar-centered` — this one is small enough to stay centred on every
+            screen size, not a drawer on narrow ones. Explicit `inset-0 m-auto h-fit w-fit`, not
+            the UA's own <dialog> centering: Tailwind's preflight resets margin to 0 first, and
+            `max-w-sm` is this project's own 8px spacing step, not Tailwind's 24rem container
+            size — same token-namespace collision the toast's positioning hit earlier.
+            32rem, not 24rem: the full 42-char address is what has to fit on one line. */}
+        <Modal id="paste-watch-dialog" title="Watch this address?" class="fixed inset-0 m-auto h-fit w-fit max-w-[32rem]">
+          <p class="text-body-small text-on-surface-variant">Nothing is signed — Depthly will just track its positions.</p>
+          {/* The same dot + mono treatment a watched row gets once it's actually in the list
+              (wallet_controller's fill()), so confirming previews the exact thing being added. */}
+          <div class="flex items-center gap-3 rounded-sm border border-outline-variant bg-surface-variant px-3 py-2.5">
+            <span aria-hidden="true" data-paste-watch-target="dot" class="wallet-dot size-6 shrink-0 rounded-full" />
+            <span data-paste-watch-target="address" class="min-w-0 break-all font-mono text-figure-small text-on-surface" />
           </div>
-          <form method="dialog" class="modal-backdrop">
-            <button type="submit" aria-label="Close">
-              close
-            </button>
-          </form>
-        </dialog>
+          <div class="flex justify-end gap-2">
+            <Button data-action="dialog#close" class="rounded-full px-5 py-2.5 text-button">
+              Cancel
+            </Button>
+            <Button
+              data-action="paste-watch#confirm dialog#close"
+              class="rounded-full border-transparent bg-primary px-5 py-2.5 text-button text-on-primary"
+            >
+              Watch
+            </Button>
+          </div>
+        </Modal>
       </body>
     </html>
   </>

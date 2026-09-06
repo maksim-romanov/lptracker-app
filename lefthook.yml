@@ -29,6 +29,10 @@ pre-commit:
 pre-push:
   parallel: true
   jobs:
+    - name: dependency-rules
+      glob: "apps/server/**/*.{ts,tsx}"
+      run: bunx turbo run lint:deps --filter=server
+
     - name: cspell
       glob: "*.{ts,tsx,js,jsx,mjs,cjs,md,mdx,json,jsonc,yml,yaml,swift,rs,sh,toml}"
       run: bunx cspell --no-progress --no-must-find-files --no-summary {push_files}

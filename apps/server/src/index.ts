@@ -6,14 +6,14 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import { secureHeaders } from "hono/secure-headers";
 import { openAPIRouteHandler } from "hono-openapi";
-import { iconsRoutes } from "icons/presentation/api";
-import { tokenPricesRoutes } from "token-prices/presentation/api";
-import { tokensMetaRoutes } from "tokens-meta/presentation/api";
 
 import { registerApp } from "./di/register";
 import { v1Routes } from "./presentation/v1";
 import { webRoutes } from "./presentation/web/routes/positions.routes";
 import { shellRoutes } from "./presentation/web/routes/shell.routes";
+import { iconsRoutes } from "#features/icons/presentation/api";
+import { tokenPricesRoutes } from "#features/token-prices/presentation/api";
+import { tokensMetaRoutes } from "#features/tokens-meta/presentation/api";
 
 await installLogger({ app: "server" });
 registerApp();

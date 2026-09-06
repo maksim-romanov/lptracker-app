@@ -9,6 +9,15 @@
     ]
   },
   "worktree": {
-    "sparsePaths": [".claude", "apps/mobile", "packages/catalog", "packages/protocol-math", "packages/theme", "packages/typescript-config"]
+    "symlinkDirectories": ["node_modules"],
+    "sparsePaths": [
+      ".claude",
+      ".agents",
+      "apps/mobile",
+      "packages/catalog",
+      "packages/protocol-math",
+      "packages/theme",
+      "packages/typescript-config"
+    ]
   }
 }

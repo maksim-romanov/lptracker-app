@@ -24,7 +24,7 @@ export const TokenAmountRow = function TokenAmountRow({ tokenRef, symbol, iconUr
         </Text>
       </Box>
       <Box alignX="right">
-        <Text variant="mono" weight="bold" style={styles.right}>
+        <Text variant="figure" style={styles.right}>
           {formatted}
         </Text>
       </Box>

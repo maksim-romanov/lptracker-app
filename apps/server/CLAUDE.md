@@ -8,7 +8,7 @@ Hono API on Bun. See [docs/architecture.md](docs/architecture.md) for the full w
 - `src/features/*/` — self-contained modules (`uniswap-v3`, `token-prices`, `tokens-meta`, `icons`), layered `domain → data → app → presentation`.
 - `src/app/` — cross-feature aggregation.
 - `src/shared/` — base classes (errors, external-provider base, cache).
-- `src/presentation/` — API routes (`v1/`) + an SSR web app (Tailwind/daisyUI/HTMX/Stimulus).
+- `src/presentation/` — API routes (`v1/`) + an SSR web app (Tailwind/HTMX/Stimulus).
 
 Error handling and logging conventions are in `.claude/rules/error-handling.md` and `.claude/rules/logging.md` (auto-load when you edit this app).
 

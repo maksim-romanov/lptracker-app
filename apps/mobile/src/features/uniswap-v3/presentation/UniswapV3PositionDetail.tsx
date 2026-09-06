@@ -206,9 +206,7 @@ const PriceLabels = function PriceLabels({
         <Text variant="label" color="muted" uppercase>
           Min
         </Text>
-        <Text variant="mono" weight="medium">
-          {minLabel}
-        </Text>
+        <Text variant="figure">{minLabel}</Text>
         <Text variant="label" color="muted">
           {quoteSymbol}
         </Text>
@@ -217,9 +215,7 @@ const PriceLabels = function PriceLabels({
         <Text variant="label" color={currentColor} uppercase>
           Current
         </Text>
-        <Text variant="mono" weight="bold">
-          {currentLabel}
-        </Text>
+        <Text variant="figure">{currentLabel}</Text>
         <Text variant="label" color="muted">
           {quoteSymbol}
         </Text>
@@ -228,9 +224,7 @@ const PriceLabels = function PriceLabels({
         <Text variant="label" color="muted" uppercase>
           Max
         </Text>
-        <Text variant="mono" weight="medium">
-          {maxLabel}
-        </Text>
+        <Text variant="figure">{maxLabel}</Text>
         <Text variant="label" color="muted">
           {quoteSymbol}
         </Text>
@@ -261,6 +255,6 @@ const styles = StyleSheet.create((theme) => ({
 
   pairSlash: {
     color: theme.onSurfaceVariant,
-    fontFamily: "Satoshi-Medium",
+    fontFamily: theme.fontFamily.sansMedium,
   },
 }));

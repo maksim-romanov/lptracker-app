@@ -131,7 +131,7 @@ const styles = StyleSheet.create((theme) => ({
 
   pairSlash: {
     color: theme.onSurfaceVariant,
-    fontFamily: "Satoshi-Medium",
+    fontFamily: theme.fontFamily.sansMedium,
   },
 
   valueRight: {

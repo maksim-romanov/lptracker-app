@@ -16,3 +16,9 @@ export const uniswapPositionUrl = (chainId: number, tokenId: string): string =>
 
 export const explorerAddressUrl = (chainId: number, address: string): string =>
   `${byId(chainId)?.explorer ?? "https://etherscan.io"}/address/${address}`;
+
+// `/token/`, not `/address/`: every Etherscan-family explorer serves both for an ERC-20, but
+// the token page opens on supply, holders and transfers, while the address page opens on the
+// contract's own bytecode and calls. Someone following a symbol wants the first one.
+export const explorerTokenUrl = (chainId: number, address: string): string =>
+  `${byId(chainId)?.explorer ?? "https://etherscan.io"}/token/${address}`;

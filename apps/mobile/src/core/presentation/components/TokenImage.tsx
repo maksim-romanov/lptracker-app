@@ -138,7 +138,7 @@ const styles = StyleSheet.create((theme) => ({
     left: 0,
     right: 0,
     textAlign: "center",
-    fontFamily: "Satoshi-Bold",
+    fontFamily: theme.fontFamily.sansBold,
     letterSpacing: -0.5,
     includeFontPadding: false,
 

@@ -4,6 +4,9 @@ Guidance for Claude Code when working in this repository.
 
 > **Brand:** `Depthly`. Workspace package scopes are `@depthly/*`.
 
+Before any UI work, read [PRODUCT.md](PRODUCT.md) for who this is for and what it must not look
+like, then [DESIGN.md](DESIGN.md) for the visual system every surface shares.
+
 ## Big picture
 
 DeFi portfolio monitoring. Data flows **Blockchain → Subgraphs (The Graph) + tokens-data → Hono API → Mobile app**.
@@ -12,16 +15,16 @@ Bun workspaces (`apps/*`, `apps/subgraphs/*`, `packages/*`) + Turborepo. Read th
 
 | Path | What it is |
 | --- | --- |
-| [`apps/server`](apps/server/CLAUDE.md) | Hono API on Bun. Clean Architecture (domain → data → app → presentation), tsyringe DI, neverthrow `Result` error handling. Also serves a small Tailwind/daisyUI/HTMX SSR web app. |
+| [`apps/server`](apps/server/CLAUDE.md) | Hono API on Bun. Clean Architecture (domain → data → app → presentation), tsyringe DI, neverthrow `Result` error handling. Also serves a small Tailwind/HTMX SSR web app. |
 | [`apps/mobile`](apps/mobile/CLAUDE.md) | React Native 0.83 / Expo 55 / React 19. DDD feature modules, tsyringe DI, MobX + TanStack Query, react-native-unistyles. Ships an iOS home-screen widget. |
 | [`apps/tokens-data`](apps/tokens-data/CLAUDE.md) | Standalone Hono/Bun sidecar producing token metadata; consumed only via `server#codegen`. |
 | [`apps/landing`](apps/landing/CLAUDE.md) | 11ty static site with a custom esbuild pipeline and a WebGL particle hero. |
 | [`apps/subgraphs`](apps/subgraphs/CLAUDE.md) | The Graph indexers in AssemblyScript — [`uniswap-v3`](apps/subgraphs/uniswap-v3/CLAUDE.md), [`uniswap-v4`](apps/subgraphs/uniswap-v4/CLAUDE.md). |
-| [`packages/catalog`](packages/catalog/CLAUDE.md) | Network + protocol reference data. |
+| `packages/catalog` | Network + protocol reference data. |
 | [`packages/theme`](packages/theme/CLAUDE.md) | Design tokens, generated via Style Dictionary — shared across `apps/mobile`, `apps/server`'s `/app`, and the iOS widget. |
-| [`packages/protocol-math`](packages/protocol-math/CLAUDE.md) | Uniswap v3 tick/price math + number formatting. |
-| [`packages/logger`](packages/logger/CLAUDE.md) | `logtape` wrapper used by `server` and `tokens-data`. |
-| [`packages/typescript-config`](packages/typescript-config/CLAUDE.md) | Shared `tsconfig` bases. |
+| `packages/protocol-math` | Uniswap v3 tick/price math + number formatting. |
+| `packages/logger` | `logtape` wrapper used by `server` and `tokens-data`. |
+| `packages/typescript-config` | Shared `tsconfig` bases. |
 
 **v4 isn't wired up above the subgraph yet:** `packages/catalog`'s `PROTOCOLS_META` only registers `uniswap-v3`. Neither `apps/server` nor `apps/mobile`'s protocol-plugin registry can reference v4 until a `uniswap-v4` entry is added there — the v4 subgraph itself is deployed and indexing, it's just not consumed anywhere yet.
 

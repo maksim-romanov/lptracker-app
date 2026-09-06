@@ -10,10 +10,32 @@
       "Read(./apps/subgraphs/*/build/**)",
       "Read(./apps/tokens-data/generated/**)",
       "Read(./apps/landing/_site/**)",
-      "Read(./**/.impeccable/**)"
+      "Read(./apps/server/src/static/dist/**)",
+      "Read(./apps/server/storybook-static/**)",
+      "Read(./packages/theme/dist/**)"
     ]
   },
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "chrome-devtools-mcp@claude-plugins-official": true
+  },
   "worktree": {
-    "sparsePaths": [".claude", "apps", "packages"]
+    "sparsePaths": [".claude", ".agents", "apps", "packages"],
+    "symlinkDirectories": ["node_modules"]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); [ -n \"$f\" ] || exit 0; out=$(bunx --bun biome check --write --no-errors-on-unmatched --files-ignore-unknown=true \"$f\" 2>&1); case \"$out\" in *'No fixes applied'*) ;; *) echo \"$out\" ;; esac; exit 0",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
   }
 }

@@ -2,7 +2,7 @@ import { inject, singleton } from "tsyringe";
 
 import type { TokenPriceService } from "../domain/token-price-service";
 import type { TokenPrice, TokenPriceQuery } from "../domain/types";
-import { TokensDataClient } from "./tokens-data-client";
+import { TokensDataClient } from "#shared/adapters/tokens-data.client";
 
 @singleton()
 export class TokensDataPriceAdapter implements TokenPriceService {

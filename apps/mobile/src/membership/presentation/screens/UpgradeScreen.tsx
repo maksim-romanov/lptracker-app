@@ -46,7 +46,7 @@ export const UpgradeScreen = observer(() => {
               <SparkleIcon name="sparkles" size="xl" />
             </View>
             <Stack space={2}>
-              <Text variant="title" weight="black" center>
+              <Text variant="title" weight="bold" center>
                 Premium
               </Text>
               <Text variant="bodySmall" color="muted" center>

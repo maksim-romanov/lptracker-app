@@ -1,20 +1,22 @@
 import { Hono } from "hono";
 import { validator } from "hono-openapi";
-import { TokensMapBuilder } from "shared/tokens/tokens-map";
 import * as v from "valibot";
 
-import { listPositions } from "../../../app/positions/list-positions";
-import { protocolRegistry } from "../../../app/protocols/registry";
-import { UNISWAP_V3_EXTENSION_TYPE } from "../../../features/uniswap-v3/presentation/schemas/extension.schema";
-import { mapPositionToCardVM } from "../../../features/uniswap-v3/presentation/web/position.web-mapper";
 import { POSITION_REF_REGEX, parsePositionRef } from "../../v1/schemas/request.schemas";
-import { Empty } from "../views/fragments/Empty";
-import { ErrorBanner } from "../views/fragments/ErrorBanner";
-import { PositionCard } from "../views/fragments/PositionCard";
-import { PositionDetail } from "../views/fragments/PositionDetail";
-import { Positions } from "../views/fragments/Positions";
+import { DEFAULT_POSITIONS_LAYOUT, POSITIONS_LAYOUTS } from "../positions-layout";
+import { ErrorBanner } from "../views/components/Banner/ErrorBanner/ErrorBanner";
+import { PositionDetail } from "../views/positions/PositionDetail/PositionDetail";
+import { PositionItem } from "../views/positions/PositionItem/PositionItem";
+import { Positions } from "../views/positions/Positions/Positions";
+import { NoWallets } from "../views/wallets/NoWallets/NoWallets";
 import { webPositionsQuerySchema } from "./query.schema";
 import { webValidationHook } from "./validation";
+import { listPositions } from "#app/positions/list-positions";
+import { protocolRegistry } from "#app/protocols/registry";
+import { mapV3Error } from "#features/uniswap-v3/presentation/error-mapper";
+import { UNISWAP_V3_EXTENSION_TYPE } from "#features/uniswap-v3/presentation/schemas/extension.schema";
+import { mapPositionToCardVM, sortCardsByUrgency } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+import { TokensMapBuilder } from "#shared/tokens/tokens-map";
 
 export const webRoutes = new Hono();
 
@@ -22,8 +24,13 @@ const refParamSchema = v.object({
   ref: v.pipe(v.string(), v.regex(POSITION_REF_REGEX, "invalid position ref")),
 });
 
-const cardQuerySchema = v.object({
+const positionQuerySchema = v.object({
   inverted: v.optional(v.picklist(["0", "1"]), "0"),
+  layout: v.optional(v.picklist(POSITIONS_LAYOUTS), DEFAULT_POSITIONS_LAYOUT),
+  // Set only by the panel's own invert control: the board is still on screen behind the modal,
+  // and its copy of this position has to turn round with the panel or the two disagree the
+  // moment it closes. Opening the panel does not change anything, so it does not ask for this.
+  sync: v.optional(v.picklist(["0", "1"]), "0"),
 });
 
 webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValidationHook), async (c) => {
@@ -32,7 +39,7 @@ webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValid
   const invertedSet = query.inverted ?? new Set<string>();
 
   if (wallets.length === 0) {
-    return c.html(<Empty reason="no-wallets" />);
+    return c.html(<NoWallets />);
   }
 
   if (query.protocols) {
@@ -48,19 +55,19 @@ webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValid
     status: query.status,
   });
 
-  const cards = positions
-    .filter((p) => p.extension.type === "uniswap-v3")
-    .map((p) => mapPositionToCardVM(p, tokens, { inverted: invertedSet.has(p.ref) }));
+  const cards = sortCardsByUrgency(
+    positions.filter((p) => p.extension.type === "uniswap-v3").map((p) => mapPositionToCardVM(p, tokens, { inverted: invertedSet.has(p.ref) })),
+  );
 
   return c.html(
     <>
       {partialFailures.length > 0 && <ErrorBanner message={`${partialFailures.length} source(s) failed to load — showing partial results.`} />}
-      <Positions cards={cards} />
+      <Positions cards={cards} layout={query.layout} />
     </>,
   );
 });
 
-type TCardResult = { card: ReturnType<typeof mapPositionToCardVM> } | { error: ReturnType<typeof ErrorBanner>; status: 400 | 422 | 502 };
+type TCardResult = { card: ReturnType<typeof mapPositionToCardVM> } | { error: ReturnType<typeof ErrorBanner>; status: 400 | 404 | 422 | 502 };
 
 const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> => {
   const parsed = parsePositionRef(ref);
@@ -74,7 +81,10 @@ const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> 
     chainId: parsed.chainId,
     protocolPositionId: parsed.protocolPositionId,
   });
-  if (result.isErr()) return { error: <ErrorBanner message="Could not load position" />, status: 502 };
+  if (result.isErr()) {
+    const notFound = mapV3Error(result.error)?.status === 404;
+    return { error: <ErrorBanner message={notFound ? "Position not found" : "Could not load position"} />, status: notFound ? 404 : 502 };
+  }
 
   const position = result.value.position;
   if (position.extension.type !== UNISWAP_V3_EXTENSION_TYPE) return { error: <ErrorBanner message="Unsupported position type" />, status: 422 };
@@ -85,21 +95,37 @@ const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> 
 };
 
 webRoutes.get(
-  "/positions/:ref/card",
+  "/positions/:ref/item",
   validator("param", refParamSchema, webValidationHook),
-  validator("query", cardQuerySchema, webValidationHook),
+  validator("query", positionQuerySchema, webValidationHook),
   async (c) => {
-    const r = await loadCardVM(c.req.valid("param").ref, c.req.valid("query").inverted === "1");
-    return "error" in r ? c.html(r.error, r.status) : c.html(<PositionCard card={r.card} />);
+    const query = c.req.valid("query");
+    const r = await loadCardVM(c.req.valid("param").ref, query.inverted === "1");
+    if ("error" in r) return c.html(r.error, r.status);
+    return c.html(<PositionItem card={r.card} layout={query.layout} />);
   },
 );
 
 webRoutes.get(
   "/positions/:ref/detail",
   validator("param", refParamSchema, webValidationHook),
-  validator("query", cardQuerySchema, webValidationHook),
+  validator("query", positionQuerySchema, webValidationHook),
   async (c) => {
-    const r = await loadCardVM(c.req.valid("param").ref, c.req.valid("query").inverted === "1");
-    return "error" in r ? c.html(r.error, r.status) : c.html(<PositionDetail card={r.card} />);
+    const query = c.req.valid("query");
+    const r = await loadCardVM(c.req.valid("param").ref, query.inverted === "1");
+    if ("error" in r) return c.html(r.error, r.status);
+
+    // The row rides along out of band, wrapped in a <template> because a bare <tr> outside a
+    // table is dropped by the HTML parser before htmx ever sees it.
+    return c.html(
+      <>
+        <PositionDetail card={r.card} />
+        {query.sync === "1" && (
+          <template>
+            <PositionItem card={r.card} layout={query.layout} oob />
+          </template>
+        )}
+      </>,
+    );
   },
 );

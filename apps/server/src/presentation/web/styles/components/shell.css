@@ -1,0 +1,48 @@
+@layer components {
+  /* The wordmark's full stop. Sized and spaced in em so it follows the type rather than a
+     fixed pixel size, and left on the baseline as an empty inline-block — which is exactly
+     where a period sits — instead of being centred against the cap height. */
+  .logo-dot {
+    display: inline-block;
+    width: 0.3em;
+    height: 0.3em;
+    margin-inline-start: 0.1em;
+    border-radius: 9999px;
+    background-color: var(--color-brand-dot);
+  }
+
+  /* A region of the shell laid out on its gutters. Children sit in the middle column; a
+     `shell-bleed` child spans the gutters as well, so its own padding becomes the inset and
+     its dividers meet the frame. The gutter is a track, not an offset that something
+     subtracts from itself later — shrink it to zero and every child simply goes flush, none
+     of them can end up outside the frame. */
+  .shell-grid {
+    --shell-gutter: calc(var(--spacing) * 5);
+
+    display: grid;
+    row-gap: calc(var(--spacing) * 4);
+    grid-template-columns: [bleed-start] var(--shell-gutter) [content-start] 1fr [content-end] var(--shell-gutter) [bleed-end];
+  }
+
+  .shell-grid > * {
+    grid-column: content;
+  }
+
+  .shell-grid > .shell-bleed {
+    grid-column: bleed;
+  }
+
+  /* Derived from the gutter so the four sides cannot drift apart. A `shell-bleed` child still
+     spans the gutter tracks, so it reaches this padding — its dividers run wider than the
+     text, as a list inside a panel does. */
+  .shell-content {
+    padding: calc(var(--shell-gutter) * 1.5) 0 var(--shell-gutter);
+  }
+
+  /* Identity, not status: the hue is derived from the address so the same wallet keeps the
+     same dot, and it is set through CSSOM by wallet_controller because the value is per
+     wallet and CSP allows no `style` attribute in markup. */
+  .wallet-dot {
+    background-image: linear-gradient(140deg, hsl(var(--chip-hue) 70% 62%), hsl(calc(var(--chip-hue) + 40) 78% 58%));
+  }
+}

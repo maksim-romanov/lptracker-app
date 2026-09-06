@@ -1,0 +1,47 @@
+/* One bubble for the whole page, moved to whatever is being hovered. A tooltip drawn as a
+   pseudo-element on the trigger would be clipped by the first ancestor that hides its overflow,
+   and the two places that most need one — a cell in `.position-table` (overflow: clip) and a row
+   in the wallet panel — are both inside one. `popover` puts it in the top layer instead, which
+   no ancestor can clip, and keeps it out of the document's own stacking contexts.
+   Position comes in as two custom properties set by tooltip_controller through CSSOM; markup
+   cannot carry a `style` attribute under this app's CSP. */
+@layer components {
+  .tooltip {
+    position: fixed;
+    inset: auto;
+    left: var(--tooltip-x, 0);
+    top: var(--tooltip-y, 0);
+    margin: 0;
+    padding: 0.25rem 0.5rem;
+    max-width: min(20rem, calc(100vw - 2rem));
+    border: 0;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-inverse-surface);
+    color: var(--color-inverse-on-surface);
+    /* The trigger keeps the hover: a bubble that took the pointer would flicker as the cursor
+       crossed onto it, and everything it says is already in the DOM for assistive tech. */
+    pointer-events: none;
+    overflow-wrap: anywhere;
+    opacity: 0;
+    transition:
+      opacity 120ms ease-out,
+      overlay 120ms ease-out allow-discrete,
+      display 120ms ease-out allow-discrete;
+  }
+
+  .tooltip:popover-open {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .tooltip:popover-open {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tooltip {
+      transition: none;
+    }
+  }
+}

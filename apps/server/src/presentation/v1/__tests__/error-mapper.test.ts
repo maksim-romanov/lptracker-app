@@ -1,10 +1,9 @@
 import "reflect-metadata";
 
-import type { DomainError } from "shared/errors/base.error";
-import { PositionError } from "uniswap-v3/domain/errors/position.error";
-
 import { mapDomainErrorToResponse } from "../error-mapper";
 import { describe, expect, it } from "bun:test";
+import { PositionError } from "#features/uniswap-v3/domain/errors/position.error";
+import type { DomainError } from "#shared/errors/base.error";
 
 describe("v1 error-mapper (registry-driven)", () => {
   it("maps a V3 POSITION_NOT_FOUND via the V3 ProtocolEntry.mapError hook", () => {
