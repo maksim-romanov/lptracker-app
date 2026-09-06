@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@depthly/theme": "workspace:*",
+    "@happy-dom/global-registrator": "^20.14.0",
     "@depthly/typescript-config": "workspace:*",
     "@graphql-codegen/cli": "^6.1.1",
     "@graphql-codegen/client-preset": "^5.2.2",

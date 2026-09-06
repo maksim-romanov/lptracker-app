@@ -1,0 +1,7 @@
+@layer components {
+  /* Focal glow (DESIGN.md's Glow-Means-Now rule): an empty-state icon is one of the few marks
+     licensed to carry it — shadowOpacity 0.45, shadowRadius 14–16, offset 0 0. */
+  .placeholder-icon {
+    box-shadow: 0 0 16px color-mix(in srgb, var(--color-shadow) 45%, transparent);
+  }
+}

@@ -26,8 +26,8 @@ const NavActions = () => (
     <Button
       hidden
       data-wallet-target="walletPill"
-      data-action="wallet#disconnectWallet"
-      aria-label="Disconnect wallet"
+      data-action="wallet#openSidebar"
+      aria-label="Manage wallets"
       class="flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-label"
     >
       <Icon name="wallet" size={16} />
@@ -61,9 +61,10 @@ export const Layout = ({ children }: PropsWithChildren) => (
       </head>
       <body
         class="flex min-h-dvh flex-col bg-surface-dim text-on-surface"
-        data-controller="wallet theme tooltip"
+        data-controller="wallet theme tooltip paste-watch"
         data-wallet-dialog-outlet="#wallet-sidebar"
-        data-action="mouseover->tooltip#show mouseout->tooltip#hide focusin->tooltip#show focusout->tooltip#hide keydown->tooltip#dismiss"
+        data-paste-watch-dialog-outlet="#paste-watch-dialog"
+        data-action="mouseover->tooltip#show mouseout->tooltip#hide focusin->tooltip#show focusout->tooltip#hide keydown->tooltip#dismiss paste->paste-watch#paste wallet:paste->wallet#trackPasted"
       >
         <main class="flex-1 p-4">
           {/* The shell is part of the page, so htmx swaps the board inside it and the nav,
@@ -94,6 +95,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
                 id="board"
                 class="shell-grid shell-bleed"
                 aria-live="polite"
+                data-htmx-inject="board"
                 hx-get="/positions"
                 hx-trigger="load, board:refresh from:body"
                 hx-sync="this:replace"
@@ -129,7 +131,25 @@ export const Layout = ({ children }: PropsWithChildren) => (
           Loading position…
         </Toast>
 
-        <Toast id="app-toast" type="error" indicator={false} data-controller="toast" data-action="depthly:toast@document->toast#show">
+        <Toast
+          id="app-toast-info"
+          type="info"
+          indicator={false}
+          data-controller="toast"
+          data-toast-kind-value="info"
+          data-action="depthly:toast@document->toast#show"
+        >
+          <span data-toast-target="message" />
+        </Toast>
+
+        <Toast
+          id="app-toast-error"
+          type="error"
+          indicator={false}
+          data-controller="toast"
+          data-toast-kind-value="error"
+          data-action="depthly:toast@document->toast#show"
+        >
           <span data-toast-target="message" />
         </Toast>
 
@@ -144,6 +164,33 @@ export const Layout = ({ children }: PropsWithChildren) => (
           bodyClass="flex max-h-[inherit] w-full flex-col gap-4 overflow-y-auto p-4"
         >
           <div id="position-modal-box" class="flex flex-col gap-3" />
+        </Modal>
+
+        {/* No `sidebar`/`sidebar-centered` — this one is small enough to stay centred on every
+            screen size, not a drawer on narrow ones. Explicit `inset-0 m-auto h-fit w-fit`, not
+            the UA's own <dialog> centering: Tailwind's preflight resets margin to 0 first, and
+            `max-w-sm` is this project's own 8px spacing step, not Tailwind's 24rem container
+            size — same token-namespace collision the toast's positioning hit earlier.
+            32rem, not 24rem: the full 42-char address is what has to fit on one line. */}
+        <Modal id="paste-watch-dialog" title="Watch this address?" class="fixed inset-0 m-auto h-fit w-fit max-w-[32rem]">
+          <p class="text-body-small text-on-surface-variant">Nothing is signed — Depthly will just track its positions.</p>
+          {/* The same dot + mono treatment a watched row gets once it's actually in the list
+              (wallet_controller's fill()), so confirming previews the exact thing being added. */}
+          <div class="flex items-center gap-3 rounded-sm border border-outline-variant bg-surface-variant px-3 py-2.5">
+            <span aria-hidden="true" data-paste-watch-target="dot" class="wallet-dot size-6 shrink-0 rounded-full" />
+            <span data-paste-watch-target="address" class="min-w-0 break-all font-mono text-figure-small text-on-surface" />
+          </div>
+          <div class="flex justify-end gap-2">
+            <Button data-action="dialog#close" class="rounded-full px-5 py-2.5 text-button">
+              Cancel
+            </Button>
+            <Button
+              data-action="paste-watch#confirm dialog#close"
+              class="rounded-full border-transparent bg-primary px-5 py-2.5 text-button text-on-primary"
+            >
+              Watch
+            </Button>
+          </div>
         </Modal>
       </body>
     </html>

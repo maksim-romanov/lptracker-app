@@ -236,7 +236,7 @@ describe("web route validation XSS regression", () => {
     const res = await webRoutes.request("/positions?protocols=nonexistent");
     expect(res.status).toBe(200);
     const body = await res.text();
-    expect(body).toContain("Watch a wallet without connecting it");
+    expect(body).toContain("Track your first wallet");
   });
 
   it("rejects a layout outside the two known presentations", async () => {

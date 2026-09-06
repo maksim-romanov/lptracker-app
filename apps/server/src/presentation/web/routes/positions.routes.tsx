@@ -13,8 +13,9 @@ import { webPositionsQuerySchema } from "./query.schema";
 import { webValidationHook } from "./validation";
 import { listPositions } from "#app/positions/list-positions";
 import { protocolRegistry } from "#app/protocols/registry";
+import { mapV3Error } from "#features/uniswap-v3/presentation/error-mapper";
 import { UNISWAP_V3_EXTENSION_TYPE } from "#features/uniswap-v3/presentation/schemas/extension.schema";
-import { type ICardVM, mapPositionToCardVM, type TPositionRangeTone } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+import { mapPositionToCardVM, sortCardsByUrgency } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 import { TokensMapBuilder } from "#shared/tokens/tokens-map";
 
 export const webRoutes = new Hono();
@@ -22,19 +23,6 @@ export const webRoutes = new Hono();
 const refParamSchema = v.object({
   ref: v.pipe(v.string(), v.regex(POSITION_REF_REGEX, "invalid position ref")),
 });
-
-// The list leads with the positions that need a decision and trails with the ones that
-// cannot need one. Ties break on ref so the order is stable across polls — an ordering
-// that reshuffles under a list the user is reading is worse than no ordering at all.
-const URGENCY: Record<TPositionRangeTone, number> = {
-  "out-of-range": 0,
-  "near-lower": 1,
-  "near-upper": 1,
-  "in-range": 2,
-  closed: 3,
-};
-
-const byUrgency = (a: ICardVM, b: ICardVM): number => URGENCY[a.rangeTone] - URGENCY[b.rangeTone] || a.ref.localeCompare(b.ref);
 
 const positionQuerySchema = v.object({
   inverted: v.optional(v.picklist(["0", "1"]), "0"),
@@ -67,10 +55,9 @@ webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValid
     status: query.status,
   });
 
-  const cards = positions
-    .filter((p) => p.extension.type === "uniswap-v3")
-    .map((p) => mapPositionToCardVM(p, tokens, { inverted: invertedSet.has(p.ref) }))
-    .sort(byUrgency);
+  const cards = sortCardsByUrgency(
+    positions.filter((p) => p.extension.type === "uniswap-v3").map((p) => mapPositionToCardVM(p, tokens, { inverted: invertedSet.has(p.ref) })),
+  );
 
   return c.html(
     <>
@@ -80,7 +67,7 @@ webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValid
   );
 });
 
-type TCardResult = { card: ReturnType<typeof mapPositionToCardVM> } | { error: ReturnType<typeof ErrorBanner>; status: 400 | 422 | 502 };
+type TCardResult = { card: ReturnType<typeof mapPositionToCardVM> } | { error: ReturnType<typeof ErrorBanner>; status: 400 | 404 | 422 | 502 };
 
 const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> => {
   const parsed = parsePositionRef(ref);
@@ -94,7 +81,10 @@ const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> 
     chainId: parsed.chainId,
     protocolPositionId: parsed.protocolPositionId,
   });
-  if (result.isErr()) return { error: <ErrorBanner message="Could not load position" />, status: 502 };
+  if (result.isErr()) {
+    const notFound = mapV3Error(result.error)?.status === 404;
+    return { error: <ErrorBanner message={notFound ? "Position not found" : "Could not load position"} />, status: notFound ? 404 : 502 };
+  }
 
   const position = result.value.position;
   if (position.extension.type !== UNISWAP_V3_EXTENSION_TYPE) return { error: <ErrorBanner message="Unsupported position type" />, status: 422 };

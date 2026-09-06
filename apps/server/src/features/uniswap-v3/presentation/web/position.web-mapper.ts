@@ -23,6 +23,19 @@ export interface IPairSideVM {
 
 export type TPositionRangeTone = "in-range" | "near-lower" | "near-upper" | "out-of-range" | "closed";
 
+// The list leads with the positions that need a decision and trails with the ones that cannot
+// need one. Ties break on ref so the order is stable across polls.
+const URGENCY: Record<TPositionRangeTone, number> = {
+  "out-of-range": 0,
+  "near-lower": 1,
+  "near-upper": 1,
+  "in-range": 2,
+  closed: 3,
+};
+
+export const sortCardsByUrgency = (cards: ICardVM[]): ICardVM[] =>
+  [...cards].sort((a, b) => URGENCY[a.rangeTone] - URGENCY[b.rangeTone] || a.ref.localeCompare(b.ref));
+
 export interface ITickRange {
   current: number;
   lower: number;

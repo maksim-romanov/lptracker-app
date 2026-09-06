@@ -14,5 +14,6 @@ export const PositionOverlay = ({ card }: { card: ICardVM }) => (
     hx-target="#position-modal-box"
     hx-swap="innerHTML transition:false"
     hx-indicator="#position-toast-loading"
+    hx-sync="this:replace"
   />
 );

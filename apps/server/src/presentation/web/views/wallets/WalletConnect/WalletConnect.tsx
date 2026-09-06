@@ -1,6 +1,7 @@
 import { Button } from "../../components/Button/Button";
 import { TextInput } from "../../components/form/TextInput/TextInput";
 import { Icon } from "../../components/Icon/Icon";
+import { Placeholder } from "../../components/Placeholder/Placeholder";
 
 const ICON_BUTTON = "size-8 shrink-0 rounded-full border-transparent p-0 text-on-surface-variant hover:text-on-surface";
 
@@ -59,13 +60,16 @@ export const WalletConnect = () => (
     <div class="flex flex-col gap-5">
       <Group name="Connected" target="connected" />
       <Group name="Watching" target="watched" />
-      <p data-wallet-target="empty" class="px-1 text-body text-on-surface-variant">
-        No wallets yet. Connect one to sign, or paste an address to watch it.
-      </p>
+      <div data-wallet-target="empty">
+        <Placeholder icon={<Icon name="wallet" size={28} />} title="No wallets yet" class="px-2 py-6">
+          <p class="text-body-small text-on-surface-variant">Connect one to sign, or paste an address to watch it.</p>
+        </Placeholder>
+      </div>
     </div>
 
     <div class="mt-auto flex flex-col gap-4 border-outline-variant border-t pt-4">
       <Button
+        data-wallet-target="sidebarConnectButton"
         data-action="wallet#connectWallet"
         class="flex items-center justify-center gap-2 rounded-full border-transparent bg-primary px-4 py-2.5 text-button text-on-primary"
       >

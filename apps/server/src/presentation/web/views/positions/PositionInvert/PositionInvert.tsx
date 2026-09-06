@@ -10,12 +10,14 @@ const SURFACE = {
     target: "closest .position-item",
     swap: "outerHTML",
     indicator: "this",
+    sync: "closest .position-item:replace",
     path: (ref: string) => `/positions/${ref}/item`,
   },
   detail: {
     target: "#position-modal-box",
     swap: "innerHTML",
     indicator: "#position-toast-loading",
+    sync: "#position-modal-box:replace",
     path: (ref: string) => `/positions/${ref}/detail?sync=1`,
   },
 } as const;
@@ -25,7 +27,7 @@ type Props = { card: ICardVM; surface?: keyof typeof SURFACE };
 // `z-1` lifts it clear of the item-sized overlay pseudo-element, so its own click is the one
 // that lands.
 export const PositionInvert = ({ card, surface = "item" }: Props) => {
-  const { target, swap, indicator, path } = SURFACE[surface];
+  const { target, swap, indicator, sync, path } = SURFACE[surface];
 
   return (
     <Button
@@ -34,6 +36,7 @@ export const PositionInvert = ({ card, surface = "item" }: Props) => {
       hx-target={target}
       hx-swap={swap}
       hx-indicator={indicator}
+      hx-sync={sync}
       aria-label="Invert price"
       class="relative z-1 shrink-0 rounded-full border-transparent p-1 text-on-surface-variant invert-bubble hover:border-outline hover:text-on-surface focus-visible:border-outline focus-visible:text-on-surface group-hover:text-on-surface"
     >

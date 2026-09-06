@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-import { applyTheme, currentTheme, DARK, LIGHT, prefersReducedMotion, storeTheme, type TTheme } from "../lib/theme";
+import { applyTheme, currentTheme, DARK, LIGHT, prefersReducedMotion, revealCircleFor, storeTheme, type TTheme } from "../lib/theme";
 
 // data-theme is already settled pre-paint by theme-init.ts; this controller owns
 // only the toggle and keeps the button's aria-pressed in sync with it.
@@ -31,14 +31,7 @@ export default class ThemeController extends Controller {
     // Telegram-style reveal, from the button pressed out to the farthest corner. ready rejects
     // (no wipe, theme still switches via run() above) if the browser skips the transition.
     const { clientX: x, clientY: y } = event;
-    const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-
-    // Verified live on dpr:2: Chromium paints clip-path on ::view-transition-new(root) against
-    // the snapshot's device-pixel size, though getComputedStyle still reports our CSS-px value
-    // — the circle renders near half our coordinates. Safari has no such mismatch, so this stays
-    // scoped to Chromium rather than applied unconditionally.
-    const chromiumClipPathBug = window.devicePixelRatio > 1 && /Chrome|Chromium|Edg\//.test(navigator.userAgent);
-    const scale = chromiumClipPathBug ? window.devicePixelRatio : 1;
+    const { endRadius, scale } = revealCircleFor(x, y, window.innerWidth, window.innerHeight, window.devicePixelRatio, navigator.userAgent);
 
     document.startViewTransition(run).ready.then(
       () =>

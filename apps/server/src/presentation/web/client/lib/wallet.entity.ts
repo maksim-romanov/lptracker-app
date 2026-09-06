@@ -11,6 +11,18 @@ export interface IStoredWallet {
 
 export const shortAddress = (address: string): string => `${address.slice(0, 6)}…${address.slice(-4)}`;
 
+const MAINNET = 1;
+
+// An EOA has the same address on every EVM chain, so the explorer link is a choice: Ethereum
+// wins if tracked, otherwise the first chain requested.
+export const explorerChainOf = (chainIds: number[]): number => (chainIds.includes(MAINNET) ? MAINNET : (chainIds[0] ?? MAINNET));
+
+export const hueOf = (address: string): number => {
+  let hash = 0;
+  for (let index = 2; index < address.length; index += 1) hash = (hash * 31 + address.charCodeAt(index)) % 360;
+  return hash;
+};
+
 const isStored = (value: unknown): value is IStoredWallet =>
   typeof value === "object" && value !== null && typeof (value as IStoredWallet).address === "string";
 

@@ -5,6 +5,7 @@ import htmx from "htmx.org";
 
 import DialogController from "./controllers/dialog_controller";
 import LayoutController from "./controllers/layout_controller";
+import PasteWatchController from "./controllers/paste_watch_controller";
 import RangeController from "./controllers/range_controller";
 import ThemeController from "./controllers/theme_controller";
 import ToastController from "./controllers/toast_controller";
@@ -53,6 +54,14 @@ export async function start(): Promise<void> {
   app.register("layout", LayoutController);
   app.register("token-icon", TokenIconController);
   app.register("tooltip", TooltipController);
+  app.register("paste-watch", PasteWatchController);
+
+  // These two have no controller (htmx's own .htmx-request class drives them) so nothing else
+  // ever calls showPopover() for them — once, here, is enough. toast_controller.ts does the same
+  // for its own toasts, but at show() time instead of boot, since a <dialog> opened later would
+  // otherwise still outrank a toast promoted only here (a popover outranks only what's already in
+  // the top layer when it's shown).
+  for (const toast of document.querySelectorAll<HTMLElement>('[data-animate="toast"]')) toast.showPopover();
 
   // Bubbling on purpose: #board hears this at the target (hx-trigger="... from:body"), but the
   // layout toggle listens on the document, and a non-bubbling event left its pressed state

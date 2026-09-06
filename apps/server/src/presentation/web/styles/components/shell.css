@@ -45,37 +45,4 @@
   .wallet-dot {
     background-image: linear-gradient(140deg, hsl(var(--chip-hue) 70% 62%), hsl(calc(var(--chip-hue) + 40) 78% 58%));
   }
-
-  /* Decorative shapes behind the onboarding panel, `aria-hidden` in the markup. Positions are
-     off any scale on purpose — they are a composition, not a layout, and rounding them to the
-     spacing steps would line them up into a pattern. The opacity is capped: the panel's copy
-     still clears 9.5:1 where it crosses a shape, and the cap is what keeps that true — the
-     shapes darken the ground, and text that runs over them has nothing else holding it up. */
-  .blob {
-    position: absolute;
-    color: var(--color-on-primary-container);
-    opacity: 0.3;
-    pointer-events: none;
-  }
-
-  .blob-1 {
-    left: -0.5rem;
-    top: 1.25rem;
-    width: 3.25rem;
-  }
-  .blob-2 {
-    left: 14%;
-    bottom: 0.5rem;
-    width: 4.25rem;
-  }
-  .blob-3 {
-    right: 16%;
-    top: 0.75rem;
-    width: 4rem;
-  }
-  .blob-4 {
-    right: 1.5rem;
-    bottom: 1rem;
-    width: 3.5rem;
-  }
 }

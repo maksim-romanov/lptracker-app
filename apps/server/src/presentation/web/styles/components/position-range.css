@@ -80,28 +80,6 @@
     background-color: currentColor;
   }
 
-  /* Marks the price as live rather than as a snapshot. It is the only motion on the board, so it
-     stays slow and small; anyone who has asked for less gets the halo without it. */
-  .range-thumb-live {
-    animation: range-pulse 2.4s ease-in-out infinite;
-  }
-
-  @keyframes range-pulse {
-    0%,
-    100% {
-      box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 28%, transparent);
-    }
-    50% {
-      box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 10%, transparent);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .range-thumb-live {
-      animation: none;
-    }
-  }
-
   /* A pill with a tail, not floating text: the number belongs to the thumb under it, and at this
      size a caption sitting loose above a track reads as a column header. */
   .range-value {

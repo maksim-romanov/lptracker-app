@@ -13,6 +13,8 @@ import { ProtocolBadge } from "../ProtocolBadge/ProtocolBadge";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
 import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
+const SECTION_CLASS = "flex flex-col gap-2 border-outline-variant border-t pt-4";
+
 const Spec = ({ label, mono = true, children }: { label: string; mono?: boolean; children: Child }) => (
   <div class="flex items-center justify-between gap-4 text-body-small">
     <dt class="text-on-surface-variant">{label}</dt>
@@ -65,7 +67,7 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
         </div>
       </header>
 
-      <section class="flex flex-col gap-2 border-outline-variant border-t pt-4">
+      <section class={SECTION_CLASS}>
         <h3 class="text-caption text-on-surface-variant">Price range</h3>
         <PositionRange range={range} tone={card.rangeTone} />
         <p class="text-body-small text-on-surface-variant">
@@ -73,12 +75,12 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
         </p>
       </section>
 
-      <section class="flex flex-col gap-2 border-outline-variant border-t pt-4">
+      <section class={SECTION_CLASS}>
         <h3 class="text-caption text-on-surface-variant">Amounts</h3>
         <PositionAmounts card={card} withContract />
       </section>
 
-      <dl class="flex flex-col gap-2 border-outline-variant border-t pt-4">
+      <dl class={SECTION_CLASS}>
         <Spec label="Wallet">
           <ExplorerLink chainId={card.chainId} address={card.ownerAddress} />
         </Spec>

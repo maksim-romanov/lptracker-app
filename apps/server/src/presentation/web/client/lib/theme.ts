@@ -39,3 +39,24 @@ export const applyTheme = (theme: TTheme): void => {
 };
 
 export const prefersReducedMotion = (): boolean => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+
+export interface IRevealCircle {
+  endRadius: number;
+  scale: number;
+}
+
+// Chromium paints clip-path on ::view-transition-new(root) against the snapshot's device-pixel
+// size even though getComputedStyle reports CSS-px — verified live on dpr:2. Safari has no such
+// mismatch, so the scale-up stays conditional on Chromium rather than applied unconditionally.
+export const revealCircleFor = (
+  x: number,
+  y: number,
+  viewportWidth: number,
+  viewportHeight: number,
+  devicePixelRatio: number,
+  userAgent: string,
+): IRevealCircle => {
+  const endRadius = Math.hypot(Math.max(x, viewportWidth - x), Math.max(y, viewportHeight - y));
+  const chromiumClipPathBug = devicePixelRatio > 1 && /Chrome|Chromium|Edg\//.test(userAgent);
+  return { endRadius, scale: chromiumClipPathBug ? devicePixelRatio : 1 };
+};

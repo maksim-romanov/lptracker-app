@@ -1,4 +1,5 @@
-import { deriveRangeTone, mapPositionToCardVM } from "../position.web-mapper";
+import type { ICardVM, TPositionRangeTone } from "../position.web-mapper";
+import { deriveRangeTone, mapPositionToCardVM, sortCardsByUrgency } from "../position.web-mapper";
 import { describe, expect, it } from "bun:test";
 import type { Position, TokensMap } from "#shared/contracts";
 
@@ -112,5 +113,32 @@ describe("deriveRangeTone", () => {
     // have no live price at all
     expect(deriveRangeTone("out-of-range", { ...TIGHT, current: 5000 })).toBe("out-of-range");
     expect(deriveRangeTone("closed", { ...TIGHT, current: 0 })).toBe("closed");
+  });
+});
+
+const cardWith = (ref: string, rangeTone: TPositionRangeTone): ICardVM => ({ ref, rangeTone }) as ICardVM;
+
+describe("sortCardsByUrgency", () => {
+  it("leads with out-of-range, then near bounds, then in-range, then closed", () => {
+    const cards = [cardWith("a", "closed"), cardWith("b", "in-range"), cardWith("c", "near-lower"), cardWith("d", "out-of-range")];
+    expect(sortCardsByUrgency(cards).map((c) => c.ref)).toEqual(["d", "c", "b", "a"]);
+  });
+
+  it("treats near-lower and near-upper as the same urgency tier", () => {
+    const cards = [cardWith("z-upper", "near-upper"), cardWith("a-lower", "near-lower")];
+    // Same tier → falls through to the ref tie-break, not insertion order.
+    expect(sortCardsByUrgency(cards).map((c) => c.ref)).toEqual(["a-lower", "z-upper"]);
+  });
+
+  it("breaks ties within a tier by ref for a stable order", () => {
+    const cards = [cardWith("c", "in-range"), cardWith("a", "in-range"), cardWith("b", "in-range")];
+    expect(sortCardsByUrgency(cards).map((c) => c.ref)).toEqual(["a", "b", "c"]);
+  });
+
+  it("does not mutate the input array", () => {
+    const cards = [cardWith("b", "closed"), cardWith("a", "out-of-range")];
+    const result = sortCardsByUrgency(cards);
+    expect(result).not.toBe(cards);
+    expect(cards.map((c) => c.ref)).toEqual(["b", "a"]);
   });
 });

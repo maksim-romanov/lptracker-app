@@ -40,7 +40,7 @@ export const PositionRange = ({ range, tone, class: className }: Props) => {
         <span class={cn("range-band", closed && "range-band-off")} />
         <span class="range-edge range-edge-min" />
         <span class="range-edge range-edge-max" />
-        <span class={cn("range-thumb", tone === "out-of-range" && "range-thumb-warn", !closed && "range-thumb-live")} />
+        <span class={cn("range-thumb", tone === "out-of-range" && "range-thumb-warn")} />
       </span>
 
       <span class={cn(BOUND, "range-bound-min")}>{range.minLabel}</span>

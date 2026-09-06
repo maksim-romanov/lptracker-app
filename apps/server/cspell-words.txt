@@ -1,6 +1,7 @@
 appsignal
 clickables
 colour
+dedups
 depcruise
 fintech
 gsap
@@ -8,6 +9,7 @@ hono
 hotwired
 htmx
 inrange
+lightnesses
 logtape
 metas
 mipd
@@ -17,6 +19,9 @@ prefs
 quansync
 redoc
 redocly
+registrator
+unhides
+unlayered
 valibot
 xnope
 xowner

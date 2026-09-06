@@ -19,11 +19,11 @@ describe("Layout", () => {
     expect(html).toMatch(/<script src="\/static\/dist\/theme-init[^"]*\.js"><\/script>/);
 
     // single-wallet connect flow, nav-hosted (see wallet_controller.ts)
-    expect(html).toContain('data-controller="wallet theme tooltip"');
+    expect(html).toContain('data-controller="wallet theme tooltip paste-watch"');
     expect(html).toContain('data-wallet-target="connectButton"');
     expect(html).toContain('data-action="wallet#openSidebar"');
     expect(html).toContain('data-wallet-target="walletPill"');
-    expect(html).toContain('data-action="wallet#disconnectWallet"');
+    expect(html).toContain('aria-label="Manage wallets"');
     expect(html).toContain('data-wallet-target="walletAddress"');
 
     // sidebar: connect-wallet button + manual address fallback, both write
@@ -59,12 +59,16 @@ describe("Layout", () => {
     expect(html).toContain('hx-indicator="#board-loader"');
     expect(html).toContain("toast-spinner");
     const loader = html.slice(html.indexOf('id="board-loader"'));
-    expect(loader.slice(0, 400)).toContain("Loading positions");
+    expect(loader.slice(0, 600)).toContain("Loading positions");
     // it lives with the other toasts, after the board, not inside the shell grid
     expect(html.indexOf('id="board"')).toBeLessThan(html.indexOf('id="board-loader"'));
 
-    // controller-driven error toast: opted out of htmx-indicator visibility
-    expect(html).toContain('id="app-toast"');
+    // controller-driven info/error toasts: opted out of htmx-indicator visibility, one per kind
+    // so a copy confirmation never renders with error styling
+    expect(html).toContain('id="app-toast-info"');
+    expect(html).toContain('data-toast-kind-value="info"');
+    expect(html).toContain('id="app-toast-error"');
+    expect(html).toContain('data-toast-kind-value="error"');
     expect(html).toContain('data-controller="toast"');
     expect(html).toContain("depthly:toast@document-&gt;toast#show");
     expect(html).toContain('data-toast-target="message"');
@@ -90,7 +94,7 @@ describe("Layout", () => {
 
     // The document outline starts at the screen's own subject, not at the product name —
     // the wordmark beside the mark is a label, not a heading.
-    expect(html).toContain('<h1 class="text-title">Every position, every chain</h1>');
+    expect(html).toContain('<h1 class="text-balance text-title">Every position, every chain</h1>');
     expect(html).toContain(">Your positions</h2>");
 
     // Wallet chips are a client-filled list: the server ships the container and the one

@@ -1,34 +1,11 @@
-import { createStore } from "mipd";
-
 import { explorerAddressUrl, NETWORKS, networkLabel } from "../../views/networks";
-import { shortAddress, type TWalletSource, WalletEntry } from "../lib/wallet.entity";
+import { explorerChainOf, hueOf, shortAddress, type TWalletSource, WalletEntry } from "../lib/wallet.entity";
 import { walletStore } from "../lib/wallet.store";
+import { injectedProvider, isUserRejection } from "../lib/wallet-provider";
 import ApplicationController from "./application_controller";
 import type DialogController from "./dialog_controller";
 
-type TEip1193Provider = {
-  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-};
-
-// EIP-6963 discovery, requested at module load so wallets have announced by connect time.
-const providerStore = createStore();
-
 const ALL_CHAIN_IDS = NETWORKS.map((n) => n.id);
-
-// An EOA has the same address on every EVM chain, so the explorer link is a choice: Ethereum
-// wins if tracked, otherwise the first chain requested.
-const MAINNET = 1;
-const explorerChainOf = (chainIds: number[]): number => (chainIds.includes(MAINNET) ? MAINNET : (chainIds[0] ?? MAINNET));
-
-// EIP-1193 reserves 4001 for "user rejected the request" — an expected outcome,
-// not a fault worth reporting through handleError.
-const isUserRejection = (error: unknown): boolean => typeof error === "object" && error !== null && (error as { code?: unknown }).code === 4001;
-
-const hueOf = (address: string): number => {
-  let hash = 0;
-  for (let index = 2; index < address.length; index += 1) hash = (hash * 31 + address.charCodeAt(index)) % 360;
-  return hash;
-};
 
 const addressOf = (event: Event): string =>
   (event.currentTarget as HTMLElement).closest<HTMLElement>("[data-wallet-address]")?.dataset.walletAddress ?? "";
@@ -47,6 +24,7 @@ export default class WalletController extends ApplicationController {
     "watchedGroup",
     "watchedList",
     "empty",
+    "sidebarConnectButton",
   ];
   static outlets = ["dialog"];
 
@@ -65,6 +43,8 @@ export default class WalletController extends ApplicationController {
   declare readonly watchedGroupTarget: HTMLElement;
   declare readonly watchedListTarget: HTMLElement;
   declare readonly emptyTarget: HTMLElement;
+  declare readonly sidebarConnectButtonTarget: HTMLButtonElement;
+  declare readonly hasSidebarConnectButtonTarget: boolean;
   declare readonly dialogOutlet: DialogController;
   declare readonly hasDialogOutlet: boolean;
 
@@ -77,7 +57,7 @@ export default class WalletController extends ApplicationController {
   }
 
   async connectWallet(): Promise<void> {
-    const provider = this.injectedProvider();
+    const provider = injectedProvider();
     if (!provider) {
       this.notify("No wallet extension detected — paste an address below to watch it instead.");
       return;
@@ -107,6 +87,14 @@ export default class WalletController extends ApplicationController {
     }
     // Leaves the field intact so a typo can be corrected.
     this.notify("That doesn't look like a wallet address — expected 0x followed by 40 hex characters.");
+  }
+
+  // From paste_watch_controller — a paste landing outside any field, already validated as an
+  // address. A toast is the only feedback here, since watching this way skips the sidebar
+  // entirely and there is no list on screen to show the new row in.
+  trackPasted(event: CustomEvent<{ address: string }>): void {
+    const address = event.detail.address;
+    if (this.track(address, "watched")) this.notify(`Watching ${shortAddress(address)}`);
   }
 
   // Only the signer is cleared — watched addresses were never signed into.
@@ -162,9 +150,14 @@ export default class WalletController extends ApplicationController {
     if (!this.hasConnectButtonTarget) return;
 
     const [signer] = walletStore.bySource("connected");
-    this.connectButtonTarget.hidden = signer !== undefined;
-    this.walletPillTarget.hidden = signer === undefined;
+    const [firstWatched, ...restWatched] = walletStore.bySource("watched");
+    const hasAny = signer !== undefined || firstWatched !== undefined;
+
+    this.connectButtonTarget.hidden = hasAny;
+    this.walletPillTarget.hidden = !hasAny;
     if (signer) this.walletAddressTarget.textContent = signer.displayName;
+    else if (firstWatched)
+      this.walletAddressTarget.textContent = restWatched.length === 0 ? firstWatched.displayName : `${restWatched.length + 1} wallets`;
   }
 
   // Rebuilt wholesale rather than patched — chips are few, and this is the only place the
@@ -212,6 +205,9 @@ export default class WalletController extends ApplicationController {
     this.fill(this.connectedGroupTarget, this.connectedListTarget, connected);
     this.fill(this.watchedGroupTarget, this.watchedListTarget, watched);
     this.emptyTarget.hidden = connected.length + watched.length > 0;
+    // Already-connected has nowhere to go — connecting a second wallet just replaces the first
+    // (wallet.store.ts), so the panel offers disconnect (row) rather than a second connect CTA.
+    if (this.hasSidebarConnectButtonTarget) this.sidebarConnectButtonTarget.hidden = connected.length > 0;
   }
 
   private fill(group: HTMLElement, list: HTMLElement, entries: WalletEntry[]): void {
@@ -252,11 +248,5 @@ export default class WalletController extends ApplicationController {
 
       list.append(row);
     }
-  }
-
-  private injectedProvider(): TEip1193Provider | undefined {
-    const [announced] = providerStore.getProviders();
-    if (announced) return announced.provider as TEip1193Provider;
-    return (window as { ethereum?: TEip1193Provider }).ethereum;
   }
 }
