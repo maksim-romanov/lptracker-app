@@ -78,11 +78,15 @@
                     },
                     "tokens": {
                       "$ref": "#/components/schemas/TokensMap"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
                     }
                   },
                   "required": [
                     "data",
-                    "tokens"
+                    "tokens",
+                    "meta"
                   ]
                 }
               }
@@ -630,6 +634,39 @@
         "additionalProperties": {
           "$ref": "#/components/schemas/TokenMeta"
         }
+      },
+      "PartialFailure": {
+        "type": "object",
+        "properties": {
+          "protocol": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "number"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "protocol",
+          "chainId",
+          "message"
+        ]
+      },
+      "ResponseMeta": {
+        "type": "object",
+        "properties": {
+          "partialFailures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PartialFailure"
+            }
+          }
+        },
+        "required": [
+          "partialFailures"
+        ]
       }
     }
   }

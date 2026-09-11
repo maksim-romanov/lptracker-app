@@ -1,28 +1,39 @@
+import { getLogger } from "@depthly/logger";
 import { Hono } from "hono";
 import { validator } from "hono-openapi";
 import * as v from "valibot";
 
+import { mapDomainErrorToResponse } from "../../v1/error-mapper";
 import { POSITION_REF_REGEX, parsePositionRef } from "../../v1/schemas/request.schemas";
 import { DEFAULT_POSITIONS_LAYOUT, POSITIONS_LAYOUTS } from "../positions-layout";
 import { ErrorBanner } from "../views/components/Banner/ErrorBanner/ErrorBanner";
+import { type ICardVM, sortCardsByUrgency } from "../views/positions/card.vm";
+import { NoPositions } from "../views/positions/NoPositions/NoPositions";
 import { PositionDetail } from "../views/positions/PositionDetail/PositionDetail";
 import { PositionItem } from "../views/positions/PositionItem/PositionItem";
 import { Positions } from "../views/positions/Positions/Positions";
+import { mapCardVM } from "../views/positions/web-card-mappers";
 import { NoWallets } from "../views/wallets/NoWallets/NoWallets";
 import { webPositionsQuerySchema } from "./query.schema";
 import { webValidationHook } from "./validation";
 import { listPositions } from "#app/positions/list-positions";
 import { protocolRegistry } from "#app/protocols/registry";
-import { mapV3Error } from "#features/uniswap-v3/presentation/error-mapper";
-import { UNISWAP_V3_EXTENSION_TYPE } from "#features/uniswap-v3/presentation/schemas/extension.schema";
-import { mapPositionToCardVM, sortCardsByUrgency } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 import { TokensMapBuilder } from "#shared/tokens/tokens-map";
 
 export const webRoutes = new Hono();
 
+const logger = getLogger(["server", "web"]);
+
 const refParamSchema = v.object({
   ref: v.pipe(v.string(), v.regex(POSITION_REF_REGEX, "invalid position ref")),
 });
+
+const boardBanner = (failedSources: number, unrenderable: number): string | null => {
+  const parts: string[] = [];
+  if (failedSources > 0) parts.push(`${failedSources} source${failedSources === 1 ? "" : "s"} could not be checked.`);
+  if (unrenderable > 0) parts.push(`${unrenderable} position${unrenderable === 1 ? "" : "s"} could not be displayed.`);
+  return parts.length > 0 ? parts.join(" ") : null;
+};
 
 const positionQuerySchema = v.object({
   inverted: v.optional(v.picklist(["0", "1"]), "0"),
@@ -55,19 +66,34 @@ webRoutes.get("/positions", validator("query", webPositionsQuerySchema, webValid
     status: query.status,
   });
 
-  const cards = sortCardsByUrgency(
-    positions.filter((p) => p.extension.type === "uniswap-v3").map((p) => mapPositionToCardVM(p, tokens, { inverted: invertedSet.has(p.ref) })),
-  );
+  const cards: ICardVM[] = [];
+  let unrenderable = 0;
+  for (const position of positions) {
+    // A mapper throwing on a malformed extension would otherwise 500 the whole board, hiding
+    // every other position behind one bad one.
+    try {
+      const card = mapCardVM(position, tokens, { inverted: invertedSet.has(position.ref) });
+      if (card) cards.push(card);
+      else unrenderable += 1;
+    } catch (error) {
+      logger.error("web board: card mapper threw", { ref: position.ref, error });
+      unrenderable += 1;
+    }
+  }
+
+  const banner = boardBanner(partialFailures.length, unrenderable);
 
   return c.html(
     <>
-      {partialFailures.length > 0 && <ErrorBanner message={`${partialFailures.length} source(s) failed to load — showing partial results.`} />}
-      <Positions cards={cards} layout={query.layout} />
+      {banner && <ErrorBanner message={banner} />}
+      {cards.length > 0 && <Positions cards={sortCardsByUrgency(cards)} layout={query.layout} />}
+      {/* The empty state asserts the wallets hold nothing. Any banner means that is untrue or unknown. */}
+      {cards.length === 0 && !banner && <NoPositions />}
     </>,
   );
 });
 
-type TCardResult = { card: ReturnType<typeof mapPositionToCardVM> } | { error: ReturnType<typeof ErrorBanner>; status: 400 | 404 | 422 | 502 };
+type TCardResult = { card: ICardVM } | { error: ReturnType<typeof ErrorBanner>; status: 200 | 400 | 404 | 502 };
 
 const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> => {
   const parsed = parsePositionRef(ref);
@@ -82,16 +108,17 @@ const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> 
     protocolPositionId: parsed.protocolPositionId,
   });
   if (result.isErr()) {
-    const notFound = mapV3Error(result.error)?.status === 404;
+    const notFound = mapDomainErrorToResponse(result.error).status === 404;
     return { error: <ErrorBanner message={notFound ? "Position not found" : "Could not load position"} />, status: notFound ? 404 : 502 };
   }
 
-  const position = result.value.position;
-  if (position.extension.type !== UNISWAP_V3_EXTENSION_TYPE) return { error: <ErrorBanner message="Unsupported position type" />, status: 422 };
-
   const tokensBuilder = new TokensMapBuilder();
   tokensBuilder.add(result.value.tokenMetaInputs);
-  return { card: mapPositionToCardVM(position, tokensBuilder.build(), { inverted }) };
+  const card = mapCardVM(result.value.position, tokensBuilder.build(), { inverted });
+  // 200, not an error status: the position exists and loaded — only its rendering is missing.
+  if (!card) return { error: <ErrorBanner message="This position could not be displayed" />, status: 200 };
+
+  return { card };
 };
 
 webRoutes.get(

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
 import { closed, inRange, longAddressNoIcon, noFees, outOfRange } from "../__stories__/mocks";
+import type { ICardVM } from "../card.vm";
 import { PositionInfoRow } from "./PositionInfoRow";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 // A bare <tr> is discarded by the parser unless it is assigned inside table context.
 const renderRow = (card: ICardVM): HTMLElement => {

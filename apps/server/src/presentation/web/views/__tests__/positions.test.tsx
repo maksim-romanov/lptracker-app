@@ -1,11 +1,12 @@
 import { POSITIONS_LAYOUTS } from "../../positions-layout";
 import { ErrorBanner } from "../components/Banner/ErrorBanner/ErrorBanner";
+import type { ICardVM } from "../positions/card.vm";
 import { PositionInfoCard } from "../positions/PositionInfoCard/PositionInfoCard";
 import { PositionInfoRow } from "../positions/PositionInfoRow/PositionInfoRow";
 import { PositionItem } from "../positions/PositionItem/PositionItem";
 import { Positions } from "../positions/Positions/Positions";
-import { describe, expect, it, mock } from "bun:test";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+import { afterEach, describe, expect, it, mock } from "bun:test";
+import type { Position, TokensMap } from "#shared/contracts";
 
 const card: ICardVM = {
   ref: "uniswap-v3:1:42",
@@ -201,26 +202,144 @@ describe("web positions", () => {
     const html = s(Positions({ cards: [card], layout: "cards" }));
     expect(html).toContain("uniswap-v3:1:42");
     expect(html).toStartWith("<ul");
-    expect(html).toContain('aria-label="Uniswap v3 positions"');
+    expect(html).toContain('aria-label="Tracked positions"');
     // the board itself is a list here — the only table is the card's own amounts
     expect(html).not.toContain('<th scope="col" class="border-outline-variant');
   });
-
-  it("Positions renders NoPositions when there are no cards, in either layout", () => {
-    expect(s(Positions({ cards: [], layout: "table" }))).toContain("No positions");
-    expect(s(Positions({ cards: [], layout: "cards" }))).toContain("No positions");
-  });
 });
+
+const uniswapV3Position = {
+  ref: "uniswap-v3:1:42",
+  address: "0x71c7656ec7ab88b098defb751b7401b5f6d8976f",
+  chainId: 1,
+  protocol: "uniswap-v3",
+  container: { kind: "wallet", ref: "0x71c7656ec7ab88b098defb751b7401b5f6d8976f", label: "W" },
+  tokens: [
+    { role: "principal", tokenRef: "1:0xa", balance: { raw: "1", decimals: 18, formatted: "1.0", tokenRef: "1:0xa" } },
+    { role: "principal", tokenRef: "1:0xb", balance: { raw: "1", decimals: 6, formatted: "2500.0", tokenRef: "1:0xb" } },
+  ],
+  status: { state: "in-range", stateDetail: null },
+  createdAt: null,
+  updatedAt: "2026-01-01T00:00:00Z",
+  extension: {
+    type: "uniswap-v3",
+    version: 1,
+    tickLower: -887220,
+    tickUpper: 887220,
+    liquidity: "1",
+    feeTier: 3000,
+    feeTierLabel: "0.3%",
+    nftTokenId: "42",
+    pool: { address: "0xpool", currentTick: 0, sqrtPriceX96: "1" },
+  },
+} as unknown as Position;
+
+const unknownProtocolPosition = {
+  ...uniswapV3Position,
+  ref: "not-a-real-protocol:1:7",
+  protocol: "not-a-real-protocol",
+  extension: { type: "not-a-real-protocol", version: 1 },
+} as unknown as Position;
+
+const malformedV3Position = {
+  ...uniswapV3Position,
+  ref: "uniswap-v3:1:8",
+  extension: { type: "uniswap-v3", version: 1, tickLower: -100, tickUpper: 100 },
+} as unknown as Position;
+
+const emptyList = {
+  positions: [] as Position[],
+  tokens: {} as TokensMap,
+  partialFailures: [] as { protocol: string; chainId: number; message: string }[],
+};
+let listPositionsStub = emptyList;
 
 // Route-level XSS regression — must be set up before importing routes.tsx.
 mock.module("../../../../app/protocols/registry", () => ({
   protocolRegistry: { all: () => [], bySlug: () => undefined },
 }));
 mock.module("../../../../app/positions/list-positions", () => ({
-  listPositions: async () => ({ positions: [], tokens: new Map(), partialFailures: [] }),
+  listPositions: async () => listPositionsStub,
 }));
 
 const { webRoutes } = await import("../../routes/positions.routes");
+
+const WALLETS_QUERY = "wallets=0x71c7656ec7ab88b098defb751b7401b5f6d8976f%3A1";
+
+describe("web board accounts for every position it is given", () => {
+  afterEach(() => {
+    listPositionsStub = emptyList;
+  });
+
+  it("counts a protocol with no card mapper as unrenderable instead of dropping it", async () => {
+    listPositionsStub = { ...emptyList, positions: [uniswapV3Position, unknownProtocolPosition] };
+
+    const res = await webRoutes.request(`/positions?${WALLETS_QUERY}`);
+    expect(res.status).toBe(200);
+
+    const body = await res.text();
+    expect(body).toContain(uniswapV3Position.ref);
+    expect(body).toContain("1 position could not be displayed");
+  });
+
+  it("shows the empty state, and no banner, when nothing loaded and nothing was withheld", async () => {
+    const body = await (await webRoutes.request(`/positions?${WALLETS_QUERY}`)).text();
+    expect(body).toContain("No positions found");
+    expect(body).not.toContain("could not be displayed");
+  });
+
+  it("does not pair the withheld-positions banner with an empty state claiming there are none", async () => {
+    listPositionsStub = { ...emptyList, positions: [unknownProtocolPosition] };
+
+    const body = await (await webRoutes.request(`/positions?${WALLETS_QUERY}`)).text();
+    expect(body).toContain("1 position could not be displayed");
+    // "No positions found" asserts the wallets hold nothing, which is false here.
+    expect(body).not.toContain("No positions found");
+  });
+
+  it("does not claim the wallets hold nothing when no source could be checked", async () => {
+    listPositionsStub = { ...emptyList, partialFailures: [{ protocol: "uniswap-v3", chainId: 1, message: "boom" }] };
+
+    const body = await (await webRoutes.request(`/positions?${WALLETS_QUERY}`)).text();
+    expect(body).toContain("1 source could not be checked");
+    // Every source errored, so whether the wallets hold anything is unknown — not known to be nothing.
+    expect(body).not.toContain("No positions found");
+  });
+
+  it("counts a position whose mapper throws as unrenderable instead of failing the board", async () => {
+    listPositionsStub = { ...emptyList, positions: [uniswapV3Position, malformedV3Position] };
+
+    const res = await webRoutes.request(`/positions?${WALLETS_QUERY}`);
+    expect(res.status).toBe(200);
+
+    const body = await res.text();
+    expect(body).toContain(uniswapV3Position.ref);
+    expect(body).toContain("1 position could not be displayed");
+  });
+
+  it("says nothing when every position rendered", async () => {
+    listPositionsStub = { ...emptyList, positions: [uniswapV3Position] };
+
+    const body = await (await webRoutes.request(`/positions?${WALLETS_QUERY}`)).text();
+    expect(body).toContain(uniswapV3Position.ref);
+    expect(body).not.toContain("could not be displayed");
+  });
+
+  it("reports failed sources and unrenderable positions in one banner, each counted in its own number", async () => {
+    listPositionsStub = {
+      positions: [unknownProtocolPosition, malformedV3Position],
+      tokens: {},
+      partialFailures: [
+        { protocol: "uniswap-v3", chainId: 1, message: "boom" },
+        { protocol: "uniswap-v3", chainId: 42161, message: "index is stale" },
+      ],
+    };
+
+    const body = await (await webRoutes.request(`/positions?${WALLETS_QUERY}`)).text();
+    expect(body).toContain("2 sources could not be checked");
+    expect(body).toContain("2 positions could not be displayed");
+  });
+});
 
 describe("web route validation XSS regression", () => {
   it("escapes malicious status value in the validation error response", async () => {

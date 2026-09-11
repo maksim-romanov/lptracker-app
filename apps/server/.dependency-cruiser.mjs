@@ -71,6 +71,16 @@ export default {
       to: { path: "^src/(app|features|presentation)/" },
     },
     {
+      name: "web-is-protocol-agnostic",
+      severity: "error",
+      comment:
+        "src/presentation/ renders every protocol. A protocol module may reach down into presentation/; " +
+        "presentation/ reaches protocols only through web-card-mappers.ts. See spec D10. The rule binds " +
+        "production code — a test may name a real protocol to prove the generic path handles it.",
+      from: { path: "^src/presentation/", pathNot: ["web-card-mappers\\.ts$", "^src/presentation/.*/__tests__/"] },
+      to: { path: "^src/features/" },
+    },
+    {
       name: "not-to-dev-dep",
       severity: "error",
       comment: "Runtime code must not import a devDependency.",

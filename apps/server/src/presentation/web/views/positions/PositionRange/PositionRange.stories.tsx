@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
 import { closed, inRange, nearLowerBound, nearUpperBound, outOfRange } from "../__stories__/mocks";
+import type { ICardVM } from "../card.vm";
 import { PositionRange } from "./PositionRange";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 // The bar fills its container, so a story without one would stretch to the whole canvas.
 const renderRange = (card: ICardVM): HTMLElement => {

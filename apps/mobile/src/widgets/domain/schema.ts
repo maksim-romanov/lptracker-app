@@ -44,6 +44,10 @@ const Extension = v.variant("type", [
     feeTierLabel: v.string(),
     positionId: v.string(),
   }),
+  v.object({
+    type: v.literal("unknown"),
+    raw: v.string(),
+  }),
 ]);
 
 const Position = v.object({

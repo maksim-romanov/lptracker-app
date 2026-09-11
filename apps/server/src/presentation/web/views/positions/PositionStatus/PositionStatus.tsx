@@ -1,6 +1,6 @@
 import { cn } from "../../utils/cn";
+import type { TPositionRangeTone } from "../card.vm";
 import { rangeToneLabel } from "../labels";
-import type { TPositionRangeTone } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 // Soft fill, loud text — safe here only because the container roles are held to 4.5:1 against
 // the fill they name (packages/theme's contrast test). The colour still never carries the

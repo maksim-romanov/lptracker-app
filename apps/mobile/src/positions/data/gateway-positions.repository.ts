@@ -14,14 +14,13 @@ export interface TPositionsListParams {
 }
 
 export interface TPartialMeta {
-  readonly failures: ReadonlyArray<{ address: string; chainId: number; protocol: string }>;
-  readonly warning: string | null;
+  readonly failures: ReadonlyArray<{ protocol: string; chainId: number; message: string }>;
 }
 
 export interface TPositionsListResult {
   readonly data: ReadonlyArray<TGatewayPosition>;
   readonly tokens: TTokensMap;
-  readonly meta: { readonly partial?: TPartialMeta };
+  readonly meta: { readonly partialFailures: TPartialMeta["failures"] };
 }
 
 export interface TPositionsDetailResult {
@@ -52,7 +51,7 @@ export class GatewayPositionsRepository extends Repository {
     return {
       data: data.data,
       tokens: data.tokens,
-      meta: { partial: this.readPartial(response) },
+      meta: { partialFailures: data.meta.partialFailures },
     };
   }
 
@@ -69,18 +68,6 @@ export class GatewayPositionsRepository extends Repository {
       .filter((w) => w.chainIds.length > 0)
       .map((w) => `${w.address}:${w.chainIds.join(",")}`)
       .join("|");
-  }
-
-  private readPartial(response: Response): TPartialMeta | undefined {
-    const header = response.headers.get("X-Partial-Failures");
-    if (!header) return undefined;
-    try {
-      const failures = JSON.parse(header) as TPartialMeta["failures"];
-      return { failures, warning: response.headers.get("Warning") };
-    } catch {
-      this.logger.warn("Failed to parse X-Partial-Failures header", { header });
-      return undefined;
-    }
   }
 
   private asError(response: Response | undefined, body: unknown): Error {

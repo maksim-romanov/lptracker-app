@@ -12,7 +12,7 @@ export function usePositionsQuery(params: TPositionsListParams) {
     select: (data) => ({
       positions: data.data,
       tokens: data.tokens,
-      hasPartial: data.meta.partial !== undefined,
+      partialFailures: data.meta.partialFailures,
     }),
   });
 }

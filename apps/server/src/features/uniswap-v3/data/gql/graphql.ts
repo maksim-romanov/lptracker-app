@@ -604,7 +604,7 @@ export type WalletPositionsQueryVariables = Exact<{
 }>;
 
 
-export type WalletPositionsQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, owner: any, liquidity: any, tickLower: number, tickUpper: number, createdAtTimestamp: any, updatedAtTimestamp: any, pool?: { __typename?: 'Pool', id: any, feeTier: number, token0: { __typename?: 'Token', id: any, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: any, symbol: string, decimals: number } } | null }> };
+export type WalletPositionsQuery = { __typename?: 'Query', positions: Array<{ __typename?: 'Position', id: string, owner: any, liquidity: any, tickLower: number, tickUpper: number, createdAtTimestamp: any, updatedAtTimestamp: any, pool?: { __typename?: 'Pool', id: any, feeTier: number, token0: { __typename?: 'Token', id: any, symbol: string, decimals: number }, token1: { __typename?: 'Token', id: any, symbol: string, decimals: number } } | null }>, _meta?: { __typename?: '_Meta_', hasIndexingErrors: boolean, block: { __typename?: '_Block_', number: number, timestamp?: number | null } } | null };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -682,6 +682,13 @@ export const WalletPositionsDocument = new TypedDocumentString(`
         decimals
       }
     }
+  }
+  _meta {
+    block {
+      number
+      timestamp
+    }
+    hasIndexingErrors
   }
 }
     `) as unknown as TypedDocumentString<WalletPositionsQuery, WalletPositionsQueryVariables>;

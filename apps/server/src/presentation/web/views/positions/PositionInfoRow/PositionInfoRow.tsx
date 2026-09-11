@@ -1,10 +1,10 @@
 import { cn } from "../../utils/cn";
+import type { ICardVM } from "../card.vm";
 import { itemDomId } from "../labels";
 import { PositionOverlay } from "../PositionOverlay/PositionOverlay";
 import { PositionPair } from "../PositionPair/PositionPair";
 import { PositionRange } from "../PositionRange/PositionRange";
 import { PositionTokenAmounts } from "../PositionTokenAmounts/PositionTokenAmounts";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 // HEAD_CELL in Positions.tsx must keep the same horizontal padding, including the wider outer
 // edges, or the header labels stop lining up with the column contents.

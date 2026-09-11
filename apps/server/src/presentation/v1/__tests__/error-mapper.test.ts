@@ -3,29 +3,27 @@ import "reflect-metadata";
 import { mapDomainErrorToResponse } from "../error-mapper";
 import { describe, expect, it } from "bun:test";
 import { PositionError } from "#features/uniswap-v3/domain/errors/position.error";
-import type { DomainError } from "#shared/errors/base.error";
+import { DomainError } from "#shared/errors/base.error";
+
+class UnclaimedError extends DomainError {}
 
 describe("v1 error-mapper (registry-driven)", () => {
-  it("maps a V3 POSITION_NOT_FOUND via the V3 ProtocolEntry.mapError hook", () => {
-    const err = PositionError.POSITION_NOT_FOUND();
-    const mapped = mapDomainErrorToResponse(err);
+  it("maps a real protocol error to a real HTTP body through the registered hooks", () => {
+    const mapped = mapDomainErrorToResponse(PositionError.POSITION_NOT_FOUND());
     expect(mapped.status).toBe(404);
     expect(mapped.body.error.code).toBe("POSITION_NOT_FOUND");
     expect(mapped.body.error.message).toBe("Position not found");
+    expect(mapped.body.error.field).toBeNull();
   });
 
-  it("maps a V3 GRAPHQL_ERROR to 502 UPSTREAM_UNAVAILABLE via the registry hook", () => {
-    const err = PositionError.GRAPHQL_ERROR({ message: "boom" });
-    const mapped = mapDomainErrorToResponse(err);
+  it("keeps a second real code distinct, so the hook is consulted rather than a 404 assumed", () => {
+    const mapped = mapDomainErrorToResponse(PositionError.GRAPHQL_ERROR({ message: "boom" }));
     expect(mapped.status).toBe(502);
     expect(mapped.body.error.code).toBe("UPSTREAM_UNAVAILABLE");
   });
 
-  it("returns generic 500 for an unmapped DomainError", () => {
-    class UnknownError extends Error {
-      readonly code = "UNKNOWN";
-    }
-    const mapped = mapDomainErrorToResponse(new UnknownError() as unknown as DomainError);
+  it("returns generic 500 when no registered protocol claims the error", () => {
+    const mapped = mapDomainErrorToResponse(new UnclaimedError("UNKNOWN", "boom"));
     expect(mapped.status).toBe(500);
     expect(mapped.body.error.code).toBe("INTERNAL_ERROR");
   });

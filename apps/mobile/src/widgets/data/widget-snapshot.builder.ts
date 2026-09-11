@@ -19,17 +19,13 @@ const STATUS_MAP: Record<string, TWidgetStatus> = {
 };
 
 export function buildWidgetSnapshot(args: BuildArgs): TWidgetSnapshot {
-  const positions = args.positions
-    .filter((p) => args.following.has(p.ref))
-    .map((p) => buildPosition(p, args.tokens))
-    .filter((p): p is TWidgetPosition => p !== null);
+  const positions = args.positions.filter((p) => args.following.has(p.ref)).map((p) => buildPosition(p, args.tokens));
 
   return { v: 1, writtenAt: args.now, positions };
 }
 
-function buildPosition(position: TGatewayPosition, tokens: TTokensMap): TWidgetPosition | null {
+function buildPosition(position: TGatewayPosition, tokens: TTokensMap): TWidgetPosition {
   const ext = mapExtension(position, tokens);
-  if (ext === null) return null;
 
   const meta = PROTOCOLS_META[position.protocol as keyof typeof PROTOCOLS_META];
   const principals = position.tokens.filter((t) => t.role === "principal").map((t) => toWidgetToken(t.tokenRef, t.balance.formatted, tokens));
@@ -69,7 +65,7 @@ function buildPair(principals: TWidgetToken[]): TWidgetPair {
   };
 }
 
-function mapExtension(position: TGatewayPosition, tokens: TTokensMap): TWidgetExtension | null {
+function mapExtension(position: TGatewayPosition, tokens: TTokensMap): TWidgetExtension {
   switch (position.extension.type) {
     case "uniswap-v3": {
       const ext = (position as TPositionByExt<"uniswap-v3">).extension;
@@ -89,6 +85,6 @@ function mapExtension(position: TGatewayPosition, tokens: TTokensMap): TWidgetEx
       };
     }
     default:
-      return null;
+      return { type: "unknown", raw: position.extension.type };
   }
 }

@@ -1,6 +1,6 @@
 import { Button } from "../../components/Button/Button";
 import { Icon } from "../../components/Icon/Icon";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+import type { ICardVM } from "../card.vm";
 
 // `data-invert` is what htmx-params.ts reads to flip the stored preference and add it to the
 // request.

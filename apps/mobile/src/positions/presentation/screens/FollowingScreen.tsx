@@ -6,9 +6,11 @@ import { EmptyState } from "core/presentation/components";
 import { useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
 import type { TGatewayPosition, TTokensMap } from "positions/domain/types";
+import { PartialFailureBanner } from "positions/presentation/components/PartialFailureBanner";
 import { PositionListItem } from "positions/presentation/components/PositionListItem";
 import { WidgetBanner } from "positions/presentation/components/WidgetBanner";
 import { usePositionsQuery } from "positions/presentation/hooks/usePositionsQuery";
+import { emptyStateDecision } from "positions/presentation/lib/empty-state-decision";
 import { positionRoutes } from "positions/presentation/lib/routes";
 import { FollowingStore } from "positions/presentation/stores/following.store";
 import Animated, { FadeOut, LinearTransition } from "react-native-reanimated";
@@ -27,12 +29,6 @@ const keyExtractor = (p: TGatewayPosition) => p.ref;
 const itemExit = FadeOut.duration(180);
 const listTransition = LinearTransition.duration(220);
 
-const ListHeader = () => (
-  <View style={styles.header}>
-    <WidgetBanner />
-  </View>
-);
-
 export const FollowingScreen = observer(function FollowingScreen() {
   const walletsStore = container.resolve(WalletsStore);
   const followingStore = container.resolve(FollowingStore);
@@ -45,6 +41,7 @@ export const FollowingScreen = observer(function FollowingScreen() {
 
   const positions = query.data?.positions ?? [];
   const tokens: TTokensMap = query.data?.tokens ?? {};
+  const partialFailures = query.data?.partialFailures ?? [];
   const refs = Array.from(followingStore.refs);
   const followed = useMemo(() => positions.filter((p) => refs.includes(p.ref)), [positions, refs]);
 
@@ -69,7 +66,23 @@ export const FollowingScreen = observer(function FollowingScreen() {
     );
   }
 
+  const decision = emptyStateDecision({
+    itemCount: followed.length,
+    hasClientSideSelection: refs.length > 0,
+    failureCount: partialFailures.length,
+  });
+
   if (followed.length === 0) {
+    if (decision === "banner-only") {
+      return (
+        <ScrollView contentContainerStyle={styles.emptyRoot} contentInsetAdjustmentBehavior="automatic" refreshControl={refreshControl}>
+          <View style={styles.bannerSlot}>
+            <PartialFailureBanner failures={partialFailures} />
+          </View>
+        </ScrollView>
+      );
+    }
+
     return (
       <ScrollView
         contentContainerStyle={styles.emptyRoot}
@@ -78,6 +91,11 @@ export const FollowingScreen = observer(function FollowingScreen() {
         scrollEnabled={false}
       >
         <View style={styles.bannerSlot}>
+          {decision === "banner-and-empty" && (
+            <View style={styles.emptyFailureBanner}>
+              <PartialFailureBanner failures={partialFailures} />
+            </View>
+          )}
           <WidgetBanner />
         </View>
         <View style={styles.beforeStack} />
@@ -92,6 +110,17 @@ export const FollowingScreen = observer(function FollowingScreen() {
     );
   }
 
+  const listHeader = (
+    <View style={styles.header}>
+      <WidgetBanner />
+      {partialFailures.length > 0 && (
+        <View style={styles.failureBanner}>
+          <PartialFailureBanner failures={partialFailures} />
+        </View>
+      )}
+    </View>
+  );
+
   return (
     <Animated.FlatList
       data={followed}
@@ -99,7 +128,7 @@ export const FollowingScreen = observer(function FollowingScreen() {
       contentContainerStyle={styles.list}
       contentInsetAdjustmentBehavior="automatic"
       itemLayoutAnimation={listTransition}
-      ListHeaderComponent={ListHeader}
+      ListHeaderComponent={listHeader}
       ItemSeparatorComponent={Separator}
       renderItem={renderItem}
       refreshControl={refreshControl}
@@ -118,6 +147,14 @@ const styles = StyleSheet.create((theme) => ({
 
   header: {
     paddingBottom: theme.spacing.lg,
+  },
+
+  failureBanner: {
+    marginTop: theme.spacing.md,
+  },
+
+  emptyFailureBanner: {
+    marginBottom: theme.spacing.md,
   },
 
   separator: {

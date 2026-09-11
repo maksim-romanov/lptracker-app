@@ -1,6 +1,6 @@
 import { cn } from "../../utils/cn";
+import type { ICardVM, TPositionRangeTone } from "../card.vm";
 import { rangeToneLabel } from "../labels";
-import type { ICardVM, TPositionRangeTone } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 // The tone is carried as `color` on the container, so the band's fill, the thumb's halo and the
 // out-of-range dot all read it from one place (position-range.css).

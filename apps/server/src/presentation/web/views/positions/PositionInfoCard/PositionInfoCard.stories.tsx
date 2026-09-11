@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
 import { closed, inRange, longAddressNoIcon, noFees, outOfRange } from "../__stories__/mocks";
+import type { ICardVM } from "../card.vm";
 import { PositionInfoCard } from "./PositionInfoCard";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 // A bare <li> needs a list parent to be parsed, and the card is styled as a list item.
 const renderCard = (card: ICardVM): HTMLElement => {

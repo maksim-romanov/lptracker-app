@@ -4,6 +4,7 @@ import { Icon } from "../../components/Icon/Icon";
 import { NetworkLogo } from "../../components/NetworkLogo/NetworkLogo";
 import { explorerAddressUrl, networkLabel, uniswapPositionUrl } from "../../networks";
 import { cn } from "../../utils/cn";
+import type { ICardVM } from "../card.vm";
 import { pairLabel, shortenAddress } from "../labels";
 import { PositionAmounts } from "../PositionAmounts/PositionAmounts";
 import { PositionInvert } from "../PositionInvert/PositionInvert";
@@ -11,7 +12,6 @@ import { PositionRange } from "../PositionRange/PositionRange";
 import { PositionStatus } from "../PositionStatus/PositionStatus";
 import { ProtocolBadge } from "../ProtocolBadge/ProtocolBadge";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 const SECTION_CLASS = "flex flex-col gap-2 border-outline-variant border-t pt-4";
 

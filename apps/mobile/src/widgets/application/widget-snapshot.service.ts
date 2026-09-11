@@ -64,6 +64,9 @@ export class WidgetSnapshotService extends Service {
     if (wallets.length === 0) return { positions: [], tokens: {} };
     try {
       const data = await this.positionsRepo.list({ wallets });
+      // A short list is indistinguishable from a shrunk one once it reaches the widget, which
+      // reads a pinned ref missing from the snapshot as "this position no longer exists".
+      if (data.meta.partialFailures.length > 0) return null;
       return { positions: data.data, tokens: data.tokens };
     } catch (error) {
       this.logger.warn("Widget snapshot revalidation: positions fetch failed", { error });

@@ -1,9 +1,8 @@
 import type { TPositionsLayout } from "../../../positions-layout";
 import { cn } from "../../utils/cn";
-import { NoPositions } from "../NoPositions/NoPositions";
+import type { ICardVM } from "../card.vm";
 import { PositionInfoCard } from "../PositionInfoCard/PositionInfoCard";
 import { PositionInfoRow } from "../PositionInfoRow/PositionInfoRow";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 const HEAD_CELL = "bg-surface-container px-3 py-2.5 text-caption font-normal text-on-surface-variant first:ps-5 last:pe-5";
 
@@ -22,7 +21,7 @@ const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
   <section class="position-table-scroll shell-bleed overflow-x-auto" tabindex={0} aria-labelledby={CAPTION_ID}>
     <table class="position-table w-full min-w-[52rem] table-fixed">
       <caption id={CAPTION_ID} class="sr-only">
-        Uniswap v3 positions
+        Tracked positions
       </caption>
       <thead>
         <tr>
@@ -43,14 +42,12 @@ const PositionsTable = ({ cards }: { cards: ICardVM[] }) => (
 );
 
 const PositionsCards = ({ cards }: { cards: ICardVM[] }) => (
-  <ul aria-label="Uniswap v3 positions" class="grid grid-cols-[repeat(auto-fill,minmax(19rem,1fr))] gap-3">
+  <ul aria-label="Tracked positions" class="grid grid-cols-[repeat(auto-fill,minmax(19rem,1fr))] gap-3">
     {cards.map((card) => (
       <PositionInfoCard card={card} />
     ))}
   </ul>
 );
 
-export const Positions = ({ cards, layout }: { cards: ICardVM[]; layout: TPositionsLayout }) => {
-  if (cards.length === 0) return <NoPositions />;
-  return layout === "table" ? <PositionsTable cards={cards} /> : <PositionsCards cards={cards} />;
-};
+export const Positions = ({ cards, layout }: { cards: ICardVM[]; layout: TPositionsLayout }) =>
+  layout === "table" ? <PositionsTable cards={cards} /> : <PositionsCards cards={cards} />;

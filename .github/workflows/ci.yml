@@ -23,6 +23,10 @@ jobs:
         run: bunx turbo run lint:deps
       - name: Type check
         run: bun run typecheck
+      - name: Test
+        # Subgraph suites are excluded: `graph test` downloads a matchstick binary at runtime and
+        # links against Linux postgres libraries, neither of which is provisioned on the runner.
+        run: bunx turbo run test --filter='!@depthly/subgraph-*'
 
   spellcheck:
     runs-on: ubuntu-latest

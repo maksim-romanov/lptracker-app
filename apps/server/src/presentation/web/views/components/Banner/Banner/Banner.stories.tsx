@@ -9,7 +9,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const ErrorVariant = { render: () => String(<Banner variant="error">2 source(s) failed to load.</Banner>) } as Story;
+export const ErrorVariant = { render: () => String(<Banner variant="error">2 sources could not be checked.</Banner>) } as Story;
 export const Warning = {
   render: () => String(<Banner variant="warning">Prices may be a few minutes stale.</Banner>),
 } as Story;

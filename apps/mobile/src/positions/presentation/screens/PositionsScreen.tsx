@@ -6,10 +6,12 @@ import { EmptyState } from "core/presentation/components";
 import { type Href, useRouter } from "expo-router";
 import { observer } from "mobx-react-lite";
 import type { TGatewayPosition, TTokensMap } from "positions/domain/types";
+import { PartialFailureBanner } from "positions/presentation/components/PartialFailureBanner";
 import { PositionListItem } from "positions/presentation/components/PositionListItem";
 import { PositionsListSkeleton } from "positions/presentation/components/PositionsListSkeleton";
 import { SyncTipBanner } from "positions/presentation/components/SyncTipBanner";
 import { usePositionsQuery } from "positions/presentation/hooks/usePositionsQuery";
+import { emptyStateDecision } from "positions/presentation/lib/empty-state-decision";
 import { positionRoutes } from "positions/presentation/lib/routes";
 import { StyleSheet, withUnistyles } from "react-native-unistyles";
 import { WalletsStore } from "wallets/presentation/wallets.store";
@@ -76,11 +78,33 @@ export const PositionsScreen = observer(function PositionsScreen() {
   }
 
   const positions = query.data?.positions ?? [];
+  const partialFailures = query.data?.partialFailures ?? [];
+
+  const decision = emptyStateDecision({
+    itemCount: positions.length,
+    hasClientSideSelection: wallets.length > 0,
+    failureCount: partialFailures.length,
+  });
 
   if (positions.length === 0) {
+    if (decision === "banner-only") {
+      return (
+        <ScrollView contentContainerStyle={styles.emptyRoot} contentInsetAdjustmentBehavior="automatic" refreshControl={refreshControl}>
+          <View style={styles.bannerSlot}>
+            <PartialFailureBanner failures={partialFailures} />
+          </View>
+        </ScrollView>
+      );
+    }
+
     return (
       <ScrollView contentContainerStyle={styles.emptyRoot} contentInsetAdjustmentBehavior="automatic" refreshControl={refreshControl}>
         <View style={styles.bannerSlot}>
+          {decision === "banner-and-empty" && (
+            <View style={styles.emptyFailureBanner}>
+              <PartialFailureBanner failures={partialFailures} />
+            </View>
+          )}
           <SyncTipBanner />
         </View>
         <View style={styles.beforeStack} />
@@ -98,6 +122,13 @@ export const PositionsScreen = observer(function PositionsScreen() {
     );
   }
 
+  const listHeader =
+    partialFailures.length > 0 ? (
+      <View style={styles.header}>
+        <PartialFailureBanner failures={partialFailures} />
+      </View>
+    ) : null;
+
   return (
     <FlatList
       data={positions}
@@ -105,6 +136,7 @@ export const PositionsScreen = observer(function PositionsScreen() {
       contentContainerStyle={styles.list}
       contentInsetAdjustmentBehavior="automatic"
       ItemSeparatorComponent={Separator}
+      ListHeaderComponent={listHeader}
       ListFooterComponent={ListFooter}
       renderItem={renderItem}
       refreshControl={refreshControl}
@@ -119,6 +151,14 @@ const styles = StyleSheet.create((theme) => ({
   list: {
     paddingHorizontal: theme.spacing.xl,
     paddingBottom: theme.spacing["3xl"],
+  },
+
+  header: {
+    paddingBottom: theme.spacing.lg,
+  },
+
+  emptyFailureBanner: {
+    marginBottom: theme.spacing.md,
   },
 
   footer: {
