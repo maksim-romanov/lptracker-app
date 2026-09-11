@@ -1,6 +1,6 @@
 import type { TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
 
-import type { ICardVM, TPositionRangeTone } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+import type { ICardVM, TPositionRangeTone } from "./card.vm";
 
 const STATUS: Record<TUniswapV3RangeStatus, string> = {
   "in-range": "In range",

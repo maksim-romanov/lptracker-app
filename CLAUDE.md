@@ -34,10 +34,19 @@ Enforced in `turbo.json`, **run from the repo root only**, never per-app:
 
 1. `@depthly/theme#codegen` — emits shared design tokens (JS, CSS, iOS colorset) from `packages/theme`.
 2. `tokens-data#codegen` — emits token metadata.
-3. `server#codegen` — GraphQL types from subgraph schemas + OpenAPI from Valibot routes; consumes tokens-data's output and `@depthly/theme`'s CSS.
+3. `server#codegen` — OpenAPI from Valibot routes; consumes tokens-data's output and `@depthly/theme`'s CSS.
 4. `mobile#codegen` — `openapi-typescript` against server's OpenAPI + tokens-data's types.
 
-Generated files are gitignored/deny-listed — don't hand-edit them.
+GraphQL type generation via `server#codegen:graphql` is a separate task outside this chain, run only when explicitly invoked. It generates offline from a committed schema snapshot (`apps/server/schema.introspection.json`); refresh the snapshot from the live Studio endpoint via `server#codegen:graphql:refresh` (needs `GRAPH_API_KEY`, network).
+
+Generated files are never hand-edited. Some are committed and Read-denied
+(`apps/server/openapi/**`, `apps/server/src/features/*/data/gql/**`,
+`apps/server/schema.introspection.json`,
+`src/features/token-prices/data/tokens-data.generated.ts`,
+`apps/tokens-data/generated/openapi.json`); the rest are gitignored
+(`packages/theme/dist/**`, `apps/mobile/src/**/generated/**`,
+`apps/subgraphs/*/generated/**`). `packages/theme/dist` is gitignored *and* a
+typecheck input for both apps, so `bun run codegen` is never skippable.
 
 ## Commands
 

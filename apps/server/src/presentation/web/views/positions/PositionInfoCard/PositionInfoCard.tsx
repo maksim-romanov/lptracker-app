@@ -1,9 +1,9 @@
+import type { ICardVM } from "../card.vm";
 import { itemDomId } from "../labels";
 import { PositionAmounts } from "../PositionAmounts/PositionAmounts";
 import { PositionOverlay } from "../PositionOverlay/PositionOverlay";
 import { PositionPair } from "../PositionPair/PositionPair";
 import { PositionRange } from "../PositionRange/PositionRange";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 export const PositionInfoCard = ({ card, oob = false }: { card: ICardVM; oob?: boolean }) => (
   <li

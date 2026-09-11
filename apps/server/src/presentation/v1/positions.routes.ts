@@ -65,12 +65,11 @@ positionsRoutes.get(
       status: query.status,
     });
 
-    const body: ListResponse<Position> = { data: positions, tokens };
+    const body: ListResponse<Position> = { data: positions, tokens, meta: { partialFailures } };
 
     c.header("X-Resolved-Scope", JSON.stringify(resolvedScope));
     if (partialFailures.length > 0) {
       c.header("Warning", `199 - "partial-results: ${partialFailures.length} source(s) failed"`);
-      c.header("X-Partial-Failures", JSON.stringify(partialFailures));
     }
     return c.json(body);
   },

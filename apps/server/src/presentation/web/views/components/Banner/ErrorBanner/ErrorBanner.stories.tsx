@@ -17,7 +17,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const SourceFailure = {
-  args: { message: "2 source(s) failed to load — showing partial results." },
+  args: { message: "2 sources could not be checked." },
 } as Story;
 
 export const EscapesMarkup = {

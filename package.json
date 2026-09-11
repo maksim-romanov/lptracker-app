@@ -10,6 +10,7 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
     "spell": "cspell --no-progress --no-must-find-files \"**\"",
     "codegen": "dotenv -- turbo run codegen --ui=stream",
     "graph:up": "turbo run docker:up --filter=@depthly/subgraph-*",

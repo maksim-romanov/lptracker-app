@@ -1,5 +1,5 @@
 import { cn } from "../../utils/cn";
-import type { ITokenSideVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+import type { ITokenSideVM } from "../card.vm";
 
 type Props = { tokens: ITokenSideVM[]; earning?: boolean; class?: string };
 

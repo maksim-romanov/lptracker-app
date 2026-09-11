@@ -2,15 +2,11 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 interface FeatureConfig {
   schema: string;
-  headers?: Record<string, string>;
 }
 
 const featureConfigs: Record<string, FeatureConfig> = {
   "uniswap-v3": {
-    schema: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-graph/v0.1.1",
-    headers: {
-      Authorization: `Bearer ${process.env.GRAPH_API_KEY}`,
-    },
+    schema: "./schema.introspection.json",
   },
 };
 
@@ -19,11 +15,11 @@ type FeatureName = keyof typeof featureConfigs;
 const createFeatureConfig = (feature: FeatureName): CodegenConfig["generates"] => {
   const config = featureConfigs[feature];
   if (!config) throw new Error(`Unknown feature: ${feature}`);
-  const { schema, headers } = config;
+  const { schema } = config;
 
   return {
     [`./src/features/${feature}/data/gql/`]: {
-      schema: headers ? { [schema]: { headers } } : schema,
+      schema,
       documents: [`src/features/${feature}/**/*.ts`],
       preset: "client",
       config: {

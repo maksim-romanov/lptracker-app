@@ -93,7 +93,7 @@ describe("GET /api/v1/positions (characterization)", () => {
     expect(callArg.pagination).toEqual({ limit: 200, offset: 0 });
   });
 
-  it("emits Warning + X-Partial-Failures only when a source fails", async () => {
+  it("emits Warning header and body meta.partialFailures only when a source fails", async () => {
     const { err } = await import("neverthrow");
     const { DomainError } = await import("#shared/errors/base.error");
     // DomainError is abstract — create a minimal concrete subclass for the stub.
@@ -104,9 +104,23 @@ describe("GET /api/v1/positions (characterization)", () => {
     const res = await request(`wallets=${WALLET}:1,8453`);
     expect(res.status).toBe(200);
     expect(res.headers.get("Warning")).toContain("partial-results");
-    expect(res.headers.get("X-Partial-Failures")).toContain("8453");
     const body = await res.json();
     expect(body.data).toHaveLength(1);
+    expect(body.meta.partialFailures).toHaveLength(1);
+    expect(body.meta.partialFailures[0]?.chainId).toBe(8453);
+  });
+
+  it("reports a failed source in the response body, not only in a header", async () => {
+    const { err } = await import("neverthrow");
+    const { DomainError } = await import("#shared/errors/base.error");
+    // DomainError is abstract — create a minimal concrete subclass for the stub.
+    class StubError extends DomainError<string> {}
+    fakeProtocol.listPositionsForChain.mockImplementation(async () => err(new StubError("UPSTREAM", "source down")));
+    const res = await request(`wallets=${WALLET}:1`);
+    const body = await res.json();
+    expect(body.meta.partialFailures).toHaveLength(1);
+    expect(body.meta.partialFailures[0]?.protocol).toBe("uniswap-v3");
+    expect(body.meta.partialFailures[0]?.chainId).toBe(1);
   });
 
   it("rejects unknown protocols with 400", async () => {

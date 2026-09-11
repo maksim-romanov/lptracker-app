@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
+import type { TPositionRangeTone } from "../card.vm";
 import { PositionStatus } from "./PositionStatus";
-import type { TPositionRangeTone } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 const meta: Meta = {
   title: "Positions/PositionStatus",

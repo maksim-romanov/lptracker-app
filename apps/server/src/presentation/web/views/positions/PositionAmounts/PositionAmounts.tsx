@@ -1,9 +1,9 @@
 import { Icon } from "../../components/Icon/Icon";
 import { explorerTokenUrl, networkLabel } from "../../networks";
 import { cn } from "../../utils/cn";
+import type { ICardVM, ITokenSideVM } from "../card.vm";
 import { shortenAddress } from "../labels";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
-import type { ICardVM, ITokenSideVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 type Props = { card: ICardVM; withContract?: boolean; class?: string };
 

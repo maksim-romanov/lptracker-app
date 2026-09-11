@@ -1,12 +1,12 @@
 import { NetworkLogo } from "../../components/NetworkLogo/NetworkLogo";
 import { networkLabel } from "../../networks";
 import { cn } from "../../utils/cn";
+import type { ICardVM } from "../card.vm";
 import { pairLabel } from "../labels";
 import { PositionInvert } from "../PositionInvert/PositionInvert";
 import { PositionStatus } from "../PositionStatus/PositionStatus";
 import { ProtocolBadge } from "../ProtocolBadge/ProtocolBadge";
 import { TokenIcon } from "../TokenIcon/TokenIcon";
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
 
 const ICON = "h-8 w-8 rounded-full ring-2 ring-[color:var(--item-bg,var(--color-surface))]";
 

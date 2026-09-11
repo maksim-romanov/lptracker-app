@@ -6,7 +6,7 @@ import { injectable } from "tsyringe";
 import type { Abi, Address } from "viem";
 
 import type { PositionEntity } from "../domain/entities/position.entity";
-import { PositionError } from "../domain/errors/position.error";
+import { MAX_INDEX_LAG_SECONDS, PositionError } from "../domain/errors/position.error";
 import type { PoolStateRpcData } from "../domain/types/pool-state";
 import type { PositionFeeRawData } from "../domain/utils/fee-math";
 import { BaseRepository } from "./base/base.repository";
@@ -48,22 +48,33 @@ export class PositionsRepository extends BaseRepository {
     pagination: { first: number; skip: number } = { first: 10, skip: 0 },
     filters: { closed: boolean } = { closed: false },
   ) {
+    const chainId = this.chainContext.chain.id;
     try {
       const result = await this.gql.request(getWalletPositionsQuery, { owner, ...pagination, ...filters });
-      const positions = result.positions.map((p) => GraphQLPositionDto.fromGraphQL(p, this.chainContext.chain.id));
+
+      const meta = result._meta;
+      if (!meta) return err(PositionError.UNEXPECTED_ERROR({ message: "Missing _meta in GraphQL response", context: { chainId, owner } }));
+      if (meta.hasIndexingErrors) return err(PositionError.INDEX_UNHEALTHY({ chainId }));
+
+      const timestamp = meta.block.timestamp;
+      if (timestamp == null) {
+        return err(
+          PositionError.UNEXPECTED_ERROR({ message: "Missing _meta.block.timestamp in GraphQL response", context: { chainId, owner } }),
+        );
+      }
+      const lagSeconds = Math.floor(Date.now() / 1000) - timestamp;
+      if (lagSeconds > MAX_INDEX_LAG_SECONDS) return err(PositionError.INDEX_STALE({ chainId, lagSeconds }));
+
+      const positions = result.positions.map((p) => GraphQLPositionDto.fromGraphQL(p, chainId));
       logger.info("getWalletPositions", {
-        chainId: this.chainContext.chain.id,
+        chainId,
         owner,
         closed: filters.closed,
         count: positions.length,
       });
       return ok(positions);
     } catch (error) {
-      logger.error("getWalletPositions failed", {
-        chainId: this.chainContext.chain.id,
-        owner,
-        error,
-      });
+      logger.error("getWalletPositions failed", { chainId, owner, error });
       return err(PositionError.GRAPHQL_ERROR({ error, context: { owner, ...pagination } }));
     }
   }
@@ -229,6 +240,13 @@ const getWalletPositionsQuery = graphql(`
         token0 { id symbol decimals }
         token1 { id symbol decimals }
       }
+    }
+    _meta {
+      block {
+        number
+        timestamp
+      }
+      hasIndexingErrors
     }
   }
 `);

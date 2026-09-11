@@ -10,7 +10,10 @@
     },
     "codegen": {
       "dependsOn": ["tokens-data#codegen", "@depthly/theme#codegen"],
-      "outputs": ["openapi/**", "src/features/uniswap-v3/data/gql/**", "src/features/token-prices/data/tokens-data.generated.ts"]
+      "outputs": ["openapi/**", "src/features/token-prices/data/tokens-data.generated.ts"]
+    },
+    "codegen:graphql": {
+      "outputs": ["src/features/uniswap-v3/data/gql/**"]
     }
   }
 }

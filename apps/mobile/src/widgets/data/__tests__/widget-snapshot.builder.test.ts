@@ -1,4 +1,4 @@
-import type { TPositionByExt, TTokensMap } from "positions/domain/types";
+import type { TGatewayPosition, TPositionByExt, TTokensMap } from "positions/domain/types";
 
 import { buildWidgetSnapshot } from "../widget-snapshot.builder";
 import { describe, expect, it } from "bun:test";
@@ -40,6 +40,13 @@ const wethPosition: TPositionByExt<"uniswap-v3"> = {
   },
   createdAt: null,
   updatedAt: "2026-06-10T00:00:00.000Z",
+};
+
+const unknownExtensionPosition: TGatewayPosition = {
+  ...wethPosition,
+  ref: "not-a-real-protocol:1:99999",
+  protocol: "not-a-real-protocol",
+  extension: { type: "not-a-real-protocol", version: 1 },
 };
 
 const tokens: TTokensMap = {
@@ -145,5 +152,17 @@ describe("buildWidgetSnapshot", () => {
     });
     expect(snapshot.positions[0].principals[0].symbol).toBe("1:0xunknown");
     expect(snapshot.positions[0].principals[0].iconUrl).toBe("");
+  });
+
+  it("keeps a position whose extension type is not recognised", () => {
+    const snapshot = buildWidgetSnapshot({
+      positions: [wethPosition, unknownExtensionPosition],
+      tokens,
+      following: new Set([wethPosition.ref, unknownExtensionPosition.ref]),
+      now: 1_700_000_000,
+    });
+
+    expect(snapshot.positions).toHaveLength(2);
+    expect(snapshot.positions[1]?.extension).toEqual({ type: "unknown", raw: "not-a-real-protocol" });
   });
 });

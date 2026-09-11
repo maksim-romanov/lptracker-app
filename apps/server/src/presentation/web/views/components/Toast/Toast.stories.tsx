@@ -38,7 +38,7 @@ export const Warning = {
     shown(
       String(
         <Toast id="toast-warning" type="warning">
-          1 source(s) failed to load.
+          1 source could not be checked.
         </Toast>,
       ),
     ),

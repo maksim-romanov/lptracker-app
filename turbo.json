@@ -43,7 +43,9 @@
       "cache": false,
       "persistent": true
     },
-    "codegen": {
+    "codegen": {},
+    "codegen:graphql:refresh": {
+      "cache": false,
       "env": ["GRAPH_API_KEY"]
     },
     "test": {

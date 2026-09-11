@@ -1,4 +1,4 @@
-import type { ICardVM } from "#features/uniswap-v3/presentation/web/position.web-mapper";
+import type { ICardVM } from "../card.vm";
 
 const basePair: ICardVM["pair"] = {
   base: { tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", symbol: "WETH", iconUrl: "https://assets.uniswap.org/weth.png" },

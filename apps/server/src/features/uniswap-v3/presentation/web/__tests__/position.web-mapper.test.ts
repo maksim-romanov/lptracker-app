@@ -1,6 +1,6 @@
-import type { ICardVM, TPositionRangeTone } from "../position.web-mapper";
-import { deriveRangeTone, mapPositionToCardVM, sortCardsByUrgency } from "../position.web-mapper";
+import { deriveRangeTone, mapPositionToCardVM } from "../position.web-mapper";
 import { describe, expect, it } from "bun:test";
+import { type ICardVM, sortCardsByUrgency, type TPositionRangeTone } from "#presentation/web/views/positions/card.vm";
 import type { Position, TokensMap } from "#shared/contracts";
 
 const tokens: TokensMap = {
