@@ -1,0 +1,125 @@
+import { Address, BigInt } from "@graphprotocol/graph-ts";
+
+import {
+  Transfer,
+  IncreaseLiquidity,
+  DecreaseLiquidity,
+  Collect,
+  NonfungiblePositionManager,
+} from "../generated/NonfungiblePositionManager/NonfungiblePositionManager";
+
+import { Position } from "../generated/schema";
+import { getOrCreatePool } from "./utils/pool";
+
+function updateClosed(position: Position, burned: boolean): void {
+  position.closed = burned || position.liquidity.equals(BigInt.zero());
+}
+
+function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: BigInt, timestamp: BigInt): void {
+  let position = Position.load(tokenId.toString());
+  if (position == null) return;
+
+  let contract = NonfungiblePositionManager.bind(contractAddress);
+  let result = contract.try_positions(tokenId);
+
+  if (result.reverted) {
+    updateClosed(position, true);
+    position.updatedAtBlock = blockNumber;
+    position.updatedAtTimestamp = timestamp;
+    position.save();
+    return;
+  }
+
+  let data = result.value;
+
+  position.nonce = data.getNonce();
+  position.operator = data.getOperator();
+  position.tickLower = data.getTickLower();
+  position.tickUpper = data.getTickUpper();
+  position.liquidity = data.getLiquidity();
+  position.updatedAtBlock = blockNumber;
+  position.updatedAtTimestamp = timestamp;
+
+  if (position.pool === null) {
+    let pool = getOrCreatePool(contractAddress, data.getToken0(), data.getToken1(), data.getTickSpacing(), blockNumber, timestamp);
+    if (pool !== null) {
+      position.pool = pool.id;
+    }
+  }
+
+  updateClosed(position, false);
+
+  position.save();
+}
+
+export function handleTransfer(event: Transfer): void {
+  let tokenId = event.params.tokenId.toString();
+
+  let position = Position.load(tokenId);
+  if (position == null) {
+    position = new Position(tokenId);
+    position.liquidity = BigInt.zero();
+    position.owner = event.params.to;
+    position.operator = Address.zero();
+    position.nonce = BigInt.zero();
+    position.pool = null;
+    position.tickLower = 0;
+    position.tickUpper = 0;
+    position.closed = false;
+    position.staked = false;
+    position.gauge = null;
+    position.createdAtBlock = event.block.number;
+    position.createdAtTimestamp = event.block.timestamp;
+    position.updatedAtBlock = event.block.number;
+    position.updatedAtTimestamp = event.block.timestamp;
+
+    let contract = NonfungiblePositionManager.bind(event.address);
+    let result = contract.try_positions(event.params.tokenId);
+    if (!result.reverted) {
+      let data = result.value;
+      position.nonce = data.getNonce();
+      position.operator = data.getOperator();
+      position.tickLower = data.getTickLower();
+      position.tickUpper = data.getTickUpper();
+      position.liquidity = data.getLiquidity();
+
+      let pool = getOrCreatePool(
+        event.address,
+        data.getToken0(),
+        data.getToken1(),
+        data.getTickSpacing(),
+        event.block.number,
+        event.block.timestamp,
+      );
+      if (pool !== null) {
+        position.pool = pool.id;
+      }
+    }
+  }
+
+  if (event.params.to.equals(Address.zero())) {
+    updateClosed(position, true);
+    position.updatedAtBlock = event.block.number;
+    position.updatedAtTimestamp = event.block.timestamp;
+    position.save();
+    return;
+  }
+
+  position.owner = event.params.to;
+  position.operator = Address.zero();
+  position.updatedAtBlock = event.block.number;
+  position.updatedAtTimestamp = event.block.timestamp;
+  position.save();
+}
+
+export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
+  syncPosition(event.address, event.params.tokenId, event.block.number, event.block.timestamp);
+}
+
+export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
+  syncPosition(event.address, event.params.tokenId, event.block.number, event.block.timestamp);
+}
+
+export function handleCollect(event: Collect): void {
+  syncPosition(event.address, event.params.tokenId, event.block.number, event.block.timestamp);
+}

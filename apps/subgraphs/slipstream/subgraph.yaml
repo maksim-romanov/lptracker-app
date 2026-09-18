@@ -1,0 +1,90 @@
+specVersion: 1.3.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: NonfungiblePositionManager
+    network: base
+    source:
+      abi: NonfungiblePositionManager
+      address: "0xe1f8cd9AC4e4A65F54f38a5CdAfCA44f6dD68b53"
+      startBlock: 44394730
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Position
+      abis:
+        - name: NonfungiblePositionManager
+          file: ./abis/NonfungiblePositionManager.json
+        - name: CLFactory
+          file: ./abis/CLFactory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+          calls:
+            NonfungiblePositionManager.positions: NonfungiblePositionManager[event.address].positions(event.params.tokenId)
+        - event: IncreaseLiquidity(indexed uint256,uint128,uint256,uint256)
+          handler: handleIncreaseLiquidity
+          calls:
+            NonfungiblePositionManager.positions: NonfungiblePositionManager[event.address].positions(event.params.tokenId)
+        - event: DecreaseLiquidity(indexed uint256,uint128,uint256,uint256)
+          handler: handleDecreaseLiquidity
+          calls:
+            NonfungiblePositionManager.positions: NonfungiblePositionManager[event.address].positions(event.params.tokenId)
+        - event: Collect(indexed uint256,address,uint256,uint256)
+          handler: handleCollect
+          calls:
+            NonfungiblePositionManager.positions: NonfungiblePositionManager[event.address].positions(event.params.tokenId)
+      file: ./src/nonfungible-position-manager.ts
+  - kind: ethereum
+    name: Voter
+    network: base
+    source:
+      abi: Voter
+      address: "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5"
+      startBlock: 44394730
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Position
+      abis:
+        - name: Voter
+          file: ./abis/Voter.json
+      eventHandlers:
+        - event: GaugeCreated(indexed address,indexed address,indexed
+            address,address,address,address,address,address)
+          handler: handleGaugeCreated
+      file: ./src/voter.ts
+templates:
+  - kind: ethereum
+    name: CLGauge
+    network: base
+    source:
+      abi: CLGauge
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Position
+      abis:
+        - name: CLGauge
+          file: ./abis/CLGauge.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,indexed uint128)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,indexed uint256,indexed uint128)
+          handler: handleWithdraw
+      file: ./src/gauge.ts
