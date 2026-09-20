@@ -87,18 +87,18 @@ Copy this URL — you need it in two places below.
 
 The server has hardcoded references to the Studio version. Without these updates the server keeps querying the old version, and codegen-generated types may diverge from runtime data.
 
-### 1. `apps/server/codegen.ts`
+### 1. `apps/server/scripts/refresh-graphql-schema.ts`
 
-Update the `schema` field for `uniswap-v3`:
+`codegen.ts` generates offline from the committed snapshot `apps/server/schema.introspection.json` — it holds no Studio URL and no auth header. The version lives in `SCHEMA_URL` in the refresh script; point it at the new one, then refresh the snapshot from `apps/server`:
 
-```ts
-"uniswap-v3": {
-  schema: "https://api.studio.thegraph.com/query/120331/uniswap-v-3-mainnet/vX.Y.Z",
-  headers: { Authorization: `Bearer ${process.env.GRAPH_API_KEY}` },
-},
+```bash
+GRAPH_API_KEY=<key> bun run codegen:graphql:refresh   # introspects Studio, rewrites schema.introspection.json
+bun run codegen:graphql                               # regenerates src/features/uniswap-v3/data/gql/ from the snapshot
 ```
 
-Note: codegen reads from ONE chain (currently mainnet). If the schema is identical across chains, mainnet is enough. If schemas diverge per chain, this is a deeper change — surface that.
+Both are outside the root codegen chain — nothing else runs them. Commit the regenerated snapshot and `data/gql/`.
+
+Note: the snapshot is introspected from ONE chain (currently arbitrum, `uniswap-v-3-graph`). If the schema is identical across chains, one is enough. If schemas diverge per chain, this is a deeper change — surface that.
 
 ### 2. `apps/server/src/features/uniswap-v3/data/constants/networks.ts`
 
@@ -113,7 +113,7 @@ const MAINNET_NETWORK = {
 
 Repeat for arbitrum/base entries when you redeploy those.
 
-### 3. Regenerate server types
+### 3. Regenerate the rest of the chain
 
 From the repo root:
 
@@ -121,7 +121,7 @@ From the repo root:
 bun run codegen
 ```
 
-This re-runs `graphql-codegen` against the new schema URL and propagates types into `apps/server/src/features/uniswap-v3/data/gql/` and downstream via OpenAPI into mobile.
+The GraphQL types already came from step 1; this propagates the change downstream via OpenAPI into mobile.
 
 ### 4. Type-check
 
@@ -139,11 +139,34 @@ If the schema changed (added/removed fields, renamed entities), the server queri
 - [ ] On-chain sanity check: `address` / `startBlock` / event signatures verified against the chain (Rule #1) — especially when the target chain or contract changed
 - [ ] `networks.json` reviewed
 - [ ] `bun run deploy:<chain>` succeeded, Studio gave a new version URL
-- [ ] `apps/server/codegen.ts` schema URL updated
+- [ ] `SCHEMA_URL` in `apps/server/scripts/refresh-graphql-schema.ts` updated, then `bun run codegen:graphql:refresh` + `bun run codegen:graphql` in `apps/server`
 - [ ] `apps/server/src/features/uniswap-v3/data/constants/networks.ts` graph.url updated for the redeployed chain(s)
 - [ ] `bun run codegen` at repo root
 - [ ] `bun run typecheck` at repo root
 - [ ] Server query files in `data/positions.repository.ts` adjusted if schema changed
+
+## The `tokensOwed` / `drained` rollout — confirm before deploying
+
+The `drained` position state depends on `tokensOwed0`/`tokensOwed1` and on `closed` no longer
+meaning `burned || liquidity == 0`. Nothing above the subgraph can use it until this ships, and
+it is not a routine patch deploy. Confirm each of these against Studio before starting, rather
+than taking them as settled:
+
+- **It is a full reindex from `startBlock`, on all six chains.** `tokensOwed` is derived per
+  event, so no existing entity carries it — the values only exist for events replayed after the
+  new handlers are in place. Budget the sync time per chain before you deploy the first one, and
+  expect the server to be reading a version that predates the change until the last chain lands.
+- **A graft probably cannot save you, and the reason is the schema.** `tokensOwed0`/`tokensOwed1`
+  are `BigInt!` (`schema.graphql:31-32`) — non-nullable with no default — so every entity carried
+  over the graft point would need a value the base deployment never recorded. Check whether Studio
+  accepts the graft at all before planning around one; if it does, verify what it wrote into those
+  fields for pre-graft entities rather than assuming zero.
+- **A graft cannot lower `startBlock`**, so it is no escape from the reindex either.
+- **Studio archives unpublished versions** on its own schedule, so the version you graft from may
+  not be there when you need it. Verify the base version is live first.
+
+Until the resync completes, `drained` never reaches a client: the server selects no `tokensOwed`
+field and the deployed subgraph still sets `closed = burned || liquidity == 0`.
 
 ## Common pitfalls
 

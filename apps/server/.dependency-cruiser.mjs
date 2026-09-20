@@ -75,10 +75,21 @@ export default {
       severity: "error",
       comment:
         "src/presentation/ renders every protocol. A protocol module may reach down into presentation/; " +
-        "presentation/ reaches protocols only through web-card-mappers.ts. See spec D10. The rule binds " +
-        "production code — a test may name a real protocol to prove the generic path handles it.",
-      from: { path: "^src/presentation/", pathNot: ["web-card-mappers\\.ts$", "^src/presentation/.*/__tests__/"] },
-      to: { path: "^src/features/" },
+        "presentation/ reaches protocols only through web-card-mappers.ts. See spec D10. Both exemptions " +
+        "are whole paths, not directories or suffixes: a second file named …web-card-mappers.ts, or a new " +
+        "test reaching for a protocol, is caught rather than inheriting someone else's exemption. " +
+        "@depthly/protocol-math is forbidden whole bar its generic subpaths, so a protocol added to that " +
+        "package is caught without anyone remembering to list it. Bun symlinks a workspace package " +
+        "straight to packages/<name> while an isolated install routes it through " +
+        "node_modules/@depthly/<name>, so both spellings are matched.",
+      from: {
+        path: "^src/presentation/",
+        pathNot: ["^src/presentation/web/views/positions/web-card-mappers\\.ts$", "^src/presentation/v1/__tests__/error-mapper\\.test\\.ts$"],
+      },
+      to: {
+        path: "^src/features/|(?:node_modules/@depthly|packages)/protocol-math/",
+        pathNot: "/protocol-math/src/format/",
+      },
     },
     {
       name: "not-to-dev-dep",

@@ -10,7 +10,7 @@ const COLUMNS = [
   { label: "Position", class: "w-[34%] text-left" },
   { label: "Range", class: "w-[30%] text-left" },
   { label: "Amounts", class: "w-[18%] text-right" },
-  { label: "Unclaimed fees", class: "text-right" },
+  { label: "To claim", class: "text-right" },
 ];
 
 const CAPTION_ID = "positions-table-caption";

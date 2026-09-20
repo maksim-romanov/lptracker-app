@@ -1,3 +1,4 @@
+import { FEE_ACCRUAL_MODES } from "@depthly/catalog";
 import { formatPrice, formatTokenAmount } from "@depthly/protocol-math/format";
 import { deriveStatus, priceRangeFromTicks } from "@depthly/protocol-math/uniswap-v3";
 import type { TPositionByExt, TTokensMap } from "positions/domain/types";
@@ -58,6 +59,7 @@ function derivePriceRange(position: TPositionByExt<"uniswap-v3">, tokens: TToken
 export function mapToVm(position: TPositionByExt<"uniswap-v3">, tokens: TTokensMap, inverted = false): TUniswapV3VM {
   const principals = position.tokens.filter((t) => t.role === "principal");
   const orderedPrincipals = inverted ? [principals[1], principals[0]].filter((t): t is (typeof principals)[number] => Boolean(t)) : principals;
+  const owedTokens = position.tokens.filter((token) => token.role === "owed");
 
   return {
     nftTokenId: position.extension.nftTokenId,
@@ -65,8 +67,10 @@ export function mapToVm(position: TPositionByExt<"uniswap-v3">, tokens: TTokensM
     status: deriveStatus(position.status.state),
     pair: derivePair(position, tokens, inverted),
     principal: orderedPrincipals.map((t) => tokenSide(t, tokens)),
-    fees: position.tokens.filter((t) => t.role === "fee").map((t) => tokenSide(t, tokens)),
+    owed: owedTokens.map((owedToken) => tokenSide(owedToken, tokens)),
     priceRange: derivePriceRange(position, tokens, inverted),
     poolAddress: position.extension.pool.address,
+    hasUnclaimedBalance: owedTokens.some((owedToken) => Number(owedToken.balance.formatted) > 0),
+    feeMode: position.feeAccrual?.mode ?? FEE_ACCRUAL_MODES.unknown,
   };
 }

@@ -25,6 +25,8 @@ fun StatBlock(
   primary: TokenAmount,
   secondary: TokenAmount,
   density: Density,
+  /** Replaces both figures when there is no amount to show and the dash would misreport why. */
+  unknownLabel: String? = null,
 ) {
   Column {
     Text(
@@ -32,7 +34,15 @@ fun StatBlock(
       style = Typography.withColor(Typography.labelMd, Colors.textMuted),
       maxLines = 1,
     )
-    StatLine(primary, density.primary, density.primarySymbol, accent)
-    StatLine(secondary, density.secondary, density.secondarySymbol, accent)
+    if (unknownLabel != null) {
+      Text(
+        text = unknownLabel,
+        style = Typography.withColor(Typography.labelLg, Colors.textMuted),
+        maxLines = 1,
+      )
+    } else {
+      StatLine(primary, density.primary, density.primarySymbol, accent)
+      StatLine(secondary, density.secondary, density.secondarySymbol, accent)
+    }
   }
 }

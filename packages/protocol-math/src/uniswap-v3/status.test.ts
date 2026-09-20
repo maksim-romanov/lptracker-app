@@ -8,11 +8,20 @@ describe("deriveStatus", () => {
     expect(deriveStatus("closed")).toBe("closed");
   });
 
-  it("treats 'open' as in-range", () => {
-    expect(deriveStatus("open")).toBe("in-range");
+  it("keeps a drained position distinct from a closed one", () => {
+    expect(deriveStatus("drained")).toBe("drained");
   });
 
-  it("falls back to in-range for unknown states", () => {
-    expect(deriveStatus("whatever")).toBe("in-range");
+  it("names an unrecognized state unknown instead of rendering it as live", () => {
+    expect(deriveStatus("whatever")).toBe("unknown");
+    expect(deriveStatus("whatever")).not.toBe("in-range");
+  });
+
+  it("does not throw on an unrecognized state, which would take down the screen", () => {
+    expect(() => deriveStatus("whatever")).not.toThrow();
+  });
+
+  it("stops reading the list filter's vocabulary as a state", () => {
+    expect(deriveStatus("open")).toBe("unknown");
   });
 });

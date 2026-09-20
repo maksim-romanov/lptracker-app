@@ -1,20 +1,13 @@
-import type { TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
-
 import type { ICardVM, TPositionRangeTone } from "./card.vm";
-
-const STATUS: Record<TUniswapV3RangeStatus, string> = {
-  "in-range": "In range",
-  "out-of-range": "Out of range",
-  closed: "Closed",
-};
-
-export const statusLabel = (status: TUniswapV3RangeStatus): string => STATUS[status];
 
 const RANGE_TONE: Record<TPositionRangeTone, string> = {
   "in-range": "In range",
   "near-lower": "Near lower bound",
   "near-upper": "Near upper bound",
   "out-of-range": "Out of range",
+  // Not "Closed": the position is empty but the money is still there, and one transaction
+  // collects it. The label has to say there is something to do.
+  drained: "To claim",
   closed: "Closed",
 };
 

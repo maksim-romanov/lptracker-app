@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
-import { closed, inRange, longAddressNoIcon, noFees, outOfRange } from "../__stories__/mocks";
+import { closed, drained, fungibleLp, inRange, longAddressNoIcon, nothingOwed, outOfRange, owedUnknown } from "../__stories__/mocks";
 import type { ICardVM } from "../card.vm";
 import { PositionInfoRow } from "./PositionInfoRow";
 
@@ -25,5 +25,8 @@ type Story = StoryObj<typeof meta>;
 export const InRange = { args: { card: inRange } } as Story;
 export const OutOfRange = { args: { card: outOfRange } } as Story;
 export const Closed = { args: { card: closed } } as Story;
-export const NoFees = { args: { card: noFees } } as Story;
+export const Drained = { args: { card: drained } } as Story;
+export const OwedUnknown = { args: { card: owedUnknown } } as Story;
+export const FungibleLp = { args: { card: fungibleLp } } as Story;
+export const NothingOwed = { args: { card: nothingOwed } } as Story;
 export const LongAddressNoIcon = { args: { card: longAddressNoIcon } } as Story;

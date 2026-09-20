@@ -36,7 +36,7 @@ export const PositionPair = ({ card }: { card: ICardVM }) => (
           label is. The protocol name is the part that gives way instead. */}
       <span class="flex min-w-0 items-center gap-x-2 text-caption text-on-surface-variant">
         <ProtocolBadge protocol={card.protocol} />
-        <span class="shrink-0 font-mono">{card.feeTierLabel}</span>
+        {card.venueLabel && <span class="shrink-0 font-mono">{card.venueLabel}</span>}
         <PositionStatus tone={card.rangeTone} />
       </span>
     </span>

@@ -1,35 +1,35 @@
 import SwiftUI
 
-/// Composite view for a Uniswap V3 position's price range: lower / upper
-/// bound labels at the corners, the range bar in the middle, and the
-/// current price centred underneath. All three values derive from
-/// `WidgetTickRange` via `PriceMath`.
+/// Composite view for a position's price range: lower / upper bound labels at
+/// the corners, the range bar in the middle, and the current price centred
+/// underneath. Every label arrives formatted in the snapshot.
 struct PriceRangeView: View {
-  let range: WidgetTickRange
+  let bounds: WidgetPriceBounds
+  let status: WidgetStatus
 
   var body: some View {
     VStack(alignment: .leading, spacing: Spacing.xs) {
       HStack(spacing: 0) {
-        Text(range.lowerLabel)
+        Text(bounds.lowerLabel)
           .font(TypeScale.labelMd)
           .foregroundStyle(Color.textMuted)
           .frame(maxWidth: .infinity, alignment: .leading)
-        Text(range.upperLabel)
+        Text(bounds.upperLabel)
           .font(TypeScale.labelMd)
           .foregroundStyle(Color.textMuted)
           .frame(maxWidth: .infinity, alignment: .trailing)
       }
       .singleLineFit(TextScale.moderate)
 
-      RangeBarView(range: range)
+      RangeBarView(bounds: bounds, status: status)
 
-      Text(range.currentLabel)
+      Text(bounds.currentLabel)
         .widgetStyle(TypeScale.valueXxxs, scale: TextScale.moderate)
         .frame(maxWidth: .infinity, alignment: .center)
     }
     .accessibilityElement(children: .ignore)
     .accessibilityLabel(
-      "Price range \(range.lowerLabel) to \(range.upperLabel), current \(range.currentLabel)"
+      "Price range \(bounds.lowerLabel) to \(bounds.upperLabel), current \(bounds.currentLabel)"
     )
   }
 }

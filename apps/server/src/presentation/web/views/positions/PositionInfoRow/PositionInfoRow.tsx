@@ -1,3 +1,5 @@
+import { FEE_ACCRUAL_MODES } from "@depthly/catalog";
+
 import { cn } from "../../utils/cn";
 import type { ICardVM } from "../card.vm";
 import { itemDomId } from "../labels";
@@ -20,7 +22,16 @@ export const PositionInfoRow = ({ card, oob = false }: { card: ICardVM; oob?: bo
     </th>
 
     <td class={CELL}>
-      <PositionRange range={card.priceRange} tone={card.rangeTone} />
+      {card.priceRange ? (
+        <PositionRange range={card.priceRange} tone={card.rangeTone} />
+      ) : (
+        // A protocol with no price range leaves the column empty rather than drawing an
+        // empty bar, which would read as a range whose bounds failed to load.
+        <span class="block text-body-small text-on-surface-variant">
+          <span aria-hidden="true">&mdash;</span>
+          <span class="sr-only">No price range</span>
+        </span>
+      )}
     </td>
 
     <td class={CELL}>
@@ -28,7 +39,7 @@ export const PositionInfoRow = ({ card, oob = false }: { card: ICardVM; oob?: bo
     </td>
 
     <td class={CELL}>
-      <PositionTokenAmounts tokens={card.fees} earning={card.hasUnclaimedFees} />
+      <PositionTokenAmounts tokens={card.owed} earning={card.hasUnclaimedBalance} read={card.feeMode !== FEE_ACCRUAL_MODES.unknown} />
     </td>
   </tr>
 );

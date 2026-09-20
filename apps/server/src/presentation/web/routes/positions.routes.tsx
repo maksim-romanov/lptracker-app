@@ -114,7 +114,16 @@ const loadCardVM = async (ref: string, inverted: boolean): Promise<TCardResult> 
 
   const tokensBuilder = new TokensMapBuilder();
   tokensBuilder.add(result.value.tokenMetaInputs);
-  const card = mapCardVM(result.value.position, tokensBuilder.build(), { inverted });
+
+  // A mapper throwing — an unknown status state, a missing range — is the same outcome as one
+  // returning nothing: the position loaded and cannot be drawn. Without this it is an uncaught
+  // throw on a route with no onError, so the reader gets a 500 rather than the banner below.
+  let card: ICardVM | undefined;
+  try {
+    card = mapCardVM(result.value.position, tokensBuilder.build(), { inverted });
+  } catch (error) {
+    logger.error("web position: card mapper threw", { ref, error });
+  }
   // 200, not an error status: the position exists and loaded — only its rendering is missing.
   if (!card) return { error: <ErrorBanner message="This position could not be displayed" />, status: 200 };
 

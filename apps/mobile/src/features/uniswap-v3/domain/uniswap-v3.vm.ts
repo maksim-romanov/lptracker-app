@@ -34,7 +34,15 @@ export interface TUniswapV3VM {
   readonly status: TUniswapV3RangeStatus;
   readonly pair: TUniswapV3Pair;
   readonly principal: ReadonlyArray<TUniswapV3TokenSide>;
-  readonly fees: ReadonlyArray<TUniswapV3TokenSide>;
+  // What a claim transaction would pay out, which includes withdrawn principal — not fee income.
+  readonly owed: ReadonlyArray<TUniswapV3TokenSide>;
   readonly priceRange: TUniswapV3PriceRange;
   readonly poolAddress: string;
+  // Whether the owed side holds more than dust. Read off the wire amounts: a dust balance
+  // formats as "< 0.000001", which is not a number the display strings can be compared on.
+  readonly hasUnclaimedBalance: boolean;
+  // The contract's `feeAccrual.mode` verbatim, so a redirected balance stays distinguishable
+  // from a compounded one. A position whose read failed carries no owed token, so hiding the
+  // block on an empty list would report an unread amount as nothing owed.
+  readonly feeMode: string;
 }

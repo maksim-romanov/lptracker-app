@@ -35,17 +35,17 @@ struct SmallPositionView: View {
 
   @ViewBuilder
   private func rangeSection(position: WidgetPosition) -> some View {
-    if case .uniswapV3(let payload) = position.widgetExtension {
-      VStack(alignment: .leading, spacing: Spacing.md) {
-        HStack(spacing: Spacing.xs) {
-          ChainTag(chainID: position.chainId)
+    VStack(alignment: .leading, spacing: Spacing.md) {
+      HStack(spacing: Spacing.xs) {
+        ChainTag(chainID: position.chainId)
+        if case .uniswapV3(let payload) = position.widgetExtension {
           MetaTag(text: payload.feeTierLabel)
-          Spacer(minLength: 0)
         }
-        .accessibilityElement(children: .combine)
-        if let range = payload.range {
-          RangeBarView(range: range)
-        }
+        Spacer(minLength: 0)
+      }
+      .accessibilityElement(children: .combine)
+      if case .uniswapV3(let payload) = position.widgetExtension, let range = payload.priceRange {
+        RangeBarView(bounds: range.quoted, status: position.status)
       }
     }
   }
@@ -61,18 +61,19 @@ struct SmallPositionView: View {
         valueFont: TypeScale.valueMd
       )
       InlineStatRow(
-        label: "Fees",
-        left: feeText(symbol: position.primaryPrincipal?.symbol, fees: position.fees),
-        right: feeText(symbol: position.secondaryPrincipal?.symbol, fees: position.fees),
+        label: "Owed",
+        left: owedText(symbol: position.primaryPrincipal?.symbol, owed: position.fees),
+        right: owedText(symbol: position.secondaryPrincipal?.symbol, owed: position.fees),
         accent: .brandPrimary,
-        valueFont: TypeScale.valueXxs
+        valueFont: TypeScale.valueXxs,
+        unknownLabel: position.owedWasRead ? nil : TokenStatHelper.unreadLabel
       )
     }
   }
 
-  private func feeText(symbol: String?, fees: [WidgetToken]) -> String? {
+  private func owedText(symbol: String?, owed: [WidgetToken]) -> String? {
     guard let symbol else { return nil }
-    return TokenStatHelper.feeString(for: symbol, in: fees)
+    return TokenStatHelper.owedString(for: symbol, in: owed)
   }
 }
 
@@ -87,6 +88,12 @@ struct SmallPositionView: View {
     PositionsWidget()
   } timeline: {
     PositionsEntry.outOfRange
+  }
+
+  #Preview("Small — drained", as: .systemSmall) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.drained
   }
 
   #Preview("Small — edge left", as: .systemSmall) {
@@ -123,6 +130,12 @@ struct SmallPositionView: View {
     PositionsWidget()
   } timeline: {
     PositionsEntry.veryWide
+  }
+
+  #Preview("Small — full range", as: .systemSmall) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.fullRange
   }
 
   #Preview("Small — far out above", as: .systemSmall) {

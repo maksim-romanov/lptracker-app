@@ -1,4 +1,4 @@
-import { formatPrice, formatTokenAmount, formatTokenAmountShort } from "./format";
+import { formatPrice, formatTokenAmount, formatTokenAmountShort, toDecimalString } from "./format";
 import { describe, expect, it } from "bun:test";
 
 describe("formatPrice", () => {
@@ -108,5 +108,25 @@ describe("formatTokenAmountShort", () => {
   it("shares compact (K/M/B/T) handling with formatTokenAmount", () => {
     expect(formatTokenAmountShort("1500000")).toBe("1.5M");
     expect(formatTokenAmountShort("12345678901")).toBe("12.35B");
+  });
+});
+
+describe("toDecimalString", () => {
+  it("expands a small exponent, which every client would otherwise have to parse", () => {
+    expect(toDecimalString(1e-7)).toBe("0.0000001");
+    expect(toDecimalString(1.25e-11)).toBe("0.0000000000125");
+  });
+
+  it("expands a large exponent", () => {
+    expect(toDecimalString(1e21)).toBe("1000000000000000000000");
+  });
+
+  it("keeps the sign", () => {
+    expect(toDecimalString(-1e-7)).toBe("-0.0000001");
+  });
+
+  it("leaves a value that already has no exponent alone", () => {
+    expect(toDecimalString(1950.4)).toBe("1950.4");
+    expect(toDecimalString(0)).toBe("0");
   });
 });

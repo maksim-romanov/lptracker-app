@@ -324,7 +324,7 @@ describe("Position Lifecycle Tests", () => {
     assert.fieldEquals("Position", "4", "liquidity", finalLiquidity.toString());
   });
 
-  test("Should auto-close position when liquidity is zero", () => {
+  test("Should auto-close position when liquidity and tokensOwed are zero", () => {
     let tokenId = BigInt.fromI32(5);
 
     // Setup mocks
@@ -393,6 +393,104 @@ describe("Position Lifecycle Tests", () => {
     // Assertions - position should be auto-closed
     assert.fieldEquals("Position", "5", "liquidity", "0");
     assert.fieldEquals("Position", "5", "closed", "true");
+  });
+
+  test("Should keep drained position open while tokensOwed is non-zero", () => {
+    let tokenId = BigInt.fromI32(9);
+
+    setupPoolMocks(TOKEN0_ADDRESS, TOKEN1_ADDRESS, 3000, POOL_ADDRESS);
+
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.fromI32(1000000),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let mintEvent = createTransferEvent(ZERO_ADDRESS, OWNER_ADDRESS, tokenId);
+    mintEvent.address = CONTRACT_ADDRESS;
+    handleTransfer(mintEvent);
+
+    // decreaseLiquidity credits principal and accrued fees to tokensOwed; collect() is a
+    // separate transaction, and burn() reverts until it has landed.
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.zero(), // no liquidity
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.fromI32(1000), // still owed token0
+          BigInt.fromI32(2000), // still owed token1
+        ),
+      );
+
+    let decreaseEvent = createDecreaseLiquidityEvent(tokenId, BigInt.fromI32(1000000), BigInt.fromI32(100), BigInt.fromI32(200));
+    decreaseEvent.address = CONTRACT_ADDRESS;
+    handleDecreaseLiquidity(decreaseEvent);
+
+    assert.fieldEquals("Position", "9", "liquidity", "0");
+    assert.fieldEquals("Position", "9", "tokensOwed0", "1000");
+    assert.fieldEquals("Position", "9", "tokensOwed1", "2000");
+    assert.fieldEquals("Position", "9", "closed", "false");
+
+    // Once collect() empties tokensOwed the NFT is settled: empty, alive, and burnable.
+    createMockedFunction(
+      CONTRACT_ADDRESS,
+      "positions",
+      "positions(uint256):(uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)",
+    )
+      .withArgs([ethereum.Value.fromUnsignedBigInt(tokenId)])
+      .returns(
+        createPositionData(
+          BigInt.fromI32(1),
+          Address.zero(),
+          TOKEN0_ADDRESS,
+          TOKEN1_ADDRESS,
+          3000,
+          -887220,
+          887220,
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+          BigInt.zero(),
+        ),
+      );
+
+    let collectEvent = createCollectEvent(tokenId, OWNER_ADDRESS, BigInt.fromI32(1000), BigInt.fromI32(2000));
+    collectEvent.address = CONTRACT_ADDRESS;
+    handleCollect(collectEvent);
+
+    assert.fieldEquals("Position", "9", "tokensOwed0", "0");
+    assert.fieldEquals("Position", "9", "closed", "true");
   });
 
   test("Should reopen position when liquidity is re-added after reaching zero", () => {

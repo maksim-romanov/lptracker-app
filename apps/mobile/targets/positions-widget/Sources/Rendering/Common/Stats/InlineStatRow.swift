@@ -8,6 +8,8 @@ struct InlineStatRow: View {
   let right: String?
   let accent: Color
   let valueFont: Font
+  /// Replaces both values when there is no amount to show and the dash would misreport why.
+  var unknownLabel: String?
 
   var body: some View {
     HStack(alignment: .firstTextBaseline, spacing: Spacing.md) {
@@ -15,8 +17,15 @@ struct InlineStatRow: View {
         .font(TypeScale.labelLg)
         .foregroundStyle(Color.textMuted)
       Spacer(minLength: 0)
-      Text(joinedValues)
-        .widgetStyle(valueFont, color: accent, scale: TextScale.aggressive)
+      if let unknownLabel {
+        Text(unknownLabel)
+          .font(TypeScale.labelLg)
+          .foregroundStyle(Color.textMuted)
+          .singleLineFit(TextScale.standard)
+      } else {
+        Text(joinedValues)
+          .widgetStyle(valueFont, color: accent, scale: TextScale.aggressive)
+      }
     }
   }
 

@@ -1,3 +1,5 @@
+import { FEE_ACCRUAL_MODES } from "@depthly/catalog";
+
 import { Icon } from "../../components/Icon/Icon";
 import { explorerTokenUrl, networkLabel } from "../../networks";
 import { cn } from "../../utils/cn";
@@ -29,12 +31,26 @@ const TokenCell = ({ token, chainId }: { token: ITokenSideVM; chainId: number })
   );
 };
 
+// A read that failed lists no owed token, and the dash this column uses for an absent entry
+// reports that as nothing owed.
+const OwedCell = ({ owed, read }: { owed: ITokenSideVM | undefined; read: boolean }) => {
+  if (owed) return <>{owed.formatted}</>;
+  if (!read) return <span class="font-sans">Unknown</span>;
+
+  return (
+    <>
+      <span aria-hidden="true">—</span>
+      <span class="sr-only">None</span>
+    </>
+  );
+};
+
 // `withContract` is for the detail panel only — the card renders the same table inside a grid
 // cell whose height every other card must match, and can't spare the extra line per token.
 export const PositionAmounts = ({ card, withContract = false, class: className }: Props) => {
   const rows = card.principal.map((token) => ({
     token,
-    fee: card.fees.find((entry) => entry.tokenRef === token.tokenRef),
+    owed: card.owed.find((entry) => entry.tokenRef === token.tokenRef),
   }));
 
   if (rows.length === 0) return <p class={cn("text-body-small text-on-surface-variant", className)}>This position holds no tokens.</p>;
@@ -50,12 +66,12 @@ export const PositionAmounts = ({ card, withContract = false, class: className }
             Amount
           </th>
           <th scope="col" class="pb-1 text-right font-normal">
-            Unclaimed fees
+            To claim
           </th>
         </tr>
       </thead>
       <tbody>
-        {rows.map(({ token, fee }) => (
+        {rows.map(({ token, owed }) => (
           <tr>
             <th scope="row" class="py-0.5 text-left font-normal">
               <span class="flex items-center gap-2">
@@ -70,8 +86,7 @@ export const PositionAmounts = ({ card, withContract = false, class: className }
             </th>
             <td class="py-0.5 text-right font-mono text-figure-small tabular-nums">{token.formatted}</td>
             <td class="py-0.5 text-right font-mono text-figure-small text-on-surface-variant tabular-nums">
-              {fee ? fee.formatted : <span aria-hidden="true">—</span>}
-              {!fee && <span class="sr-only">None</span>}
+              <OwedCell owed={owed} read={card.feeMode !== FEE_ACCRUAL_MODES.unknown} />
             </td>
           </tr>
         ))}

@@ -1,32 +1,37 @@
 import { cn } from "../../utils/cn";
-import type { ICardVM, TPositionRangeTone } from "../card.vm";
+import type { IPriceRangeVM, TPositionRangeTone } from "../card.vm";
 import { rangeToneLabel } from "../labels";
 
 // The tone is carried as `color` on the container, so the band's fill, the thumb's halo and the
 // out-of-range dot all read it from one place (position-range.css).
-// `computeRangeBar` places the thumb from the pool's current tick regardless of status, so a
-// closed position renders the same geometry as a live one.
+// The bar places the thumb from the current price regardless of status, so a position holding
+// no liquidity renders the same geometry as a live one.
 const TONE: Record<TPositionRangeTone, string> = {
   "in-range": "text-success",
   "near-lower": "text-warning",
   "near-upper": "text-warning",
   "out-of-range": "text-error",
+  drained: "text-primary",
   closed: "text-on-surface-variant",
 };
 
-type Props = { range: ICardVM["priceRange"]; tone: TPositionRangeTone; class?: string };
+// Neither state holds liquidity, so neither earns anything at the price the thumb is sitting at.
+// The band is drawn switched off for both; only the tone tells them apart.
+const DORMANT: TPositionRangeTone[] = ["drained", "closed"];
 
-const describe = (range: ICardVM["priceRange"], tone: TPositionRangeTone): string =>
+type Props = { range: IPriceRangeVM; tone: TPositionRangeTone; class?: string };
+
+const describe = (range: IPriceRangeVM, tone: TPositionRangeTone): string =>
   `Price range ${range.minLabel} to ${range.maxLabel} ${range.quoteSymbol} per ${range.baseSymbol}, ` +
   `current price ${range.currentLabel}. ${rangeToneLabel(tone)}.`;
 
 const BOUND = "range-bound font-mono text-caption text-on-surface-variant tabular-nums";
 
 export const PositionRange = ({ range, tone, class: className }: Props) => {
-  const closed = tone === "closed";
+  const dormant = DORMANT.includes(tone);
   return (
     <div
-      class={cn("range", TONE[tone], closed && "range-closed", className)}
+      class={cn("range", TONE[tone], dormant && "range-closed", className)}
       role="img"
       aria-label={describe(range, tone)}
       data-controller="range"
@@ -37,7 +42,7 @@ export const PositionRange = ({ range, tone, class: className }: Props) => {
       <span class="range-value font-mono text-caption tabular-nums">{range.currentLabel}</span>
 
       <span class="range-track">
-        <span class={cn("range-band", closed && "range-band-off")} />
+        <span class={cn("range-band", dormant && "range-band-off")} />
         <span class="range-edge range-edge-min" />
         <span class="range-edge range-edge-max" />
         <span class={cn("range-thumb", tone === "out-of-range" && "range-thumb-warn")} />

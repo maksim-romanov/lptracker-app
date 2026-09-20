@@ -21,7 +21,7 @@ const wethPosition: TPositionByExt<"uniswap-v3"> = {
       balance: { raw: "1000000000", decimals: 6, formatted: "1000.0", tokenRef: "1:0xusdc" },
     },
     {
-      role: "fee",
+      role: "owed",
       tokenRef: "1:0xweth",
       balance: { raw: "10000000000000000", decimals: 18, formatted: "0.01", tokenRef: "1:0xweth" },
     },
@@ -40,6 +40,28 @@ const wethPosition: TPositionByExt<"uniswap-v3"> = {
   },
   createdAt: null,
   updatedAt: "2026-06-10T00:00:00.000Z",
+  feeAccrual: { mode: "claimable", reason: null, destination: null },
+  yieldSources: [],
+  range: {
+    lower: "1600",
+    upper: "2500",
+    current: "2000",
+    baseTokenRef: "1:0xweth",
+    quoteTokenRef: "1:0xusdc",
+  },
+  stats: [],
+};
+
+const fullRangePosition: TPositionByExt<"uniswap-v3"> = {
+  ...wethPosition,
+  ref: "uniswap-v3:1:54321",
+  range: { lower: null, upper: null, current: "2000", baseTokenRef: "1:0xweth", quoteTokenRef: "1:0xusdc" },
+};
+
+const rangelessPosition: TPositionByExt<"uniswap-v3"> = {
+  ...wethPosition,
+  ref: "uniswap-v3:1:67890",
+  range: null,
 };
 
 const unknownExtensionPosition: TGatewayPosition = {
@@ -105,6 +127,44 @@ describe("buildWidgetSnapshot", () => {
     expect(snapshot.positions[0].status).toBe("in-range");
   });
 
+  it('holds a drained position at "closed" on purpose, until BOTH widget binaries that can decode the new state ship', () => {
+    // Not a stale assertion: an installed WidgetStatus enum decodes the three values below and
+    // nothing else, and SnapshotStore — Swift and Kotlin alike — turns a decode failure into a
+    // blank widget for EVERY position, not just this one. So the wire keeps collapsing anything
+    // newer until the wider enum is on phones — `staked` lands here for the same reason.
+    // Adding an entry to STATUS_MAP is what breaks this test (widening TWidgetStatus alone
+    // changes nothing it can observe), and the JS bundle reaches phones whose widget binary is
+    // older on either platform: iOS AND Android must both have shipped before that entry lands.
+    const drained = { ...wethPosition, status: { state: "drained", stateDetail: "liquidity withdrawn, fees still claimable" } };
+    const staked = { ...wethPosition, ref: "uniswap-v3:1:99999", status: { state: "staked", stateDetail: null } };
+    const snapshot = buildWidgetSnapshot({
+      positions: [drained, staked],
+      following: new Set([drained.ref, staked.ref]),
+      tokens,
+      now: 1000,
+    });
+
+    expect(snapshot.positions.map((position) => position.status)).toEqual(["closed", "closed"]);
+  });
+
+  it("hands the widget feeAccrual.mode verbatim, so redirected and compounded stay apart on the tile", () => {
+    for (const mode of ["unknown", "claimable", "redirected", "compounded", "some-future-mode"]) {
+      const position = { ...wethPosition, feeAccrual: { mode, reason: null, destination: null } };
+      const snapshot = buildWidgetSnapshot({ positions: [position], following: new Set([position.ref]), tokens, now: 1000 });
+
+      expect(snapshot.positions[0].feeMode).toBe(mode);
+    }
+  });
+
+  it("writes the snapshot for a position missing feeAccrual instead of throwing and leaving every widget stale", () => {
+    const { feeAccrual: _feeAccrual, ...withoutFeeAccrual } = wethPosition;
+    const positions = [withoutFeeAccrual as typeof wethPosition];
+    const snapshot = buildWidgetSnapshot({ positions, following: new Set([wethPosition.ref]), tokens, now: 1000 });
+
+    expect(snapshot.positions).toHaveLength(1);
+    expect(snapshot.positions[0].feeMode).toBe("unknown");
+  });
+
   it("emits uniswap-v3 extension with feeTierLabel and nftTokenId", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [wethPosition],
@@ -116,8 +176,95 @@ describe("buildWidgetSnapshot", () => {
       type: "uniswap-v3",
       feeTierLabel: "0.30%",
       nftTokenId: "12345",
-      range: { tickLower: -887220, tickUpper: 887220, currentTick: 0, decimalsDelta: 12 },
+      priceRange: {
+        quoted: {
+          lower: "1600",
+          upper: "2500",
+          current: "2000",
+          lowerLabel: "1600",
+          upperLabel: "2500",
+          currentLabel: "2000",
+        },
+        inverted: {
+          lower: "0.0004",
+          upper: "0.000625",
+          current: "0.0005",
+          lowerLabel: "0.0004",
+          upperLabel: "0.000625",
+          currentLabel: "0.0005",
+        },
+      },
     });
+  });
+
+  it("carries an unbounded bound through as null rather than dropping the range", () => {
+    const snapshot = buildWidgetSnapshot({
+      positions: [fullRangePosition],
+      following: new Set([fullRangePosition.ref]),
+      tokens,
+      now: 1000,
+    });
+    const extension = snapshot.positions[0].extension;
+    if (extension.type !== "uniswap-v3") throw new Error("expected a uniswap-v3 extension");
+
+    expect(extension.priceRange).toEqual({
+      quoted: { lower: null, upper: null, current: "2000", lowerLabel: "0", upperLabel: "∞", currentLabel: "2000" },
+      inverted: { lower: null, upper: null, current: "0.0005", lowerLabel: "0", upperLabel: "∞", currentLabel: "0.0005" },
+    });
+  });
+
+  it("flips a zero bound to the unbounded end rather than leaving it at the bottom of the scale", () => {
+    const zeroLower = { ...wethPosition, range: { ...wethPosition.range, lower: "0" } } as TPositionByExt<"uniswap-v3">;
+    const snapshot = buildWidgetSnapshot({ positions: [zeroLower], following: new Set([zeroLower.ref]), tokens, now: 1000 });
+    const extension = snapshot.positions[0].extension;
+    if (extension.type !== "uniswap-v3") throw new Error("expected a uniswap-v3 extension");
+
+    expect(extension.priceRange?.inverted.upper).toBeNull();
+    expect(extension.priceRange?.inverted.upperLabel).toBe("∞");
+  });
+
+  it("keeps an inverted bound a plain decimal string, the way the contract states range values", () => {
+    const tiny = { ...wethPosition, range: { ...wethPosition.range, upper: "10000000" } } as TPositionByExt<"uniswap-v3">;
+    const snapshot = buildWidgetSnapshot({ positions: [tiny], following: new Set([tiny.ref]), tokens, now: 1000 });
+    const extension = snapshot.positions[0].extension;
+    if (extension.type !== "uniswap-v3") throw new Error("expected a uniswap-v3 extension");
+
+    expect(extension.priceRange?.inverted.lower).toBe("0.0000001");
+  });
+
+  it("does not turn an unparseable current price into infinity, which would pin the thumb at the far right", () => {
+    const broken = { ...wethPosition, range: { ...wethPosition.range, current: "not-a-price" } } as TPositionByExt<"uniswap-v3">;
+    const snapshot = buildWidgetSnapshot({ positions: [broken], following: new Set([broken.ref]), tokens, now: 1000 });
+    const extension = snapshot.positions[0].extension;
+    if (extension.type !== "uniswap-v3") throw new Error("expected a uniswap-v3 extension");
+
+    expect(extension.priceRange?.inverted.current).toBe("not-a-price");
+    expect(extension.priceRange?.inverted.currentLabel).toBe("—");
+    expect(extension.priceRange?.quoted.currentLabel).toBe("—");
+  });
+
+  it("does not turn an unparseable bound into an unbounded one, which would draw it at an end of the scale", () => {
+    const broken = { ...wethPosition, range: { ...wethPosition.range, lower: "not-a-price" } } as TPositionByExt<"uniswap-v3">;
+    const snapshot = buildWidgetSnapshot({ positions: [broken], following: new Set([broken.ref]), tokens, now: 1000 });
+    const extension = snapshot.positions[0].extension;
+    if (extension.type !== "uniswap-v3") throw new Error("expected a uniswap-v3 extension");
+
+    expect(extension.priceRange?.quoted.lower).toBe("not-a-price");
+    expect(extension.priceRange?.inverted.upper).toBe("not-a-price");
+    expect(extension.priceRange?.inverted.upperLabel).toBe("—");
+  });
+
+  it("emits a null price range when the contract carries none", () => {
+    const snapshot = buildWidgetSnapshot({
+      positions: [rangelessPosition],
+      following: new Set([rangelessPosition.ref]),
+      tokens,
+      now: 1000,
+    });
+    const extension = snapshot.positions[0].extension;
+    if (extension.type !== "uniswap-v3") throw new Error("expected a uniswap-v3 extension");
+
+    expect(extension.priceRange).toBeNull();
   });
 
   it("stamps writtenAt with the now parameter and version 1", () => {
@@ -154,7 +301,7 @@ describe("buildWidgetSnapshot", () => {
     expect(snapshot.positions[0].principals[0].iconUrl).toBe("");
   });
 
-  it("keeps a position whose extension type is not recognised", () => {
+  it("keeps a position whose extension type is not recognized", () => {
     const snapshot = buildWidgetSnapshot({
       positions: [wethPosition, unknownExtensionPosition],
       tokens,

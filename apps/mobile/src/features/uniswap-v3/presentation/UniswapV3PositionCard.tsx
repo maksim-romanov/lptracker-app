@@ -12,30 +12,22 @@ import { PositionViewPrefsStore } from "positions/presentation/stores/position-v
 import { StyleSheet } from "react-native-unistyles";
 
 import { mapToVm } from "../data/uniswap-v3.mapper";
-import type { TUniswapV3RangeStatus } from "../domain/uniswap-v3.vm";
 import { PriceRangeBar } from "./components/PriceRangeBar";
+import { feeBlockPresentation } from "./lib/fee-block-presentation";
+import { positionStatusPresentation } from "./lib/position-status-presentation";
 
 interface IProps {
   readonly position: TPositionByExt<"uniswap-v3">;
   readonly tokens: TTokensMap;
 }
 
-const STATUS_TONE: Record<TUniswapV3RangeStatus, "success" | "warning" | "neutral"> = {
-  "in-range": "success",
-  "out-of-range": "warning",
-  closed: "neutral",
-};
-
-const STATUS_LABEL: Record<TUniswapV3RangeStatus, string> = {
-  "in-range": "In range",
-  "out-of-range": "Out of range",
-  closed: "Closed",
-};
-
 export const UniswapV3PositionCard = observer(function UniswapV3PositionCard({ position, tokens }: IProps) {
   const viewPrefs = container.resolve(PositionViewPrefsStore);
   const inverted = viewPrefs.isInverted(position.ref);
   const vm = useMemo(() => mapToVm(position, tokens, inverted), [position, tokens, inverted]);
+  const status = positionStatusPresentation(vm.status);
+  const feeBlock = feeBlockPresentation({ feeMode: vm.feeMode, hasAmounts: vm.hasUnclaimedBalance });
+  const owedAmountFor = (tokenRef: string | undefined) => vm.owed.find((entry) => entry.tokenRef === tokenRef)?.formatted ?? "—";
   const pairTokens = [
     { symbol: vm.pair.base.symbol, address: vm.pair.base.tokenRef.split(":")[1] },
     { symbol: vm.pair.quote.symbol, address: vm.pair.quote.tokenRef.split(":")[1] },
@@ -67,7 +59,7 @@ export const UniswapV3PositionCard = observer(function UniswapV3PositionCard({ p
           <NetworkBadge chainId={position.chainId} size="sm" />
           <Tag tone="brand">V3</Tag>
           <Tag tone="neutral">{vm.feeTierLabel}</Tag>
-          <Tag tone={STATUS_TONE[vm.status]}>{STATUS_LABEL[vm.status]}</Tag>
+          <Tag tone={status.tone}>{status.label}</Tag>
         </Inline>
 
         <Stack space={2}>
@@ -117,6 +109,42 @@ export const UniswapV3PositionCard = observer(function UniswapV3PositionCard({ p
               </View>
             </Box>
           </Box>
+
+          {feeBlock === "unknown" && (
+            <Stack space={1}>
+              <Text variant="label" color="muted" uppercase>
+                To claim
+              </Text>
+
+              <Text variant="bodySmall" color="muted">
+                Unknown
+              </Text>
+            </Stack>
+          )}
+
+          {feeBlock === "amounts" && (
+            <Stack space={1}>
+              <Text variant="label" color="muted" uppercase>
+                To claim
+              </Text>
+
+              <Box direction="row" alignY="top">
+                <Box flex="fluid">
+                  <Text variant="figureSmall" color="primary">
+                    {owedAmountFor(vm.principal[0]?.tokenRef)}
+                  </Text>
+                </Box>
+
+                <Box flex="fluid" alignX="right">
+                  <View style={styles.valueRight}>
+                    <Text variant="figureSmall" color="primary">
+                      {owedAmountFor(vm.principal[1]?.tokenRef)}
+                    </Text>
+                  </View>
+                </Box>
+              </Box>
+            </Stack>
+          )}
         </Stack>
       </Stack>
     </Card>

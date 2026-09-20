@@ -33,6 +33,7 @@ const position: TGatewayPosition = {
     },
   ],
   status: { state: "in-range", stateDetail: null },
+  feeAccrual: { mode: "claimable", reason: null, destination: null },
   extension: {
     type: "uniswap-v3",
     version: 1,

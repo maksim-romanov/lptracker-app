@@ -8,7 +8,7 @@ import type { Abi, Address } from "viem";
 import type { PositionEntity } from "../domain/entities/position.entity";
 import { MAX_INDEX_LAG_SECONDS, PositionError } from "../domain/errors/position.error";
 import type { PoolStateRpcData } from "../domain/types/pool-state";
-import type { PositionFeeRawData } from "../domain/utils/fee-math";
+import type { PositionOwedRawData } from "../domain/utils/fee-math";
 import { BaseRepository } from "./base/base.repository";
 import { GraphQLPositionDto } from "./dto/graphql-position.dto";
 import { graphql } from "./gql";
@@ -22,13 +22,19 @@ type Slot0Data = [bigint, number, number, number, number, number, boolean];
 type TickData = [bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean];
 type PositionData = [bigint, Address, Address, Address, number, number, number, bigint, bigint, bigint, bigint, bigint];
 
-function parsePositionFeeResult(slice: readonly { result?: unknown }[]): PositionFeeRawData {
-  const tickLower = slice[2]?.result as TickData;
-  const tickUpper = slice[3]?.result as TickData;
-  const position = slice[4]?.result as PositionData;
+// Returns null when any of the five sub-calls failed. multicall runs with allowFailure, so a
+// single reverting call leaves its `result` undefined; indexing into it would throw and take
+// every other position's owed balance down with it.
+function parsePositionOwedResult(slice: readonly { result?: unknown }[]): PositionOwedRawData | null {
+  const feeGrowthGlobal0X128 = slice[0]?.result as bigint | undefined;
+  const feeGrowthGlobal1X128 = slice[1]?.result as bigint | undefined;
+  const tickLower = slice[2]?.result as TickData | undefined;
+  const tickUpper = slice[3]?.result as TickData | undefined;
+  const position = slice[4]?.result as PositionData | undefined;
+  if (feeGrowthGlobal0X128 === undefined || feeGrowthGlobal1X128 === undefined || !tickLower || !tickUpper || !position) return null;
   return {
-    feeGrowthGlobal0X128: slice[0]?.result as bigint,
-    feeGrowthGlobal1X128: slice[1]?.result as bigint,
+    feeGrowthGlobal0X128,
+    feeGrowthGlobal1X128,
     feeGrowthOutside0LowerX128: tickLower[2],
     feeGrowthOutside1LowerX128: tickLower[3],
     feeGrowthOutside0UpperX128: tickUpper[2],
@@ -43,6 +49,11 @@ function parsePositionFeeResult(slice: readonly { result?: unknown }[]): Positio
 
 @injectable()
 export class PositionsRepository extends BaseRepository {
+  // `closed` is the subgraph's own flag: burned, or zero liquidity with both tokensOwed zero.
+  // A drained position — liquidity withdrawn, balance not yet collected — is deliberately not
+  // closed, so the default filter keeps it. That holds only from the subgraph version that
+  // indexes tokensOwed onward; an older deployment still collapses drained into closed and
+  // hides the balance.
   async getWalletPositions(
     owner: string,
     pagination: { first: number; skip: number } = { first: 10, skip: 0 },
@@ -90,19 +101,35 @@ export class PositionsRepository extends BaseRepository {
     }
   }
 
-  async getPoolState(poolAddress: Address) {
-    const result = await this.getPoolStates([poolAddress]);
+  /**
+   * Pin one block for a request's chain reads. Pool state and fee growth are read by separate
+   * multicalls; if a tick boundary is crossed between them, the branch selected in
+   * computeFeeGrowthInside no longer matches the growth values it is applied to, the mod-2^256
+   * subtraction wraps, and the result is a fee near 2^128 reported as fact. Every read that
+   * feeds one computation must name the same block, which is why `blockNumber` is required
+   * rather than optional below.
+   */
+  async pinBlock() {
+    try {
+      return ok(await this.rpc.getBlockNumber());
+    } catch (error) {
+      return err(PositionError.UNEXPECTED_ERROR({ error, context: { chainId: this.chainContext.chain.id } }));
+    }
+  }
+
+  async getPoolState(poolAddress: Address, blockNumber: bigint) {
+    const result = await this.getPoolStates([poolAddress], blockNumber);
     if (result.isErr()) return err(result.error);
     const state = result.value.get(poolAddress);
     if (!state) return err(PositionError.UNEXPECTED_ERROR({ message: "Pool state missing after multicall", context: { poolAddress } }));
     return ok(state);
   }
 
-  async getPoolStates(poolAddresses: Address[]) {
+  async getPoolStates(poolAddresses: Address[], blockNumber: bigint) {
     const unique = [...new Set(poolAddresses)];
     try {
       const contracts = this.buildPoolStateContracts(unique);
-      const results = await this.rpc.multicall({ contracts });
+      const results = await this.rpc.multicall({ contracts, blockNumber });
 
       const map = new Map<Address, PoolStateRpcData>();
       const skipped: { address: Address; reason: string }[] = [];
@@ -136,29 +163,45 @@ export class PositionsRepository extends BaseRepository {
     }
   }
 
-  async getPositionFees(position: PositionEntity) {
+  async getPositionOwed(position: PositionEntity, blockNumber: bigint) {
     try {
-      const results = await this.rpc.multicall({ contracts: this.buildFeeContracts(position) });
-      return ok(parsePositionFeeResult(results));
+      const results = await this.rpc.multicall({ contracts: this.buildOwedContracts(position), blockNumber });
+      const raw = parsePositionOwedResult(results);
+      if (!raw) return err(PositionError.UNEXPECTED_ERROR({ message: "Fee call failed or reverted", context: { positionId: position.id } }));
+      return ok(raw);
     } catch (error) {
       return err(PositionError.UNEXPECTED_ERROR({ error, context: { positionId: position.id } }));
     }
   }
 
-  async getBatchPositionFees(positions: PositionEntity[]) {
-    if (positions.length === 0) return ok(new Map<string, PositionFeeRawData>());
+  async getBatchPositionOwed(positions: PositionEntity[], blockNumber: bigint) {
+    if (positions.length === 0) return ok(new Map<string, PositionOwedRawData>());
 
     try {
-      const contracts = positions.flatMap((p) => [...this.buildFeeContracts(p)]);
-      const results = await this.rpc.multicall({ contracts });
+      const contracts = positions.flatMap((p) => [...this.buildOwedContracts(p)]);
+      const results = await this.rpc.multicall({ contracts, blockNumber });
 
-      const feeDataMap = new Map<string, PositionFeeRawData>();
-      for (let i = 0; i < positions.length; i++) {
-        feeDataMap.set(positions[i]!.id, parsePositionFeeResult(results.slice(i * 5, i * 5 + 5)));
+      const owedDataMap = new Map<string, PositionOwedRawData>();
+      const skipped: string[] = [];
+      for (const [i, position] of positions.entries()) {
+        const raw = parsePositionOwedResult(results.slice(i * 5, i * 5 + 5));
+        if (!raw) {
+          skipped.push(position.id);
+          continue;
+        }
+        owedDataMap.set(position.id, raw);
       }
-      return ok(feeDataMap);
+      if (skipped.length > 0) {
+        logger.warning("getBatchPositionOwed skipped positions", {
+          chainId: this.chainContext.chain.id,
+          count: skipped.length,
+          total: positions.length,
+          skipped,
+        });
+      }
+      return ok(owedDataMap);
     } catch (error) {
-      logger.error("getBatchPositionFees failed", {
+      logger.error("getBatchPositionOwed failed", {
         chainId: this.chainContext.chain.id,
         count: positions.length,
         error,
@@ -174,7 +217,7 @@ export class PositionsRepository extends BaseRepository {
     ]);
   }
 
-  private buildFeeContracts(position: PositionEntity) {
+  private buildOwedContracts(position: PositionEntity) {
     return [
       { address: position.pool.id, abi: poolAbi, functionName: "feeGrowthGlobal0X128" },
       { address: position.pool.id, abi: poolAbi, functionName: "feeGrowthGlobal1X128" },

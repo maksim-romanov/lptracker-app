@@ -18,4 +18,4 @@ bun run test
 
 ## Deploying
 
-Multi-step, easy to half-forget — use the `subgraph-deploy` skill rather than running `graph deploy` ad hoc. It also covers the two `apps/server` cross-references (`codegen.ts`, `features/uniswap-v3/data/constants/networks.ts`) that must stay in sync after a redeploy.
+Multi-step, easy to half-forget — use the `subgraph-deploy` skill rather than running `graph deploy` ad hoc. It also covers the two `apps/server` cross-references (`scripts/refresh-graphql-schema.ts`, `features/uniswap-v3/data/constants/networks.ts`) that must stay in sync after a redeploy.

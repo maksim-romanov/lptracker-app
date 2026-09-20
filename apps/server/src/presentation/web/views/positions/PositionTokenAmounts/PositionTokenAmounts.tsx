@@ -1,10 +1,14 @@
 import { cn } from "../../utils/cn";
 import type { ITokenSideVM } from "../card.vm";
 
-type Props = { tokens: ITokenSideVM[]; earning?: boolean; class?: string };
+type Props = { tokens: ITokenSideVM[]; earning?: boolean; read?: boolean; class?: string };
 
-export const PositionTokenAmounts = ({ tokens, earning = false, class: className }: Props) => {
+export const PositionTokenAmounts = ({ tokens, earning = false, read = true, class: className }: Props) => {
   if (tokens.length === 0) {
+    // An amount that was never read is not an amount of zero, and the dash is how this column
+    // says zero.
+    if (!read) return <span class={cn("block text-right text-body-small text-on-surface-variant", className)}>Unknown</span>;
+
     return (
       <span class={cn("block text-right text-body-small text-on-surface-variant", className)}>
         <span aria-hidden="true">—</span>

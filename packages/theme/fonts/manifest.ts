@@ -190,6 +190,16 @@ interface BaseTarget {
   label: string;
   /** Destination, relative to packages/theme. Gitignored on the receiving side. */
   outDir: string;
+  /**
+   * Where the OFL text lands, when it cannot sit in `outDir`. Android's `res/font/` rejects any
+   * file that is not `.xml`/`.ttf`/`.ttc`/`.otf` — AAPT fails the whole module's resource
+   * packaging over it — so that target ships its copy from `assets/` instead.
+   *
+   * It has to be a directory this plugin owns outright, because the build wipes it: pointing it
+   * at a general-purpose `assets/` would delete whatever else the module keeps there, and under
+   * the unanchored `android/` in .gitignore that loss is not even recoverable from git.
+   */
+  licenseOutDir?: string;
   faces: readonly FaceName[];
 }
 
@@ -226,6 +236,7 @@ export const targets: FontTarget[] = [
     kind: "native",
     label: "Android widget",
     outDir: "../../apps/mobile/modules/widget-bridge/android/src/main/res/font",
+    licenseOutDir: "../../apps/mobile/modules/widget-bridge/android/src/main/assets/fonts",
     faces: WIDGET_FACES,
     fileName: (face) => face.androidName,
   },

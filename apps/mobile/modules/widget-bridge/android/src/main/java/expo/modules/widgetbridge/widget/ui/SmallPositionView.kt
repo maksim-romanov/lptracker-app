@@ -73,11 +73,12 @@ fun SmallPositionView(
         )
         Spacer(GlanceModifier.height(Spacing.sm))
         InlineStatRow(
-          label = "Fees",
-          left = TokenStatHelper.feeString(position.primaryPrincipal?.symbol, position.fees),
-          right = TokenStatHelper.feeString(position.secondaryPrincipal?.symbol, position.fees),
+          label = "Owed",
+          left = TokenStatHelper.owedString(position.primaryPrincipal?.symbol, position.fees),
+          right = TokenStatHelper.owedString(position.secondaryPrincipal?.symbol, position.fees),
           valueStyle = Typography.valueXxs,
           accent = Colors.brandPrimary,
+          unknownLabel = if (position.owedWasRead) null else TokenStatHelper.UNREAD_LABEL,
         )
       }
     }
@@ -94,9 +95,10 @@ private fun RangeSection(position: WidgetPosition) {
       MetaTag(text = ext.feeTierLabel)
       Spacer(GlanceModifier.defaultWeight())
     }
-    if (ext.range != null) {
+    val bounds = ext.priceRange?.quoted
+    if (bounds != null) {
       Spacer(GlanceModifier.height(Spacing.md))
-      RangeBarView(range = ext.range)
+      RangeBarView(bounds = bounds, status = position.status)
     }
   }
 }

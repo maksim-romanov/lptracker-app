@@ -13,7 +13,7 @@ export const PositionInfoCard = ({ card, oob = false }: { card: ICardVM; oob?: b
   >
     <PositionOverlay card={card} />
     <PositionPair card={card} />
-    <PositionRange range={card.priceRange} tone={card.rangeTone} />
+    {card.priceRange && <PositionRange range={card.priceRange} tone={card.rangeTone} />}
 
     {/* min-h-19 (76px) keeps a closed position's card level with its neighbours: header row
         plus two token rows, even though it renders no tokens. */}

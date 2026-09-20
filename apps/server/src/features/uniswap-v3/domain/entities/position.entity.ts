@@ -48,14 +48,6 @@ export class PositionEntity {
     return this.data.updatedAtTimestamp;
   }
 
-  get isActive(): boolean {
-    return this.liquidity > 0n;
-  }
-
-  get isClosed(): boolean {
-    return this.liquidity === 0n;
-  }
-
   get sdk(): Position {
     return new Position({
       pool: this.pool.sdk,

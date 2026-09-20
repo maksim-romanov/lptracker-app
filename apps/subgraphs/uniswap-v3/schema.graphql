@@ -23,10 +23,14 @@ type Position @entity(immutable: false) {
 
   pool: Pool
 
-
   tickLower: Int!
   tickUpper: Int!
   liquidity: BigInt!
+
+  # NonfungiblePositionManager.burn() requires liquidity and both tokensOwed to be zero, so
+  # zero liquidity alone does not mean the NFT is gone — see `closed`.
+  tokensOwed0: BigInt!
+  tokensOwed1: BigInt!
 
   nonce: BigInt!
 

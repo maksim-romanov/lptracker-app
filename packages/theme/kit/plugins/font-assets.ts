@@ -21,10 +21,11 @@ export function fontAssets<T>(options: FontAssetsOptions): TokensPlugin<T> {
 
   return {
     name: "font-assets",
-    cleanDirs: () => options.targets.map((target) => resolve(target.outDir)),
+    cleanDirs: () =>
+      options.targets.flatMap((target) => [resolve(target.outDir), ...(target.licenseOutDir ? [resolve(target.licenseOutDir)] : [])]),
     files: () =>
       options.targets.flatMap((target) => [
-        copy(resolve(options.sourceDir, options.licenseFile), resolve(target.outDir, options.licenseFile)),
+        copy(resolve(options.sourceDir, options.licenseFile), resolve(target.licenseOutDir ?? target.outDir, options.licenseFile)),
         ...target.faces.flatMap((faceName) => {
           const face = faces[faceName];
           const family = families[face.family];

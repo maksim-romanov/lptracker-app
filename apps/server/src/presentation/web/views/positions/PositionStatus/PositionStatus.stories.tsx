@@ -10,7 +10,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const TONES: TPositionRangeTone[] = ["in-range", "near-lower", "near-upper", "out-of-range", "closed"];
+const TONES: TPositionRangeTone[] = ["in-range", "near-lower", "near-upper", "out-of-range", "drained", "closed"];
 
 // Every tone at once: soft fill with loud text is only safe because each pair is held to
 // 4.5:1 by packages/theme's contrast test, and this is where that gets looked at.

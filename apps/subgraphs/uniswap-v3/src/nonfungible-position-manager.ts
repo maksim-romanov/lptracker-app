@@ -11,8 +11,13 @@ import {
 import { Position } from "../generated/schema";
 import { getOrCreatePool } from "./utils/pool";
 
+// A drained position — zero liquidity, tokensOwed still owed — is not closed. burn() reverts
+// while either tokensOwed is non-zero, so the NFT is alive and holds collectable money; the
+// standard exit leaves it in that state between decreaseLiquidity() and collect().
 function updateClosed(position: Position, burned: boolean): void {
-  position.closed = burned || position.liquidity.equals(BigInt.zero());
+  position.closed =
+    burned ||
+    (position.liquidity.equals(BigInt.zero()) && position.tokensOwed0.equals(BigInt.zero()) && position.tokensOwed1.equals(BigInt.zero()));
 }
 
 function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: BigInt, timestamp: BigInt): void {
@@ -37,6 +42,8 @@ function syncPosition(contractAddress: Address, tokenId: BigInt, blockNumber: Bi
   position.tickLower = data.getTickLower();
   position.tickUpper = data.getTickUpper();
   position.liquidity = data.getLiquidity();
+  position.tokensOwed0 = data.getTokensOwed0();
+  position.tokensOwed1 = data.getTokensOwed1();
   position.updatedAtBlock = blockNumber;
   position.updatedAtTimestamp = timestamp;
 
@@ -59,6 +66,8 @@ export function handleTransfer(event: Transfer): void {
   if (position == null) {
     position = new Position(tokenId);
     position.liquidity = BigInt.zero();
+    position.tokensOwed0 = BigInt.zero();
+    position.tokensOwed1 = BigInt.zero();
     position.owner = event.params.to;
     position.operator = Address.zero();
     position.nonce = BigInt.zero();
@@ -80,6 +89,8 @@ export function handleTransfer(event: Transfer): void {
       position.tickLower = data.getTickLower();
       position.tickUpper = data.getTickUpper();
       position.liquidity = data.getLiquidity();
+      position.tokensOwed0 = data.getTokensOwed0();
+      position.tokensOwed1 = data.getTokensOwed1();
 
       let pool = getOrCreatePool(event.address, data.getToken0(), data.getToken1(), data.getFee(), event.block.number, event.block.timestamp);
       if (pool !== null) {

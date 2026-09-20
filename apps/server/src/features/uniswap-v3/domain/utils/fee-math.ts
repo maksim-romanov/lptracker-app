@@ -17,7 +17,7 @@ export const computeFeeGrowthInside = (
   return subInUint256(feeGrowthGlobalX128, feeGrowthOutsideLowerX128 + feeGrowthOutsideUpperX128);
 };
 
-export interface PositionFeeRawData {
+export interface PositionOwedRawData {
   feeGrowthGlobal0X128: bigint;
   feeGrowthGlobal1X128: bigint;
   feeGrowthOutside0LowerX128: bigint;
@@ -31,23 +31,36 @@ export interface PositionFeeRawData {
   onChainLiquidity: bigint;
 }
 
-export interface ComputedFees {
+export interface ComputedOwedBalance {
   token0: number;
   token1: number;
-  /** Raw fee amount for token0 as a base-10 integer string (BigInt-safe for cache serialization) */
+  /** Raw owed amount for token0 as a base-10 integer string (BigInt-safe for cache serialization) */
   token0Raw: string;
-  /** Raw fee amount for token1 as a base-10 integer string */
+  /** Raw owed amount for token1 as a base-10 integer string */
   token1Raw: string;
 }
 
-export function computeUnclaimedFees(
-  raw: PositionFeeRawData,
+/**
+ * What `collect()` would pay out now — not a fee figure.
+ *
+ * `tokensOwed` is one uint128 per token with no sub-ledger. `decreaseLiquidity` credits the
+ * withdrawn principal into it, so it holds principal and fees mixed together; v3-core states
+ * this outright on `IUniswapV3PoolActions.collect`: "Tokens owed may be from accumulated swap
+ * fees or burned liquidity." Splitting the two needs the position's `DecreaseLiquidity`
+ * history, which this read does not have.
+ *
+ * The growth term added here is unambiguously fee — it is the uncheckpointed accrual on the
+ * position's own liquidity — but it is only the part accrued since the last touch, so it is
+ * not a position's fee income either.
+ */
+export function computeOwedBalance(
+  raw: PositionOwedRawData,
   currentTick: number,
   tickLower: number,
   tickUpper: number,
   decimals0: number,
   decimals1: number,
-): ComputedFees {
+): ComputedOwedBalance {
   const feeGrowthInside0X128 = computeFeeGrowthInside(
     currentTick,
     tickLower,
@@ -69,13 +82,13 @@ export function computeUnclaimedFees(
   const feeGrowthInside0DeltaX128 = subInUint256(feeGrowthInside0X128, raw.feeGrowthInside0LastX128);
   const feeGrowthInside1DeltaX128 = subInUint256(feeGrowthInside1X128, raw.feeGrowthInside1LastX128);
 
-  const unclaimedFees0 = raw.tokensOwed0 + (raw.onChainLiquidity * feeGrowthInside0DeltaX128) / Q128;
-  const unclaimedFees1 = raw.tokensOwed1 + (raw.onChainLiquidity * feeGrowthInside1DeltaX128) / Q128;
+  const owed0 = raw.tokensOwed0 + (raw.onChainLiquidity * feeGrowthInside0DeltaX128) / Q128;
+  const owed1 = raw.tokensOwed1 + (raw.onChainLiquidity * feeGrowthInside1DeltaX128) / Q128;
 
   return {
-    token0: Number(unclaimedFees0) / 10 ** decimals0,
-    token1: Number(unclaimedFees1) / 10 ** decimals1,
-    token0Raw: unclaimedFees0.toString(),
-    token1Raw: unclaimedFees1.toString(),
+    token0: Number(owed0) / 10 ** decimals0,
+    token1: Number(owed1) / 10 ** decimals1,
+    token0Raw: owed0.toString(),
+    token1Raw: owed1.toString(),
   };
 }

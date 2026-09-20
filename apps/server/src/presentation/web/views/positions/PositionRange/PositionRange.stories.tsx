@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html-vite";
 
-import { closed, inRange, nearLowerBound, nearUpperBound, outOfRange } from "../__stories__/mocks";
+import { closed, drained, inRange, nearLowerBound, nearUpperBound, outOfRange } from "../__stories__/mocks";
 import type { ICardVM } from "../card.vm";
 import { PositionRange } from "./PositionRange";
 
@@ -8,7 +8,7 @@ import { PositionRange } from "./PositionRange";
 const renderRange = (card: ICardVM): HTMLElement => {
   const host = document.createElement("div");
   host.className = "max-w-[12rem]";
-  host.innerHTML = String(<PositionRange range={card.priceRange} tone={card.rangeTone} />);
+  if (card.priceRange) host.innerHTML = String(<PositionRange range={card.priceRange} tone={card.rangeTone} />);
   return host;
 };
 
@@ -24,3 +24,4 @@ export const NearLowerBound = { render: () => renderRange(nearLowerBound) } as S
 export const NearUpperBound = { render: () => renderRange(nearUpperBound) } as Story;
 export const OutOfRange = { render: () => renderRange(outOfRange) } as Story;
 export const Closed = { render: () => renderRange(closed) } as Story;
+export const Drained = { render: () => renderRange(drained) } as Story;
