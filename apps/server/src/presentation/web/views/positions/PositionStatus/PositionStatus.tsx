@@ -10,6 +10,7 @@ const TONE: Record<TPositionRangeTone, string> = {
   "near-lower": "bg-warning-container text-on-warning-container",
   "near-upper": "bg-warning-container text-on-warning-container",
   "out-of-range": "bg-error-container text-on-error-container",
+  drained: "bg-primary-container text-on-primary-container",
   closed: "bg-surface-variant text-on-surface-variant",
 };
 

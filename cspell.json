@@ -71,46 +71,24 @@
   ],
   "overrides": [
     {
-      "filename": [
-        "apps/server/**",
-        "packages/logger/**"
-      ],
-      "dictionaries": [
-        "server-words"
-      ]
+      "filename": ["apps/server/**", "packages/logger/**"],
+      "dictionaries": ["server-words"]
     },
     {
-      "filename": [
-        "apps/mobile/**",
-        "packages/theme/**"
-      ],
-      "dictionaries": [
-        "mobile-words"
-      ]
+      "filename": ["apps/mobile/**", "packages/theme/**"],
+      "dictionaries": ["mobile-words"]
     },
     {
-      "filename": [
-        "apps/tokens-data/**"
-      ],
-      "dictionaries": [
-        "tokens-data-words"
-      ]
+      "filename": ["apps/tokens-data/**"],
+      "dictionaries": ["tokens-data-words"]
     },
     {
-      "filename": [
-        "apps/subgraphs/**"
-      ],
-      "dictionaries": [
-        "subgraph-words"
-      ]
+      "filename": ["apps/subgraphs/**"],
+      "dictionaries": ["subgraph-words"]
     },
     {
-      "filename": [
-        "apps/landing/**"
-      ],
-      "dictionaries": [
-        "landing-words"
-      ]
+      "filename": ["apps/landing/**"],
+      "dictionaries": ["landing-words"]
     },
     {
       "filename": [
@@ -125,13 +103,7 @@
         "DESIGN.md",
         "PRODUCT.md"
       ],
-      "dictionaries": [
-        "server-words",
-        "mobile-words",
-        "tokens-data-words",
-        "subgraph-words",
-        "landing-words"
-      ]
+      "dictionaries": ["server-words", "mobile-words", "tokens-data-words", "subgraph-words", "landing-words"]
     }
   ],
   "ignorePaths": [
@@ -155,6 +127,7 @@
     "**/.turbo/**",
     "apps/server/openapi/**",
     "apps/server/**/gql/**",
+    "apps/server/schema.introspection.json",
     "apps/server/src/features/token-prices/data/tokens-data.generated.ts",
     "apps/server/src/presentation/web/views/fragments/__stories__/**",
     "apps/mobile/src/core/tokens-data/generated.d.ts",
@@ -193,12 +166,6 @@
     "skills-lock.json",
     "dump.rdb"
   ],
-  "ignoreRegExpList": [
-    "0x[0-9a-fA-F]+",
-    "https?://\\S+",
-    "[a-zA-Z0-9+/]{40,}={0,2}",
-    "[a-f0-9]{32,}",
-    "[\\u0400-\\u04FF]+"
-  ],
+  "ignoreRegExpList": ["0x[0-9a-fA-F]+", "https?://\\S+", "[a-zA-Z0-9+/]{40,}={0,2}", "[a-f0-9]{32,}", "[\\u0400-\\u04FF]+"],
   "useGitignore": true
 }

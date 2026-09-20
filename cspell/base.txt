@@ -87,3 +87,10 @@ workspaces
 workstream
 worktree
 yarnpkg
+
+millionfold
+rangeless
+uncheckpointed
+unrenderable
+untinted
+AAPT

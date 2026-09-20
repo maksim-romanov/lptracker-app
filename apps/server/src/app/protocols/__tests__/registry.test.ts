@@ -11,7 +11,7 @@ describe("protocolRegistry", () => {
     expect(entry?.mapError).toBe(mapV3Error);
   });
 
-  it("reports an unregistered slug as unknown rather than falling back to a neighbour", () => {
+  it("reports an unregistered slug as unknown rather than falling back to a neighbor", () => {
     expect(protocolRegistry.bySlug("not-a-real-protocol")).toBeUndefined();
   });
 });

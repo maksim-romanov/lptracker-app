@@ -90,10 +90,10 @@ private fun ColumnScope.LeftColumn(position: WidgetPosition, deepLinkAction: Act
   ) {
     Column {
       TagsRow(position)
-      val ext = position.extension as? WidgetExtension.UniswapV3
-      if (ext?.range != null) {
+      val bounds = (position.extension as? WidgetExtension.UniswapV3)?.priceRange?.quoted
+      if (bounds != null) {
         Spacer(GlanceModifier.height(Spacing.lg))
-        PriceRangeView(range = ext.range)
+        PriceRangeView(bounds = bounds, status = position.status)
       }
     }
   }
@@ -133,17 +133,18 @@ private fun ColumnScope.RightColumn(position: WidgetPosition, deepLinkAction: Ac
       )
       Spacer(GlanceModifier.height(Spacing.md))
       StatBlock(
-        label = "Fees",
+        label = "Owed",
         accent = Colors.brandPrimary,
         primary = TokenAmount(
-          value = TokenStatHelper.feeString(primary?.symbol, position.fees),
+          value = TokenStatHelper.owedString(primary?.symbol, position.fees),
           symbol = primary?.symbol,
         ),
         secondary = TokenAmount(
-          value = TokenStatHelper.feeString(secondary?.symbol, position.fees),
+          value = TokenStatHelper.owedString(secondary?.symbol, position.fees),
           symbol = secondary?.symbol,
         ),
         density = Density.Compact,
+        unknownLabel = if (position.owedWasRead) null else TokenStatHelper.UNREAD_LABEL,
       )
     }
   }

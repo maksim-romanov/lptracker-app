@@ -22,6 +22,12 @@ export const positionStatusSchema = v.pipe(
 
 export const positionTokenSchema = v.pipe(
   v.object({
+    // "principal" | "owed" — open string on the wire, so a protocol with a role no client was
+    // compiled against still parses. "owed" is what a claim transaction would pay out, which is
+    // not the same as fee income: Uniswap v3 credits withdrawn principal into the same balance
+    // ("Tokens owed may be from accumulated swap fees or burned liquidity", v3-core's
+    // IUniswapV3PoolActions#collect), and only a protocol that keeps the two apart may name a
+    // fee role.
     role: v.string(),
     tokenRef: tokenRefSchema,
     balance: tokenAmountSchema,
@@ -29,7 +35,62 @@ export const positionTokenSchema = v.pipe(
   v.metadata({ ref: "PositionToken" }),
 );
 
-const positionBaseShape = {
+export const feeAccrualSchema = v.pipe(
+  v.object({
+    // "unknown" | "claimable" | "redirected" | "compounded" — open string on the wire, so a
+    // protocol with a mode no client was compiled against still parses.
+    mode: v.string(),
+    reason: v.nullable(v.string()),
+    destination: v.nullable(v.string()),
+  }),
+  v.metadata({ ref: "FeeAccrual" }),
+);
+
+export const yieldRewardSchema = v.pipe(
+  v.object({
+    tokenRef: tokenRefSchema,
+    claimable: tokenAmountSchema,
+    // Raw token quantity per second, not a rate — it overflows Number.
+    emissionPerSecond: v.nullable(tokenAmountSchema),
+  }),
+  v.metadata({ ref: "YieldReward" }),
+);
+
+export const yieldSourceSchema = v.pipe(
+  v.object({
+    kind: v.string(),
+    ref: v.string(),
+    container: v.nullable(containerSchema),
+    rewards: v.array(yieldRewardSchema),
+  }),
+  v.metadata({ ref: "YieldSource" }),
+);
+
+export const positionRangeSchema = v.pipe(
+  v.object({
+    // Decimal strings. null means unbounded. No formatting and no rounding — displayDecimals
+    // stays the client's call, and inversion is a client-held preference.
+    lower: v.nullable(v.string()),
+    upper: v.nullable(v.string()),
+    current: v.string(),
+    baseTokenRef: tokenRefSchema,
+    quoteTokenRef: tokenRefSchema,
+  }),
+  v.metadata({ ref: "PositionRange" }),
+);
+
+export const positionStatSchema = v.pipe(
+  v.object({
+    // Display only. Never compared, never a dispatch key — the moment a client writes
+    // `if (stat.label === …)` this becomes a second taxonomy with no schema.
+    label: v.string(),
+    value: v.string(),
+    critical: v.boolean(),
+  }),
+  v.metadata({ ref: "PositionStat" }),
+);
+
+export const positionBaseShape = {
   ref: v.string(),
   address: v.string(),
   chainId: v.number(),
@@ -40,6 +101,10 @@ const positionBaseShape = {
   status: positionStatusSchema,
   createdAt: v.nullable(v.string()),
   updatedAt: v.string(),
+  feeAccrual: feeAccrualSchema,
+  yieldSources: v.array(yieldSourceSchema),
+  range: v.nullable(positionRangeSchema),
+  stats: v.array(positionStatSchema),
 };
 
 /**
@@ -70,19 +135,20 @@ export type UnknownExtension = v.InferOutput<typeof unknownExtensionSchema>;
  * plus the UnknownExtension fallback.
  *
  * Produced schema:
- *   Position = { ...baseFields, extension: union([...known, UnknownExtension]) }
+ *   Position = { ...baseFields, extension: variant("type", [...known, UnknownExtension]) }
  *
- * In OpenAPI this becomes `oneOf`. Each known extension has `type: const "..."`, so
- * openapi-typescript generates a discriminated TypeScript union on `Position["extension"]`,
- * which TS narrows via `switch (extension.type) { case "uniswap-v3": ... }`.
+ * In OpenAPI this becomes `oneOf` (not `anyOf`), so Dart and Swift generators render a
+ * proper sealed type instead of flattening every variant's fields into one class with
+ * everything required. `unknownExtensionSchema` must stay last: its `type` field is a
+ * free string, so it matches any discriminant value that no earlier variant claimed.
  */
 export const buildPositionSchema = (extensionSchemas: readonly ExtensionVariantSchema[]) => {
-  const extensionUnion = v.union([...extensionSchemas, unknownExtensionSchema]);
+  const extensionVariant = v.variant("type", [...extensionSchemas, unknownExtensionSchema]);
 
   return v.pipe(
     v.object({
       ...positionBaseShape,
-      extension: extensionUnion,
+      extension: extensionVariant,
     }),
     v.metadata({ ref: "Position" }),
   );
@@ -91,6 +157,11 @@ export const buildPositionSchema = (extensionSchemas: readonly ExtensionVariantS
 export type PositionContainer = v.InferOutput<typeof containerSchema>;
 export type PositionStatus = v.InferOutput<typeof positionStatusSchema>;
 export type PositionToken = v.InferOutput<typeof positionTokenSchema>;
+export type FeeAccrual = v.InferOutput<typeof feeAccrualSchema>;
+export type YieldReward = v.InferOutput<typeof yieldRewardSchema>;
+export type YieldSource = v.InferOutput<typeof yieldSourceSchema>;
+export type PositionRange = v.InferOutput<typeof positionRangeSchema>;
+export type PositionStat = v.InferOutput<typeof positionStatSchema>;
 
 /**
  * Hand-written Position interface used by mappers and route handlers.
@@ -117,5 +188,9 @@ export interface Position {
   status: PositionStatus;
   createdAt: string | null;
   updatedAt: string;
+  feeAccrual: FeeAccrual;
+  yieldSources: YieldSource[];
+  range: PositionRange | null;
+  stats: PositionStat[];
   extension: PositionExtensionBase & Record<string, unknown>;
 }

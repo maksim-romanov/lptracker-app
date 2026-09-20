@@ -1,6 +1,7 @@
 import { POSITIONS_LAYOUTS } from "../../positions-layout";
 import { ErrorBanner } from "../components/Banner/ErrorBanner/ErrorBanner";
-import type { ICardVM } from "../positions/card.vm";
+import { type ICardVM, sortCardsByUrgency, type TPositionRangeTone } from "../positions/card.vm";
+import { PositionDetail } from "../positions/PositionDetail/PositionDetail";
 import { PositionInfoCard } from "../positions/PositionInfoCard/PositionInfoCard";
 import { PositionInfoRow } from "../positions/PositionInfoRow/PositionInfoRow";
 import { PositionItem } from "../positions/PositionItem/PositionItem";
@@ -10,16 +11,16 @@ import type { Position, TokensMap } from "#shared/contracts";
 
 const card: ICardVM = {
   ref: "uniswap-v3:1:42",
-  nftTokenId: "42",
-  feeTierLabel: "0.3%",
-  status: "in-range",
   rangeTone: "in-range",
   inverted: false,
   chainId: 1,
   protocol: { slug: "uniswap-v3", label: "Uniswap V3" },
+  venueLabel: "0.3%",
+  positionLabel: "#42",
+  externalUrl: "https://app.uniswap.org/positions/v3/ethereum/42",
   pair: { base: { tokenRef: "1:0xa", symbol: "WETH", iconUrl: "" }, quote: { tokenRef: "1:0xb", symbol: "USDC", iconUrl: "" } },
   principal: [{ tokenRef: "1:0xa", symbol: "WETH", formatted: "5.165909", formattedShort: "5.1659", iconUrl: "" }],
-  fees: [],
+  owed: [],
   priceRange: {
     minLabel: "1,800",
     currentLabel: "2,000",
@@ -34,7 +35,8 @@ const card: ICardVM = {
   poolAddress: "0xpool",
   ownerAddress: "0x71c7656ec7ab88b098defb751b7401b5f6d8976f",
   openedAtLabel: "Mar 12, 2026",
-  hasUnclaimedFees: false,
+  hasUnclaimedBalance: false,
+  feeMode: "claimable",
 };
 
 const s = (node: unknown) => String(node);
@@ -139,16 +141,16 @@ describe("web positions", () => {
     // true, and a lot to ask of anyone reading down a column of them.
     expect(html).toContain("5.1659 WETH");
     expect(html).not.toContain('<span class="sr-only">WETH </span>');
-    // fees are empty on this card, so the cell falls back to a dash that is not read aloud
+    // the owed column is empty on this card, so the cell falls back to a dash that is not read aloud
     expect(html).toContain('<span class="sr-only">None</span>');
 
-    const withFees = s(
+    const withOwed = s(
       PositionInfoRow({
-        card: { ...card, fees: [{ tokenRef: "1:0xb", symbol: "USDC", formatted: "8.40", formattedShort: "8.4", iconUrl: "" }] },
+        card: { ...card, owed: [{ tokenRef: "1:0xb", symbol: "USDC", formatted: "8.40", formattedShort: "8.4", iconUrl: "" }] },
       }),
     );
-    expect(withFees).toContain("8.4");
-    expect(withFees).not.toContain('<span class="sr-only">None</span>');
+    expect(withOwed).toContain("8.4");
+    expect(withOwed).not.toContain('<span class="sr-only">None</span>');
   });
 
   it("PositionInfoCard names its amounts through real row and column headers", () => {
@@ -156,7 +158,7 @@ describe("web positions", () => {
     expect(html).toStartWith("<li");
     // Each number is a token crossed with a measure, which a description list cannot
     // express — it names one value per term, and here every token has two.
-    for (const column of ["Token", "Amount", "Unclaimed fees"]) {
+    for (const column of ["Token", "Amount", "To claim"]) {
       expect(html).toContain(`>${column}</th>`);
     }
     expect(html).toContain('<th scope="row"');
@@ -184,7 +186,7 @@ describe("web positions", () => {
     expect(html).toContain("shell-bleed");
     expect(html).toContain('<caption id="positions-table-caption"');
     expect(html).toContain('<th scope="col"');
-    for (const column of ["Position", "Range", "Amounts", "Unclaimed fees"]) {
+    for (const column of ["Position", "Range", "Amounts", "To claim"]) {
       expect(html).toContain(`>${column}</th>`);
     }
     // the network moved into the Position cell as a badge; a column of its own repeated the
@@ -221,6 +223,10 @@ const uniswapV3Position = {
   status: { state: "in-range", stateDetail: null },
   createdAt: null,
   updatedAt: "2026-01-01T00:00:00Z",
+  feeAccrual: { mode: "claimable", reason: null, destination: null },
+  yieldSources: [],
+  range: { lower: null, upper: null, current: "2500", baseTokenRef: "1:0xa", quoteTokenRef: "1:0xb" },
+  stats: [],
   extension: {
     type: "uniswap-v3",
     version: 1,
@@ -376,5 +382,86 @@ describe("web route validation XSS regression", () => {
       const body = await (await webRoutes.request(`/positions/uniswap-v3:1:42/item?layout=${layout}`)).text();
       expect(body).toContain("Unknown protocol");
     }
+  });
+});
+
+// A ve(3,3)-style classic LP: one fungible ERC-20 LP token, so there is no NFT to name, no
+// tick range to draw and no fee tier to print. Every one of those is absent rather than faked.
+const fungibleLpCard: ICardVM = {
+  ref: "aerodrome:8453:0xpool-0xowner",
+  rangeTone: "in-range",
+  inverted: false,
+  chainId: 8453,
+  protocol: { slug: "aerodrome", label: "Aerodrome" },
+  pair: { base: { tokenRef: "8453:0xa", symbol: "AERO", iconUrl: "" }, quote: { tokenRef: "8453:0xb", symbol: "USDC", iconUrl: "" } },
+  principal: [{ tokenRef: "8453:0xa", symbol: "AERO", formatted: "120.5", formattedShort: "120.5", iconUrl: "" }],
+  owed: [],
+  priceRange: null,
+  venueLabel: null,
+  positionLabel: null,
+  externalUrl: null,
+  poolAddress: "0xpool",
+  ownerAddress: "0x71c7656ec7ab88b098defb751b7401b5f6d8976f",
+  openedAtLabel: null,
+  hasUnclaimedBalance: false,
+  feeMode: "claimable",
+};
+
+describe("the card view model carries no protocol-specific field", () => {
+  for (const [name, render] of [
+    ["PositionInfoRow", (card: ICardVM) => s(PositionInfoRow({ card }))],
+    ["PositionInfoCard", (card: ICardVM) => s(PositionInfoCard({ card }))],
+    ["PositionDetail", (card: ICardVM) => s(PositionDetail({ card }))],
+  ] as const) {
+    it(`${name} renders a position with no NFT, no fee tier and no price range`, () => {
+      const html = render(fungibleLpCard);
+      expect(html).toContain("AERO");
+      expect(html).toContain("Aerodrome");
+      expect(html).not.toContain("NaN");
+      expect(html).not.toContain("undefined");
+      expect(html).not.toContain("View on Uniswap");
+    });
+  }
+
+  it("PositionDetail names the protocol it links out to, rather than assuming Uniswap", () => {
+    const html = s(PositionDetail({ card: { ...card, externalUrl: "https://example.test/p/42", positionLabel: "#42" } }));
+    expect(html).toContain('href="https://example.test/p/42"');
+    expect(html).toContain("View on Uniswap V3");
+    expect(html).toContain("#42");
+  });
+
+  it("gives a drained position an action state of its own instead of calling it closed", () => {
+    const html = s(PositionInfoRow({ card: { ...card, rangeTone: "drained", hasUnclaimedBalance: true, owed: card.principal } }));
+    expect(html).toContain("To claim");
+    expect(html).not.toContain("Closed");
+    // The money is the point of the state, so the amounts have to be on the row.
+    expect(html).toContain("5.1659 WETH");
+  });
+
+  it("says an unread amount is unknown rather than letting the empty column read as nothing owed", () => {
+    const row = s(PositionInfoRow({ card: { ...card, owed: [], feeMode: "unknown" } }));
+    expect(row).toContain("Unknown");
+    expect(row).not.toContain("None");
+  });
+
+  it("says the same in the amounts table, which reports a missing amount per token rather than per card", () => {
+    const html = s(PositionInfoCard({ card: { ...card, owed: [], feeMode: "unknown" } }));
+    expect(html).toContain("Unknown");
+    expect(html).not.toContain("None");
+    // The guard above the table hides every cell when there is no principal, so the case only
+    // renders at all while the card still lists its pool tokens.
+    expect(html).not.toContain("holds no tokens");
+  });
+
+  it("still reports an amount that was read and came back empty as none", () => {
+    const row = s(PositionInfoRow({ card: { ...card, owed: [], feeMode: "claimable" } }));
+    expect(row).toContain("None");
+    expect(row).not.toContain("Unknown");
+  });
+
+  it("sorts a drained position above a live one, because it needs one action and a live one needs none", () => {
+    const tones: TPositionRangeTone[] = ["closed", "in-range", "drained", "out-of-range"];
+    const cards = tones.map((rangeTone, index) => ({ ...card, ref: String(index), rangeTone }));
+    expect(sortCardsByUrgency(cards).map((entry) => entry.rangeTone)).toEqual(["out-of-range", "drained", "in-range", "closed"]);
   });
 });

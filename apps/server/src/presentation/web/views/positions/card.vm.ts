@@ -1,5 +1,3 @@
-import type { TUniswapV3RangeStatus } from "@depthly/protocol-math/uniswap-v3";
-
 export interface ITokenSideVM {
   tokenRef: string;
   symbol: string;
@@ -16,54 +14,66 @@ export interface IPairSideVM {
   iconUrl: string;
 }
 
-export type TPositionRangeTone = "in-range" | "near-lower" | "near-upper" | "out-of-range" | "closed";
+export interface IPriceRangeVM {
+  minLabel: string;
+  currentLabel: string;
+  maxLabel: string;
+  quoteSymbol: string;
+  baseSymbol: string;
+  // Range-bar layout, percentages 0–100.
+  bandLeftPct: number;
+  bandWidthPct: number;
+  thumbPct: number;
+  inRange: boolean;
+}
+
+// "drained" is not a flavour of closed: the liquidity is gone but the collectable balance is
+// still there and one transaction takes it.
+export type TPositionRangeTone = "in-range" | "near-lower" | "near-upper" | "out-of-range" | "drained" | "closed";
 
 export interface ICardVM {
   ref: string;
-  nftTokenId: string;
-  feeTierLabel: string;
-  status: TUniswapV3RangeStatus;
   rangeTone: TPositionRangeTone;
   inverted: boolean;
   chainId: number;
-  // Which protocol runs this pool was nowhere in the UI: "v3 / 0.30%" reads as Uniswap by
-  // default, and that breaks the moment a position sits on a fork. The slug is what selects
-  // the mark's colour, the label is what is always spelled out beside it.
+  // The slug selects the mark's colour; the label is spelled out beside it.
   protocol: { slug: string; label: string };
+  // A short qualifier for the venue the position sits in — "0.3%" for a v3 fee tier, "Volatile"
+  // for an Aerodrome pool. Null for a protocol whose venue needs no qualifier.
+  venueLabel: string | null;
+  // How the protocol's own interface names this position, and where it shows it. A v3 position
+  // is an NFT with an id; a fungible LP token is neither named nor separately addressable.
+  positionLabel: string | null;
+  externalUrl: string | null;
   pair: { base: IPairSideVM; quote: IPairSideVM };
   principal: ITokenSideVM[];
-  fees: ITokenSideVM[];
-  priceRange: {
-    minLabel: string;
-    currentLabel: string;
-    maxLabel: string;
-    quoteSymbol: string;
-    baseSymbol: string;
-    // Range-bar layout, percentages 0–100.
-    bandLeftPct: number;
-    bandWidthPct: number;
-    thumbPct: number;
-    inRange: boolean;
-  };
+  // What a claim transaction would pay out, which includes withdrawn principal — not fee income.
+  owed: ITokenSideVM[];
+  // Null for a position with no price range at all — a classic constant-product LP is in every
+  // price, so a bar showing where the price sits inside its range would be showing nothing.
+  priceRange: IPriceRangeVM | null;
   poolAddress: string;
-  // A position belongs to one of several tracked wallets and was opened at some point; neither
-  // was answerable from the detail panel before, and both are what tell two otherwise
-  // identical positions apart.
   ownerAddress: string;
   openedAtLabel: string | null;
-  // Whether the fee column has earned anything. Derived from the raw balances rather than from
-  // the formatted strings, which round a dust amount to "0.0000" and would read as nothing.
-  hasUnclaimedFees: boolean;
+  // Whether the owed column holds more than dust. Derived from the raw balances rather than
+  // from the formatted strings, which round a dust amount to "0.0000" and would read as nothing.
+  hasUnclaimedBalance: boolean;
+  // The contract's `feeAccrual.mode` verbatim. A position whose read failed lists no owed token —
+  // the invariant in shared/contracts forbids one — so an empty column is indistinguishable from
+  // a zero balance unless the card carries this.
+  feeMode: string;
 }
 
-// The list leads with the positions that need a decision and trails with the ones that cannot
-// need one. Ties break on ref so the order is stable across polls.
+// Ordered by the decision each position asks for, not by its health: drained outranks in-range
+// because collecting is an action and sitting in range is not. Ties break on ref so the order is
+// stable across polls.
 const URGENCY: Record<TPositionRangeTone, number> = {
   "out-of-range": 0,
   "near-lower": 1,
   "near-upper": 1,
-  "in-range": 2,
-  closed: 3,
+  drained: 2,
+  "in-range": 3,
+  closed: 4,
 };
 
 export const sortCardsByUrgency = (cards: ICardVM[]): ICardVM[] =>

@@ -7,7 +7,8 @@ import Animated, { Extrapolation, interpolate, type SharedValue, useAnimatedStyl
 import { StyleSheet } from "react-native-unistyles";
 import tinycolor from "tinycolor2";
 
-import type { TUniswapV3RangeStatus, TUniswapV3VM } from "../../domain/uniswap-v3.vm";
+import type { TUniswapV3VM } from "../../domain/uniswap-v3.vm";
+import { positionStatusPresentation } from "../lib/position-status-presentation";
 
 interface IProps {
   readonly vm: TUniswapV3VM;
@@ -19,19 +20,8 @@ interface IProps {
 const PILL_HEIGHT = 84;
 const REVEAL_DISTANCE = 80;
 
-const STATUS_TONE: Record<TUniswapV3RangeStatus, "success" | "warning" | "neutral"> = {
-  "in-range": "success",
-  "out-of-range": "warning",
-  closed: "neutral",
-};
-
-const STATUS_LABEL: Record<TUniswapV3RangeStatus, string> = {
-  "in-range": "In range",
-  "out-of-range": "Out of range",
-  closed: "Closed",
-};
-
 export const PositionStickyPill = function PositionStickyPill({ vm, chainId, scrollOffset, heroEndY }: IProps) {
+  const status = positionStatusPresentation(vm.status);
   const pairTokens = [
     { symbol: vm.pair.base.symbol, address: vm.pair.base.tokenRef.split(":")[1] },
     { symbol: vm.pair.quote.symbol, address: vm.pair.quote.tokenRef.split(":")[1] },
@@ -68,7 +58,7 @@ export const PositionStickyPill = function PositionStickyPill({ vm, chainId, scr
             <NetworkBadge chainId={chainId} size="sm" />
             <Tag tone="brand">V3</Tag>
             <Tag tone="neutral">{vm.feeTierLabel}</Tag>
-            <Tag tone={STATUS_TONE[vm.status]}>{STATUS_LABEL[vm.status]}</Tag>
+            <Tag tone={status.tone}>{status.label}</Tag>
           </Inline>
         </Stack>
       </View>

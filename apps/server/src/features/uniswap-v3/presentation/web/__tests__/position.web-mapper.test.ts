@@ -1,6 +1,8 @@
-import { deriveRangeTone, mapPositionToCardVM } from "../position.web-mapper";
+import { formatPrice } from "@depthly/protocol-math/format";
+
+import { mapPositionToCardVM } from "../position.web-mapper";
 import { describe, expect, it } from "bun:test";
-import { type ICardVM, sortCardsByUrgency, type TPositionRangeTone } from "#presentation/web/views/positions/card.vm";
+import { type ICardVM, type IPriceRangeVM, sortCardsByUrgency, type TPositionRangeTone } from "#presentation/web/views/positions/card.vm";
 import type { Position, TokensMap } from "#shared/contracts";
 
 const tokens: TokensMap = {
@@ -29,6 +31,17 @@ const position = {
   status: { state: "in-range", stateDetail: null },
   createdAt: null,
   updatedAt: "2024-01-01T00:00:00Z",
+  feeAccrual: { mode: "unknown", reason: null, destination: null },
+  yieldSources: [],
+  // Full range, so both bounds are unbounded — the ticks below say the same thing.
+  range: {
+    lower: null,
+    upper: null,
+    current: "1000000000000",
+    baseTokenRef: "1:0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    quoteTokenRef: "1:0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  },
+  stats: [],
   extension: {
     type: "uniswap-v3",
     version: 1,
@@ -42,13 +55,18 @@ const position = {
   },
 } as unknown as Position;
 
+// The mapper refuses a v3 position with no range, so every card it does hand back has one.
+const priceRangeOf = (source: Position, inverted: boolean): IPriceRangeVM => {
+  const { priceRange } = mapPositionToCardVM(source, tokens, { inverted });
+  if (!priceRange) throw new Error("mapPositionToCardVM returned a v3 card with no price range");
+  return priceRange;
+};
+
 describe("mapPositionToCardVM", () => {
   it("maps base/quote in default (non-inverted) order", () => {
     const vm = mapPositionToCardVM(position, tokens, { inverted: false });
     expect(vm.ref).toBe("uniswap-v3:1:42");
-    expect(vm.nftTokenId).toBe("42");
-    expect(vm.feeTierLabel).toBe("0.3%");
-    expect(vm.status).toBe("in-range");
+    expect(vm.rangeTone).toBe("in-range");
     expect(vm.pair.base.symbol).toBe("WETH");
     expect(vm.pair.quote.symbol).toBe("USDC");
     expect(vm.principal.map((p) => p.symbol)).toEqual(["WETH", "USDC"]);
@@ -61,6 +79,35 @@ describe("mapPositionToCardVM", () => {
     expect(vm.principal.map((p) => p.symbol)).toEqual(["USDC", "WETH"]);
   });
 
+  it("reads the price bounds off the contract's range rather than re-deriving them from ticks", () => {
+    const bounded = {
+      ...position,
+      range: { ...(position.range as NonNullable<Position["range"]>), lower: "1800.5", upper: "2200.25", current: "1950.4" },
+    } as Position;
+
+    const priceRange = priceRangeOf(bounded, false);
+    expect(priceRange.minLabel).toBe("1,800.50");
+    expect(priceRange.currentLabel).toBe("1,950.40");
+    expect(priceRange.maxLabel).toBe("2,200.25");
+  });
+
+  it("reads an unbounded side as zero and infinity, which is what a full-range position is", () => {
+    const priceRange = priceRangeOf(position, false);
+    expect(priceRange.minLabel).toBe("0");
+    expect(priceRange.maxLabel).toBe("∞");
+  });
+
+  it("carries an unbounded side across an inversion, since one over an unbounded price is zero", () => {
+    const oneSided = {
+      ...position,
+      range: { ...(position.range as NonNullable<Position["range"]>), lower: "1800.5", upper: null },
+    } as Position;
+
+    const priceRange = priceRangeOf(oneSided, true);
+    expect(priceRange.minLabel).toBe("0");
+    expect(priceRange.maxLabel).toBe(formatPrice(1 / 1800.5));
+  });
+
   it("formats token amounts with displayDecimals from token meta", () => {
     const vm = mapPositionToCardVM(position, tokens, { inverted: false });
     // USDC is a stablecoin → displayDecimals 2; formatTokenAmount must apply it.
@@ -69,54 +116,62 @@ describe("mapPositionToCardVM", () => {
   });
 });
 
-// A ±10% band: 1,906 ticks wide. Narrower than the ~±19% at which the fixed 5% cap starts to
-// bind, so its edge is a share of the range — 286 ticks, about a 2.9% move.
-const TIGHT = { lower: -953, upper: 953 };
-// A full-range position: the whole tick space, which is what every "max ∞" position looks like.
-const FULL = { lower: -887220, upper: 887220 };
-
-describe("deriveRangeTone", () => {
-  it("keeps a price away from either bound plain in-range", () => {
-    expect(deriveRangeTone("in-range", { ...TIGHT, current: 0 })).toBe("in-range");
+describe("the v3 facts the card needs are carried in protocol-neutral slots", () => {
+  it("fills the venue, position and deep-link slots from the extension", () => {
+    const vm = mapPositionToCardVM(position, tokens, { inverted: false });
+    expect(vm.venueLabel).toBe("0.3%");
+    expect(vm.positionLabel).toBe("#42");
+    expect(vm.externalUrl).toBe("https://app.uniswap.org/positions/v3/ethereum/42");
   });
 
-  it("names the bound a price is approaching", () => {
-    expect(deriveRangeTone("in-range", { ...TIGHT, current: -800 })).toBe("near-lower");
-    expect(deriveRangeTone("in-range", { ...TIGHT, current: 800 })).toBe("near-upper");
+  it("sends an unlisted chain to a slug that 404s rather than to a real chain's", () => {
+    // A link that opens on the wrong network is worse than one that does not open: it shows the
+    // reader somebody else's positions and says nothing about being wrong.
+    const unlisted = { ...position, ref: "uniswap-v3:130:42" } as Position;
+    expect(mapPositionToCardVM(unlisted, tokens, { inverted: false }).externalUrl).toBe("https://app.uniswap.org/positions/v3/unknown/42");
   });
 
-  it("measures the edge in price, so a wide range is not permanently at its bound", () => {
-    // A fraction-of-the-band rule put every full-range position at "near lower bound" for good:
-    // a tenth of that span is a fifty-million-fold price move, so nothing could ever leave it.
-    expect(deriveRangeTone("in-range", { ...FULL, current: -887220 + 5000 })).toBe("in-range");
-    // Sitting a hair above the floor is still worth naming, whatever the span.
-    expect(deriveRangeTone("in-range", { ...FULL, current: -887220 + 100 })).toBe("near-lower");
-    expect(deriveRangeTone("in-range", { ...FULL, current: 887220 - 100 })).toBe("near-upper");
+  it("gives a drained position an action tone rather than collapsing it into closed", () => {
+    const drained = { ...position, status: { state: "drained", stateDetail: null } } as Position;
+    expect(mapPositionToCardVM(drained, tokens, { inverted: false }).rangeTone).toBe("drained");
   });
 
-  it("falls back to a share of the range when the range is narrower than the price threshold", () => {
-    // A ±0.5% band is 200 ticks wide; a fixed 488 would cover it end to end and the warning
-    // could never switch off.
-    const narrow = { lower: -100, upper: 100 };
-    expect(deriveRangeTone("in-range", { ...narrow, current: 0 })).toBe("in-range");
-    expect(deriveRangeTone("in-range", { ...narrow, current: -90 })).toBe("near-lower");
+  it("carries the states that are not about where the price sits straight through", () => {
+    for (const state of ["out-of-range", "closed"] as const) {
+      const at = { ...position, status: { state, stateDetail: null } } as Position;
+      expect(mapPositionToCardVM(at, tokens, { inverted: false }).rangeTone).toBe(state);
+    }
   });
 
-  it("names the bound the reader is looking at, which swaps when the pair is inverted", () => {
-    const nearLower = { ...TIGHT, current: -800 };
-    expect(deriveRangeTone("in-range", nearLower)).toBe("near-lower");
-    expect(deriveRangeTone("in-range", nearLower, true)).toBe("near-upper");
-  });
-
-  it("passes a position that is not in range straight through", () => {
-    // proximity is meaningless once the price has left the band, and closed positions
-    // have no live price at all
-    expect(deriveRangeTone("out-of-range", { ...TIGHT, current: 5000 })).toBe("out-of-range");
-    expect(deriveRangeTone("closed", { ...TIGHT, current: 0 })).toBe("closed");
+  it("refuses a state it was not built for instead of painting it as live", () => {
+    const unknown = { ...position, status: { state: "staked", stateDetail: null } } as Position;
+    // The board counts a throwing mapper as unrenderable; guessing "in-range" would show a
+    // position that earns nothing as one that does.
+    expect(() => mapPositionToCardVM(unknown, tokens, { inverted: false })).toThrow(/unknown uniswap-v3 position state/);
   });
 });
 
 const cardWith = (ref: string, rangeTone: TPositionRangeTone): ICardVM => ({ ref, rangeTone }) as ICardVM;
+
+describe("feeMode", () => {
+  it("carries the mode verbatim, so redirected and compounded do not collapse into one another", () => {
+    for (const mode of ["unknown", "claimable", "redirected", "compounded", "some-future-mode"]) {
+      const withMode = { ...position, feeAccrual: { mode, reason: null, destination: null } } as Position;
+      expect(mapPositionToCardVM(withMode, tokens, { inverted: false }).feeMode).toBe(mode);
+    }
+  });
+
+  it("lists nothing owed when the pinned read failed, which is why the card has to carry the mode", () => {
+    const vm = mapPositionToCardVM(position, tokens, { inverted: false });
+    expect(vm.feeMode).toBe("unknown");
+    expect(vm.owed).toEqual([]);
+  });
+
+  it("reads a position with no feeAccrual as unknown rather than throwing, for a server mid-rollout", () => {
+    const { feeAccrual: _feeAccrual, ...withoutFeeAccrual } = position;
+    expect(mapPositionToCardVM(withoutFeeAccrual as Position, tokens, { inverted: false }).feeMode).toBe("unknown");
+  });
+});
 
 describe("sortCardsByUrgency", () => {
   it("leads with out-of-range, then near bounds, then in-range, then closed", () => {

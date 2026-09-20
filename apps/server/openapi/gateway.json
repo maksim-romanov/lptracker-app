@@ -457,6 +457,158 @@
           "stateDetail"
         ]
       },
+      "FeeAccrual": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "mode",
+          "reason",
+          "destination"
+        ]
+      },
+      "YieldReward": {
+        "type": "object",
+        "properties": {
+          "tokenRef": {
+            "$ref": "#/components/schemas/TokenRef"
+          },
+          "claimable": {
+            "$ref": "#/components/schemas/TokenAmount"
+          },
+          "emissionPerSecond": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TokenAmount"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "tokenRef",
+          "claimable",
+          "emissionPerSecond"
+        ]
+      },
+      "YieldSource": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "container": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PositionContainer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rewards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/YieldReward"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "ref",
+          "container",
+          "rewards"
+        ]
+      },
+      "PositionRange": {
+        "type": "object",
+        "properties": {
+          "lower": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "upper": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "current": {
+            "type": "string"
+          },
+          "baseTokenRef": {
+            "$ref": "#/components/schemas/TokenRef"
+          },
+          "quoteTokenRef": {
+            "$ref": "#/components/schemas/TokenRef"
+          }
+        },
+        "required": [
+          "lower",
+          "upper",
+          "current",
+          "baseTokenRef",
+          "quoteTokenRef"
+        ]
+      },
+      "PositionStat": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "critical": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "value",
+          "critical"
+        ]
+      },
       "UniswapV3Extension": {
         "type": "object",
         "properties": {
@@ -577,8 +729,33 @@
           "updatedAt": {
             "type": "string"
           },
-          "extension": {
+          "feeAccrual": {
+            "$ref": "#/components/schemas/FeeAccrual"
+          },
+          "yieldSources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/YieldSource"
+            }
+          },
+          "range": {
             "anyOf": [
+              {
+                "$ref": "#/components/schemas/PositionRange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PositionStat"
+            }
+          },
+          "extension": {
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/UniswapV3Extension"
               },
@@ -598,6 +775,10 @@
           "status",
           "createdAt",
           "updatedAt",
+          "feeAccrual",
+          "yieldSources",
+          "range",
+          "stats",
           "extension"
         ]
       },

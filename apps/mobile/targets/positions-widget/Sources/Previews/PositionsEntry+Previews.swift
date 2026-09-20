@@ -16,6 +16,13 @@
       emptyReason: nil
     )
 
+    static let drained = PositionsEntry(
+      date: .now,
+      position: .drainedPreview,
+      snapshotAge: 30,
+      emptyReason: nil
+    )
+
     static let edgeLeft = PositionsEntry(
       date: .now,
       position: .edgeLeftPreview,
@@ -40,6 +47,13 @@
     static let veryWide = PositionsEntry(
       date: .now,
       position: .veryWidePreview,
+      snapshotAge: 30,
+      emptyReason: nil
+    )
+
+    static let fullRange = PositionsEntry(
+      date: .now,
+      position: .fullRangePreview,
       snapshotAge: 30,
       emptyReason: nil
     )

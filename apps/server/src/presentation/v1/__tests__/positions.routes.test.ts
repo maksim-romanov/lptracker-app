@@ -19,6 +19,10 @@ const makePosition = (ref: string, updatedAt: string): Position => ({
   status: { state: "in-range", stateDetail: null },
   createdAt: null,
   updatedAt,
+  feeAccrual: { mode: "unknown", reason: null, destination: null },
+  yieldSources: [],
+  range: null,
+  stats: [],
   extension: { type: "uniswap-v3", version: 1 },
 });
 

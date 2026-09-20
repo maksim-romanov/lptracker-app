@@ -23,12 +23,16 @@ fun StatusTag(status: WidgetStatus, size: TagSize = TagSize.Large) {
   val tint = when (status) {
     WidgetStatus.InRange -> Colors.statusInRange
     WidgetStatus.OutOfRange -> Colors.statusOutOfRange
-    WidgetStatus.Closed -> Colors.textMuted
+    WidgetStatus.Drained -> Colors.brandPrimary
+    WidgetStatus.Closed, WidgetStatus.Unknown -> Colors.textMuted
   }
   val label = when (status) {
     WidgetStatus.InRange -> "In range"
     WidgetStatus.OutOfRange -> "Out of range"
+    // Not "Closed": the liquidity is gone but the money is not, and one transaction collects it.
+    WidgetStatus.Drained -> "Fees to claim"
     WidgetStatus.Closed -> "Closed"
+    WidgetStatus.Unknown -> "Unknown state"
   }
   val backgroundOpacity = if (status == WidgetStatus.InRange) Opacity.surfaceTint else Opacity.surfaceTintStrong
 

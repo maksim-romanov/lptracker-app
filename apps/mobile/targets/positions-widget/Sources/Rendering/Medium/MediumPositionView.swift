@@ -33,8 +33,8 @@ struct MediumPositionView: View {
       pairRow(position: position)
       tagsRow(position: position)
       Spacer(minLength: 0)
-      if case .uniswapV3(let payload) = position.widgetExtension, let range = payload.range {
-        PriceRangeView(range: range)
+      if case .uniswapV3(let payload) = position.widgetExtension, let range = payload.priceRange {
+        PriceRangeView(bounds: range.quoted, status: position.status)
       }
     }
   }
@@ -63,7 +63,7 @@ struct MediumPositionView: View {
     .accessibilityElement(children: .combine)
   }
 
-  // MARK: - Right (value + fees)
+  // MARK: - Right (value + owed)
 
   @ViewBuilder
   private func rightColumn(position: WidgetPosition) -> some View {
@@ -78,25 +78,24 @@ struct MediumPositionView: View {
         density: .display
       )
       StatBlock(
-        label: "Fees",
+        label: "Owed",
         accent: .brandPrimary,
-        primary: TokenAmount(
-          value: feeText(symbol: primary?.symbol, fees: position.fees),
-          symbol: primary?.symbol
-        ),
-        secondary: TokenAmount(
-          value: feeText(symbol: secondary?.symbol, fees: position.fees),
-          symbol: secondary?.symbol
-        ),
-        density: .compact
+        primary: owedAmount(for: primary, in: position),
+        secondary: owedAmount(for: secondary, in: position),
+        density: .compact,
+        unknownLabel: position.owedWasRead ? nil : TokenStatHelper.unreadLabel
       )
       Spacer(minLength: 0)
     }
   }
 
-  private func feeText(symbol: String?, fees: [WidgetToken]) -> String? {
+  private func owedAmount(for token: WidgetToken?, in position: WidgetPosition) -> TokenAmount {
+    TokenAmount(value: owedText(symbol: token?.symbol, owed: position.fees), symbol: token?.symbol)
+  }
+
+  private func owedText(symbol: String?, owed: [WidgetToken]) -> String? {
     guard let symbol else { return nil }
-    return TokenStatHelper.feeString(for: symbol, in: fees)
+    return TokenStatHelper.owedString(for: symbol, in: owed)
   }
 }
 
@@ -111,6 +110,12 @@ struct MediumPositionView: View {
     PositionsWidget()
   } timeline: {
     PositionsEntry.outOfRange
+  }
+
+  #Preview("Medium — drained", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.drained
   }
 
   #Preview("Medium — edge left", as: .systemMedium) {
@@ -147,6 +152,12 @@ struct MediumPositionView: View {
     PositionsWidget()
   } timeline: {
     PositionsEntry.veryWide
+  }
+
+  #Preview("Medium — full range", as: .systemMedium) {
+    PositionsWidget()
+  } timeline: {
+    PositionsEntry.fullRange
   }
 
   #Preview("Medium — far out above", as: .systemMedium) {

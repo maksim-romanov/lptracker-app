@@ -2,7 +2,7 @@ import type { Child } from "hono/jsx";
 
 import { Icon } from "../../components/Icon/Icon";
 import { NetworkLogo } from "../../components/NetworkLogo/NetworkLogo";
-import { explorerAddressUrl, networkLabel, uniswapPositionUrl } from "../../networks";
+import { explorerAddressUrl, networkLabel } from "../../networks";
 import { cn } from "../../utils/cn";
 import type { ICardVM } from "../card.vm";
 import { pairLabel, shortenAddress } from "../labels";
@@ -61,19 +61,21 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
           </span>
           <span class="flex flex-wrap items-center gap-x-2 gap-y-1 text-caption text-on-surface-variant">
             <ProtocolBadge protocol={card.protocol} />
-            <span class="font-mono">{card.feeTierLabel}</span>
+            {card.venueLabel && <span class="font-mono">{card.venueLabel}</span>}
             <PositionStatus tone={card.rangeTone} />
           </span>
         </div>
       </header>
 
-      <section class={SECTION_CLASS}>
-        <h3 class="text-caption text-on-surface-variant">Price range</h3>
-        <PositionRange range={range} tone={card.rangeTone} />
-        <p class="text-body-small text-on-surface-variant">
-          Priced in {range.quoteSymbol} per {range.baseSymbol}.
-        </p>
-      </section>
+      {range && (
+        <section class={SECTION_CLASS}>
+          <h3 class="text-caption text-on-surface-variant">Price range</h3>
+          <PositionRange range={range} tone={card.rangeTone} />
+          <p class="text-body-small text-on-surface-variant">
+            Priced in {range.quoteSymbol} per {range.baseSymbol}.
+          </p>
+        </section>
+      )}
 
       <section class={SECTION_CLASS}>
         <h3 class="text-caption text-on-surface-variant">Amounts</h3>
@@ -89,23 +91,25 @@ export const PositionDetail = ({ card }: { card: ICardVM }) => {
           {networkLabel(card.chainId)}
         </Spec>
         {card.openedAtLabel && <Spec label="Opened">{card.openedAtLabel}</Spec>}
-        <Spec label="Position">#{card.nftTokenId}</Spec>
+        {card.positionLabel && <Spec label="Position">{card.positionLabel}</Spec>}
         <Spec label="Pool">
           <ExplorerLink chainId={card.chainId} address={card.poolAddress} />
         </Spec>
       </dl>
 
-      <div class="flex justify-end border-outline-variant border-t pt-4">
-        <a
-          href={uniswapPositionUrl(card.chainId, card.nftTokenId)}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-full border border-outline px-4 py-2 text-button"
-        >
-          View on Uniswap
-          <Icon name="external" size={15} />
-        </a>
-      </div>
+      {card.externalUrl && (
+        <div class="flex justify-end border-outline-variant border-t pt-4">
+          <a
+            href={card.externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full border border-outline px-4 py-2 text-button"
+          >
+            View on {card.protocol.label}
+            <Icon name="external" size={15} />
+          </a>
+        </div>
+      )}
     </>
   );
 };

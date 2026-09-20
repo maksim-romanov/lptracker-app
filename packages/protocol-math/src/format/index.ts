@@ -1,1 +1,1 @@
-export { formatPrice, formatTokenAmount, formatTokenAmountShort } from "./format";
+export { formatPrice, formatTokenAmount, formatTokenAmountShort, toDecimalString } from "./format";

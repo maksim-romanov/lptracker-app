@@ -7,3 +7,5 @@ nonfungible
 tickspacing
 ticktype
 ticktypes
+metapool
+xgauge

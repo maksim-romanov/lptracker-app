@@ -2,15 +2,15 @@ import { getLogger } from "@depthly/logger";
 import { err, ok, type Result } from "neverthrow";
 import { inject, injectable } from "tsyringe";
 
-import type { PositionFeesCache } from "../data/position-fees.cache";
+import type { PositionOwedCache } from "../data/position-owed.cache";
 import { PositionsRepository } from "../data/positions.repository";
 import { getContainer } from "../di/containers";
-import { POSITION_FEES_CACHE } from "../di/tokens";
+import { POSITION_OWED_CACHE } from "../di/tokens";
 import type { PositionEntity } from "../domain/entities/position.entity";
 import type { PositionError } from "../domain/errors/position.error";
-import type { ComputedFees } from "../domain/utils/fee-math";
-import { computeUnclaimedFees } from "../domain/utils/fee-math";
-import { type MapperUnclaimedFees, mapV3PositionToContract } from "./mappers/position.mapper";
+import type { ComputedOwedBalance } from "../domain/utils/fee-math";
+import { computeOwedBalance } from "../domain/utils/fee-math";
+import { type MapperOwedBalance, mapV3PositionToContract } from "./mappers/position.mapper";
 import type { MapPositionResult } from "#shared/contracts";
 
 const logger = getLogger(["server", "v3", "usecase"]);
@@ -24,7 +24,7 @@ export interface GetWalletPositionsParams {
 
 @injectable()
 export class GetWalletPositionsUseCase {
-  constructor(@inject(POSITION_FEES_CACHE) private readonly feesCache: PositionFeesCache) {}
+  constructor(@inject(POSITION_OWED_CACHE) private readonly owedCache: PositionOwedCache) {}
 
   async execute(params: GetWalletPositionsParams): Promise<Result<MapPositionResult[], PositionError>> {
     const { owner, chainId, pagination, filters } = params;
@@ -41,8 +41,12 @@ export class GetWalletPositionsUseCase {
     const positionDtos = positionsResult.value;
     if (positionDtos.length === 0) return ok([]);
 
+    const blockResult = await repository.pinBlock();
+    if (blockResult.isErr()) return err(blockResult.error);
+    const blockNumber = blockResult.value;
+
     const poolAddresses = [...new Set(positionDtos.map((dto) => dto.pool.id))];
-    const poolStatesResult = await repository.getPoolStates(poolAddresses);
+    const poolStatesResult = await repository.getPoolStates(poolAddresses, blockNumber);
     if (poolStatesResult.isErr()) return err(poolStatesResult.error);
     const poolStates = poolStatesResult.value;
 
@@ -68,38 +72,43 @@ export class GetWalletPositionsUseCase {
       });
     }
 
-    const feesMap = await this.fetchAllFees(chainId, repository, entities);
+    const owedMap = await this.fetchAllOwed(chainId, repository, entities, blockNumber);
 
     return ok(
       entities.map((entity) =>
         mapV3PositionToContract({
           entity,
           chainId,
-          unclaimedFees: toMapperFees(feesMap.get(entity.id)),
+          owed: toMapperOwed(owedMap.get(entity.id)),
         }),
       ),
     );
   }
 
-  private async fetchAllFees(chainId: number, repository: PositionsRepository, entities: PositionEntity[]): Promise<Map<string, ComputedFees>> {
-    const allFees = new Map<string, ComputedFees>();
-    if (entities.length === 0) return allFees;
+  private async fetchAllOwed(
+    chainId: number,
+    repository: PositionsRepository,
+    entities: PositionEntity[],
+    blockNumber: bigint,
+  ): Promise<Map<string, ComputedOwedBalance>> {
+    const allOwed = new Map<string, ComputedOwedBalance>();
+    if (entities.length === 0) return allOwed;
 
-    const { cached, uncached } = await this.feesCache.partition(chainId, entities);
-    for (const [id, fees] of cached) allFees.set(id, fees);
+    const { cached, uncached } = await this.owedCache.partition(chainId, entities);
+    for (const [id, owed] of cached) allOwed.set(id, owed);
 
-    if (uncached.length === 0) return allFees;
+    if (uncached.length === 0) return allOwed;
 
     try {
-      const result = await repository.getBatchPositionFees(uncached);
-      if (result.isErr()) return allFees;
+      const result = await repository.getBatchPositionOwed(uncached, blockNumber);
+      if (result.isErr()) return allOwed;
 
       const cacheWrites: Promise<void>[] = [];
       for (const position of uncached) {
         const raw = result.value.get(position.id);
         if (!raw) continue;
 
-        const fees = computeUnclaimedFees(
+        const owed = computeOwedBalance(
           raw,
           position.pool.currentTick,
           position.tickLower,
@@ -107,21 +116,21 @@ export class GetWalletPositionsUseCase {
           position.pool.token0.decimals,
           position.pool.token1.decimals,
         );
-        allFees.set(position.id, fees);
-        cacheWrites.push(this.feesCache.setFees(chainId, position.id, fees));
+        allOwed.set(position.id, owed);
+        cacheWrites.push(this.owedCache.setOwed(chainId, position.id, owed));
       }
       await Promise.all(cacheWrites);
     } catch (error) {
-      logger.error("fee fetch failed", {
+      logger.error("owed balance fetch failed", {
         chainId,
         count: uncached.length,
         error,
       });
     }
 
-    return allFees;
+    return allOwed;
   }
 }
 
-const toMapperFees = (fees: ComputedFees | undefined): MapperUnclaimedFees | null =>
-  fees ? { token0Raw: fees.token0Raw, token1Raw: fees.token1Raw } : null;
+const toMapperOwed = (owed: ComputedOwedBalance | undefined): MapperOwedBalance | null =>
+  owed ? { token0Raw: owed.token0Raw, token1Raw: owed.token1Raw } : null;

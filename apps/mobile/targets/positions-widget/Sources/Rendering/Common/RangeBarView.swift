@@ -1,30 +1,43 @@
 import SwiftUI
 
 struct RangeBarView: View {
-  let range: WidgetTickRange
+  let bounds: WidgetPriceBounds
+  let status: WidgetStatus
   let trackHeight: CGFloat
   let thumbSize: CGFloat
 
   init(
-    range: WidgetTickRange,
+    bounds: WidgetPriceBounds,
+    status: WidgetStatus,
     trackHeight: CGFloat = Sizing.RangeBar.track,
     thumbSize: CGFloat = Sizing.RangeBar.thumb
   ) {
-    self.range = range
+    self.bounds = bounds
+    self.status = status
     self.trackHeight = trackHeight
     self.thumbSize = thumbSize
   }
 
   private var bar: RangeMath.BarPositions {
     RangeMath.barPositions(
-      currentTick: range.currentTick,
-      tickLower: range.tickLower,
-      tickUpper: range.tickUpper
+      lower: bounds.lowerPrice,
+      upper: bounds.upperPrice,
+      current: bounds.currentPrice
     )
   }
 
+  // The thumb sits at the current price whatever the status, so a position that holds nothing
+  // can still land inside its old bounds. Only a status that holds liquidity earns a live tint.
+  private var holdsLiquidity: Bool {
+    switch status {
+    case .inRange, .outOfRange: return true
+    case .drained, .closed, .unknown: return false
+    }
+  }
+
   private var fill: Color {
-    bar.inRange ? .statusInRange : .statusOutOfRange
+    guard holdsLiquidity else { return .textMuted }
+    return bar.inRange ? .statusInRange : .statusOutOfRange
   }
 
   var body: some View {
@@ -65,8 +78,15 @@ struct RangeBarView: View {
   }
 
   private var accessibilityDescription: String {
-    bar.inRange
-      ? "Price \(range.currentLabel), in range \(range.lowerLabel) to \(range.upperLabel)"
-      : "Price \(range.currentLabel), out of range. Bounds \(range.lowerLabel) to \(range.upperLabel)"
+    "Price \(bounds.currentLabel), \(stateDescription). Bounds \(bounds.lowerLabel) to \(bounds.upperLabel)"
+  }
+
+  private var stateDescription: String {
+    switch status {
+    case .inRange, .outOfRange: return bar.inRange ? "in range" : "out of range"
+    case .drained: return "fees to claim"
+    case .closed: return "closed"
+    case .unknown: return "unknown state"
+    }
   }
 }

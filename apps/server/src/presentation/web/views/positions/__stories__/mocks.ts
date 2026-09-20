@@ -1,11 +1,11 @@
-import type { ICardVM } from "../card.vm";
+import type { ICardVM, IPriceRangeVM } from "../card.vm";
 
 const basePair: ICardVM["pair"] = {
   base: { tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", symbol: "WETH", iconUrl: "https://assets.uniswap.org/weth.png" },
   quote: { tokenRef: "1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", symbol: "USDC", iconUrl: "https://assets.uniswap.org/usdc.png" },
 };
 
-const basePriceRange: ICardVM["priceRange"] = {
+const basePriceRange: IPriceRangeVM = {
   minLabel: "1,800",
   currentLabel: "2,000",
   maxLabel: "2,200",
@@ -17,7 +17,7 @@ const basePriceRange: ICardVM["priceRange"] = {
   inRange: true,
 };
 
-const baseFees: ICardVM["fees"] = [
+const baseOwed: ICardVM["owed"] = [
   {
     tokenRef: "1:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     symbol: "WETH",
@@ -36,13 +36,13 @@ const baseFees: ICardVM["fees"] = [
 
 export const inRange: ICardVM = {
   ref: "uniswap-v3:1:1001",
-  nftTokenId: "1001",
-  feeTierLabel: "0.3%",
-  status: "in-range",
   rangeTone: "in-range",
   inverted: false,
   chainId: 1,
   protocol: { slug: "uniswap-v3", label: "Uniswap V3" },
+  venueLabel: "0.3%",
+  positionLabel: "#1001",
+  externalUrl: "https://app.uniswap.org/positions/v3/ethereum/1001",
   pair: basePair,
   principal: [
     {
@@ -60,46 +60,70 @@ export const inRange: ICardVM = {
       iconUrl: basePair.quote.iconUrl,
     },
   ],
-  fees: baseFees,
+  owed: baseOwed,
   priceRange: basePriceRange,
   poolAddress: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
   ownerAddress: "0x71c7656ec7ab88b098defb751b7401b5f6d8976f",
   openedAtLabel: "Mar 12, 2026",
-  hasUnclaimedFees: true,
+  hasUnclaimedBalance: true,
+  feeMode: "claimable",
 };
 
 export const outOfRange: ICardVM = {
   ...inRange,
   ref: "uniswap-v3:1:1002",
-  nftTokenId: "1002",
-  status: "out-of-range",
+  positionLabel: "#1002",
   rangeTone: "out-of-range",
   priceRange: { ...basePriceRange, currentLabel: "2,350", bandLeftPct: 5, bandWidthPct: 40, thumbPct: 92, inRange: false },
 };
 
+// An emptied position still lists both principal tokens — the v3 mapper always emits one entry
+// per pool token, at zero. Dropping them would hit the "holds no tokens" guard and hide the whole
+// amounts table, which is not what either of these states looks like.
+const drainedPrincipal: ICardVM["principal"] = inRange.principal.map((token) => ({ ...token, formatted: "0", formattedShort: "0" }));
+
 export const closed: ICardVM = {
   ...inRange,
   ref: "uniswap-v3:1:1003",
-  nftTokenId: "1003",
-  status: "closed",
+  positionLabel: "#1003",
   rangeTone: "closed",
-  fees: [],
-  principal: [],
-  hasUnclaimedFees: false,
+  owed: [],
+  principal: drainedPrincipal,
+  hasUnclaimedBalance: false,
 };
 
-export const noFees: ICardVM = {
+// Has to stay on the board: there is one transaction left to make.
+export const drained: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1008",
+  positionLabel: "#1008",
+  rangeTone: "drained",
+  principal: drainedPrincipal,
+};
+
+export const nothingOwed: ICardVM = {
   ...inRange,
   ref: "uniswap-v3:1:1004",
-  nftTokenId: "1004",
-  fees: [],
-  hasUnclaimedFees: false,
+  positionLabel: "#1004",
+  owed: [],
+  hasUnclaimedBalance: false,
+};
+
+// The pinned read reverted, so the position lists no owed token. It has to say the amount is
+// missing, not that there is nothing to collect.
+export const owedUnknown: ICardVM = {
+  ...inRange,
+  ref: "uniswap-v3:1:1009",
+  positionLabel: "#1009",
+  owed: [],
+  hasUnclaimedBalance: false,
+  feeMode: "unknown",
 };
 
 export const longAddressNoIcon: ICardVM = {
   ...inRange,
   ref: "uniswap-v3:8453:1005",
-  nftTokenId: "1005",
+  positionLabel: "#1005",
   chainId: 8453,
   pair: {
     base: { tokenRef: "8453:0xa", symbol: "WETH", iconUrl: "" },
@@ -111,7 +135,7 @@ export const longAddressNoIcon: ICardVM = {
 export const nearUpperBound: ICardVM = {
   ...inRange,
   ref: "uniswap-v3:1:1006",
-  nftTokenId: "1006",
+  positionLabel: "#1006",
   rangeTone: "near-upper",
   priceRange: { ...basePriceRange, currentLabel: "2,170", thumbPct: 80 },
 };
@@ -119,7 +143,22 @@ export const nearUpperBound: ICardVM = {
 export const nearLowerBound: ICardVM = {
   ...inRange,
   ref: "uniswap-v3:1:1007",
-  nftTokenId: "1007",
+  positionLabel: "#1007",
   rangeTone: "near-lower",
   priceRange: { ...basePriceRange, currentLabel: "1,830", thumbPct: 20 },
+};
+
+// A classic constant-product LP: a fungible ERC-20 position, so there is no NFT to name, no
+// price range to draw and no fee tier to print.
+export const fungibleLp: ICardVM = {
+  ...inRange,
+  ref: "aerodrome:8453:0xpool-0xowner",
+  chainId: 8453,
+  protocol: { slug: "aerodrome", label: "Aerodrome" },
+  venueLabel: null,
+  positionLabel: null,
+  externalUrl: null,
+  priceRange: null,
+  owed: [],
+  hasUnclaimedBalance: false,
 };

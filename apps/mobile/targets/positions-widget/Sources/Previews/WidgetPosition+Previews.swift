@@ -16,16 +16,12 @@
         WidgetToken(symbol: "WETH", iconUrl: "", formatted: "0.0123"),
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "42.18")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.30%",
           nftTokenId: "987654",
-          range: WidgetTickRange(
-            tickLower: 354000,
-            tickUpper: 355000,
-            currentTick: 354550,
-            decimalsDelta: -12
-          )
+          priceRange: .inRangePreview
         )
       )
     )
@@ -44,11 +40,12 @@
         WidgetToken(symbol: "WBTC", iconUrl: "", formatted: "0.0008"),
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "8.42")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.05%",
           nftTokenId: "112233",
-          range: WidgetTickRange(tickLower: 156400, tickUpper: 157400, currentTick: 158250, decimalsDelta: -2)
+          priceRange: .outOfRangePreview
         )
       )
     )
@@ -67,16 +64,38 @@
         WidgetToken(symbol: "ARB", iconUrl: "", formatted: "3.45"),
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "1.02")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.30%",
           nftTokenId: "555444",
-          range: WidgetTickRange(
-            tickLower: 268900,
-            tickUpper: 269900,
-            currentTick: 268940,
-            decimalsDelta: -12
-          )
+          priceRange: .edgeLeftPreview
+        )
+      )
+    )
+
+    // Liquidity withdrawn, the balance still there, and the last price still inside the old bounds —
+    // the case where the bar would otherwise read as live.
+    static let drainedPreview = WidgetPosition(
+      ref: "uniswap-v3:1:8801",
+      chainId: 1,
+      protocolLabel: "Uniswap V3",
+      status: .drained,
+      pair: WidgetPair(sym0: "WETH", sym1: "USDC", icon0: "", icon1: ""),
+      principals: [
+        WidgetToken(symbol: "WETH", iconUrl: "", formatted: "0"),
+        WidgetToken(symbol: "USDC", iconUrl: "", formatted: "0")
+      ],
+      fees: [
+        WidgetToken(symbol: "WETH", iconUrl: "", formatted: "0.0412"),
+        WidgetToken(symbol: "USDC", iconUrl: "", formatted: "128.90")
+      ],
+      feeMode: "claimable",
+      widgetExtension: .uniswapV3(
+        UniswapV3Payload(
+          feeTierLabel: "0.30%",
+          nftTokenId: "880199",
+          priceRange: .inRangePreview
         )
       )
     )
@@ -95,11 +114,12 @@
         WidgetToken(symbol: "cbETH", iconUrl: "", formatted: "0"),
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "0")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.05%",
           nftTokenId: "10001",
-          range: nil
+          priceRange: nil
         )
       )
     )
@@ -118,11 +138,12 @@
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "0.42"),
         WidgetToken(symbol: "USDT", iconUrl: "", formatted: "0.18")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.01%",
           nftTokenId: "778812",
-          range: WidgetTickRange(tickLower: -50, tickUpper: 50, currentTick: 10, decimalsDelta: 0)
+          priceRange: .tightStablePreview
         )
       )
     )
@@ -141,16 +162,12 @@
         WidgetToken(symbol: "WETH", iconUrl: "", formatted: "0.0089"),
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "65.40")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.30%",
           nftTokenId: "446623",
-          range: WidgetTickRange(
-            tickLower: 349500,
-            tickUpper: 359500,
-            currentTick: 355700,
-            decimalsDelta: -12
-          )
+          priceRange: .wideRangePreview
         )
       )
     )
@@ -169,16 +186,36 @@
         WidgetToken(symbol: "WETH", iconUrl: "", formatted: "0.0012"),
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "4.20")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.05%",
           nftTokenId: "990012",
-          range: WidgetTickRange(
-            tickLower: 334500,
-            tickUpper: 374500,
-            currentTick: 351000,
-            decimalsDelta: -12
-          )
+          priceRange: .veryWidePreview
+        )
+      )
+    )
+
+    static let fullRangePreview = WidgetPosition(
+      ref: "uniswap-v3:1:7788",
+      chainId: 1,
+      protocolLabel: "Uniswap V3",
+      status: .inRange,
+      pair: WidgetPair(sym0: "WETH", sym1: "USDC", icon0: "", icon1: ""),
+      principals: [
+        WidgetToken(symbol: "WETH", iconUrl: "", formatted: "2.10"),
+        WidgetToken(symbol: "USDC", iconUrl: "", formatted: "4.2K")
+      ],
+      fees: [
+        WidgetToken(symbol: "WETH", iconUrl: "", formatted: "0.0450"),
+        WidgetToken(symbol: "USDC", iconUrl: "", formatted: "88.10")
+      ],
+      feeMode: "claimable",
+      widgetExtension: .uniswapV3(
+        UniswapV3Payload(
+          feeTierLabel: "0.30%",
+          nftTokenId: "223344",
+          priceRange: .fullRangePreview
         )
       )
     )
@@ -197,11 +234,12 @@
         WidgetToken(symbol: "WBTC", iconUrl: "", formatted: "0.0002"),
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "12.10")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.05%",
           nftTokenId: "771188",
-          range: WidgetTickRange(tickLower: 156400, tickUpper: 157400, currentTick: 162400, decimalsDelta: -2)
+          priceRange: .farOutAbovePreview
         )
       )
     )
@@ -220,16 +258,12 @@
         WidgetToken(symbol: "POL", iconUrl: "", formatted: "1.20"),
         WidgetToken(symbol: "USDC", iconUrl: "", formatted: "0")
       ],
+      feeMode: "claimable",
       widgetExtension: .uniswapV3(
         UniswapV3Payload(
           feeTierLabel: "0.30%",
           nftTokenId: "552231",
-          range: WidgetTickRange(
-            tickLower: 268900,
-            tickUpper: 269900,
-            currentTick: 263900,
-            decimalsDelta: -12
-          )
+          priceRange: .farOutBelowPreview
         )
       )
     )

@@ -8,7 +8,8 @@ struct StatusTag: View {
     switch status {
     case .inRange: return .statusInRange
     case .outOfRange: return .statusOutOfRange
-    case .closed: return .textMuted
+    case .drained: return .brandPrimary
+    case .closed, .unknown: return .textMuted
     }
   }
 
@@ -16,7 +17,10 @@ struct StatusTag: View {
     switch status {
     case .inRange: return "In range"
     case .outOfRange: return "Out of range"
+    // Not "Closed": the liquidity is gone but the money is not, and one transaction collects it.
+    case .drained: return "Fees to claim"
     case .closed: return "Closed"
+    case .unknown: return "Unknown state"
     }
   }
 

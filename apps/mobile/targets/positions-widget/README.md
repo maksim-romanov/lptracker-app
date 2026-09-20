@@ -37,6 +37,11 @@ Read by `SnapshotStore.load()` from:
 
 Written by the RN app via the `widget-bridge` Expo module on every TanStack Query refetch.
 
+Prices arrive as decimal strings with their labels already formatted, so the widget holds no
+price math. A snapshot written by a newer app than the installed binary must still decode:
+reshape a key and an older binary throws and the widget goes blank, so a changed payload takes
+a new key instead and the old one reads it as absent.
+
 ## File layout
 
 See [Swift conventions doc](../../docs/swift-conventions.md) for naming, structure, and anti-patterns. Top-level folders:
@@ -44,9 +49,9 @@ See [Swift conventions doc](../../docs/swift-conventions.md) for naming, structu
 - `Sources/Configuration/` — Widget + AppIntent + AppEntity + Query
 - `Sources/Timeline/` — Provider, Entry, SnapshotStore
 - `Sources/Models/` — Codable snapshot types (discriminated extension union)
-- `Sources/Rendering/` — SwiftUI views (Common, Small, Medium, Protocols/UniswapV3)
+- `Sources/Rendering/` — SwiftUI views (Common, Small, Medium)
 - `Sources/DesignSystem/` — color tokens, fonts, spacing
-- `Sources/Utilities/` — pure helpers (RangeMath, ColorHex)
+- `Sources/Utilities/` — pure helpers (RangeMath, ChainCatalog, WidgetDeepLink)
 
 ## Tooling
 

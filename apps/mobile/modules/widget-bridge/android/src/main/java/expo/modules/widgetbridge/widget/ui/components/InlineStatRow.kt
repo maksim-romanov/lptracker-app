@@ -19,6 +19,8 @@ fun InlineStatRow(
   right: String?,
   valueStyle: TextStyle,
   accent: Color,
+  /** Replaces both values when there is no amount to show and the dash would misreport why. */
+  unknownLabel: String? = null,
 ) {
   val joined = "${left ?: "—"} / ${right ?: "—"}"
   Row(verticalAlignment = Alignment.Bottom, modifier = GlanceModifier.fillMaxWidth()) {
@@ -29,8 +31,12 @@ fun InlineStatRow(
     )
     Spacer(GlanceModifier.defaultWeight())
     Text(
-      text = joined,
-      style = Typography.withColor(valueStyle, accent),
+      text = unknownLabel ?: joined,
+      style = if (unknownLabel != null) {
+        Typography.withColor(Typography.labelLg, Colors.textMuted)
+      } else {
+        Typography.withColor(valueStyle, accent)
+      },
       maxLines = 1,
     )
   }

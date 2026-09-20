@@ -15,11 +15,18 @@ const Pair = v.object({
   icon1: v.string(),
 });
 
-const TickRange = v.object({
-  tickLower: v.number(),
-  tickUpper: v.number(),
-  currentTick: v.number(),
-  decimalsDelta: v.number(),
+const PriceBounds = v.object({
+  lower: v.nullable(v.string()),
+  upper: v.nullable(v.string()),
+  current: v.string(),
+  lowerLabel: v.string(),
+  upperLabel: v.string(),
+  currentLabel: v.string(),
+});
+
+const PriceRange = v.object({
+  quoted: PriceBounds,
+  inverted: PriceBounds,
 });
 
 const Extension = v.variant("type", [
@@ -27,7 +34,7 @@ const Extension = v.variant("type", [
     type: v.literal("uniswap-v3"),
     feeTierLabel: v.string(),
     nftTokenId: v.string(),
-    range: TickRange,
+    priceRange: v.nullable(PriceRange),
   }),
   v.object({
     type: v.literal("uniswap-v4"),
@@ -61,6 +68,7 @@ const Position = v.object({
   pair: Pair,
   principals: v.array(Token),
   fees: v.array(Token),
+  feeMode: v.string(),
   extension: Extension,
 });
 

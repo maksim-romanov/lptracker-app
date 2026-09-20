@@ -30,28 +30,20 @@ import type { TUniswapV3RangeStatus } from "../domain/uniswap-v3.vm";
 import { PositionStickyPill } from "./components/PositionStickyPill";
 import { PriceRangeBar } from "./components/PriceRangeBar";
 import { Strip } from "./components/Strip";
+import { feeBlockPresentation } from "./lib/fee-block-presentation";
+import { positionStatusPresentation } from "./lib/position-status-presentation";
 
 interface IProps {
   readonly position: TPositionByExt<"uniswap-v3">;
   readonly tokens: TTokensMap;
 }
 
-const STATUS_TONE: Record<TUniswapV3RangeStatus, "success" | "warning" | "neutral"> = {
-  "in-range": "success",
-  "out-of-range": "warning",
-  closed: "neutral",
-};
-
-const STATUS_LABEL: Record<TUniswapV3RangeStatus, string> = {
-  "in-range": "In range",
-  "out-of-range": "Out of range",
-  closed: "Closed",
-};
-
 export const UniswapV3PositionDetail = observer(function UniswapV3PositionDetail({ position, tokens }: IProps) {
   const viewPrefs = container.resolve(PositionViewPrefsStore);
   const inverted = viewPrefs.isInverted(position.ref);
   const vm = useMemo(() => mapToVm(position, tokens, inverted), [position, tokens, inverted]);
+  const status = positionStatusPresentation(vm.status);
+  const feeBlock = feeBlockPresentation({ feeMode: vm.feeMode, hasAmounts: vm.owed.length > 0 });
 
   const animatedRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollOffset(animatedRef);
@@ -105,7 +97,7 @@ export const UniswapV3PositionDetail = observer(function UniswapV3PositionDetail
                 <NetworkBadge chainId={position.chainId} size="sm" />
                 <Tag tone="brand">V3</Tag>
                 <Tag tone="neutral">{vm.feeTierLabel}</Tag>
-                <Tag tone={STATUS_TONE[vm.status]}>{STATUS_LABEL[vm.status]}</Tag>
+                <Tag tone={status.tone}>{status.label}</Tag>
               </Inline>
 
               <Stack space={2}>
@@ -146,9 +138,17 @@ export const UniswapV3PositionDetail = observer(function UniswapV3PositionDetail
             ))}
           </BreakdownCard>
 
-          {vm.fees.length > 0 && (
-            <BreakdownCard title="Unclaimed fees">
-              {vm.fees.map((side) => (
+          {feeBlock === "unknown" && (
+            <BreakdownCard title="To claim">
+              <Text variant="bodySmall" color="muted">
+                Unknown
+              </Text>
+            </BreakdownCard>
+          )}
+
+          {feeBlock === "amounts" && (
+            <BreakdownCard title="To claim">
+              {vm.owed.map((side) => (
                 <TokenAmountRow
                   key={side.tokenRef}
                   tokenRef={side.tokenRef}

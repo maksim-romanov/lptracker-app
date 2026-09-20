@@ -14,7 +14,8 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
-import expo.modules.widgetbridge.widget.data.WidgetTickRange
+import expo.modules.widgetbridge.widget.data.WidgetPriceBounds
+import expo.modules.widgetbridge.widget.data.WidgetStatus
 import expo.modules.widgetbridge.widget.theme.Colors
 import expo.modules.widgetbridge.widget.theme.Opacity
 import expo.modules.widgetbridge.widget.theme.Sizing
@@ -24,13 +25,24 @@ import kotlin.math.max
 private const val BAR_WIDTH_PX = 600
 private const val BAR_HEIGHT_PX = 48
 
-private fun render(range: WidgetTickRange): Bitmap {
-  val pos = RangeMath.barPositions(range.currentTick, range.tickLower, range.tickUpper)
+// The thumb sits at the current price whatever the status, so a position that holds nothing can
+// still land inside its old bounds. Only a status that holds liquidity earns a live tint.
+private fun holdsLiquidity(status: WidgetStatus): Boolean = when (status) {
+  WidgetStatus.InRange, WidgetStatus.OutOfRange -> true
+  WidgetStatus.Drained, WidgetStatus.Closed, WidgetStatus.Unknown -> false
+}
+
+private fun render(bounds: WidgetPriceBounds, status: WidgetStatus): Bitmap {
+  val pos = RangeMath.barPositions(bounds.lowerPrice, bounds.upperPrice, bounds.currentPrice)
   val w = BAR_WIDTH_PX.toFloat()
   val h = BAR_HEIGHT_PX.toFloat()
   val trackHeight = 40f
   val thumbDiameter = 46f
-  val fillColor = if (pos.inRange) Colors.statusInRange else Colors.statusOutOfRange
+  val fillColor = when {
+    !holdsLiquidity(status) -> Colors.textMuted
+    pos.inRange -> Colors.statusInRange
+    else -> Colors.statusOutOfRange
+  }
 
   val bmp = Bitmap.createBitmap(BAR_WIDTH_PX, BAR_HEIGHT_PX, Bitmap.Config.ARGB_8888)
   val canvas = Canvas(bmp)
@@ -88,8 +100,8 @@ private fun render(range: WidgetTickRange): Bitmap {
 }
 
 @Composable
-fun RangeBarView(range: WidgetTickRange) {
-  val bitmap = remember(range) { render(range) }
+fun RangeBarView(bounds: WidgetPriceBounds, status: WidgetStatus) {
+  val bitmap = remember(bounds, status) { render(bounds, status) }
   Image(
     provider = ImageProvider(bitmap),
     contentDescription = null,

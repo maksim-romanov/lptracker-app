@@ -36,18 +36,13 @@ enum WidgetExtension: Codable, Sendable, Hashable {
   func inverted() -> WidgetExtension {
     switch self {
     case .uniswapV3(let payload):
-      guard let range = payload.range else { return self }
-      let inv = WidgetTickRange(
-        tickLower: -range.tickUpper,
-        tickUpper: -range.tickLower,
-        currentTick: -range.currentTick,
-        decimalsDelta: -range.decimalsDelta
+      return .uniswapV3(
+        UniswapV3Payload(
+          feeTierLabel: payload.feeTierLabel,
+          nftTokenId: payload.nftTokenId,
+          priceRange: payload.priceRange?.flipped()
+        )
       )
-      return .uniswapV3(UniswapV3Payload(
-        feeTierLabel: payload.feeTierLabel,
-        nftTokenId: payload.nftTokenId,
-        range: inv
-      ))
     case .unknown:
       return self
     }
