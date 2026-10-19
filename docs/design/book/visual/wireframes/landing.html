@@ -1,0 +1,223 @@
+<title>VoidX Landing Wireframe</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: foundations first (grid, spacing, breakpoints), then the component list, then the page built from them at three widths, then the slots reserved for future sections. Greyscale; the only colour is the marker blue that ties callouts to the lists. */
+:root {
+  --ground: #eeeef1; --paper: #fafafb; --line: #9a9aa6; --line-soft: #c9c9d2; --ink: #1d1d24; --muted: #5d5d6a; --block: #dcdce2; --marker: #2b4cff; --on-marker: #ffffff; --grid: rgba(43, 76, 255, .09);
+  --display: "Instrument Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ground: #15151a; --paper: #1c1c22; --line: #6c6c78; --line-soft: #34343d; --ink: #ececf1; --muted: #a2a2b0; --block: #2a2a32; --marker: #8aa0ff; --on-marker: #10121c; --grid: rgba(138, 160, 255, .10); color-scheme: dark; } }
+:root[data-theme="dark"] { --ground: #15151a; --paper: #1c1c22; --line: #6c6c78; --line-soft: #34343d; --ink: #ececf1; --muted: #a2a2b0; --block: #2a2a32; --marker: #8aa0ff; --on-marker: #10121c; --grid: rgba(138, 160, 255, .10); color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font-family: var(--display); font-size: 15px; line-height: 1.5; padding-inline: 16px; padding-block: 28px 72px; }
+h1, h2, h3, p, ul, ol { margin: 0; }
+.page { max-width: 1240px; margin-inline: auto; display: grid; gap: 44px; }
+.cap { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.top { display: grid; gap: 8px; } .top h1 { font-size: clamp(26px, 4vw, 40px); letter-spacing: -0.02em; line-height: 1.1; text-wrap: balance; } .top p { color: var(--muted); max-width: 72ch; }
+.sec { display: grid; gap: 16px; min-width: 0; } .sec > h2 { font-size: 20px; letter-spacing: -0.01em; } .sec > .lead { color: var(--muted); max-width: 74ch; font-size: 14px; }
+.scroll { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 560px; } .tbl th, .tbl td { text-align: left; padding: 8px 12px 8px 0; border-top: 1px solid var(--line-soft); vertical-align: top; } .tbl th { font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; } .tbl td:first-child { font-weight: 600; white-space: nowrap; } .tbl code { font-family: var(--mono); font-size: 12px; }
+.cards3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.card { border: 1.5px solid var(--line-soft); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; background: var(--paper); } .card h3 { font-size: 14px; } .card p { color: var(--muted); font-size: 13px; }
+/* low-fi parts */
+.frame { background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; position: relative; }
+.bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1.5px solid var(--line-soft); font-family: var(--mono); font-size: 11px; color: var(--muted); } .bar i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--line); }
+.w { border: 1.5px solid var(--line); border-radius: 6px; background: var(--paper); position: relative; } .w.fill { background: var(--block); }
+.pill { border: 1.5px solid var(--line); border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; padding: 0 16px; min-height: 36px; font-size: 13px; font-weight: 600; white-space: nowrap; } .pill.solid { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.txt { color: var(--muted); font-size: 12px; } .line { height: 8px; border-radius: 4px; background: var(--line-soft); } .h { font-weight: 700; letter-spacing: -0.03em; line-height: 1.02; }
+.mk { position: absolute; z-index: 4; width: 22px; height: 22px; border-radius: 50%; background: var(--marker); color: var(--on-marker); font-family: var(--mono); font-size: 11px; display: grid; place-items: center; }
+.n { width: 22px; height: 22px; flex: none; border-radius: 50%; background: var(--marker); color: var(--on-marker); font-family: var(--mono); font-size: 11px; display: grid; place-items: center; }
+/* grid demo */
+.gd { display: grid; gap: 6px; } .gd .cols { height: 44px; display: grid; gap: 4px; background: var(--paper); border: 1.5px solid var(--line-soft); border-radius: 6px; padding: 4px; } .gd .cols i { background: var(--grid); border-radius: 2px; }
+.gd .row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+/* hero parts (one set, reused at every width through CSS variables) */
+.phone { position: absolute; border: 2px solid var(--line); border-radius: 30px; background: var(--paper); padding: 10px; display: grid; gap: 8px; align-content: start; }
+.phone .t { height: 14px; width: 60%; background: var(--line); border-radius: 4px; } .phone .big { height: 26px; width: 70%; margin-inline: auto; border-radius: 10px; background: var(--line-soft); } .phone .ban { height: 18px; border-radius: 6px; } .phone .row { height: 52px; border-radius: 12px; }
+.push { position: absolute; border: 1.5px solid var(--line); background: var(--block); border-radius: 12px; padding: 8px 10px; display: grid; gap: 6px; align-content: center; }
+.wg { position: absolute; border: 1.5px solid var(--line); background: var(--block); border-radius: 14px; padding: 8px; display: grid; gap: 6px; align-content: space-between; }
+/* desktop */
+.d-head { display: flex; align-items: center; gap: 16px; padding: 14px 28px; } .d-head .logo { width: 70px; height: 20px; } .d-head .nav { display: flex; gap: 18px; margin-left: 12px; } .d-head .nav span { width: 52px; } .grow { flex: 1; }
+.d-hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 20px; padding: 18px 28px 22px; align-items: center; }
+.d-text { display: grid; gap: 14px; justify-items: start; position: relative; } .d-text .h { font-size: clamp(34px, 4.6vw, 60px); max-width: 10ch; }
+.d-vis { position: relative; height: 430px; }
+.d-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 28px; } .d-foot .nav { display: flex; gap: 18px; } .d-foot .nav span { width: 44px; }
+/* tablet */
+.tab { width: 560px; max-width: 100%; }
+.t-body { padding: 8px 32px 0; display: grid; gap: 14px; justify-items: start; position: relative; } .t-body .h { font-size: 48px; max-width: 12ch; }
+.t-vis { position: relative; height: 380px; width: 100%; overflow: hidden; margin-top: 8px; }
+/* mobile (new) */
+.mobwrap { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+.mob { width: 280px; max-width: 100%; height: 600px; position: relative; display: flex; flex-direction: column; }
+.m-head { display: flex; align-items: center; gap: 10px; padding: 10px 16px; } .m-head .logo { width: 56px; height: 18px; }
+.m-text { padding: 6px 16px 0; display: grid; gap: 8px; position: relative; z-index: 2; } .m-text .h { font-size: 32px; max-width: 11ch; }
+.m-vis { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.m-cta { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; padding: 18px 16px 14px; display: grid; gap: 6px; justify-items: center; background: linear-gradient(to top, var(--paper) 62%, transparent); }
+.mob.land { width: 520px; height: 250px; flex-direction: row; }
+.fold { position: absolute; left: 0; right: 0; border-top: 1.5px dashed var(--marker); z-index: 6; } .fold span { position: absolute; right: 6px; top: -10px; background: var(--paper); font-family: var(--mono); font-size: 10px; color: var(--marker); padding: 0 4px; }
+.note { max-width: 300px; display: grid; gap: 10px; align-content: start; font-size: 14px; color: var(--muted); } .note b { color: var(--ink); font-weight: 600; }
+/* slots */
+.slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.slot { border: 1.5px dashed var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 8px; align-content: start; min-height: 120px; } .slot b { font-size: 14px; } .slot p { font-size: 13px; color: var(--muted); }
+
+/* push stack: one live card, two compressed layers beneath, a count line */
+.stack { position: absolute; display: flex; flex-direction: column; justify-content: flex-start; }
+.stack .l { position: absolute; left: 0; right: 0; border: 1.5px solid var(--line); border-radius: 14px; background: var(--block); }
+.stack .l.b2 { bottom: 0; left: 16px; right: 16px; height: 30px; opacity: .5; z-index: 1; } .stack .l.b1 { bottom: 8px; left: 8px; right: 8px; height: 30px; opacity: .78; z-index: 2; }
+.stack .top { position: relative; z-index: 3; margin-bottom: 16px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--block); padding: 10px 12px; display: grid; gap: 7px; }
+.stack .top .r { display: flex; align-items: center; gap: 8px; } .stack .top .ic { width: 16px; height: 16px; border: 1.5px solid var(--line); border-radius: 4px; background: var(--paper); flex: none; }
+.stack .count { position: relative; z-index: 3; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.mvar { display: grid; gap: 10px; justify-items: start; } .mvar .tag { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+.mrow { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+.wrow { display: flex; gap: 8px; padding: 0 16px; }
+:focus-visible { outline: 2px solid var(--marker); outline-offset: 2px; }
+@media (max-width: 900px) { .d-hero { grid-template-columns: minmax(0, 1fr); } .d-vis { height: 400px; } }
+@media (max-width: 640px) { .d-head, .d-hero, .d-foot { padding-inline: 16px; } .d-head .nav { display: none; } .d-foot { flex-wrap: wrap; } }
+</style>
+
+<div class="page">
+  <header class="top">
+    <span class="cap">Landing wireframe, v2</span>
+    <h1>Built from parts, so the page can grow</h1>
+    <p>The page is a stack of sections on one grid. The first screen is one section (Hero). Every part has a name, a size rule and states, so a new section reuses them instead of starting over. Mobile is drawn first because it is the hardest case.</p>
+  </header>
+
+  <section class="sec" aria-labelledby="f">
+    <h2 id="f">Foundations</h2>
+    <p class="lead">Decide these once. Everything below follows them.</p>
+    <div class="cards3">
+      <div class="card"><h3>Grid</h3><div class="gd"><div class="cols" style="grid-template-columns:repeat(12,1fr)"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="row"><span>12 columns, 1200 max</span><span>gutter 24</span></div><div class="cols" style="grid-template-columns:repeat(8,1fr)"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="row"><span>8 columns, tablet</span><span>gutter 20</span></div><div class="cols" style="grid-template-columns:repeat(4,1fr)"><i></i><i></i><i></i><i></i></div><div class="row"><span>4 columns, phone</span><span>gutter 16</span></div></div></div>
+      <div class="card"><h3>Spacing scale</h3><p>4, 8, 12, 16, 24, 32, 48, 64. Nothing off the scale. Section padding is 64 on desktop, 48 on tablet, 32 on phone.</p><p>Side margin: 56 desktop, 32 tablet, 16 phone, plus the device safe area.</p></div>
+      <div class="card"><h3>Breakpoints</h3><p><b>Phone</b> up to 599. <b>Tablet</b> 600 to 899. <b>Desktop</b> 900 and up. <b>Large</b> 1600 and up (content stops growing at 1560).</p><p>Plus one height rule: landscape phone, height 520 or less.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="c">
+    <h2 id="c">Components</h2>
+    <p class="lead">The bill of materials for the Hero. Each one is reused later; sizes are rules, not pixels.</p>
+    <div class="scroll"><table class="tbl">
+      <thead><tr><th>Component</th><th>Content</th><th>Size rule</th><th>States</th></tr></thead>
+      <tbody>
+        <tr><td>Header</td><td>Logo, links, outline button</td><td>Height 72 desktop, 56 phone. Links hide on phone.</td><td>Default. No border, no scroll state.</td></tr>
+        <tr><td>Headline</td><td>One sentence, 3 lines at desktop</td><td>Fluid, 40 to 88. Max 12 characters per line unit.</td><td>Default</td></tr>
+        <tr><td>Supporting line</td><td>One sentence</td><td>18 to 22. Max 28 characters per line unit.</td><td>Default</td></tr>
+        <tr><td>Primary button</td><td>Track your wallet</td><td>Height 56. Phone: full width. Desktop: auto, min 240.</td><td>Default, hover, pressed, focus, opens dialog</td></tr>
+        <tr><td>Facts line</td><td>Platforms, Free, Open source</td><td>Text 13 to 14. Wraps, never truncates.</td><td>Hidden on short screens</td></tr>
+        <tr><td>Phone</td><td>Real Portfolio screen</td><td>Scales with the box. Cropped, never squeezed.</td><td>Static in the page. Decorative.</td></tr>
+        <tr><td>Push stack</td><td>One live push, two compressed layers behind it, a line like "3 more notifications"</td><td>Width 262 to 300. Layers are 7 px apart and each 8% narrower. The live card is always the newest.</td><td>Range exit, health low, collapsed (count only)</td></tr>
+        <tr><td>Widget</td><td>Small, medium</td><td>Square 170, scales with the stage.</td><td>In range, out of range, low health</td></tr>
+        <tr><td>Footer</td><td>Name, links, disclaimer</td><td>Height 56. Phone: stacks to two rows.</td><td>Default. No border.</td></tr>
+        <tr><td>Add wallet dialog</td><td>Field, Paste, Cancel, Add</td><td>Width 480. Phone: bottom sheet.</td><td>Idle, looking up, ready, invalid, duplicate, limit</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="sec" aria-labelledby="p">
+    <h2 id="p">Hero at three widths</h2>
+    <p class="lead">Same parts, three arrangements. Numbers match the key under each frame.</p>
+
+    <div class="frame" aria-label="Desktop wireframe">
+      <div class="bar"><i></i><i></i><i></i><span>Desktop, 900 and up</span></div>
+      <div class="d-head"><span class="w fill logo"></span><div class="nav"><span class="line"></span><span class="line"></span><span class="line"></span></div><span class="grow"></span><span class="pill">Open on the web</span></div>
+      <div class="d-hero">
+        <div class="d-text">
+          <span class="mk" style="left:-14px;top:-6px">1</span>
+          <div class="h">Your DeFi yield on your Home Screen.</div>
+          <p class="txt" style="font-size:15px">Widgets, and a push when it needs you.</p>
+          <span class="pill solid" style="min-height:48px;padding-inline:28px;font-size:15px;position:relative">Track your wallet<span class="mk" style="right:-10px;top:-10px">2</span></span>
+          <p class="txt">iPhone, iPad, Mac, Android · Free · Open source</p>
+        </div>
+        <div class="d-vis">
+          <span class="mk" style="right:2%;top:-2px">3</span>
+          <div class="phone" style="right:8%;top:4px;width:190px;height:420px"><div class="t"></div><div class="big"></div><div class="w fill ban"></div><div class="w fill row"></div><div class="w row"></div><div class="w fill row"></div></div>
+          <div class="stack" style="left:2%;top:10px;width:230px;height:92px"><div class="l b2"></div><div class="l b1"></div><div class="top"><div class="r"><span class="ic"></span><span class="line" style="width:46px"></span><span class="grow"></span><span class="line" style="width:24px"></span></div><div class="line" style="width:70%"></div><span class="count">2 more notifications</span></div></div>
+          <div class="wg" style="left:0;top:200px;width:92px;height:92px;transform:rotate(-6deg)"><div class="line" style="width:60%"></div><div class="line"></div></div>
+          <div class="wg" style="left:34%;top:226px;width:92px;height:92px;transform:rotate(5deg)"><div class="line" style="width:60%"></div><div class="line"></div></div>
+          <div class="wg" style="left:6%;top:322px;width:92px;height:92px;transform:rotate(-3deg)"><div class="line" style="width:60%"></div><div class="line"></div></div>
+        </div>
+      </div>
+      <div class="d-foot"><span class="txt">voidx · open source</span><div class="nav"><span class="line"></span><span class="line"></span><span class="line"></span></div><span class="txt">USD values are estimates.</span></div>
+    </div>
+    <ol style="margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px">
+      <li style="display:flex;gap:10px"><span class="n">1</span><span><b>Text column</b> on columns 1 to 6, vertically centred.</span></li>
+      <li style="display:flex;gap:10px"><span class="n">2</span><span><b>Button</b> auto width, left aligned with the headline.</span></li>
+      <li style="display:flex;gap:10px"><span class="n">3</span><span><b>Visual</b> on columns 7 to 12: phone on the right, pushes and widgets scattered at different angles, never over numbers.</span></li>
+    </ol>
+
+    <div class="mobwrap" style="margin-top:12px">
+      <div class="frame tab" aria-label="Tablet wireframe">
+        <div class="bar"><i></i><i></i><i></i><span>Tablet, 600 to 899</span></div>
+        <div class="d-head" style="padding:12px 32px"><span class="w fill logo"></span><span class="grow"></span><span class="pill">Open on the web</span></div>
+        <div class="t-body">
+          <div class="h">Your DeFi yield on your Home Screen.</div>
+          <p class="txt" style="font-size:15px">Widgets, and a push when it needs you.</p>
+          <span class="pill solid" style="min-height:52px;padding-inline:32px;font-size:15px">Track your wallet</span>
+          <p class="txt">iPhone, iPad, Mac, Android · Free · Open source</p>
+          <div class="t-vis">
+            <div class="phone" style="left:50%;margin-left:-20px;top:10px;width:180px;height:380px"><div class="t"></div><div class="big"></div><div class="w fill ban"></div><div class="w fill row"></div><div class="w row"></div></div>
+            <div class="stack" style="left:6%;top:10px;width:200px;height:86px"><div class="l b2"></div><div class="l b1"></div><div class="top"><div class="r"><span class="ic"></span><span class="line" style="width:40px"></span></div><div class="line" style="width:70%"></div><span class="count">2 more notifications</span></div></div>
+            <div class="wg" style="left:4%;top:190px;width:90px;height:90px;transform:rotate(-6deg)"><div class="line" style="width:60%"></div><div class="line"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><p class="cap">Tablet rule</p><p><b>One column.</b> Text block max 560, left aligned.</p><p><b>Visual</b> below the text: phone centred right of middle, two pushes and one widget on the left.</p><p><b>Button</b> auto width, min 280.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="m">
+    <h2 id="m">Mobile: three options</h2>
+    <p class="lead">All three use the push stack as the signature element and keep the primary button reachable. Pick one, or take parts of each. The dashed line is the bottom of a 390 by 844 screen.</p>
+    <div class="mrow">
+      <div class="mvar"><span class="tag">A. Stack, then phone</span>
+        <div class="frame mob"><div class="m-head"><span class="w fill logo"></span><span class="grow"></span><span class="pill" style="min-height:34px;padding-inline:12px;font-size:12px">Open on the web</span></div><div class="m-text"><div class="h">Your DeFi yield on your Home Screen.</div><p class="txt" style="font-size:13px">Widgets, and a push when it needs you.</p></div>
+          <div class="m-vis"><div class="stack" style="left:50%;margin-left:-116px;top:8px;width:232px;height:88px"><div class="l b2"></div><div class="l b1"></div><div class="top"><div class="r"><span class="ic"></span><span class="line" style="width:40px"></span></div><div class="line" style="width:70%"></div><span class="count">2 more notifications</span></div></div><div class="phone" style="left:50%;margin-left:-82px;top:112px;width:164px;height:340px"><div class="t"></div><div class="big"></div><div class="w fill ban"></div><div class="w fill row"></div><div class="w row"></div></div></div>
+          <div class="m-cta"><span class="pill solid" style="min-height:52px;width:100%;font-size:15px">Track your wallet</span><span class="txt">Free · Open source</span></div>
+        </div>
+        <p class="txt" style="max-width:280px">The stack sits on top of the phone and tells the story in one glance. Button pinned at the bottom.</p></div>
+      <div class="mvar"><span class="tag">B. Stack as the hero, no phone</span>
+        <div class="frame mob"><div class="m-head"><span class="w fill logo"></span><span class="grow"></span><span class="pill" style="min-height:34px;padding-inline:12px;font-size:12px">Open on the web</span></div><div class="m-text"><div class="h">Your DeFi yield on your Home Screen.</div><p class="txt" style="font-size:13px">Widgets, and a push when it needs you.</p></div>
+          <div class="m-vis"><div class="stack" style="left:50%;margin-left:-120px;top:8px;width:240px;height:88px"><div class="l b2"></div><div class="l b1"></div><div class="top"><div class="r"><span class="ic"></span><span class="line" style="width:40px"></span></div><div class="line" style="width:70%"></div><span class="count">3 more notifications</span></div></div><div class="wrow" style="position:absolute;left:0;right:0;top:122px"><div class="wg" style="position:relative;width:50%;height:100px"><div class="line" style="width:60%"></div><div class="line"></div></div><div class="wg" style="position:relative;width:50%;height:100px"><div class="line" style="width:60%"></div><div class="line"></div></div></div><div class="w fill" style="position:absolute;left:16px;right:16px;top:240px;height:70px;border-radius:14px"></div></div>
+          <div class="m-cta"><span class="pill solid" style="min-height:52px;width:100%;font-size:15px">Track your wallet</span><span class="txt">Free · Open source</span></div>
+        </div>
+        <p class="txt" style="max-width:280px">Lightest page. The stack, two widgets and one position row replace the phone. Fastest to load, least literal.</p></div>
+      <div class="mvar"><span class="tag">C. Phone first, stack inside</span>
+        <div class="frame mob"><div class="m-head"><span class="w fill logo"></span><span class="grow"></span><span class="pill" style="min-height:34px;padding-inline:12px;font-size:12px">Open on the web</span></div><div class="m-text"><div class="h">Your DeFi yield on your Home Screen.</div></div>
+          <div class="m-vis"><div class="phone" style="left:50%;margin-left:-86px;top:6px;width:172px;height:430px"><div class="t"></div><div class="big"></div><div class="w fill ban"></div><div class="w fill row"></div></div><div class="stack" style="left:50%;margin-left:-106px;top:8px;width:212px;height:88px"><div class="l b2"></div><div class="l b1"></div><div class="top"><div class="r"><span class="ic"></span><span class="line" style="width:40px"></span></div><div class="line" style="width:70%"></div><span class="count">2 more notifications</span></div></div></div>
+          <div class="m-cta"><p class="txt" style="font-size:12px;text-align:center">Widgets, and a push when it needs you.</p><span class="pill solid" style="min-height:52px;width:100%;font-size:15px">Track your wallet</span></div>
+        </div>
+        <p class="txt" style="max-width:280px">Shortest text. The phone is the largest it can be, the stack overlaps its top edge, the supporting line moves next to the button.</p></div>
+    </div>
+    <div class="mrow" style="margin-top:8px">
+      <div class="frame mob land" aria-label="Landscape phone wireframe">
+        <div style="flex:1.1;display:grid;align-content:center;gap:8px;padding:0 16px"><div class="w fill logo" style="width:50px;height:14px"></div><div class="h" style="font-size:26px;max-width:12ch">Your DeFi yield on your Home Screen.</div><span class="pill solid" style="min-height:40px;width:150px;font-size:13px">Track your wallet</span></div>
+        <div style="flex:.9;position:relative;overflow:hidden"><div class="phone" style="left:50%;margin-left:-60px;top:14px;width:120px;height:260px"><div class="t"></div><div class="big"></div><div class="w fill ban"></div></div></div>
+        <div class="bar" style="position:absolute;left:0;bottom:0;right:0;border:0">Landscape phone, height 520 or less</div>
+      </div>
+      <div class="note"><p class="cap">Open questions</p><p><b>Pinned button</b> or a button that scrolls with the page? Pinned costs about 96 px of the visual.</p><p><b>Phone or no phone</b> on mobile? B is lighter, A and C show the real app.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s">
+    <h2 id="s">Slots for later</h2>
+    <p class="lead">Sections that can be added under the Hero without changing the grid, spacing or components above. Each one is a dashed box here because none is designed yet.</p>
+    <div class="slots">
+      <div class="slot"><b>Widgets</b><p>Small, medium, Lock Screen. Uses the Widget component.</p></div>
+      <div class="slot"><b>Alerts</b><p>Push and what it says. Uses Push.</p></div>
+      <div class="slot"><b>Lending</b><p>Aave, Compound, Morpho as a card with health. New component: Health bar.</p></div>
+      <div class="slot"><b>Platforms</b><p>iPhone, iPad, Mac, Android. New component: Device frame.</p></div>
+      <div class="slot"><b>Open source</b><p>Repository, licence, how to add a protocol.</p></div>
+      <div class="slot"><b>Closing action</b><p>Repeats the primary button and the wallet field.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="r">
+    <h2 id="r">How this wireframe is kept scalable</h2>
+    <div class="cards3">
+      <div class="card"><h3>One name per part</h3><p>The same part keeps the same name in the component list, the key and the code, so a change is made once.</p></div>
+      <div class="card"><h3>Rules, not pixels</h3><p>Sizes are written as rules with a range. Pixels appear only where they are a minimum, such as a 44 px touch target.</p></div>
+      <div class="card"><h3>States listed up front</h3><p>Every interactive part lists its states before it is drawn: default, hover, pressed, focus, error, empty.</p></div>
+      <div class="card"><h3>What changes per width</h3><p>Each breakpoint states only what differs: stacked or side by side, what is hidden, where the primary action sits.</p></div>
+      <div class="card"><h3>Mobile first</h3><p>The phone layout is the base. Larger widths add, they do not rescue.</p></div>
+      <div class="card"><h3>Placeholders, not content</h3><p>Boxes and lines stand for content. Final copy and colour come after structure is agreed.</p></div>
+    </div>
+  </section>
+</div>

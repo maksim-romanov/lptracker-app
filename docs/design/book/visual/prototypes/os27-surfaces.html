@@ -1,0 +1,199 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VoidX OS 27 and System Surfaces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap">
+<style>
+/* Layout: what OS 27 changes first, then every surface outside the app (widgets, Lock Screen, controls, notifications, Siri), each with where a tap lands. */
+:root, :root[data-pal="dragonfruit"] {
+  --bg: oklch(.975 .012 350); --surface: oklch(.995 .003 350); --field: oklch(.945 .014 350);
+  --edge: oklch(.6 .03 350); --line: oklch(.88 .015 350); --ink: oklch(.18 .02 350); --muted: oklch(.45 .03 350);
+  --accent: oklch(.54 .224 350); --on-accent: oklch(.99 .004 350); --amber: oklch(.86 .15 85); --on-amber: oklch(.22 .04 85);
+  --f1: oklch(.54 .224 350); --f1i: oklch(.98 .01 350); --f2: oklch(.995 .001 350); --f2i: oklch(.22 .05 350);
+  --f3: oklch(.16 .01 350); --f3i: oklch(.98 .01 350); --f4: oklch(.88 .07 355); --f4i: oklch(.22 .05 350);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-pal="dragonfruit"]) {
+    --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+    --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+    --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+    --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+    --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]:not([data-pal="dragonfruit"]), :root[data-pal="neon"] {
+  --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+  --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+  --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+  --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+  --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+  color-scheme: dark;
+}
+:root { --sel: color-mix(in oklab, var(--ink) 13%, var(--surface)); --font: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace; }
+.on-1 { --fill: var(--f1); --fi: var(--f1i); } .on-2 { --fill: var(--f2); --fi: var(--f2i); } .on-3 { --fill: var(--f3); --fi: var(--f3i); } .on-4 { --fill: var(--f4); --fi: var(--f4i); }
+.on-1, .on-2, .on-3, .on-4 { --bg: var(--fill); --ink: var(--fi); --surface: color-mix(in oklab, var(--fill) 88%, var(--fi)); --muted: color-mix(in oklab, var(--fi) 92%, var(--fill)); --line: color-mix(in oklab, var(--fill) 80%, var(--fi)); --edge: color-mix(in oklab, var(--fi) 72%, var(--fill)); --accent: var(--fi); --on-accent: var(--fill); --sel: color-mix(in oklab, var(--fi) 16%, var(--fill)); background: var(--bg); color: var(--ink); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; padding-inline: 16px; padding-block: 20px 72px; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, p { margin: 0; text-wrap: balance; }
+code { font-family: var(--mono); font-size: .9em; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.skip { position: absolute; left: 16px; top: -64px; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 999px; font-weight: 700; text-decoration: none; z-index: 50; }
+.skip:focus { top: 12px; }
+.wrap { max-width: 1160px; margin-inline: auto; display: grid; gap: 22px; }
+.wrap > * { min-width: 0; }
+.top h1 { font-size: clamp(44px, 8vw, 92px); line-height: .92; letter-spacing: -0.055em; font-weight: 700; }
+.top p { max-width: 66ch; margin-top: 12px; color: var(--muted); font-size: 17px; }
+.toc ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.toc a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1px var(--edge); }
+.sheet { background: var(--surface); border-radius: 28px; padding: 12px; display: grid; gap: 14px; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.sheet > * { min-width: 0; }
+.sheet > header { padding: 24px 26px 26px; border-radius: 22px; display: grid; gap: 10px; }
+.sheet h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.04em; line-height: 1.02; }
+.sheet header p { color: var(--muted); max-width: 74ch; font-size: 16px; }
+.sheet > :not(header) { margin-inline: 12px; }
+.sheet > :last-child { margin-bottom: 12px; }
+.cap { font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--sel); white-space: nowrap; }
+.pill.sec { box-shadow: inset 0 0 0 1px var(--edge); background: none; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl caption { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; }
+.tbl th, .tbl td { padding: 9px 12px 9px 0; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.tbl thead th { border-top: 0; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tbl tbody th { font-weight: 700; }
+.scroll { overflow-x: auto; }
+.note { font-size: 13px; color: var(--muted); }
+ul.rules { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+
+/* widget wireframes */
+.wgrid { display: grid; gap: 22px 18px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); align-items: start; }
+.fig { display: grid; gap: 8px; align-content: start; margin: 0; }
+.fig figcaption { font-size: 13px; color: var(--muted); }
+.screen { border-radius: 26px; padding: 14px; background: linear-gradient(160deg, color-mix(in oklab, var(--ink) 18%, var(--bg)), var(--bg)); box-shadow: inset 0 0 0 1px var(--line); display: grid; gap: 10px; align-content: start; }
+.screen.lock { background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 30%, var(--bg)), var(--bg)); text-align: center; }
+.clock { font-size: 44px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; margin-top: 4px; }
+.wg { border-radius: 22px; padding: 14px; display: grid; gap: 6px; align-content: start; min-height: 150px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--fi, var(--ink)) 14%, transparent); }
+.wg.m { min-height: 150px; } .wg h4 { font-size: 13px; font-weight: 700; letter-spacing: .02em; opacity: .9; }
+.wg .big { font-size: 40px; font-weight: 600; letter-spacing: -0.045em; line-height: 1; font-variant-numeric: tabular-nums; }
+.wg .ln { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 600; padding: 6px 0; border-top: 1px solid color-mix(in oklab, currentColor 22%, transparent); }
+.wg .ln:first-of-type { border-top: 0; }
+.st { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; }
+.st i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.st.out i { border-radius: 1px; transform: rotate(45deg); }
+.tint { --fill: color-mix(in oklab, var(--accent) 40%, #1d1d1f); --fi: color-mix(in oklab, var(--accent) 22%, #fff); background: var(--fill); color: var(--fi); }
+.circ { width: 78px; height: 78px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in oklab, var(--ink) 18%, transparent); font-weight: 700; justify-self: center; text-align: center; font-size: 11px; line-height: 1.1; }
+.circ b { display: block; font-size: 28px; line-height: 1; letter-spacing: -0.04em; }
+.rect { border-radius: 16px; padding: 10px 12px; background: color-mix(in oklab, var(--ink) 14%, transparent); text-align: left; display: grid; gap: 2px; font-size: 12px; font-weight: 600; }
+.rect b { font-size: 13px; }
+.inline { font-size: 13px; font-weight: 700; }
+.notif { border-radius: 22px; padding: 12px 14px; background: color-mix(in oklab, var(--surface) 80%, var(--bg)); box-shadow: inset 0 0 0 1px var(--line); display: grid; gap: 2px; font-size: 13px; }
+.notif b { font-size: 14px; } .notif .acts { display: flex; gap: 8px; margin-top: 6px; } .notif .acts span { padding: 4px 12px; border-radius: 999px; background: var(--sel); font-weight: 700; font-size: 12px; }
+.ctl { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 22px; background: var(--ink); color: var(--bg); font-size: 11px; font-weight: 700; justify-self: center; text-align: center; padding: 6px; }
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top">
+    <h1>VoidX OS 27 and System Surfaces</h1>
+    <p>What the new OS versions change for the Apple apps, and everything we show outside the app: Home Screen and Lock Screen widgets, controls, notifications, Siri and Spotlight. Each surface says where a tap lands, so it plugs into the navigation map. Wireframes, not final design.</p>
+  </header>
+  <nav class="toc" aria-label="Sections"><ul><li><a href="#h-os">OS 27</a></li><li><a href="#h-glass">Liquid Glass rules</a></li><li><a href="#h-sur">Surfaces</a></li><li><a href="#h-wg">Widgets</a></li><li><a href="#h-route">Where a tap lands</a></li><li><a href="#h-a11y">Accessibility</a></li><li><a href="#h-dec">Decisions</a></li></ul></nav>
+
+  <main id="main" class="wrap">
+    <section class="sheet" aria-labelledby="h-os">
+      <header class="on-1"><h2 id="h-os">What OS 27 changes</h2><p>Releases from the second half of 2026: iOS, iPadOS and macOS 27. The repo minimum is still 26 (ADR 0019). Provenance is marked: <span class="pill">Apple</span> is an Apple page, <span class="pill sec">Secondary</span> is press or a review that I could not confirm on an Apple page.</p></header>
+      <div class="scroll"><table class="tbl"><caption>Changes and what we do</caption><thead><tr><th scope="col">Change</th><th scope="col">Source</th><th scope="col">What we do</th></tr></thead><tbody>
+        <tr><th scope="row">A Liquid Glass slider in Settings, from ultra-clear to fully tinted. Refraction is more uniform and contrast improved.</th><td><span class="pill">Apple</span></td><td>Chrome is the system's. Legibility must hold at both ends of the slider and with Reduce Transparency and Increase Contrast. Rules in the next section.</td></tr>
+        <tr><th scope="row">macOS: a more uniform toolbar, edge-to-edge sidebars, coloured sidebar icons return. Menu bar shows fewer item images (<code>preferredImageVisibility</code>).</th><td><span class="pill">Apple</span> <span class="pill">Release notes</span></td><td>Use the system sidebar and toolbar unstyled. Menu titles carry the meaning; no menu item relies on its icon.</td></tr>
+        <tr><th scope="row">iPadOS: sidebars go back to edge-to-edge instead of floating panels.</th><td><span class="pill sec">Secondary</span></td><td>Same: the system sidebar, no custom floating panel.</td></tr>
+        <tr><th scope="row">iPadOS: the menu bar can stay visible, is left-aligned, and the foreground app name appears in the status bar.</th><td><span class="pill sec">Secondary</span></td><td>Menus as in the Mac pass. Auto-hide stays the default, so every command is still reachable in the interface.</td></tr>
+        <tr><th scope="row">macOS: a segmented control role for tabs, and a <code>.tabs</code> picker style in SwiftUI.</th><td><span class="pill">Release notes</span></td><td>Use it to switch sections. Cards and Rows is a value choice, so it stays an ordinary segmented picker.</td></tr>
+        <tr><th scope="row">iOS 27 SwiftUI: <code>@State</code> macro, <code>AsyncImage</code> HTTP caching with a custom <code>URLSession</code>, status bar colour scheme. <code>.navigationTransition(.crossFade)</code> for sheets and covers without a source.</th><td><span class="pill">Release notes</span> <span class="pill sec">article</span></td><td>Re-hosted token logos use the cached <code>AsyncImage</code>. The crossfade fits the wide-layout detail swap. Gate each by <code>#available</code>.</td></tr>
+        <tr><th scope="row">VoiceOver gets better image descriptions; automatic captions for video.</th><td><span class="pill">Apple</span></td><td>No video in the app. Our images still carry real alternatives.</td></tr>
+        <tr><th scope="row">Lock Screen: a compact clock and a glass opacity slider that affects widgets and controls.</th><td><span class="pill sec">Secondary</span></td><td>Lock Screen widgets must be legible at any opacity. Sizes themselves are unchanged.</td></tr>
+        <tr><th scope="row">Siri AI takes actions inside apps through system-wide app actions.</th><td><span class="pill">Apple</span></td><td>Expose position and wallet actions through App Intents (see Surfaces).</td></tr>
+      </tbody></table></div>
+      <p class="note"><b>Version policy.</b> Build with the latest Xcode and keep the deployment minimum at 26, so one release serves both; adopt 27 APIs behind <code>#available</code>. The date after which uploads need the 27 SDK was not checked.</p>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-glass">
+      <header class="on-2"><h2 id="h-glass">Liquid Glass rules for VoidX</h2><p>The person now chooses how clear or tinted the glass is. We cannot test one look; we test the range.</p></header>
+      <ul class="rules">
+        <li><b>Glass is for the system layer:</b> tab bar, sidebar, toolbar, sheets, menus. Position cards, rows and the range bar stay on opaque colour blocks, so nothing we draw changes with the slider.</li>
+        <li><b>At most one custom glass element per screen</b> (the refresh or range-status pill), grouped in a <code>GlassEffectContainer</code>, using the regular variant under text.</li>
+        <li><b>Test the extremes:</b> ultra-clear and fully tinted, light and dark, with Reduce Transparency and Increase Contrast on. A toolbar over a coloured block must keep 4.5 to 1 for its labels. This is a manual check; the token test does not cover glass.</li>
+        <li><b>Colour on glass is for the primary action and status only.</b> No coloured controls on toolbars, and no label colour close to the block behind it.</li>
+        <li><b>Use the system controls and let them adapt.</b> Where a custom control looks different from a system one at the extremes, replace it.</li>
+        <li><b>Widgets and Lock Screen controls follow the same slider.</b> They are drawn by the system around our content; we only supply content and an accent group.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-sur">
+      <header class="on-3"><h2 id="h-sur">Surfaces outside the app</h2><p>Each is a way into the same map. They show server-formatted values from the app's snapshot, never their own maths.</p></header>
+      <div class="scroll"><table class="tbl"><caption>Catalog</caption><thead><tr><th scope="col">Surface</th><th scope="col">Where</th><th scope="col">Shows</th><th scope="col">Milestone</th></tr></thead><tbody>
+        <tr><th scope="row">Home Screen widget</th><td>iPhone, iPad, Mac desktop; Android home screen</td><td>Small: how many positions are out of range and the worst one. Medium: three positions with status. Large: six.</td><td>M6 widgets</td></tr>
+        <tr><th scope="row">Lock Screen widget</th><td>iPhone, iPad</td><td>Circular: out-of-range count. Rectangular: two positions. Inline: "2 out of range".</td><td>M6</td></tr>
+        <tr><th scope="row">Control</th><td>Control Center, Lock Screen, Action button</td><td>A button that opens Alerts. A refresh control only if it can run without opening the app.</td><td>After M6</td></tr>
+        <tr><th scope="row">Notification</th><td>iPhone, iPad, Android; not Mac in the MVP</td><td>"ETH / USDC left its range", with Open and Mute 24 h.</td><td>M5</td></tr>
+        <tr><th scope="row">Siri, Spotlight, Shortcuts</th><td>iPhone, iPad, Mac (App Intents); Android app shortcuts</td><td>"Which positions are out of range?", "Open ETH / USDC", positions searchable in Spotlight.</td><td>M6</td></tr>
+        <tr><th scope="row">Live Activity</th><td>iPhone Lock Screen and Dynamic Island</td><td>A position that has just left range, until it is back.</td><td>After the MVP</td></tr>
+        <tr><th scope="row">Menu bar item</th><td>Mac</td><td>Out-of-range count and a short list.</td><td>After the MVP</td></tr>
+      </tbody></table></div>
+      <p class="note">Android equivalents: a Glance widget, a Quick Settings tile, a notification channel with grouping, and app shortcuts. Time Sensitive notifications need an entitlement and honest use, so range exit starts as a normal alert.</p>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-wg">
+      <header class="on-4"><h2 id="h-wg">Widget wireframes</h2><p>Drawn in full colour and in the tinted modes the system applies (accented on the Home Screen, vibrant on the Lock Screen). In a tinted mode colour disappears, so status always carries a word and a shape.</p></header>
+      <div class="wgrid">
+        <figure class="fig"><span class="cap">Home Screen, small, full colour</span><div class="screen"><div class="wg on-1"><h4>VoidX</h4><div class="big">2</div><div class="st out"><i></i>Out of range</div><div class="ln"><span>ETH / BTC.b</span><span>$1,841</span></div></div></div><figcaption>Taps open Alerts. Value is formatted by the server.</figcaption></figure>
+        <figure class="fig"><span class="cap">Home Screen, small, accented</span><div class="screen"><div class="wg tint"><h4>VoidX</h4><div class="big">2</div><div class="st out"><i></i>Out of range</div><div class="ln"><span>ETH / BTC.b</span><span>$1,841</span></div></div></div><figcaption>One tint. The diamond and the words still say out of range.</figcaption></figure>
+        <figure class="fig"><span class="cap">Home Screen, medium</span><div class="screen"><div class="wg on-2"><h4>Portfolio · $53,170</h4><div class="ln"><span>ETH / USDC</span><span class="st"><i></i>In range</span></div><div class="ln"><span>ETH / BTC.b</span><span class="st out"><i></i>Out of range</span></div><div class="ln"><span>WBTC / ETH</span><span class="st"><i></i>In range</span></div></div></div><figcaption>Each row is a link to its position.</figcaption></figure>
+        <figure class="fig"><span class="cap">Lock Screen, vibrant</span><div class="screen lock"><div class="clock" aria-hidden="true">9:41</div><div class="circ"><span><b>2</b>out of range</span></div><div class="rect"><b>ETH / BTC.b · Out of range</b><span>ETH / USDC · In range</span></div><div class="inline">◆ 2 out of range</div></div><figcaption>Circular, rectangular and inline. Single colour, any glass opacity.</figcaption></figure>
+        <figure class="fig"><span class="cap">Notification</span><div class="screen"><div class="notif"><b>ETH / BTC.b left its range</b><span>Price 0.0338, range 0.0290 to 0.0330</span><div class="acts"><span>Open</span><span>Mute 24 h</span></div></div></div><figcaption>One thread per position. Tap lands in Alerts › Detail.</figcaption></figure>
+        <figure class="fig"><span class="cap">Control</span><div class="screen" style="justify-items:center"><div class="ctl">Open Alerts</div></div><figcaption>Safe action only: it opens the app.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-route">
+      <header class="on-1"><h2 id="h-route">Where a tap lands</h2><p>These are the "Outside the app" entries of the navigation map, with their stack so Back goes somewhere sensible.</p></header>
+      <div class="scroll"><table class="tbl"><caption>Routes</caption><thead><tr><th scope="col">Entry</th><th scope="col">Opens</th><th scope="col">Back stack</th></tr></thead><tbody>
+        <tr><th scope="row">Small widget, Alerts control</th><td>Alerts</td><td>Alerts</td></tr>
+        <tr><th scope="row">Medium widget row, Lock Screen rectangular row</th><td>Position detail</td><td>Portfolio › Detail</td></tr>
+        <tr><th scope="row">Notification, Live Activity</th><td>Position detail</td><td>Alerts › Detail</td></tr>
+        <tr><th scope="row">Siri "open ETH / USDC", Spotlight result, universal link</th><td>Position detail</td><td>Portfolio › Detail</td></tr>
+        <tr><th scope="row">Siri "which are out of range?"</th><td>Answers in place, offers Alerts</td><td>None</td></tr>
+        <tr><th scope="row">A link to a wallet that is not in the watchlist</th><td>Add wallet, address filled in</td><td>Portfolio</td></tr>
+      </tbody></table></div>
+      <p class="note">Widget links use <code>widgetURL</code> and per-row <code>Link</code>. Self-hosted instances cannot claim the app's associated domains (ADR 0012), so their links open the web page first.</p>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-a11y">
+      <header class="on-2"><h2 id="h-a11y">Accessibility and tests for these surfaces</h2><p>Extends <code>docs/decisions/0022-accessibility.md</code>.</p></header>
+      <ul class="rules">
+        <li><b>Widgets are read as one element</b> with a label that says the whole thing ("ETH / BTC.b is out of range, 1,841 dollars"). Rows that are links have their own names.</li>
+        <li><b>Status never relies on colour.</b> Word plus shape survive accented and vibrant rendering. Check each mode by looking at it in greyscale.</li>
+        <li><b>Contrast under the system tint.</b> We supply an accent group and an opaque container background; the system does the tinting. Check at the ultra-clear and tinted ends of the glass slider.</li>
+        <li><b>Text size.</b> Widgets scale with Dynamic Type where the family allows it; truncate nothing that carries the status.</li>
+        <li><b>No flashing, no motion that matters.</b> Timelines refresh values, they do not animate.</li>
+        <li><b>Notifications</b> read the pair, the state and the numbers; actions have names; the Mute action never hides a position without saying so.</li>
+        <li><b>Siri and Shortcuts answers are text first</b>, so VoiceOver and captions get them as well.</li>
+        <li><b>Tests:</b> snapshot every widget family in full colour, accented and vibrant, light and dark, at default and accessibility text sizes; UI Automator and Glance tests on Android; manual pass with the glass slider at both ends.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-dec">
+      <header class="on-3"><h2 id="h-dec">Decisions and open points</h2><p>Recommendations first.</p></header>
+      <ol class="rules">
+        <li><b>Build with the current Xcode, minimum OS 26, adopt 27 behind availability checks.</b> Confirm when the 27 SDK becomes mandatory for uploads.</li>
+        <li><b>MVP surfaces:</b> small and medium Home Screen widgets, Lock Screen circular, rectangular and inline, notifications. Controls, Live Activity and the Mac menu bar item come later.</li>
+        <li><b>No custom glass beyond one element per screen</b>, tested at both ends of the slider.</li>
+        <li><b>A position and wallet intent set</b> (open, which are out of range) from the start, so Siri, Spotlight and Shortcuts work the same way.</li>
+        <li><b>Open:</b> the widget data limit and refresh budget, whether the widget may show fees, and whether range exit becomes Time Sensitive.</li>
+      </ol>
+      <p class="note">Sources: Apple newsroom, "Apple unveils next generation of Apple Intelligence, Siri AI, and more" (June 2026); Apple, iOS 27 page; iOS and iPadOS 27 and macOS 27 release notes (via a renderer, summarised); WidgetKit overview. Secondary: MacStories iPadOS 27 review; press about the Lock Screen. The Apple pages on rendering modes and accessory widget sizes did not load, so those details come from the WidgetKit overview and general knowledge. No iOS 27 behaviour was tested on a device.</p>
+    </section>
+  </main>
+</div>
+
+</body></html>

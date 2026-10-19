@@ -1,0 +1,415 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VoidX Navigation Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap">
+<style>
+/* Layout: the map first, as one SVG with a text table next to it. Then the platform table, then one animation pattern with a live demo. */
+:root, :root[data-pal="dragonfruit"] {
+  --bg: oklch(.975 .012 350); --surface: oklch(.995 .003 350); --field: oklch(.945 .014 350);
+  --edge: oklch(.6 .03 350); --line: oklch(.88 .015 350); --ink: oklch(.18 .02 350); --muted: oklch(.45 .03 350);
+  --accent: oklch(.54 .224 350); --on-accent: oklch(.99 .004 350); --amber: oklch(.86 .15 85); --on-amber: oklch(.22 .04 85);
+  --f1: oklch(.54 .224 350); --f1i: oklch(.98 .01 350); --f2: oklch(.995 .001 350); --f2i: oklch(.22 .05 350);
+  --f3: oklch(.16 .01 350); --f3i: oklch(.98 .01 350); --f4: oklch(.88 .07 355); --f4i: oklch(.22 .05 350);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-pal="dragonfruit"]) {
+    --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+    --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+    --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+    --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+    --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]:not([data-pal="dragonfruit"]), :root[data-pal="neon"] {
+  --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+  --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+  --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+  --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+  --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+  color-scheme: dark;
+}
+:root { --sel: color-mix(in oklab, var(--ink) 13%, var(--surface)); --spring: cubic-bezier(.2, .8, .2, 1); --spring-ms: 460ms; --font: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace; }
+.on-1 { --fill: var(--f1); --fi: var(--f1i); } .on-2 { --fill: var(--f2); --fi: var(--f2i); } .on-3 { --fill: var(--f3); --fi: var(--f3i); } .on-4 { --fill: var(--f4); --fi: var(--f4i); }
+.on-1, .on-2, .on-3, .on-4 { --bg: var(--fill); --ink: var(--fi); --surface: color-mix(in oklab, var(--fill) 88%, var(--fi)); --muted: color-mix(in oklab, var(--fi) 92%, var(--fill)); --line: color-mix(in oklab, var(--fill) 80%, var(--fi)); --edge: color-mix(in oklab, var(--fi) 72%, var(--fill)); --accent: var(--fi); --on-accent: var(--fill); --sel: color-mix(in oklab, var(--fi) 16%, var(--fill)); background: var(--bg); color: var(--ink); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; padding-inline: 16px; padding-block: 20px 72px; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+h1, h2, h3, p { margin: 0; text-wrap: balance; }
+code { font-family: var(--mono); font-size: .9em; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 999px; font-weight: 700; text-decoration: none; z-index: 50; }
+.skip:focus { top: 12px; }
+.wrap { max-width: 1160px; margin-inline: auto; display: grid; gap: 22px; }
+.wrap > * { min-width: 0; }
+.top h1 { font-size: clamp(44px, 8vw, 96px); line-height: .92; letter-spacing: -0.055em; font-weight: 700; }
+.top p { max-width: 62ch; margin-top: 12px; color: var(--muted); font-size: 17px; }
+.pick { display: inline-flex; gap: 2px; padding: 3px; background: var(--surface); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); border: 0; margin: 0; }
+.pick label { position: relative; display: grid; place-items: center; min-height: 44px; min-width: 44px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.pick input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.pick label:has(input:checked) { background: var(--ink); color: var(--bg); }
+.pick label:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.cap { font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+.sheet { background: var(--surface); border-radius: 28px; padding: 12px; display: grid; gap: 14px; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.sheet > * { min-width: 0; }
+.sheet > header { padding: 24px 26px 26px; border-radius: 22px; background: var(--bg); color: var(--ink); display: grid; gap: 10px; }
+.sheet h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.04em; line-height: 1.02; }
+.sheet header p { color: var(--muted); max-width: 72ch; font-size: 16px; }
+.sheet > :not(header) { margin-inline: 12px; }
+.sheet > :last-child { margin-bottom: 12px; }
+.badge { white-space: nowrap; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: var(--sel); color: var(--ink); }
+
+/* map */
+.mapwrap { overflow-x: auto; border-radius: 22px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+.map { display: block; min-width: 1100px; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--muted); align-items: center; }
+.legend span { display: inline-flex; gap: 8px; align-items: center; }
+.legend svg { width: 44px; height: 14px; }
+.node rect.box { fill: var(--surface); stroke: var(--edge); stroke-width: 1.5; }
+.node.tab rect.box { fill: var(--ink); stroke: var(--ink); }
+.node.tab text { fill: var(--bg); }
+.node.sheet rect.box { fill: color-mix(in oklab, var(--accent) 14%, var(--surface)); stroke: var(--accent); stroke-dasharray: 6 4; }
+.node.system rect.box, .node.external rect.box { fill: var(--field); stroke: var(--edge); stroke-dasharray: 2 4; }
+.node.dialog rect.box, .node.menu rect.box { fill: var(--surface); stroke: var(--edge); stroke-dasharray: 6 4; }
+.node.start rect.box { fill: var(--amber); stroke: var(--amber); }
+.node.start text { fill: var(--on-amber); }
+.node text { fill: var(--ink); font: 700 17px var(--font); pointer-events: none; }
+.node text.sub { font: 500 13px var(--font); fill: var(--muted); }
+.node.tab text.sub { fill: color-mix(in oklab, var(--bg) 78%, var(--ink)); }
+.node.start text.sub { fill: var(--on-amber); }
+.tabbox { fill: none; stroke: var(--edge); stroke-width: 1.5; stroke-dasharray: 3 5; }
+.tabcap { font: 700 12px var(--font); letter-spacing: .09em; fill: var(--muted); text-transform: uppercase; }
+.edge { cursor: pointer; outline: none; }
+.edge path.line { fill: none; stroke: var(--ink); stroke-width: 2; }
+.edge.sheet path.line { stroke-dasharray: 7 5; stroke: var(--accent); }
+.edge.system path.line, .edge.external path.line { stroke-dasharray: 2 5; stroke-linecap: round; stroke: var(--muted); }
+.edge.dialog path.line, .edge.menu path.line { stroke-dasharray: 7 5; stroke: var(--muted); }
+.edge path.hit { fill: none; stroke: transparent; stroke-width: 22; }
+.edge .tag rect { fill: var(--bg); stroke: var(--edge); stroke-width: 1; }
+.edge .tag text { font: 600 13px var(--font); fill: var(--ink); }
+.edge:hover path.line, .edge:focus-visible path.line, .edge[aria-pressed="true"] path.line { stroke-width: 4; }
+.edge:focus-visible .tag rect, .edge[aria-pressed="true"] .tag rect { stroke: var(--accent); stroke-width: 2.5; fill: color-mix(in oklab, var(--accent) 16%, var(--bg)); }
+.edge:focus-visible { outline: none; }
+.dim .edge:not([aria-pressed="true"]) { opacity: .35; }
+.dim .node { opacity: .55; } .dim .node.hot { opacity: 1; }
+.detailbox { display: grid; gap: 12px; padding: 18px 20px; border-radius: 22px; box-shadow: inset 0 0 0 1px var(--line); background: var(--bg); }
+.detailbox h3 { font-size: 22px; letter-spacing: -0.02em; }
+.detailbox dl { margin: 0; display: grid; gap: 8px 18px; grid-template-columns: auto 1fr; font-size: 14px; }
+.detailbox dt { font-weight: 700; color: var(--muted); } .detailbox dd { margin: 0; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl caption { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; }
+.tbl th, .tbl td { padding: 9px 12px 9px 0; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.tbl thead th { border-top: 0; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tbl tbody th { font-weight: 700; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--sel); white-space: nowrap; }
+
+/* wide layout */
+.wide { display: grid; gap: 12px; grid-template-columns: 1fr 1.3fr 1.6fr; align-items: stretch; }
+.pane { border-radius: 22px; padding: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.pane h3 { font-size: 18px; } .pane ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; } .pane p { font-size: 13px; color: var(--muted); }
+.pane .big { font-size: 40px; font-weight: 600; letter-spacing: -0.04em; color: var(--ink); }
+@media (max-width: 720px) { .wide { grid-template-columns: 1fr; } }
+/* demo */
+.zwrap { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: start; }
+.zphone { width: min(100%, 390px); margin-inline: auto; border-radius: 44px; padding: 10px; background: #0b0a0d; box-shadow: 0 30px 60px -30px rgba(20, 8, 30, .6); }
+.zscreen { position: relative; border-radius: 34px; overflow: hidden; background: var(--bg); height: 560px; }
+.zlist, .zdetail { position: absolute; inset: 0; padding: 22px 16px; display: grid; gap: 12px; align-content: start; }
+.zlist[hidden], .zdetail[hidden] { display: none; }
+.zlist h4 { margin: 8px 4px 6px; font-size: 32px; letter-spacing: -0.04em; font-weight: 700; }
+.zrow { display: grid; gap: 4px; text-align: left; border: 0; padding: 18px 18px; border-radius: 26px; min-height: 96px; align-content: center; }
+.zrow b { font-size: 20px; letter-spacing: -0.02em; } .zrow span { font-size: 13px; color: var(--muted); }
+.zrow .v { font-size: 26px; font-weight: 600; letter-spacing: -0.04em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.zdetail { padding-top: 22px; align-content: start; border-radius: 0; }
+.zdetail .bar { display: flex; align-items: center; justify-content: space-between; min-height: 48px; }
+.zback { display: inline-flex; align-items: center; gap: 4px; min-height: 48px; padding: 0 16px 0 10px; border: 0; border-radius: 999px; background: var(--sel); font-weight: 700; }
+.zdetail h4 { margin: 4px 0 0; font-size: 34px; letter-spacing: -0.04em; font-weight: 700; }
+.zdetail .big { font-size: 72px; line-height: 1; letter-spacing: -0.055em; font-weight: 600; font-variant-numeric: tabular-nums; margin: 6px 0; }
+.zdetail .ln { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.zdetail .ln b { font-variant-numeric: tabular-nums; }
+::view-transition-group(pos) { animation-duration: var(--spring-ms); animation-timing-function: var(--spring); }
+::view-transition-old(pos), ::view-transition-new(pos) { height: 100%; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 160ms; }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(pos) { animation: none; } ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 120ms; } }
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top">
+    <h1>VoidX Navigation Map</h1>
+    <p>Which button opens what, as one map for web, iOS and Android. Pick an arrow to see what it does on each platform. Version 3: the entry points from outside the app are now the real widgets (empty, Small and Medium, Lock Screen), a push alert, and links, Siri and Spotlight, each with its own arrow and back stack. Earlier: the guest gate on alerts, the wallet limit, the wide layout, and a focus and keyboard line for every arrow.</p>
+    <div style="margin-top:16px"><fieldset class="pick" id="pal" aria-label="Palette"><label><input type="radio" name="pal" value="auto" checked>Auto</label><label><input type="radio" name="pal" value="dragonfruit">Dragonfruit</label><label><input type="radio" name="pal" value="neon">Neon Night</label></fieldset></div>
+  </header>
+
+  <main id="main" class="wrap">
+    <section class="sheet" aria-labelledby="h-map">
+      <header class="on-1"><h2 id="h-map">The map</h2><p>Read it left to right. A solid arrow pushes a screen onto the stack, a dashed accent arrow opens a sheet, a dotted arrow leaves our UI for the system or a browser. Back always returns along the arrow it came by, and the tab bar keeps one stack per tab.</p></header>
+      <div class="legend" aria-hidden="true">
+        <span><svg viewBox="0 0 44 14"><path d="M2 7h40" stroke="currentColor" stroke-width="2.5" fill="none"/></svg>Push (zoom from source where marked)</span>
+        <span><svg viewBox="0 0 44 14"><path d="M2 7h40" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="7 5" fill="none"/></svg>Sheet</span>
+        <span><svg viewBox="0 0 44 14"><path d="M2 7h40" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="7 5" fill="none"/></svg>Menu or dialog</span>
+        <span><svg viewBox="0 0 44 14"><path d="M2 7h40" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="2 5" stroke-linecap="round" fill="none"/></svg>System or browser</span>
+      </div>
+      <div class="mapwrap"><svg class="map" id="map" viewBox="0 0 1430 1020" role="group" aria-label="Navigation map. The same information is in the table below."></svg></div>
+      <div class="detailbox" id="detail" aria-live="polite"><h3>Pick an arrow</h3><p>Click or press Enter on an arrow label to see what the control does on web, iOS and Android.</p></div>
+      <div class="scroll"><table class="tbl" id="routes"><caption>The same map as a table: from this screen, this control opens that</caption><thead><tr><th scope="col">From</th><th scope="col">Control</th><th scope="col">Opens</th><th scope="col">How</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-plat">
+      <header class="on-2"><h2 id="h-plat">How it works on each platform</h2><p>Same map, native mechanics. The structure comes from the system docs: a tab bar or navigation bar for top-level sections, a stack for depth, a sheet for one scoped task.</p></header>
+      <div class="scroll"><table class="tbl"><caption>Mechanics per transition</caption><thead><tr><th scope="col">Transition</th><th scope="col">Web</th><th scope="col">iOS</th><th scope="col">Android</th></tr></thead><tbody>
+        <tr><th scope="row">Top-level switch</th><td>Links in the top nav; every tab is a real page, <code>aria-current="page"</code></td><td><code>TabView</code>; Liquid Glass bar; each tab keeps its own stack</td><td><code>NavigationSuiteScaffold</code>: bar on phones, rail on wide windows</td></tr>
+        <tr><th scope="row">Push</th><td><code>&lt;a href&gt;</code>, a real page load; browser back</td><td><code>NavigationStack</code>; edge swipe back</td><td>Navigation 3 <code>NavDisplay</code>; predictive back</td></tr>
+        <tr><th scope="row">Push with zoom</th><td>Cross-document view transition, one <code>view-transition-name</code> on the tapped entity</td><td><code>matchedTransitionSource</code> and <code>.navigationTransition(.zoom)</code> (iOS 18+)</td><td><code>sharedBounds</code> across <code>NavDisplay</code> scenes</td></tr>
+        <tr><th scope="row">Sheet</th><td><code>&lt;dialog&gt;</code> styled as a sheet</td><td><code>.sheet</code> with detents and a grabber</td><td><code>ModalBottomSheet</code></td></tr>
+        <tr><th scope="row">Menu</th><td><code>popover</code> with buttons</td><td><code>Menu</code></td><td><code>DropdownMenu</code></td></tr>
+        <tr><th scope="row">Confirm</th><td><code>&lt;dialog&gt;</code></td><td><code>.confirmationDialog</code></td><td><code>AlertDialog</code></td></tr>
+        <tr><th scope="row">System</th><td>Web Share API, WebAuthn prompt</td><td>Share sheet, passkey sheet, permission prompt</td><td>Share sheet, Credential Manager, permission prompt</td></tr>
+        <tr><th scope="row">External</th><td><code>&lt;a target="_blank" rel="noopener"&gt;</code></td><td>In-app Safari view on iPhone and iPad; the default browser on Mac</td><td>Custom Tab</td></tr>
+        <tr><th scope="row">Back</th><td>Browser back, same page restored</td><td>Edge swipe, interactive</td><td>System back, predictive; Up equals Back inside the app</td></tr>
+        <tr><th scope="row">Wide screens</th><td>Two columns: list and detail</td><td><code>NavigationSplitView</code> on iPad and Mac</td><td><code>NavigableListDetailPaneScaffold</code></td></tr>
+      </tbody></table></div>
+    </section>
+
+
+    <section class="sheet" aria-labelledby="h-wide">
+      <header class="on-4"><h2 id="h-wide">Wide layouts: iPad, Mac, tablets, desktop web</h2><p>On a wide window the three tabs become a sidebar and the push becomes a column. Nothing new is opened, the same screens sit side by side. This is where iPad and Mac feel native or not.</p></header>
+      <div class="wide" role="group" aria-label="Wide layout: sidebar, list, detail">
+        <div class="pane on-3"><h3>Sidebar</h3><ul><li>Portfolio</li><li>Alerts</li><li>Settings</li></ul><p>iPad: <code>TabView</code> with <code>sidebarAdaptable</code>. Mac: sidebar. Android: navigation rail. Web: top nav.</p></div>
+        <div class="pane on-2"><h3>List</h3><ul><li>ETH / USDC</li><li>WBTC / ETH</li><li>XAI / ETH</li></ul><p>Arrows move, Return opens. Selecting a row does not move focus into the detail.</p></div>
+        <div class="pane on-1"><h3>Detail</h3><p class="big">$23,501</p><p>Replaces in place. No push, no zoom: a short crossfade, or none under Reduce Motion.</p></div>
+      </div>
+      <div class="scroll"><table class="tbl"><caption>Where Mac and iPad differ from iPhone</caption><thead><tr><th scope="col">Topic</th><th scope="col">iPhone</th><th scope="col">iPad</th><th scope="col">Mac</th></tr></thead><tbody>
+        <tr><th scope="row">Top level</th><td>Tab bar</td><td>Adaptable tab bar or sidebar; follows the window width, also in Split View and Stage Manager</td><td>Sidebar, resizable window, full screen</td></tr>
+        <tr><th scope="row">Settings</th><td>Tab</td><td>Tab or sidebar item</td><td>Its own window, opened with ⌘,</td></tr>
+        <tr><th scope="row">Add wallet</th><td>Sheet with detents</td><td>Form sheet</td><td>Sheet on the window, ⌘N, a toolbar button</td></tr>
+        <tr><th scope="row">Row actions</th><td>Swipe, long-press menu</td><td>Same, plus pointer hover</td><td>Right-click menu: Copy address, Open on explorer, Mute alerts</td></tr>
+        <tr><th scope="row">Back</th><td>Edge swipe</td><td>Edge swipe or ⌘[</td><td>⌘[ or the toolbar back button</td></tr>
+        <tr><th scope="row">Keyboard</th><td>Full Keyboard Access</td><td>Full Keyboard Access, list and sidebar focus</td><td>Full Keyboard Access, every command in the menu bar</td></tr>
+        <tr><th scope="row">Alerts and push</th><td>Push</td><td>Push</td><td>No push in the MVP: the tab says alerts arrive on the phone, it is not hidden</td></tr>
+        <tr><th scope="row">Text size</th><td>Dynamic Type to AX5</td><td>Dynamic Type</td><td>No Larger Text: windows and display zoom</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-a11y">
+      <header class="on-2"><h2 id="h-a11y">Accessibility along the map</h2><p>The rules every arrow follows. Per arrow, the Focus line in the detail panel says where focus goes. Source: <code>docs/decisions/0022-accessibility.md</code> and <code>docs/research/repo/accessibility-all-devices.md</code>.</p></header>
+      <ul style="margin:0;padding-left:22px;display:grid;gap:8px">
+        <li>Every screen starts with a title, and that is where focus and the screen reader go on arrival.</li>
+        <li>A sheet takes focus, hides the page behind it, and gives focus back to the control that opened it. Every swipe has a button.</li>
+        <li>Tabs are never hidden or disabled. A gated tab explains why and offers the next step.</li>
+        <li>Selecting a row in a split layout does not move focus. Opening a screen does.</li>
+        <li>Live prices change in place, so the screen reader does not lose its place. Only important changes are announced.</li>
+        <li>A widget is read as one sentence and opens one place. Stale and failed widgets still open the screen, which refreshes. Status is a word and a shape, never only colour.</li>
+        <li>iPad and Mac work from the keyboard. Every command is in the menu bar with its shortcut.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-anim">
+      <header class="on-3"><h2 id="h-anim">One pattern that scales: zoom from the source</h2><p>When you open a position, the tapped card grows into the detail screen, and back shrinks it into the same card. Each system has a first-party version, so the pattern costs one named element per platform and no custom animation engine.</p></header>
+      <div class="zwrap">
+        <div class="stackd">
+          <div class="zphone"><div class="zscreen" id="zs">
+            <div class="zlist" id="zlist"><h4>Portfolio</h4>
+              <button class="zrow on-1" type="button" data-i="0"><b>ETH / USDC</b><span>0.05% · Ethereum · In range</span><span class="v">$23,501</span></button>
+              <button class="zrow on-2" type="button" data-i="1"><b>WBTC / ETH</b><span>0.3% · Ethereum · In range</span><span class="v">$15,322</span></button>
+              <button class="zrow on-3" type="button" data-i="2"><b>XAI / ETH</b><span>1% · Arbitrum · In range</span><span class="v">$2,190</span></button>
+            </div>
+            <div class="zdetail" id="zdetail" hidden><div class="bar"><button class="zback" type="button" id="zback" aria-label="Back to Portfolio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Portfolio</button></div>
+              <h4 id="zt">ETH / USDC</h4><p class="big" id="zv">$23,501</p><div><div class="ln"><span>Current price</span><b>3,412.55</b></div><div class="ln"><span>Range</span><b>3,180.00 – 3,620.00</b></div><div class="ln"><span>Owed fees</span><b>$284.36</b></div></div>
+            </div>
+          </div></div>
+          <p class="hint" style="text-align:center;color:var(--muted);font-size:13px;margin-top:10px" id="zhint"></p>
+        </div>
+        <div class="stackd" style="display:grid;gap:16px">
+          <div class="scroll"><table class="tbl"><caption>Same pattern, three implementations</caption><thead><tr><th scope="col">Platform</th><th scope="col">Source and target</th><th scope="col">Back</th></tr></thead><tbody>
+            <tr><th scope="row">Web</th><td><code>@view-transition { navigation: auto }</code>; the same <code>view-transition-name</code> (a server slug of the position) on the card and on the detail header, set in <code>pageswap</code> and <code>pagereveal</code></td><td>Browser back plays it in reverse</td></tr>
+            <tr><th scope="row">iOS</th><td><code>matchedTransitionSource(id:in:)</code> on the card, <code>.navigationTransition(.zoom(sourceID:in:))</code> on the detail</td><td>Edge swipe shrinks it interactively</td></tr>
+            <tr><th scope="row">Android</th><td>One <code>SharedTransitionLayout</code> around <code>NavDisplay</code>; <code>sharedBounds</code> with a key that holds the position id</td><td>Predictive back previews it</td></tr>
+          </tbody></table></div>
+          <div class="scroll"><table class="tbl"><caption>Shared rules</caption><tbody>
+            <tr><th scope="row">Spring</th><td>One token: duration about 460 ms, no bounce</td></tr>
+            <tr><th scope="row">What moves</th><td>Only the tapped entity. Neighbours stay still and the tab bar stays put</td></tr>
+            <tr><th scope="row">Reduced motion</th><td>A short crossfade, no zoom</td></tr>
+            <tr><th scope="row">Fallback</th><td>The platform's normal push where zoom is unavailable (iOS 17, Firefox before view transitions, or an unknown source)</td></tr>
+            <tr><th scope="row">Limit</th><td>It works for pushes, not for sheets: Compose shared elements do not cross <code>ModalBottomSheet</code> or <code>Dialog</code> windows</td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-dec">
+      <header class="on-4"><h2 id="h-dec">Decisions this draft needs</h2><p>Each has a recommendation. They change the map.</p></header>
+      <ol style="margin:0;padding-left:22px;display:grid;gap:12px">
+        <li><b>Position detail: a pushed screen or a sheet on phones?</b> Recommendation: a pushed screen. Apple says sheets are for a scoped task and should not hold navigation. Zoom from source works for pushes on all three platforms and not across an Android bottom sheet. Sheets stay for Add wallet, alert rule and sign-in. On wide layouts the detail is a column.</li>
+        <li><b>Three tabs: Portfolio, Alerts, Settings.</b> Apple asks for as few as needed and no overflow. Wallets are managed in Settings.</li>
+        <li><b>A wallet scope switcher in the Portfolio header</b> ("All wallets") for people with several wallets. Two taps to Wallets is slow for the main object, but it adds a menu to the map. Recommendation: add it after the first beta, with a wallet filter.</li>
+        <li><b>Range</b> is a section of the detail, not a screen. This version folds it in.</li>
+        <li><b>Guests and alerts.</b> Alerts need an account, so the tab shows an empty state with a sign-in action. It is not disabled and not hidden. Mac has no push in the MVP and says so.</li>
+        <li><b>Where entries land.</b> A push lands in Alerts › Detail. Home Screen widgets, Lock Screen rows, links and Siri land in Portfolio › Detail. The Lock Screen circular and inline widgets open Alerts. An empty widget opens Add wallet. Confirm.</li>
+        <li><b>Widgets: one tap target each.</b> Home Screen Small and Medium, and the three Lock Screen shapes, each open one place. No buttons inside a widget, so the whole widget is one control for VoiceOver. Design: the VoidX Widgets artifact.</li>
+        <li><b>Mac and iPad are a separate pass</b> after the iPhone flows: sidebar, menu bar commands, Settings window, keyboard. The wide layout above is the structure, not the polish.</li>
+      </ol>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement, reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  try { var saved = localStorage.getItem("voidx-nav-pal"); if (saved) { var radio = document.querySelector('#pal input[value="' + saved + '"]'); if (radio) radio.checked = true; } } catch (error) {}
+  function applyPal() { var value = document.querySelector("#pal input:checked").value; if (value === "auto") root.removeAttribute("data-pal"); else root.setAttribute("data-pal", value); try { localStorage.setItem("voidx-nav-pal", value); } catch (error) {} }
+  document.getElementById("pal").addEventListener("change", applyPal); applyPal();
+
+  function springCurve(stiffness, damping, mass) {
+    var position = 0, velocity = 0, time = 0, step = 1 / 1000, next = 0, samples = [];
+    while (time < 3) {
+      velocity += ((stiffness * (1 - position) - damping * velocity) / mass) * step; position += velocity * step; time += step;
+      if (time >= next) { samples.push(position.toFixed(4)); next += 1 / 60; }
+      if (time > 0.15 && Math.abs(1 - position) < 0.001 && Math.abs(velocity) < 0.01) break;
+    }
+    samples.push("1");
+    return { easing: "linear(" + samples.join(", ") + ")", ms: Math.round(time * 1000) };
+  }
+  if (CSS.supports("transition-timing-function", "linear(0, 1)")) { var curve = springCurve(190, 27, 1); root.style.setProperty("--spring", curve.easing); root.style.setProperty("--spring-ms", curve.ms + "ms"); }
+
+  /* ---------- the data: nodes and arrows ---------- */
+  var W = 168, H = 62;
+  var nodes = {
+    launch: { x: 22, y: 92, w: 170, h: 46, t: "start", l: "App opens", s: "Start destination" },
+    port: { x: 42, y: 190, w: 150, h: H, t: "tab", l: "Portfolio", s: "Tab 1" },
+    alerts: { x: 42, y: 440, w: 150, h: H, t: "tab", l: "Alerts", s: "Tab 2" },
+    settings: { x: 42, y: 730, w: 150, h: H, t: "tab", l: "Settings", s: "Tab 3" },
+    addw: { x: 340, y: 84, w: W, h: H, t: "sheet", l: "Add wallet", s: "Sheet" },
+    plans: { x: 660, y: 30, w: W, h: H, t: "screen", l: "Plans", s: "Push" },
+    detail: { x: 340, y: 214, w: W, h: H, t: "screen", l: "Position detail", s: "Push, zoom; range inside" },
+    arule: { x: 660, y: 160, w: W, h: H, t: "sheet", l: "Alert rule", s: "Sheet" },
+    share: { x: 660, y: 248, w: W, h: H, t: "system", l: "Share", s: "System sheet" },
+    expl: { x: 660, y: 336, w: W, h: H, t: "external", l: "Explorer", s: "Browser" },
+    aset: { x: 340, y: 420, w: W, h: H, t: "screen", l: "Alert settings", s: "Push" },
+    perm: { x: 980, y: 420, w: W, h: H, t: "system", l: "Push permission", s: "System prompt" },
+    signinA: { x: 340, y: 530, w: W, h: H, t: "sheet", l: "Sign in", s: "Sheet, same as below" },
+    signinS: { x: 340, y: 650, w: W, h: H, t: "sheet", l: "Sign in", s: "Sheet" },
+    pass: { x: 660, y: 650, w: W, h: H, t: "system", l: "Passkey", s: "System sheet" },
+    merge: { x: 980, y: 650, w: W, h: H, t: "dialog", l: "Merge watchlist?", s: "Confirm" },
+    aset2: { x: 340, y: 760, w: W, h: H, t: "screen", l: "Alert settings", s: "Push, same screen" },
+    wallets: { x: 340, y: 850, w: W, h: H, t: "screen", l: "Wallets", s: "Push" },
+    plans2: { x: 340, y: 940, w: W, h: H, t: "screen", l: "Plans", s: "Push, same screen" }
+  };
+  Object.keys(nodes).forEach(function (id) { nodes[id].x += 240; });
+  var entryW = 190, entryH = 48;
+  nodes.wempty = { x: 22, y: 8, w: entryW, h: entryH, t: "start", l: "Empty widget", s: "Small or Medium, no wallet" };
+  nodes.whome = { x: 22, y: 312, w: entryW, h: entryH, t: "start", l: "Home Screen widget", s: "Small or Medium" };
+  nodes.wlink = { x: 22, y: 258, w: entryW, h: entryH, t: "start", l: "Link, Siri, Spotlight", s: "Universal link, App Intent" };
+  nodes.wlock = { x: 22, y: 366, w: entryW, h: entryH, t: "start", l: "Lock Screen widget", s: "Circular, rectangular, inline" };
+  nodes.wpush = { x: 22, y: 420, w: entryW, h: entryH, t: "start", l: "Push alert", s: "Needs an account" };
+  var FOCUS = {
+    push: "Moves to the new screen title. Back returns to the control that opened it.",
+    sheet: "Moves into the sheet; the page behind is unreachable. Close returns to the control that opened it. Dragging always has a Cancel or Done button.",
+    menu: "First item. Escape closes and returns.",
+    dialog: "The safe action first. One alert at a time.",
+    system: "The system owns focus; the app resumes at the control that opened it.",
+    external: "Returns to the control that opened it."
+  };
+  var edges = [
+    ["wempty", "addw", "Empty widget", "sheet", "Tap the empty widget", "Opens Portfolio with the Add wallet sheet over it, address field ready. Cancel leaves you on Portfolio.", "Widget link to the add-wallet route; selects the Portfolio tab, then presents the sheet", "Click action starts the activity with the add-wallet route; back stack is Portfolio", "No widget on the web; the Add wallet button is the same route", "Cancel or swipe down lands on Portfolio", "The address field. Paste is a button."],
+    ["whome", "detail", "Tap widget", "push", "Tap anywhere on a Small or Medium widget", "Opens the position the widget shows (the chosen one, or the worst). The whole widget is one tap target. A stale or failed widget opens the same screen, which refreshes.", "widgetURL to /positions/:slug; the app builds Portfolio › Detail, no zoom (no source card on screen)", "One click action with the position id; synthetic back stack Portfolio › Detail", "No widget on the web; /positions/:slug is the same page", "Back returns to Portfolio", "Position title, announced once. The widget itself is read as one sentence before the tap."],
+    ["wlink", "detail", "Link or Siri", "push", "A shared link, \"Open ETH / USDC\" to Siri, or a Spotlight result", "Opens the position. Siri and Spotlight use App Intents; self-hosted instance links open the web page first.", "Universal link or App Intent; builds Portfolio › Detail", "App Link or app shortcut; synthetic back stack", "Real link to /positions/:slug", "Back to Portfolio", "Position title."],
+    ["wlock", "detail", "Rectangular row", "push", "Tap the Lock Screen rectangular widget", "Opens the worst position, with its status word and range as shown on the widget. The phone unlocks first.", "widgetURL from the accessory rectangular family; Portfolio › Detail", "No Lock Screen widget on Android; the push alert covers it", "None", "Back to Portfolio", "Position title."],
+    ["wlock", "alerts", "Circular, inline", "push", "Tap the circular gauge or the inline text", "Opens Alerts: the count they show is the list of positions that left range.", "widgetURL to the Alerts tab", "No Lock Screen widget on Android", "None", "Alerts is a tab, no back", "Alerts title, then the first alert."],
+    ["wpush", "detail", "Push alert", "push", "Tap a push alert", "Opens the position that left its range. Back goes to Alerts, not Portfolio, because that is where the alert lives.", "Notification response route; builds Alerts › Detail", "PendingIntent with a synthetic stack Alerts › Detail; no Mac push in the MVP", "Web push is optional and opens the position link", "Back returns to Alerts", "Position title and the new state, announced once."],
+    ["launch", "port", "Starts here", "push", "Launch", "Opens on Portfolio. Guests land on an empty state with an Add wallet action; signing in is never a gate.", "Start destination, fixed", "Start destination, fixed", "First page of the site", "No back: it is the start", "The Portfolio title, then the Add wallet action when there are no wallets."],
+    ["port", "detail", "Card or row", "push", "Tap or press Return on a position", "Opens the position: value, range bar with its own section, status, owed fees per token.", "Push with zoom from the card; Return in a list on iPad and Mac", "Push with sharedBounds; Enter on a keyboard", "Real link to /positions/:slug with a view transition", "Edge swipe, predictive back, browser back, ⌘[ on Mac. Returns to the same scroll position", "Position title. On wide layouts the list keeps focus and the detail changes, focus is not moved."],
+    ["port", "addw", "+ Add", "sheet", "Plus button, or ⌘N on iPad and Mac", "Paste an address or ENS name, pick chains, add. Closes on Add or Cancel.", ".sheet with detents and a grabber on iPhone; a form sheet on iPad; a sheet on the window on Mac", "ModalBottomSheet with a handle that is also a 48 dp button", "A dialog sheet, or its own page without script", "Swipe down, Cancel, or system back; asks before losing input", "The address field. Paste is a button, not only a long-press."],
+    ["addw", "plans", "Wallet limit", "push", "Add at the plan limit", "Shows the limit and what a higher plan adds. The sheet closes first, then Plans opens; a sheet never pushes.", "Dismiss, then push", "Dismiss, then push", "Link to /plans", "Back returns to Portfolio, the typed address is kept", "A banner inside the sheet says why; the button closes the sheet and moves to Plans."],
+    ["detail", "arule", "Bell", "sheet", "Bell button in the header", "Set the alert for this position: leaves range, returns; early warning for Pro. Needs an account.", ".sheet, detents", "ModalBottomSheet", "dialog sheet", "Swipe down or Cancel", "The first rule switch; its name says which position."],
+    ["detail", "share", "Share", "system", "Share button, or the context menu on a row", "Opens the system share sheet with the position link.", "ShareLink", "Share sheet", "Web Share API, else Copy link", "System dismisses it", "The system owns focus; copy address is also an action in the row menu."],
+    ["detail", "expl", "View on explorer", "external", "Link at the bottom of the detail", "Opens the position or token on a block explorer.", "In-app Safari view on iPhone and iPad; the default browser on Mac", "Custom Tab", "Link with target=_blank and rel=noopener", "Close returns to the detail", "The link says it opens outside the app."],
+    ["alerts", "detail", "Alert row", "push", "Tap or press Return on an alert", "Opens the position the alert is about.", "Push with zoom from the row", "Push with sharedBounds", "Real link with a view transition", "Back returns to Alerts, not Portfolio", "Position title."],
+    ["alerts", "aset", "Gear", "push", "Gear button in the header", "Alert rules and push permission. A guest sees an empty state first (below).", "Push", "Push", "Link to /settings/alerts", "Back", "Alert settings title."],
+    ["alerts", "signinA", "Sign in for alerts", "sheet", "Button in the guest empty state of Alerts", "Alerts need an account. The tab stays visible and explains why, then offers sign-in; after sign-in it asks for push permission.", ".sheet", "ModalBottomSheet", "dialog sheet", "Cancel keeps the guest list", "The sign-in title; the tab is never disabled or hidden."],
+    ["aset", "perm", "Enable push", "system", "Switch Push notifications on (signed in only)", "Asks the system for permission, at the moment the person turns the first alert on. If refused, explains how to enable it in settings. Mac has no push in the MVP: this row says alerts arrive on the phone.", "UNUserNotificationCenter prompt; Mac shows the explanation instead", "POST_NOTIFICATIONS prompt on Android 13+", "Notifications permission through the browser, optional", "System decides", "The switch keeps focus; its state is announced after the system answers."],
+    ["settings", "signinS", "Account (guest)", "sheet", "Account row while signed out", "Sign in with a passkey, or continue as guest.", ".sheet", "ModalBottomSheet", "dialog sheet", "Swipe down or Cancel", "The sign-in title."],
+    ["settings", "wallets", "Wallets", "push", "Wallets row", "The wallet list with the plan limit and paused wallets; add, rename, remove.", "Push; a sidebar item on Mac and iPad", "Push", "Link to /wallets", "Back", "Wallets title; each wallet reads its address as start and end, with a copy action."],
+    ["settings", "aset2", "Notifications", "push", "Notifications row", "Same as the gear on Alerts.", "Push", "Push", "Link to /settings/alerts", "Back", "Alert settings title."],
+    ["settings", "plans2", "Plan", "push", "Plan row", "Current plan, wallet limit, and what Pro adds.", "Push", "Push", "Link to /plans", "Back", "Plans title."],
+    ["signinS", "pass", "Use passkey", "system", "Continue with a passkey", "Hands off to the system passkey sheet.", "ASAuthorization sheet", "Credential Manager sheet", "WebAuthn prompt; self-hosted instances sign in through the system browser", "System dismisses it", "The system owns focus."],
+    ["pass", "merge", "Signed in", "dialog", "Success, when the device had a guest watchlist", "Asks whether to merge the guest wallets into the account (ADR 0012).", ".confirmationDialog or alert", "AlertDialog", "dialog", "Cancel keeps the guest list separate", "The safe action first (Cancel)."]
+  ];
+
+  /* ---------- draw ---------- */
+  var svg = document.getElementById("map"), NS = "http://www.w3.org/2000/svg", selected = null;
+  function el(name, attrs, parent) { var node = document.createElementNS(NS, name); Object.keys(attrs || {}).forEach(function (k) { node.setAttribute(k, attrs[k]); }); if (parent) parent.appendChild(node); return node; }
+  var defs = el("defs", {}, svg);
+  ["push", "sheet", "menu", "dialog", "system", "external"].forEach(function (kind) {
+    var marker = el("marker", { id: "arrow-" + kind, viewBox: "0 0 10 10", refX: "8.5", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" }, defs);
+    var path = el("path", { d: "M1 1.5 9 5 1 8.5z" }, marker); path.style.fill = kind === "sheet" ? "var(--accent)" : kind === "push" ? "var(--ink)" : "var(--muted)";
+  });
+  var box = el("rect", { class: "tabbox", x: 262, y: 152, width: 190, height: 680, rx: 28 }, svg);
+  var tabcap = el("text", { class: "tabcap", x: 270, y: 856 }, svg); tabcap.textContent = "Tab bar: one stack per tab";
+  var edgeLayer = el("g", {}, svg), nodeLayer = el("g", {}, svg), tagLayer = el("g", {}, svg);
+  Object.keys(nodes).forEach(function (id) {
+    var n = nodes[id], g = el("g", { class: "node " + n.t, "data-id": id }, nodeLayer);
+    el("rect", { class: "box", x: n.x, y: n.y, width: n.w, height: n.h, rx: n.t === "tab" ? 22 : 16 }, g);
+    var label = el("text", { x: n.x + 16, y: n.y + n.h / 2 - 3 }, g); label.textContent = n.l;
+    var sub = el("text", { class: "sub", x: n.x + 16, y: n.y + n.h / 2 + 16 }, g); sub.textContent = n.s;
+  });
+  var edgeEls = [];
+  edges.forEach(function (e, i) {
+    var a = nodes[e[0]], b = nodes[e[1]], outs = edges.filter(function (o) { return o[0] === e[0]; }), ins = edges.filter(function (o) { return o[1] === e[1]; });
+    var oy = (outs.indexOf(e) - (outs.length - 1) / 2) * 11, iy = (ins.indexOf(e) - (ins.length - 1) / 2) * 11;
+    var x1 = a.x + a.w, y1 = a.y + a.h / 2 + oy, x2 = b.x, y2 = b.y + b.h / 2 + iy;
+    if (e[0] === "launch") { x1 = a.x + a.w / 2; y1 = a.y + a.h; x2 = b.x + b.w / 2; y2 = b.y; }
+    var path, mx, my;
+    if (e[0] === "launch") { path = "M" + x1 + " " + y1 + " L" + x2 + " " + y2; mx = x1 + 6; my = (y1 + y2) / 2; }
+    else {
+      var dx = Math.max(60, (x2 - x1) * 0.5); path = "M" + x1 + " " + y1 + " C" + (x1 + dx) + " " + y1 + " " + (x2 - dx) + " " + y2 + " " + (x2 - 10) + " " + y2;
+      var t = e[0] === "alerts" && e[1] === "detail" ? 0.62 : e[0] === "settings" ? 0.72 : e[0] === "wlock" && e[1] === "alerts" ? 0.3 : e[0] === "wpush" ? 0.68 : e[0].charAt(0) === "w" && e[0] !== "wempty" ? 0.17 : 0.5;
+      mx = (1 - t) * (1 - t) * (1 - t) * x1 + 3 * (1 - t) * (1 - t) * t * (x1 + dx) + 3 * (1 - t) * t * t * (x2 - dx) + t * t * t * x2; my = (1 - t) * (1 - t) * (1 - t) * y1 + 3 * (1 - t) * (1 - t) * t * y1 + 3 * (1 - t) * t * t * y2 + t * t * t * y2;
+    }
+    var g = el("g", { class: "edge " + e[3], tabindex: "0", role: "button", "aria-pressed": "false", "data-i": i, "aria-label": e[2] + ": " + nodes[e[0]].l + " to " + nodes[e[1]].l + ", " + e[3] }, edgeLayer);
+    el("path", { class: "hit", d: path }, g); var line = el("path", { class: "line", d: path, "marker-end": "url(#arrow-" + e[3] + ")" }, g);
+    var tag = el("g", { class: "tag" }, g), width = e[2].length * 7.6 + 22;
+    el("rect", { x: mx - width / 2, y: my - 14, width: width, height: 28, rx: 14 }, tag); var text = el("text", { x: mx, y: my + 5, "text-anchor": "middle" }, tag); text.textContent = e[2];
+    edgeEls.push(g);
+  });
+  edgeEls.forEach(function (g) { edgeLayer.appendChild(g); });
+
+  /* the table form of the same map */
+  document.querySelector("#routes tbody").innerHTML = edges.map(function (e) { return "<tr><th scope=\"row\">" + nodes[e[0]].l + "</th><td>" + e[4] + "</td><td>" + nodes[e[1]].l + "</td><td><span class=\"pill\">" + ({ push: "Push", sheet: "Sheet", menu: "Menu", dialog: "Dialog", system: "System", external: "Browser" })[e[3]] + "</span></td></tr>"; }).join("");
+
+  function select(index) {
+    var e = edges[index]; selected = index;
+    edgeEls.forEach(function (g, i) { g.setAttribute("aria-pressed", String(i === index)); });
+    svg.parentElement.classList.add("dim"); document.querySelectorAll(".node").forEach(function (n) { n.classList.toggle("hot", n.dataset.id === e[0] || n.dataset.id === e[1]); });
+    document.getElementById("detail").innerHTML = "<h3>" + e[4] + ": " + nodes[e[0]].l + " to " + nodes[e[1]].l + "</h3><dl><dt>Does</dt><dd>" + e[5] + "</dd><dt>iOS</dt><dd>" + e[6] + "</dd><dt>Android</dt><dd>" + e[7] + "</dd><dt>Web</dt><dd>" + e[8] + "</dd><dt>Back</dt><dd>" + e[9] + "</dd><dt>Focus</dt><dd>" + e[10] + " " + FOCUS[e[3]] + "</dd></dl>";
+  }
+  svg.addEventListener("click", function (event) { var g = event.target.closest(".edge"); if (g) select(Number(g.dataset.i)); });
+  svg.addEventListener("keydown", function (event) { var g = event.target.closest(".edge"); if (g && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); select(Number(g.dataset.i)); } });
+
+  /* ---------- the zoom pattern demo ---------- */
+  var list = document.getElementById("zlist"), detail = document.getElementById("zdetail"), rows = Array.prototype.slice.call(list.querySelectorAll(".zrow"));
+  var supports = !!document.startViewTransition;
+  document.getElementById("zhint").textContent = supports ? "Tap a card. This runs on the browser's view transitions, the same mechanism the web app uses." : "This browser has no view transitions, so the demo falls back to a plain swap, as the app would.";
+  var current = null;
+  function paintDetail(row) {
+    var fill = ["on-1", "on-2", "on-3"][Number(row.dataset.i)]; detail.className = "zdetail " + fill;
+    document.getElementById("zt").textContent = row.querySelector("b").textContent; document.getElementById("zv").textContent = row.querySelector(".v").textContent;
+  }
+  function swap(toDetail, row) { list.hidden = toDetail; detail.hidden = !toDetail; if (toDetail) { paintDetail(row); document.getElementById("zback").focus(); } else if (row) row.focus(); }
+  function run(toDetail, row) {
+    if (!supports || reduced) { swap(toDetail, row); return; }
+    var from = toDetail ? row : detail, to = toDetail ? detail : row;
+    from.style.viewTransitionName = "pos";
+    var transition = document.startViewTransition(function () { from.style.viewTransitionName = ""; swap(toDetail, row); to.style.viewTransitionName = "pos"; });
+    transition.finished.finally(function () { to.style.viewTransitionName = ""; });
+  }
+  rows.forEach(function (row) { row.addEventListener("click", function () { current = row; run(true, row); }); });
+  document.getElementById("zback").addEventListener("click", function () { run(false, current); });
+  detail.addEventListener("keydown", function (event) { if (event.key === "Escape") run(false, current); });
+})();
+</script>
+
+</body></html>

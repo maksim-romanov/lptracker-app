@@ -1,0 +1,1289 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VoidX UI Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap">
+<style>
+/* Layout: one contract, three implementations. The platform switch (web, iOS, Android, or all three) decides which specimens show. Shared pieces appear once. */
+:root, :root[data-pal="dragonfruit"] {
+  --bg: oklch(.975 .012 350); --surface: oklch(.995 .003 350); --field: oklch(.945 .014 350);
+  --edge: oklch(.6 .03 350); --line: oklch(.88 .015 350); --ink: oklch(.18 .02 350); --muted: oklch(.45 .03 350);
+  --accent: oklch(.54 .224 350); --on-accent: oklch(.99 .004 350);
+  --danger: oklch(.52 .2 25); --on-danger: oklch(.99 .004 25); --success: oklch(.47 .12 155); --warn: oklch(.5 .1 70);
+  --amber: oklch(.86 .15 85); --on-amber: oklch(.22 .04 85);
+  --f1: oklch(.54 .224 350); --f1i: oklch(.98 .01 350); --f2: oklch(.995 .001 350); --f2i: oklch(.22 .05 350);
+  --f3: oklch(.16 .01 350); --f3i: oklch(.98 .01 350); --f4: oklch(.88 .07 355); --f4i: oklch(.22 .05 350);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-pal="dragonfruit"]) {
+    --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+    --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+    --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+    --danger: oklch(.72 .19 25); --on-danger: oklch(.16 .03 25); --success: oklch(.8 .16 155); --warn: oklch(.84 .13 85);
+    --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+    --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]:not([data-pal="dragonfruit"]), :root[data-pal="neon"] {
+  --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+  --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+  --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+  --danger: oklch(.72 .19 25); --on-danger: oklch(.16 .03 25); --success: oklch(.8 .16 155); --warn: oklch(.84 .13 85);
+  --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+  --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+  color-scheme: dark;
+}
+:root {
+  --sel: color-mix(in oklab, var(--ink) 13%, var(--surface));
+  --danger-soft: color-mix(in oklab, var(--danger) 14%, var(--surface));
+  --warn-soft: color-mix(in oklab, var(--warn) 18%, var(--surface));
+  --spring: cubic-bezier(.2, .8, .2, 1); --spring-ms: 420ms; --press: 160ms;
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; padding-inline: 16px; padding-block: 20px 72px; -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+h1, h2, h3, p { margin: 0; text-wrap: balance; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+code { font-family: var(--mono); font-size: .9em; }
+.skip { position: absolute; left: 16px; top: -64px; z-index: 100; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 999px; font-weight: 700; text-decoration: none; }
+.skip:focus { top: 12px; }
+.wrap { max-width: 1120px; margin-inline: auto; display: grid; gap: 28px; }
+.wrap > *, .stack28 > * { min-width: 0; }
+.stack28 { display: grid; gap: 28px; min-width: 0; }
+
+/* page chrome */
+.top { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: end; justify-content: space-between; }
+.top h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1; letter-spacing: -0.04em; font-weight: 700; }
+.top p { max-width: 58ch; margin-top: 10px; color: var(--muted); }
+.ctl { display: flex; flex-wrap: wrap; gap: 14px 22px; }
+.ctl .group { display: grid; gap: 8px; }
+.cap { display: block; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.pick { display: inline-flex; gap: 2px; padding: 3px; background: var(--surface); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); }
+.pick label { position: relative; display: grid; place-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.pick input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.pick label:has(input:checked) { background: var(--ink); color: var(--bg); }
+.pick label:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.sheet { background: var(--surface); border-radius: 28px; padding: 24px; display: grid; gap: 18px; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.sheet > * { min-width: 0; }
+.sheet > header { display: grid; gap: 6px; }
+.sheet h2 { font-size: 22px; letter-spacing: -0.02em; font-weight: 700; display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; line-height: 1.2; }
+.sheet header p { color: var(--muted); max-width: 72ch; font-size: 15px; }
+.badge { white-space: nowrap; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: var(--sel); color: var(--ink); }
+.badge.ours { background: var(--accent); color: var(--on-accent); }
+.badge.native { background: var(--ink); color: var(--bg); }
+.demo { background: var(--bg); border-radius: 20px; padding: 18px; box-shadow: inset 0 0 0 1px var(--line); display: grid; gap: 16px; }
+[data-src] { display: grid; gap: 14px; }
+.specs { display: grid; gap: 18px 22px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); align-items: start; }
+.spec { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.note { font-size: 13px; color: var(--muted); max-width: 60ch; }
+.help, .hint { font-size: 13px; color: var(--muted); }
+.scroll { overflow-x: auto; }
+.rules { display: grid; gap: 10px 24px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin: 0; padding: 0; list-style: none; counter-reset: p; }
+.rules li { counter-increment: p; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.rules li::before { content: counter(p); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--sel); font-size: 13px; font-weight: 700; }
+.rules b { display: block; font-size: 15px; }
+.rules span { color: var(--muted); font-size: 14px; }
+.plat-rules { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.plat-rules > div { background: var(--bg); border-radius: 20px; padding: 16px 18px; box-shadow: inset 0 0 0 1px var(--line); display: grid; gap: 8px; align-content: start; }
+.plat-rules .badge { justify-self: start; }
+.plat-rules ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; color: var(--muted); }
+.plat-rules li b { color: var(--ink); }
+.map { width: 100%; border-collapse: collapse; font-size: 14px; }
+.map th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 0 12px 8px 0; }
+.map td { padding: 9px 12px 9px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.map td:first-child { font-weight: 700; white-space: nowrap; }
+details.code { border-radius: 16px; box-shadow: inset 0 0 0 1px var(--line); background: var(--surface); }
+details.code summary { cursor: pointer; padding: 10px 16px; min-height: 44px; font-weight: 700; font-size: 14px; display: flex; align-items: center; }
+details.code[open] summary { border-bottom: 1px solid var(--line); }
+.a11y { padding: 12px 16px; font-size: 14px; color: var(--muted); display: grid; gap: 4px; }
+.a11y b { color: var(--ink); }
+pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.6; background: var(--bg); border-radius: 0 0 16px 16px; }
+
+/* platform switch: data-show = web, ios, android or all */
+.plat { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.plabel { display: none; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.trio { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); }
+:root[data-show="web"] .p-ios, :root[data-show="web"] .p-android, :root[data-show="ios"] .p-web, :root[data-show="ios"] .p-android, :root[data-show="android"] .p-web, :root[data-show="android"] .p-ios { display: none; }
+:root[data-show="all"] .trio { grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); }
+:root[data-show="all"] .plabel { display: block; }
+
+/* ---------- buttons: ours on every platform ---------- */
+.btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 24px; border: 0; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 16px; font-weight: 700; line-height: 1.2; text-decoration: none; white-space: nowrap; transition: transform var(--spring-ms) var(--spring), opacity 140ms, background 160ms; }
+.web .btn:active, .ios .btn:active, .btn.is-pressed { transform: scale(.97); transition-duration: var(--press); }
+.ios .btn:active, .ios .btn.is-pressed { opacity: .88; }
+@media (hover: hover) { .web .btn:hover { background: color-mix(in oklab, var(--accent), var(--ink) 9%); } .web .btn.tonal:hover { background: color-mix(in oklab, var(--field), var(--ink) 7%); } .web .btn.danger:hover { background: color-mix(in oklab, var(--danger), var(--ink) 9%); } .web .btn.text:hover { background: var(--sel); } }
+.btn.m { min-height: 44px; padding: 0 18px; font-size: 15px; }
+.btn.block { width: 100%; }
+.btn.tonal { background: var(--field); color: var(--ink); }
+.btn.text { background: transparent; color: var(--accent); padding-inline: 14px; }
+.btn.danger { background: var(--danger); color: var(--on-danger); }
+.btn:disabled, .btn[aria-disabled="true"]:not([aria-busy]) { background: var(--field); color: var(--muted); cursor: not-allowed; transform: none; }
+.btn.text:disabled { background: transparent; }
+.btn[aria-busy="true"] { pointer-events: none; }
+.btn[aria-busy="true"]::before { content: ""; width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid color-mix(in oklab, currentColor 30%, transparent); border-top-color: currentColor; animation: spin 700ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ripple { position: absolute; border-radius: 50%; background: currentColor; opacity: .2; transform: scale(0); animation: ripple 480ms ease-out forwards; pointer-events: none; }
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+.ibtn { width: 48px; height: 48px; border: 0; border-radius: 999px; background: var(--field); color: var(--ink); display: grid; place-items: center; overflow: hidden; position: relative; transition: transform var(--spring-ms) var(--spring); }
+.web .ibtn:active, .ios .ibtn:active { transform: scale(.94); transition-duration: var(--press); }
+
+/* ---------- fields: native element or control, themed ---------- */
+.field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; min-width: 0; }
+.ctrl { position: relative; display: flex; align-items: center; gap: 6px; min-width: 0; border: 1px solid var(--edge); transition: border-color 160ms, box-shadow 160ms, background 160ms; }
+.ctrl input, .ctrl select { flex: 1; width: 100%; min-width: 0; border: 0; background: none; outline: 0; font-size: 16px; font-weight: 500; min-height: 48px; }
+.ctrl input::placeholder { color: var(--muted); opacity: 1; }
+.ctrl .mono { font-family: var(--mono); font-size: 14px; }
+.ctrl .unit { color: var(--muted); font-weight: 700; font-size: 14px; padding-right: 12px; }
+.help { display: flex; gap: 6px; align-items: flex-start; min-height: 18px; }
+.help svg.i, .err svg.i { width: 16px; height: 16px; margin-top: 1px; }
+.err { display: none; gap: 6px; align-items: flex-start; font-size: 13px; font-weight: 600; color: var(--danger); }
+.field.is-error .help { color: var(--danger); font-weight: 600; }
+.field.is-ok .help { color: var(--success); font-weight: 600; }
+.clr, .trail { border: 0; background: none; display: grid; place-items: center; min-width: 44px; min-height: 44px; border-radius: 999px; color: var(--muted); }
+.clr[hidden] { display: none; }
+.trail.word { color: var(--accent); font-weight: 700; font-size: 15px; padding: 0 10px; }
+.web .field > label, .ios .field > label { font-size: 14px; font-weight: 600; padding-left: 4px; }
+.web .ctrl, .ios .ctrl { min-height: 52px; padding: 0 8px 0 16px; border-radius: 12px; background: var(--field); }
+.web .ctrl:focus-within, .web .ctrl.is-focus, .ios .ctrl:focus-within, .ios .ctrl.is-focus { background: var(--surface); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.web .ctrl:has(:user-invalid), .web .field.is-error .ctrl, .ios .field.is-error .ctrl { background: var(--surface); border-color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+.web .ctrl:has(:user-valid), .web .field.is-ok .ctrl, .ios .field.is-ok .ctrl { border-color: var(--success); }
+.web .ctrl:has(:disabled), .ios .field.is-disabled .ctrl, .android .field.is-disabled .ctrl { border-color: var(--line); opacity: .65; }
+.web .field:has(:user-invalid) .err, .web .field.is-error .err { display: flex; }
+.android .ctrl { min-height: 56px; padding: 0 4px 0 16px; border-radius: 4px; background: transparent; }
+.android .ctrl label { position: absolute; left: 12px; top: 16px; padding: 0 4px; background: var(--surface); color: var(--muted); font-size: 16px; font-weight: 500; line-height: 1; pointer-events: none; transition: transform 200ms var(--spring), color 160ms; transform-origin: 0 0; }
+.android .ctrl input::placeholder { opacity: 0; }
+.android .ctrl input:focus::placeholder { opacity: 1; }
+.android .ctrl:focus-within label, .android .ctrl.is-focus label, .android .ctrl:has(input:not(:placeholder-shown)) label, .android .ctrl.is-float label { transform: translateY(-24px) scale(.75); }
+.android .ctrl:focus-within, .android .ctrl.is-focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.android .ctrl:focus-within label, .android .ctrl.is-focus label { color: var(--accent); }
+.android .field.is-error .ctrl { border-color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+.android .field.is-error .ctrl label { color: var(--danger); }
+.android .field.is-ok .ctrl { border-color: var(--success); }
+.android .help { padding-left: 16px; }
+.web .help { padding-left: 4px; } .ios .help { padding-left: 4px; }
+.ios .search .ctrl { border-radius: 10px; border-color: transparent; background: var(--field); min-height: 44px; padding-left: 12px; }
+.android .search .ctrl { border-radius: 999px; background: var(--field); border-color: transparent; min-height: 56px; padding-left: 16px; }
+.android .search .ctrl label { display: none; }
+.android .search .ctrl input::placeholder { opacity: 1; }
+
+/* ---------- selection ---------- */
+.switch { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 56px; padding: 6px 0; cursor: pointer; }
+.switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.switch .txt { display: grid; gap: 2px; }
+.switch .txt b { font-size: 15px; font-weight: 600; }
+.switch .txt span { font-size: 13px; color: var(--muted); }
+.trk { position: relative; flex: none; transition: background 200ms, border-color 200ms; }
+.thb { position: absolute; display: grid; place-items: center; transition: transform var(--spring-ms) var(--spring), width 160ms, height 160ms, background 160ms; }
+.thb svg { width: 14px; height: 14px; fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity 140ms; }
+.switch input:focus-visible ~ .trk { outline: 3px solid var(--accent); outline-offset: 3px; }
+.web .trk, .ios .trk { width: 51px; height: 31px; border-radius: 999px; background: var(--edge); }
+.web .thb, .ios .thb { top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); }
+.web .thb svg, .ios .thb svg { display: none; }
+.web .switch input:checked ~ .trk, .ios .switch input:checked ~ .trk { background: var(--accent); }
+.web .switch input:checked ~ .trk .thb, .ios .switch input:checked ~ .trk .thb { transform: translateX(20px); }
+.web .switch input:active ~ .trk .thb, .ios .switch input:active ~ .trk .thb { width: 33px; }
+.web .switch input:checked:active ~ .trk .thb, .ios .switch input:checked:active ~ .trk .thb { transform: translateX(14px); }
+.android .trk { width: 52px; height: 32px; border-radius: 999px; border: 2px solid var(--edge); background: var(--field); }
+.android .thb { top: 50%; left: 6px; width: 16px; height: 16px; margin-top: -8px; border-radius: 50%; background: var(--edge); }
+.android .switch input:checked ~ .trk { background: var(--accent); border-color: var(--accent); }
+.android .switch input:checked ~ .trk .thb { width: 24px; height: 24px; margin-top: -12px; left: 2px; transform: translateX(20px); background: var(--on-accent); }
+.android .switch input:checked ~ .trk .thb svg { opacity: 1; }
+.android .switch input:active ~ .trk .thb { width: 28px; height: 28px; margin-top: -14px; }
+.cb { display: flex; align-items: center; gap: 14px; min-height: 48px; font-size: 15px; font-weight: 500; cursor: pointer; }
+.cb input { appearance: none; margin: 0; flex: none; border: 2px solid var(--edge); display: grid; place-content: center; cursor: pointer; transition: background 160ms, border-color 160ms; }
+.web .cb input { width: 24px; height: 24px; border-radius: 7px; } .android .cb input { width: 18px; height: 18px; border-radius: 2px; }
+.web .cb input::before { width: 14px; height: 14px; } .android .cb input::before { width: 11px; height: 11px; }
+.cb input::before { content: ""; background: var(--on-accent); clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); transform: scale(0); transition: transform var(--spring-ms) var(--spring); }
+.cb input:checked { background: var(--accent); border-color: var(--accent); }
+.cb input:checked::before { transform: scale(1); }
+.listrow { position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 48px; padding: 0 4px; border-bottom: 1px solid var(--line); font-size: 15px; cursor: pointer; }
+.listrow input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.listrow svg.i { color: var(--accent); opacity: 0; }
+.listrow:has(input:checked) svg.i { opacity: 1; }
+.listrow:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: -2px; }
+.seg { --n: 3; --i: 0; position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 3px; background: var(--field); min-width: 0; }
+.web .seg { border-radius: 999px; } .ios .seg { border-radius: 9px; }
+.seg::before { content: ""; position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc((100% - 6px) / var(--n)); background: var(--surface); box-shadow: 0 1px 3px rgba(0, 0, 0, .22), inset 0 0 0 1px var(--line); transform: translateX(calc(var(--i) * 100%)); transition: transform var(--spring-ms) var(--spring); }
+.web .seg::before { border-radius: 999px; } .ios .seg::before { border-radius: 7px; }
+.seg:has(label:nth-of-type(2) input:checked) { --i: 1; } .seg:has(label:nth-of-type(3) input:checked) { --i: 2; }
+.seg label { position: relative; z-index: 1; display: grid; place-items: center; min-height: 44px; padding: 0 14px; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer; border-radius: 999px; }
+.seg label:has(input:checked) { color: var(--ink); }
+.seg label:has(input:focus-visible), .segm label:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.seg input, .segm input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.segm { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-radius: 999px; overflow: hidden; border: 1px solid var(--edge); }
+.segm label { position: relative; min-height: 44px; border-left: 1px solid var(--edge); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; transition: background 160ms; }
+.segm label:first-of-type { border-left: 0; }
+.segm label svg { display: none; width: 16px; height: 16px; }
+.segm label:has(input:checked) { background: var(--sel); }
+.segm label:has(input:checked) svg { display: block; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--edge); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 160ms, color 160ms, transform var(--spring-ms) var(--spring); }
+.chip input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.chip .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); }
+.chip svg { display: none; width: 16px; height: 16px; }
+.web .chip, .ios .chip { border-radius: 999px; }
+.web .chip:active, .ios .chip:active { transform: scale(.96); transition-duration: var(--press); }
+.web .chip:has(input:checked), .ios .chip:has(input:checked) { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.android .chip { border-radius: 8px; padding-left: 12px; }
+.android .chip:has(input:checked) { background: var(--sel); border-color: transparent; }
+.android .chip:has(input:checked) svg { display: block; }
+.android .chip:has(input:checked) .dot { display: none; }
+.chip:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- dialog and menu ---------- */
+dialog.sheetd { width: calc(100% - 32px); max-width: 440px; padding: 24px; border: 0; border-radius: 28px; background: var(--surface); color: var(--ink); box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .5), inset 0 0 0 1px var(--line); opacity: 0; transform: translateY(18px) scale(.98); transition: opacity 200ms, transform var(--spring-ms) var(--spring), overlay var(--spring-ms) allow-discrete, display var(--spring-ms) allow-discrete; }
+dialog.sheetd[open] { opacity: 1; transform: none; }
+@starting-style { dialog.sheetd[open] { opacity: 0; transform: translateY(18px) scale(.98); } }
+dialog.sheetd::backdrop { background: rgb(0 0 0 / 0); transition: background 240ms, overlay 240ms allow-discrete, display 240ms allow-discrete; }
+dialog.sheetd[open]::backdrop { background: rgb(0 0 0 / .45); }
+@starting-style { dialog.sheetd[open]::backdrop { background: rgb(0 0 0 / 0); } }
+@media (max-width: 600px) { dialog.sheetd { margin: auto 0 0; width: 100%; max-width: none; border-radius: 28px 28px 0 0; padding-bottom: 32px; } }
+dialog.sheetd h3 { font-size: 22px; letter-spacing: -0.02em; margin-bottom: 8px; }
+dialog.sheetd p { color: var(--muted); margin-bottom: 20px; }
+dialog.sheetd .row { justify-content: flex-end; }
+[popover].menu { margin: 0; padding: 6px; min-width: 220px; border: 0; border-radius: 20px; background: var(--surface); color: var(--ink); box-shadow: 0 20px 40px -16px rgba(0, 0, 0, .5), inset 0 0 0 1px var(--line); opacity: 0; transform: translateY(-6px); transition: opacity 160ms, transform 260ms var(--spring), overlay 260ms allow-discrete, display 260ms allow-discrete; }
+[popover].menu:popover-open { opacity: 1; transform: none; }
+@starting-style { [popover].menu:popover-open { opacity: 0; transform: translateY(-6px); } }
+.menu a, .menu button { display: flex; align-items: center; width: 100%; min-height: 44px; padding: 0 14px; border: 0; background: none; border-radius: 14px; font-size: 15px; font-weight: 600; text-align: left; text-decoration: none; }
+@media (hover: hover) { .menu a:hover, .menu button:hover { background: var(--sel); } }
+.menu .danger-i { color: var(--danger); }
+.mock { background: var(--bg); border-radius: 20px; padding: 18px; box-shadow: inset 0 0 0 1px var(--line); display: grid; gap: 10px; justify-items: center; }
+.mock-ios { width: 100%; max-width: 300px; display: grid; gap: 8px; }
+.mock-ios > div { background: var(--surface); border-radius: 14px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); }
+.mock-ios .t { padding: 14px 16px 10px; text-align: center; font-size: 13px; color: var(--muted); }
+.mock-ios .t b { display: block; font-size: 13px; color: var(--ink); }
+.mock-ios button { width: 100%; min-height: 56px; border: 0; border-top: 1px solid var(--line); background: none; font-size: 20px; color: var(--accent); }
+.mock-ios button.d { color: var(--danger); }
+.mock-ios .c button { border-top: 0; font-weight: 600; }
+.mock-and { width: 100%; max-width: 320px; background: var(--surface); border-radius: 28px; padding: 24px; box-shadow: inset 0 0 0 1px var(--line); display: grid; gap: 12px; }
+.mock-and h4 { margin: 0; font-size: 24px; font-weight: 400; }
+.mock-and p { color: var(--muted); font-size: 14px; }
+.mock-and .row { justify-content: flex-end; gap: 4px; }
+
+/* ---------- messages ---------- */
+.banner { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 8px 12px 16px; border-radius: 24px; background: var(--b-bg, var(--field)); color: var(--ink); transition: opacity 220ms, transform 260ms var(--spring); }
+.banner[hidden] { display: none; }
+.banner.gone { opacity: 0; transform: translateY(-8px); }
+.banner > svg.i { color: var(--b-fg, var(--ink)); width: 22px; height: 22px; }
+.banner .msg { display: grid; min-width: 0; }
+.banner .msg b { font-size: 14px; }
+.banner .msg span { font-size: 13px; color: var(--muted); }
+.banner.warn { --b-bg: var(--warn-soft); --b-fg: var(--warn); }
+.banner.bad { --b-bg: var(--danger-soft); --b-fg: var(--danger); }
+.banner button { border: 0; background: none; font-weight: 700; font-size: 14px; min-height: 44px; padding: 0 14px; border-radius: 999px; text-decoration: underline; text-underline-offset: 3px; }
+.stage { position: relative; background: var(--bg); border-radius: 22px; padding: 18px; box-shadow: inset 0 0 0 1px var(--line); min-height: 170px; overflow: hidden; display: grid; align-content: center; gap: 12px; }
+.host { position: absolute; z-index: 30; left: 12px; right: 12px; display: grid; gap: 8px; justify-items: center; pointer-events: none; }
+.host.top { top: 12px; } .host.bottom { bottom: 12px; }
+.toast { pointer-events: auto; display: flex; align-items: center; gap: 12px; max-width: 100%; padding: 8px 8px 8px 18px; min-height: 52px; border-radius: 999px; background: var(--ink); color: var(--bg); box-shadow: 0 14px 30px -12px rgba(0, 0, 0, .5); font-size: 14px; font-weight: 600; animation: toast-in var(--spring-ms) var(--spring) both; }
+.toast.out, .snack.out { animation: toast-out 200ms ease-in both; }
+.toast span { flex: 1; }
+.toast button, .snack button { border: 0; background: none; color: var(--bg); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; padding: 0 12px; border-radius: 999px; }
+.snack { pointer-events: auto; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 0 4px 0 16px; border-radius: 4px; background: var(--ink); color: var(--bg); font-size: 14px; box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .5); animation: snack-in var(--spring-ms) var(--spring) both; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-14px) scale(.98); } }
+@keyframes snack-in { from { opacity: 0; transform: translateY(14px); } }
+@keyframes toast-out { to { opacity: 0; transform: translateY(-8px); } }
+.host.bottom .toast { animation-name: snack-in; }
+
+/* ---------- navigation ---------- */
+.scrollbox { height: 230px; overflow-y: auto; scroll-padding-top: 72px; border-radius: 20px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.topnav { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 8px 12px; background: color-mix(in oklab, var(--surface) 86%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
+.topnav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font-weight: 600; font-size: 15px; color: var(--ink); text-decoration: none; }
+.topnav a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+@media (hover: hover) { .topnav a:not([aria-current]):hover { background: var(--sel); } }
+.scrollbox .body { padding: 16px; display: grid; gap: 8px; }
+.scrollbox .body a { min-height: 44px; display: flex; align-items: center; color: var(--accent); font-weight: 600; }
+.navdemo { background: var(--bg); border-radius: 18px; box-shadow: inset 0 0 0 1px var(--line); padding: 10px 8px 14px; display: grid; gap: 4px; }
+.nav-i { display: grid; grid-template-columns: 1fr auto; align-items: center; min-height: 44px; padding: 0 8px; color: var(--accent); font-size: 17px; }
+.nav-i .back { display: inline-flex; align-items: center; gap: 2px; }
+.nav-i + h3 { padding: 0 12px; font-size: 34px; letter-spacing: -0.03em; font-weight: 700; color: var(--ink); }
+.nav-a { display: grid; grid-template-columns: 48px 1fr auto; align-items: center; min-height: 64px; padding: 0 4px; }
+.nav-a h3 { font-size: 22px; font-weight: 600; letter-spacing: 0; }
+.nav-a .ibtn { background: none; }
+
+/* ---------- ours: status, range, figure ---------- */
+.status { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 700; background: var(--ink); color: var(--bg); width: fit-content; }
+.status i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.status.out { background: var(--amber); color: var(--on-amber); }
+.status.out i { border-radius: 1px; transform: rotate(45deg); }
+.range { --l: .25; --u: .75; --p: .5; --k: 26px; position: relative; height: 32px; border-radius: 999px; background: var(--field); }
+.range .band { position: absolute; top: 10px; bottom: 10px; left: calc(var(--k) / 2 + var(--l) * (100% - var(--k))); width: calc((var(--u) - var(--l)) * (100% - var(--k))); border-radius: 999px; background: color-mix(in oklab, var(--accent) 55%, var(--surface)); }
+.range .knob { position: absolute; top: 3px; left: 0; width: var(--k); height: 26px; }
+.range .knob::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 3px var(--surface); transition: border-radius 300ms var(--spring), transform 300ms var(--spring); }
+.range[data-out] .knob::before { border-radius: 5px; transform: rotate(45deg) scale(.78); }
+.range-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.figure { font-variant-numeric: tabular-nums; font-weight: 600; letter-spacing: -0.03em; }
+.big { font-size: 48px; line-height: 1; }
+
+/* ---------- frames: phones and browser ---------- */
+.phones { display: flex; flex-wrap: wrap; gap: 26px; justify-content: center; align-items: flex-start; }
+.phone-fit { flex: none; min-width: 0; }
+.phone { width: 374px; height: 800px; padding: 12px; background: #0b0a0d; box-shadow: 0 40px 70px -34px rgba(20, 8, 30, .6), inset 0 0 0 2px #3a3640, inset 0 0 0 5px #0b0a0d; transform-origin: 0 0; }
+.phone.ios { border-radius: 58px; } .phone.android { border-radius: 44px; padding: 10px; }
+.screen { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); }
+.ios .screen { border-radius: 46px; } .android .screen { border-radius: 34px; }
+.island { position: absolute; z-index: 40; top: 11px; left: 50%; width: 112px; height: 32px; margin-left: -56px; border-radius: 20px; background: #000; }
+.punch { position: absolute; z-index: 40; top: 14px; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: #000; }
+.status-bar { position: absolute; z-index: 35; top: 0; left: 0; right: 0; height: 52px; padding: 16px 30px 0 34px; display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; }
+.pscroll { position: absolute; inset: 0; overflow-y: auto; padding: 56px 16px 120px; scrollbar-width: none; display: grid; gap: 14px; align-content: start; }
+.pscroll::-webkit-scrollbar { display: none; }
+.dock { position: absolute; z-index: 20; left: 0; right: 0; bottom: 0; padding: 16px 16px 30px; background: linear-gradient(to top, var(--bg) 70%, transparent); }
+.homebar { position: absolute; z-index: 36; bottom: 8px; left: 50%; width: 134px; height: 5px; margin-left: -67px; border-radius: 3px; background: var(--ink); opacity: .85; }
+.android .homebar { width: 108px; margin-left: -54px; bottom: 7px; opacity: .6; }
+.ios .sheetnav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 44px; margin-top: -4px; }
+.ios .sheetnav h3 { font-size: 17px; font-weight: 700; }
+.ios .sheetnav .l { justify-self: start; color: var(--accent); font-weight: 500; font-size: 17px; border: 0; background: none; min-height: 44px; }
+.browser { width: 100%; max-width: 640px; border-radius: 18px; overflow: hidden; background: var(--bg); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .45), inset 0 0 0 1px var(--line); }
+.browser .bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface); box-shadow: 0 1px 0 var(--line); }
+.browser .bar i { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
+.browser .bar span { flex: 1; text-align: center; font-size: 12px; color: var(--muted); background: var(--field); border-radius: 999px; padding: 4px 12px; }
+.browser .page { padding: 22px; display: grid; gap: 14px; }
+.browser .page h3 { font-size: 26px; letter-spacing: -0.03em; }
+.browser form { display: grid; gap: 14px; }
+
+.ratio { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 13px; }
+.r-ok { color: var(--success); } .r-bad { color: var(--danger); }
+.ctab { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ctab td, .ctab th { padding: 8px 10px 8px 0; border-top: 1px solid var(--line); text-align: left; }
+.ctab th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-top: 0; }
+
+
+/* ---------- ghost blocks: every colour block re-scopes the tokens, so the same components work on all four fills ---------- */
+.on-1 { --fill: var(--f1); --fi: var(--f1i); } .on-2 { --fill: var(--f2); --fi: var(--f2i); } .on-3 { --fill: var(--f3); --fi: var(--f3i); } .on-4 { --fill: var(--f4); --fi: var(--f4i); }
+.on-1, .on-2, .on-3, .on-4 {
+  --bg: var(--fill); --ink: var(--fi);
+  --surface: color-mix(in oklab, var(--fill) 88%, var(--fi)); --field: color-mix(in oklab, var(--fill) 80%, var(--fi));
+  --edge: color-mix(in oklab, var(--fi) 72%, var(--fill)); --line: color-mix(in oklab, var(--fill) 80%, var(--fi));
+  --muted: color-mix(in oklab, var(--fi) 92%, var(--fill));
+  --accent: var(--fi); --on-accent: var(--fill); --danger: var(--fi); --on-danger: var(--fill); --success: var(--fi); --warn: var(--fi);
+  --sel: color-mix(in oklab, var(--fi) 16%, var(--fill)); --danger-soft: var(--sel); --warn-soft: var(--sel);
+  background: var(--bg); color: var(--ink);
+}
+.on-1 :focus-visible, .on-2 :focus-visible, .on-3 :focus-visible, .on-4 :focus-visible { outline-color: var(--fi); }
+
+/* page identity */
+body { position: relative; }
+.top.hero { align-items: flex-end; }
+.top h1 { font-size: clamp(52px, 10vw, 116px); line-height: .9; letter-spacing: -0.055em; }
+.top p { font-size: 17px; }
+.toc ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.toc a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1px var(--edge); }
+@media (hover: hover) { .toc a:hover { background: var(--ink); color: var(--bg); } }
+.sheet { padding: 12px; gap: 14px; }
+.sheet > header { padding: 24px 26px 26px; border-radius: 22px; background: var(--bg); color: var(--ink); gap: 10px; }
+.sheet h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.04em; line-height: 1.02; }
+.sheet header p { font-size: 16px; }
+.sheet > :not(header) { margin-inline: 12px; }
+.sheet > :last-child { margin-bottom: 12px; }
+h3.cap { margin: 0; }
+html { scroll-padding-top: 16px; }
+
+/* playground */
+.playground { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: start; }
+.pcard { border-radius: 32px; padding: 26px; display: grid; gap: 18px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--fi) 16%, transparent); min-width: 0; }
+.ptop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.coins { display: flex; }
+.coin { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 800; background: var(--cc); color: #fff; box-shadow: 0 0 0 2.5px var(--bg); }
+.coin + .coin { margin-left: -9px; }
+.pcard h3 { font-size: 32px; letter-spacing: -0.035em; font-weight: 600; line-height: 1.05; }
+.pmeta { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.pfig { display: flex; align-items: baseline; gap: 4px; min-height: 80px; }
+.big-fig { font-size: clamp(60px, 11vw, 92px); line-height: .95; letter-spacing: -0.055em; font-weight: 600; white-space: nowrap; }
+.big-fig .cur { font-size: .42em; margin-right: 3px; vertical-align: .9em; }
+.ch { display: inline-block; }
+.amounts { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.status i { transition: border-radius 320ms var(--spring), transform 320ms var(--spring); }
+.status[data-out] { background: var(--amber); color: var(--on-amber); }
+.status[data-out] i { border-radius: 1px; transform: rotate(45deg); }
+.range .knob { left: 0; transform: translateX(calc(var(--p) * var(--travel, 0px))); transition: transform 700ms var(--spring); }
+.range[data-out] .knob::before { border-radius: 5px; transform: rotate(45deg) scale(.78); }
+.blocks { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.blocks > div { border-radius: 24px; padding: 18px; display: grid; gap: 12px; align-content: start; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--fi) 18%, transparent); min-width: 0; }
+.blocks .row { gap: 8px; }
+.web .android-fix { display: none; }
+
+/* semantics and gates under each section */
+.sem { width: 100%; border-collapse: collapse; font-size: 13px; }
+.sem caption { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; }
+.sem th, .sem td { padding: 8px 12px 8px 0; border-top: 1px solid var(--line); vertical-align: top; text-align: left; }
+.sem thead th { border-top: 0; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.sem td:first-child, .sem tbody th { font-weight: 700; white-space: nowrap; }
+.sem code { font-size: 12px; }
+.gates { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.gates li { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--edge); }
+.gates li::before { content: "✓ "; color: var(--success); }
+.semwrap { display: grid; gap: 12px; padding-top: 4px; }
+
+/* accessibility lab */
+.lab { display: grid; gap: 14px 24px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); align-items: start; }
+.lab .pick { justify-self: start; }
+.labsw { display: contents; }
+.report { display: grid; gap: 8px; font-size: 14px; padding: 14px 16px; border-radius: 18px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+.report ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+.srbar { position: fixed; z-index: 200; left: 16px; right: 16px; bottom: 12px; max-width: 760px; margin-inline: auto; background: var(--ink); color: var(--bg); border-radius: 20px; padding: 12px 18px; display: none; gap: 2px; box-shadow: 0 16px 40px -10px rgba(0, 0, 0, .55); }
+.srbar .cap { color: color-mix(in oklab, var(--bg) 70%, var(--ink)); }
+.srbar b { font-size: 16px; font-weight: 600; }
+:root[data-sr] .srbar { display: grid; }
+#overlay { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 150; pointer-events: none; }
+.fo { position: absolute; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 11px; background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 800; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--bg); }
+:root[data-targets] :is(button, a[href], select, summary, .chip, .switch, .cb, .seg label, .segm label, .listrow, .pick label) { outline: 1.5px dashed oklch(.62 .25 25); outline-offset: -1px; }
+:root[data-gray] main { filter: grayscale(1); }
+:root[data-zoom="150"] .trio .plat { zoom: 1.5; } :root[data-zoom="200"] .trio .plat { zoom: 2; }
+
+/* native-target minimums: Android is 48 dp */
+.android .btn, .android .chip, .android .segm label, .android .banner button, .android .toast button, .android .snack button, .android .trail, .android .clr { min-height: 48px; }
+.android .ctrl label { background: var(--bg); }
+.pick label { min-width: 44px; }
+.android details.code summary { min-height: 48px; }
+
+/* increased contrast: system setting or the lab switch */
+@media (prefers-contrast: more) { :root { --edge: color-mix(in oklab, var(--ink) 88%, var(--bg)); --line: color-mix(in oklab, var(--ink) 55%, var(--bg)); --muted: color-mix(in oklab, var(--ink) 90%, var(--bg)); } }
+:root[data-contrast="more"] { --edge: color-mix(in oklab, var(--ink) 88%, var(--bg)); --line: color-mix(in oklab, var(--ink) 55%, var(--bg)); --muted: color-mix(in oklab, var(--ink) 90%, var(--bg)); }
+
+/* forced colors (Windows High Contrast): give custom controls real borders, keep state visible */
+@media (forced-colors: active) {
+  .btn, .ibtn, .chip, .status, .banner, .toast, .snack, .coin { border: 2px solid ButtonText; }
+  .btn:disabled, .btn[aria-disabled="true"] { border-color: GrayText; }
+  .trk { border: 2px solid ButtonText; }
+  .switch input:checked ~ .trk { background: Highlight; }
+  .chip:has(input:checked), .segm label:has(input:checked), .seg label:has(input:checked) { background: Highlight; color: HighlightText; forced-color-adjust: none; }
+  .cb input:checked { background: Highlight; }
+  .range, .range .knob::before { border: 2px solid ButtonText; }
+  .range .band { background: Highlight; }
+  :focus-visible { outline: 3px solid Highlight; }
+}
+
+/* ---------- sheets, dialogs, menus ---------- */
+dialog.sheetb { margin: auto auto 0; width: 100%; max-width: 560px; border-radius: 28px 28px 0 0; padding: 8px 24px 32px; transform: translateY(40px); }
+dialog.sheetb::before { content: ""; display: block; width: 36px; height: 5px; border-radius: 3px; background: var(--edge); margin: 4px auto 6px; }
+.shead2 { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.shead2 h3 { margin: 0; }
+.sstage { position: relative; height: 580px; width: 100%; max-width: 390px; margin-inline: auto; border-radius: 30px; overflow: hidden; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line), 0 20px 40px -24px rgba(0, 0, 0, .4); }
+.sbg { position: absolute; inset: 0; padding: 18px 16px; display: grid; gap: 12px; align-content: start; }
+.sbar { display: flex; align-items: center; justify-content: space-between; min-height: 52px; }
+.sbar h4 { margin: 0; font-size: 30px; letter-spacing: -0.035em; font-weight: 700; }
+.android .sbar h4 { font-size: 24px; letter-spacing: 0; font-weight: 500; }
+.srow { display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 16px; border: 0; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); font-size: 16px; text-align: left; transition: transform var(--spring-ms) var(--spring); }
+.srow:active { transform: scale(.985); transition-duration: var(--press); }
+.android .srow { border-radius: 14px; }
+.sscrim { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; transition: opacity 260ms; z-index: 5; }
+.sstage[data-open] .sscrim { opacity: .42; pointer-events: auto; }
+.android .sstage[data-open] .sscrim { opacity: .32; }
+.msheet { position: absolute; z-index: 6; left: 0; right: 0; bottom: 0; height: 90%; background: var(--surface); color: var(--ink); display: grid; grid-template-rows: auto auto 1fr; overflow: hidden; box-shadow: 0 -12px 40px -16px rgba(0, 0, 0, .5); transform: translateY(var(--ty, 100%)); visibility: hidden; transition: transform var(--spring-ms) var(--spring), visibility 0s linear var(--spring-ms); outline: none; }
+.msheet.open { visibility: visible; transition-delay: 0s; }
+.msheet.drag { transition: none; }
+.ios .msheet { border-radius: 38px 38px 0 0; } .android .msheet { border-radius: 28px 28px 0 0; }
+.sgrab { display: grid; place-items: center; min-height: 48px; border: 0; background: none; touch-action: none; cursor: grab; }
+.sgrab::before { content: ""; width: 36px; height: 5px; border-radius: 3px; background: var(--edge); }
+.android .sgrab::before { width: 32px; height: 4px; }
+.shead { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 12px 6px 20px; touch-action: none; }
+.ios .shead { display: grid; grid-template-columns: 1fr auto 1fr; padding: 0 8px 6px 16px; }
+.ios .shead > .btn { justify-self: end; }
+.shead h5 { margin: 0; font-size: 20px; letter-spacing: -0.02em; font-weight: 700; }
+.android .shead h5 { font-size: 22px; font-weight: 500; letter-spacing: 0; }
+.sbody { overflow-y: auto; padding: 8px 20px 28px; display: grid; gap: 14px; align-content: start; scrollbar-width: none; }
+.sbody::-webkit-scrollbar { display: none; }
+.row-line { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.row-line b { font-variant-numeric: tabular-nums; }
+dialog.sheetd p.figure { color: var(--ink); margin-bottom: 12px; }
+.sbody .figure.big { font-size: 52px; }
+.ovl { position: absolute; z-index: 7; opacity: 0; visibility: hidden; transition: opacity 200ms, transform var(--spring-ms) var(--spring), visibility 0s linear 260ms; outline: none; }
+.ovl.open { opacity: 1; visibility: visible; transition-delay: 0s; }
+.ios .ovl { left: 12px; right: 12px; bottom: 12px; display: grid; gap: 8px; transform: translateY(24px); }
+.ios .ovl.open { transform: none; }
+.ios .ovl .acard { background: var(--surface); border-radius: 18px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); }
+.ios .ovl .at { padding: 16px; text-align: center; font-size: 13px; color: var(--muted); display: grid; gap: 4px; }
+.ios .ovl .at b { color: var(--ink); font-size: 15px; }
+.ios .ovl button { width: 100%; min-height: 56px; border: 0; border-top: 1px solid var(--line); background: none; font-size: 20px; color: var(--accent); }
+.ios .ovl button.d { color: var(--danger); }
+.ios .ovl .c button { border-top: 0; font-weight: 600; }
+.android .ovl { left: 50%; top: 50%; width: min(312px, 86%); padding: 24px; border-radius: 28px; background: var(--surface); box-shadow: 0 24px 50px -16px rgba(0, 0, 0, .55); transform: translate(-50%, -46%) scale(.96); display: grid; gap: 12px; }
+.android .ovl.open { transform: translate(-50%, -50%); }
+.android .ovl h5 { margin: 0; font-size: 24px; font-weight: 400; }
+.android .ovl p { color: var(--muted); font-size: 14px; }
+.android .ovl .row { justify-content: flex-end; gap: 4px; }
+.amenu { position: absolute; z-index: 7; top: 66px; right: 14px; min-width: 210px; padding: 6px; background: var(--surface); box-shadow: 0 16px 36px -14px rgba(0, 0, 0, .55), inset 0 0 0 1px var(--line); opacity: 0; visibility: hidden; transform: scale(.94); transform-origin: top right; transition: opacity 160ms, transform var(--spring-ms) var(--spring), visibility 0s linear 220ms; }
+.amenu.open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.ios .amenu { border-radius: 18px; } .android .amenu { border-radius: 6px; padding: 8px 0; }
+.amenu button { display: flex; align-items: center; width: 100%; min-height: 44px; padding: 0 14px; border: 0; background: none; font-size: 16px; text-align: left; border-radius: 12px; }
+.android .amenu button { min-height: 48px; border-radius: 0; padding: 0 12px; }
+.amenu button.d { color: var(--danger); }
+@media (hover: hover) { .amenu button:hover { background: var(--sel); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .msheet, .ovl, .amenu { opacity: 0; transition: opacity 120ms, visibility 0s linear 120ms !important; }
+  .msheet.open, .ovl.open, .amenu.open { opacity: 1; transition-delay: 0s !important; }
+  .sscrim { transition: opacity 120ms; }
+  .ios .ovl, .android .ovl.open { transform: none; } .android .ovl { transform: translate(-50%, -50%); }
+  dialog.sheetb { transform: none; }
+  .range .knob { transition: none; }
+  .btn, .ibtn, .thb, .chip, .cb input::before, .seg::before, .banner, .android .ctrl label, .range .knob::before { transition: opacity 120ms, background 120ms, color 120ms !important; transform: none !important; }
+  .android .ctrl:focus-within label, .android .ctrl.is-focus label, .android .ctrl:has(input:not(:placeholder-shown)) label { transform: translateY(-24px) scale(.75) !important; }
+  .seg::before { transform: translateX(calc(var(--i) * 100%)) !important; }
+  .web .switch input:checked ~ .trk .thb, .ios .switch input:checked ~ .trk .thb, .android .switch input:checked ~ .trk .thb { transform: translateX(20px) !important; }
+  .cb input:checked::before { transform: scale(1) !important; }
+  dialog.sheetd, [popover].menu { transform: none; transition: opacity 120ms, overlay 120ms allow-discrete, display 120ms allow-discrete; }
+  .toast, .snack { animation: none; } .ripple { animation: none; opacity: 0; }
+  .btn[aria-busy="true"]::before { animation-duration: 1600ms; }
+}
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top hero">
+    <div>
+      <h1>VoidX UI Kit</h1>
+      <p>One contract for web, iOS and Android. Tokens, names, anatomy, states and motion are shared; each platform implements them natively, so what differs below is on purpose.</p>
+    </div>
+    <div class="ctl">
+      <div class="group"><span class="cap" id="cap-pal">Palette</span><fieldset class="pick" id="pal" aria-labelledby="cap-pal"><label><input type="radio" name="pal" value="auto" checked>Auto</label><label><input type="radio" name="pal" value="dragonfruit">Dragonfruit</label><label><input type="radio" name="pal" value="neon">Neon Night</label></fieldset></div>
+      <div class="group"><span class="cap" id="cap-show">Platform</span><fieldset class="pick" id="show" aria-labelledby="cap-show"><label><input type="radio" name="show" value="web">Web</label><label><input type="radio" name="show" value="ios">iOS</label><label><input type="radio" name="show" value="android">Android</label><label><input type="radio" name="show" value="all" checked>All</label></fieldset></div>
+      <div class="group"><span class="cap" id="cap-surf">Surface for demos</span><fieldset class="pick" id="surf" aria-labelledby="cap-surf"><label><input type="radio" name="surf" value="0" checked>Page</label><label><input type="radio" name="surf" value="1">Block 1</label><label><input type="radio" name="surf" value="2">2</label><label><input type="radio" name="surf" value="3">3</label><label><input type="radio" name="surf" value="4">4</label></fieldset></div>
+    </div>
+  </header>
+  <nav class="toc" aria-label="Sections"><ul>
+    <li><a href="#h-play">Playground</a></li><li><a href="#h-lab">Accessibility lab</a></li><li><a href="#h-con">Constitution</a></li><li><a href="#h-map">Ownership</a></li><li><a href="#h-btn">Buttons</a></li><li><a href="#h-fld">Fields</a></li><li><a href="#h-sel">Selection</a></li><li><a href="#h-dlg">Sheets</a></li><li><a href="#h-msg">Messages</a></li><li><a href="#h-nav">Navigation</a></li><li><a href="#h-own">Status</a></li><li><a href="#h-ctx">In context</a></li><li><a href="#h-ct">Contrast</a></li>
+  </ul></nav>
+
+  <main id="main" class="stack28">
+    <section class="sheet" aria-labelledby="h-play"><header><h2 id="h-play">Playground <span class="badge ours">Live</span></h2><p>A position card built from kit parts. The value ticks digit by digit, the knob glides, and the status morphs from a dot to a diamond. The figure is not announced on every tick: only a change of state is, and live updates can be paused.</p></header>
+      <div class="playground">
+        <article class="pcard on-1" id="pcard" aria-labelledby="pc-title">
+          <div class="ptop"><span class="coins" aria-hidden="true"><i class="coin" style="--cc:oklch(.55 .17 270)">E</i><i class="coin" style="--cc:oklch(.55 .15 250)">$</i></span><span class="status" id="pc-status"><i></i><span id="pc-word">In range</span></span></div>
+          <div><h3 id="pc-title">ETH / USDC</h3><p class="pmeta">0.05% · Ethereum</p></div>
+          <p class="pfig"><span class="big-fig figure" id="pc-fig" aria-hidden="true"></span><span class="sr" id="pc-sr"></span></p>
+          <div><div class="range" id="pc-range" role="img" aria-label="" style="--l:.23;--u:.77;--p:.5"><span class="band"></span><span class="knob"></span></div><div class="range-labels" aria-hidden="true"><span>3,180.00</span><span>3,620.00</span></div></div>
+          <p class="amounts"><span>4.2081 ETH</span><span>9,140.22 USDC</span></p>
+          <p class="sr" id="pc-live" aria-live="polite" role="status"></p>
+        </article>
+        <div class="demo web" id="pcontrols">
+          <div class="spec"><h3 class="cap">Live prices</h3><label class="switch"><input type="checkbox" role="switch" id="live-sw" checked><span class="txt"><b>Update prices every few seconds</b><span>Pause to stop the ticking. Required for auto-updating content.</span></span><span class="trk" aria-hidden="true"><i class="thb"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></span></label></div>
+          <div class="spec"><h3 class="cap">Try it</h3><div class="row"><button class="btn tonal m" type="button" id="push-out">Push out of range</button><button class="btn m" type="button" id="refresh-pc"><span class="lbl" data-l="Refresh price" data-load="Refreshing…">Refresh price</span></button></div></div>
+          <div class="spec"><h3 class="cap">Colour block</h3><fieldset class="seg" style="--n:4" id="pc-fill"><legend class="sr">Colour block</legend><label><input type="radio" name="pcfill" value="1" checked>1</label><label><input type="radio" name="pcfill" value="2">2</label><label><input type="radio" name="pcfill" value="3">3</label><label><input type="radio" name="pcfill" value="4">4</label></fieldset></div>
+        </div>
+      </div>
+      <h3 class="cap">The kit on the four colour blocks</h3>
+      <div class="blocks web" id="blocks"></div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-lab"><header><h2 id="h-lab">Accessibility lab</h2><p>Test the kit against the things people actually change: text size, motion, contrast, colour. Press Tab to hear what a screen reader would say. The readout is an approximation of VoiceOver, TalkBack and NVDA, not a replacement for testing with them.</p></header>
+      <div class="lab web">
+        <fieldset class="pick" id="zoom" aria-label="Zoom"><label><input type="radio" name="zoom" value="100" checked>100%</label><label><input type="radio" name="zoom" value="150">150%</label><label><input type="radio" name="zoom" value="200">200%</label></fieldset>
+        <div class="labsw"></div>
+      </div>
+      <div class="report" id="lab-report"></div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-con"><header><h2 id="h-con">Constitution <span class="badge">Draft for review</span></h2><p>Twelve shared principles, then the rules each platform adds. When two collide, the order is: accessibility, platform convention, token contract, brand expression, sameness across platforms.</p></header>
+      <ol class="rules">
+        <li><div><b>One contract, native implementations</b><span>Share tokens, names, anatomy, states, springs and accessibility text. Never share code or pixels.</span></div></li>
+        <li><div><b>Ownership decides the build</b><span>Ours, native with our tokens, or native only. If the OS owns the behavior, the control is native.</span></div></li>
+        <li><div><b>Platform idioms win ties</b><span>Back gesture, navigation, switch versus checkbox, title alignment follow the platform.</span></div></li>
+        <li><div><b>Tokens only, three tiers</b><span>Reference, system, component. No literal colour, size or duration in a component.</span></div></li>
+        <li><div><b>Content carries the brand</b><span>Accent on the primary action, status and the switch. Display font for headings and figures only.</span></div></li>
+        <li><div><b>Every state is specified</b><span>Rest, pressed, focus, disabled, loading, error, and stale or empty for data. Never colour alone.</span></div></li>
+        <li><div><b>Accessibility is a gate</b><span>44 pt, 48 dp or 24 px minimum targets. Text 4.5 to 1. Edges, tracks and focus 3 to 1. 200% text.</span></div></li>
+        <li><div><b>Motion comes from tokens</b><span>Soft springs, no bounce on controls. Reduced motion swaps movement for a fade. One notable motion per screen.</span></div></li>
+        <li><div><b>The server owns numbers</b><span>Components format and show. They never compute. Tabular digits.</span></div></li>
+        <li><div><b>Specify before building</b><span>A short spec per component: anatomy, states, tokens, motion, accessibility, mapping, test.</span></div></li>
+        <li><div><b>Keep the kit small</b><span>A component earns its place when two screens need it. Prefer native.</span></div></li>
+        <li><div><b>Test the contract, not pixels</b><span>Contrast pairs, targets, large-text snapshots, token drift. No cross-platform pixel diff.</span></div></li>
+      </ol>
+      <div class="plat-rules">
+        <div><span class="badge native">Web</span><ul><li><b>HTML first, ARIA last.</b> A role promises keyboard behavior.</li><li><b>Works without JavaScript.</b> Scripts only enhance.</li><li><b>States from CSS:</b> <code>:user-invalid</code>, <code>:focus-visible</code>, <code>:checked</code>.</li><li><b>Hover is an enhancement.</b> Focus is never hidden by sticky bars.</li><li><b>Reduce, do not remove</b> motion.</li></ul></div>
+        <div><span class="badge native">iOS</span><ul><li><b>Standard components first.</b> Customise size, placement and behavior as little as possible.</li><li><b>Dynamic Type</b> to at least 200%, text from 11 pt up.</li><li><b>Back swipe, sheets and large titles</b> stay system.</li><li><b>No checkbox.</b> Use a switch or a checkmark row.</li></ul></div>
+        <div><span class="badge native">Android</span><ul><li><b>Material 3 shapes and ripple</b> for native controls, our tokens for colour.</li><li><b>48 dp targets</b>, <code>Role</code> and content descriptions.</li><li><b>System back</b> is never shadowed by a gesture.</li><li><b>Brand colours, not dynamic colour.</b></li></ul></div>
+      </div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-map"><header><h2 id="h-map">Who owns what</h2><p>The same split on every platform. Only the implementation column changes.</p></header>
+      <div class="scroll"><table class="map">
+        <thead><tr><th>Component</th><th>Owner</th><th>Web</th><th>iOS (SwiftUI)</th><th>Android (Compose)</th></tr></thead>
+        <tbody>
+          <tr><td>Button</td><td><span class="badge ours">Ours</span></td><td><code>&lt;button&gt;</code>, <code>&lt;a&gt;</code> with capsule class</td><td>Capsule <code>ButtonStyle</code>, press scale</td><td>Capsule over <code>Button</code>, ripple</td></tr>
+          <tr><td>Banner, status, range bar</td><td><span class="badge ours">Ours</span></td><td>HTML and CSS on tokens</td><td>Custom views</td><td>Custom composables</td></tr>
+          <tr><td>Filter chip</td><td><span class="badge ours">Ours</span></td><td>Checkbox in a capsule label</td><td>Capsule</td><td>M3 shape, check icon</td></tr>
+          <tr><td>Text field</td><td><span class="badge">Native + tokens</span></td><td><code>&lt;input&gt;</code> with native validation</td><td><code>TextField</code> in a filled container</td><td><code>OutlinedTextField</code></td></tr>
+          <tr><td>Switch, checkbox</td><td><span class="badge">Native + tokens</span></td><td>Checkbox with <code>role="switch"</code>, checkbox</td><td><code>Toggle</code>, checkmark row</td><td>M3 <code>Switch</code>, <code>Checkbox</code></td></tr>
+          <tr><td>Segment</td><td><span class="badge">Native + tokens</span></td><td>Radio group in a fieldset</td><td><code>Picker</code> segmented</td><td><code>SegmentedButton</code></td></tr>
+          <tr><td>Dialog, menu</td><td><span class="badge">Native + tokens</span></td><td><code>&lt;dialog&gt;</code>, <code>popover</code></td><td><code>confirmationDialog</code>, <code>Menu</code></td><td><code>AlertDialog</code>, <code>DropdownMenu</code></td></tr>
+          <tr><td>Toast</td><td><span class="badge">Native + tokens</span></td><td>Live region capsule</td><td>Top capsule</td><td><code>Snackbar</code></td></tr>
+          <tr><td>Navigation, sheets, pickers</td><td><span class="badge native">Native only</span></td><td>Real links, page loads</td><td>Large title, chevron, detents</td><td>Top app bar, back arrow</td></tr>
+        </tbody></table></div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-btn"><header><h2 id="h-btn">Buttons <span class="badge ours">Ours</span></h2><p>One look everywhere. Feedback differs: web and iOS scale to 97% (iOS also dims), Android shows a ripple from the touch point. Loading sets <code>aria-busy</code> and changes the label. At most two prominent buttons per screen, and a destructive action never takes the primary style.</p></header><div id="s-btn"></div></section>
+    <section class="sheet" aria-labelledby="h-fld"><header><h2 id="h-fld">Fields <span class="badge">Native + tokens</span></h2><p>The edge is a token with at least 3 to 1 against the page, so a field is visible without its fill. Web uses native validation. iOS keeps a filled container and a clear button. Android keeps the outlined field with a floating label. Type an address by hand to see validation.</p></header><div id="s-fld"></div></section>
+    <section class="sheet" aria-labelledby="h-sel"><header><h2 id="h-sel">Selection <span class="badge">Native + tokens</span> <span class="badge ours">Chips ours</span></h2><p>State never rests on colour alone: the switch moves, the checkbox shows a tick, the segment moves a thumb or shows a check, the selected chip changes fill. All of it works from native inputs, with no script.</p></header><div id="s-sel"></div></section>
+    <section class="sheet" aria-labelledby="h-dlg"><header><h2 id="h-dlg">Sheets, dialogs and menus <span class="badge">Native + tokens</span></h2><p>The same three on every platform, all live: a sheet with detents, a confirmation, and a menu. Web uses the browser dialog and popover. On iOS and Android the system component is drawn here as a faithful stand-in, inside a phone screen. Every sheet can be dragged, and every drag has a button.</p></header><div id="s-dlg"></div></section>
+    <section class="sheet" aria-labelledby="h-msg"><header><h2 id="h-msg">Messages <span class="badge ours">Banner ours</span> <span class="badge">Toast native + tokens</span></h2><p>A banner stays until the cause is gone or the person dismisses it, and looks the same everywhere. A toast confirms something that already happened and offers one undo. It never carries information the screen does not show elsewhere.</p></header><div id="s-msg"></div></section>
+    <section class="sheet" aria-labelledby="h-nav"><header><h2 id="h-nav">Navigation <span class="badge native">Native only</span></h2><p>We do not restyle it. On the web the sticky bar must not cover what has focus, so the scroll area sets <code>scroll-padding-top</code>: press Tab inside it. iOS keeps the large title and the back chevron. Android keeps the left-aligned app bar and the back arrow.</p></header><div id="s-nav"></div></section>
+
+    <section class="sheet" aria-labelledby="h-own"><header><h2 id="h-own">Status and range <span class="badge ours">Ours</span></h2><p>The signature pieces, identical on every platform. A status always carries a word and a shape. The knob becomes a diamond out of range. The value is formatted by the server and only displayed.</p></header>
+      <div class="demo"><div class="specs">
+        <div class="spec"><span class="status"><i></i>In range</span><div class="range" role="img" aria-label="Range 26.800 to 29.400, price 28.120, in range" style="--l:.2;--u:.8;--p:.52"><span class="band"></span><span class="knob"></span></div><div class="range-labels" aria-hidden="true"><span>26.800</span><span>29.400</span></div></div>
+        <div class="spec"><span class="status out"><i></i>Out of range</span><div class="range" data-out role="img" aria-label="Range 0.0290 to 0.0330, price 0.0338, out of range" style="--l:.2;--u:.7;--p:.92"><span class="band"></span><span class="knob"></span></div><div class="range-labels" aria-hidden="true"><span>0.0290</span><span>0.0330</span></div></div>
+        <div class="spec"><h3 class="cap">Figure</h3><span class="figure big">$15,322</span><span class="hint">Tabular digits, text from the server.</span></div>
+      </div></div></section>
+
+    <section class="sheet" aria-labelledby="h-ctx"><header><h2 id="h-ctx">In context: Add wallet</h2><p>The same form in a browser, an iPhone and an Android phone. Type a 0x address or press Paste, and the button wakes up.</p></header><div class="phones" id="ctx"></div></section>
+
+    <section class="sheet" aria-labelledby="h-ct"><header><h2 id="h-ct">Contrast</h2><p>Measured on the rendered colours of the current palette. Text needs 4.5 to 1. Edges, switch tracks and focus rings need 3 to 1. Disabled controls are exempt.</p></header><div class="scroll"><table class="ctab" id="contrast"></table></div><p class="hint" id="rm-note"></p></section>
+  </main>
+</div>
+
+<div class="srbar" id="srbar" aria-hidden="true"><span class="cap">Screen reader would say (approximation)</span><b id="sr-text">Move focus with Tab</b></div>
+<div id="overlay" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById("rm-note").textContent = reduced ? "Your system asks for reduced motion: movement is replaced by fades on this page." : "Reduced motion is off. Turn it on in your system settings to see movement replaced by fades.";
+
+  function springCurve(stiffness, damping, mass) {
+    var position = 0, velocity = 0, time = 0, step = 1 / 1000, next = 0, samples = [];
+    while (time < 3) {
+      velocity += ((stiffness * (1 - position) - damping * velocity) / mass) * step; position += velocity * step; time += step;
+      if (time >= next) { samples.push(position.toFixed(4)); next += 1 / 60; }
+      if (time > 0.15 && Math.abs(1 - position) < 0.001 && Math.abs(velocity) < 0.01) break;
+    }
+    samples.push("1");
+    return { easing: "linear(" + samples.join(", ") + ")", ms: Math.round(time * 1000) };
+  }
+  if (CSS.supports("transition-timing-function", "linear(0, 1)")) { var curve = springCurve(230, 30, 1); root.style.setProperty("--spring", curve.easing); root.style.setProperty("--spring-ms", curve.ms + "ms"); }
+
+  var I = {
+    tick: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    check: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    x: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    info: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg>',
+    warn: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3zM12 10v4.5M12 17.5v.01"/></svg>',
+    err: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>',
+    errsm: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg>',
+    refresh: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>',
+    bell: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16zM10 21h4"/></svg>',
+    search: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>',
+    chev: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+    arrow: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>',
+    dots: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg>'
+  };
+  var LABEL = { web: "Web · HTML", ios: "iOS · SwiftUI", android: "Android · Compose" };
+  var chains = [["Ethereum", "oklch(.55 .17 270)"], ["Base", "oklch(.55 .2 258)"], ["Arbitrum", "oklch(.6 .14 235)"], ["Optimism", "oklch(.6 .23 25)"]];
+  function esc(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  /* ---------- scaffolding ---------- */
+  function plat(p, html) { return '<div class="plat ' + p + ' p-' + p + '" data-p="' + p + '"><span class="plabel">' + LABEL[p] + "</span>" + html + "</div>"; }
+  function trio(web, ios, android) { return '<div class="trio">' + plat("web", web) + plat("ios", ios) + plat("android", android) + "</div>"; }
+  function code(p, notes, snippet) {
+    var body = p === "web" && !snippet ? '<pre><code data-print></code></pre>' : "<pre><code>" + esc(snippet) + "</code></pre>";
+    return '<details class="code"><summary>' + (p === "web" ? "Markup and accessibility" : "Implementation sketch and accessibility") + '</summary><div class="a11y">' + notes + "</div>" + body + "</details>";
+  }
+
+  /* ---------- builders ---------- */
+  function checkChips(prefix, p, on) {
+    return '<fieldset><legend class="sr">Chains</legend><div class="chips">' + chains.map(function (c, i) { return '<label class="chip" style="--c:' + c[1] + '"><input type="checkbox"' + (on.indexOf(i) >= 0 ? " checked" : "") + ' id="' + prefix + i + "-" + p + '"><i class="dot"></i>' + I.tick + c[0] + "</label>"; }).join("") + "</div></fieldset>";
+  }
+  function sw(id, title, sub, on) { return '<label class="switch"><input type="checkbox" role="switch" id="' + id + '"' + (on ? " checked" : "") + '><span class="txt"><b>' + title + "</b>" + (sub ? "<span>" + sub + "</span>" : "") + '</span><span class="trk" aria-hidden="true"><i class="thb"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></span></label>'; }
+  function cb(id, text, on) { return '<label class="cb"><input type="checkbox" id="' + id + '"' + (on ? " checked" : "") + ">" + text + "</label>"; }
+  function seg(p, name, items, active) {
+    if (p === "android") return '<fieldset class="segm"><legend class="sr">' + name + "</legend>" + items.map(function (t, i) { return '<label><input type="radio" name="' + name + "-" + p + '"' + (i === active ? " checked" : "") + ">" + I.tick + t + "</label>"; }).join("") + "</fieldset>";
+    return '<fieldset class="seg" style="--n:' + items.length + '"><legend class="sr">' + name + "</legend>" + items.map(function (t, i) { return '<label><input type="radio" name="' + name + "-" + p + '"' + (i === active ? " checked" : "") + ">" + t + "</label>"; }).join("") + "</fieldset>";
+  }
+  function banner(kind, icon, title, text, action) { return '<div class="banner ' + kind + '" role="' + (kind === "bad" ? "alert" : "status") + '">' + icon + '<div class="msg"><b>' + title + "</b>" + (text ? "<span>" + text + "</span>" : "") + '</div><button type="button" data-dismiss>' + action + "</button></div>"; }
+  function field(p, id, label, o) {
+    o = o || {}; var fid = id + "-" + p, hintId = fid + "-hint", cls = "field" + (o.state ? " is-" + o.state : "") + (o.cls ? " " + o.cls : "");
+    var input = '<input id="' + fid + '" placeholder="' + (o.placeholder || "") + '"' + (o.value ? ' value="' + o.value + '"' : "") + (o.mono ? ' class="mono"' : "") + (o.disabled ? " disabled" : "") + (o.tab === false ? ' tabindex="-1"' : "") + ' autocomplete="off" autocapitalize="off" spellcheck="false"' + (o.inputmode ? ' inputmode="' + o.inputmode + '"' : "") + (o.attrs || "") + (p === "web" && o.help ? ' aria-describedby="' + hintId + '"' : "") + ">";
+    if (p === "web") {
+      return '<div class="' + cls + '"><label for="' + fid + '">' + label + '</label><div class="ctrl' + (o.focus ? " is-focus" : "") + '">' + input + (o.unit ? '<span class="unit" aria-hidden="true">' + o.unit + "</span>" : "") + "</div>" + (o.help ? '<p class="help" id="' + hintId + '">' + (o.helpIcon || "") + "<span>" + o.help + "</span></p>" : "") + (o.err ? '<p class="err" id="' + fid + '-err">' + I.errsm + o.err + "</p>" : "") + "</div>";
+    }
+    var trail = (o.unit ? '<span class="unit">' + o.unit + "</span>" : "") + (o.paste ? '<button class="trail word" type="button" data-paste="' + fid + '">Paste</button>' : "") + (p === "ios" && !o.paste && !o.disabled && !o.search ? '<button class="clr" type="button" aria-label="Clear" data-clear="' + fid + '"' + (o.value ? "" : " hidden") + ">" + I.x + "</button>" : "");
+    var help = o.help !== undefined ? '<div class="help" data-help>' + (o.helpIcon || "") + "<span>" + o.help + "</span></div>" : "";
+    var lead = o.search ? '<span style="color:var(--muted);display:grid;margin-left:-4px">' + I.search + "</span>" : "";
+    if (p === "ios") return '<div class="' + cls + '">' + (o.search ? "" : '<label for="' + fid + '">' + label + "</label>") + '<div class="ctrl' + (o.focus ? " is-focus" : "") + '">' + lead + input + trail + "</div>" + help + "</div>";
+    return '<div class="' + cls + '"><div class="ctrl' + (o.focus ? " is-focus" : "") + (o.value ? " is-float" : "") + '">' + lead + input + (o.search ? "" : '<label for="' + fid + '">' + label + "</label>") + trail + "</div>" + help + "</div>";
+  }
+
+  /* ---------- sections ---------- */
+  function btnSet(p) {
+    var lbl = function (t, load) { return '<span class="lbl"' + (load ? ' data-l="' + t + '" data-load="' + load + '"' : "") + ">" + t + "</span>"; };
+    var web = p === "web";
+    return '<div data-src><div class="row"><button class="btn primary-sample" type="button" id="bp-' + p + '">' + lbl("Add wallet") + "</button>" + (web ? '<a class="btn tonal" id="bt-web" href="#main">Cancel</a>' : '<button class="btn tonal" type="button" id="bt-' + p + '">' + lbl("Cancel") + "</button>") + '<button class="btn text" type="button" id="bx-' + p + '">' + lbl("Learn more") + '</button><button class="btn danger" type="button" id="bd-' + p + '">' + lbl("Remove wallet") + "</button></div>" +
+      '<div class="row"><button class="btn m" type="button">' + lbl("Save") + '</button><button class="btn tonal m" type="button" disabled>' + lbl("Disabled") + '</button><button class="btn m" type="button" aria-busy="true" aria-disabled="true">' + lbl("Adding…") + '</button><button class="ibtn" type="button" aria-label="Refresh prices">' + I.refresh + "</button></div></div>" +
+      '<div class="row"><button class="btn" type="button" data-load-demo>' + lbl("Refresh positions", "Refreshing…") + "</button></div>" +
+      '<p class="note">' + (p === "android" ? "Press and hold a button to see the ripple." : p === "ios" ? "Press and hold: scale to 97% and dim." : "Press and hold: scale to 97%. Hover darkens a little on a pointer.") + "</p>";
+  }
+  var SNIP = {
+    btn: { ios: 'Button("Add wallet", action: add)\n  .buttonStyle(VoidButtonStyle(.primary))      // capsule, scale 0.97 on press\n  .sensoryFeedback(.impact(weight: .light), trigger: taps)', android: 'VoidButton(onClick = add, style = VoidButtonStyle.Primary) {\n    Text("Add wallet")                           // wraps Button, shape = CircleShape\n}                                                // ripple from the touch point' },
+    fld: { ios: 'TextField("Main wallet", text: $label)\n  .textFieldStyle(VoidFieldStyle())            // filled 12 pt container, 1 pt edge token\n  .textInputAutocapitalization(.never)\n  .autocorrectionDisabled()', android: 'OutlinedTextField(\n  value = address, onValueChange = onAddress,\n  label = { Text("Wallet address") },\n  isError = error != null,\n  supportingText = { Text(error ?: "Paste an address or an ENS name.") },\n  colors = VoidTextFieldColors(),\n)' },
+    sel: { ios: 'Toggle("Out of range alerts", isOn: $alerts)\n  .tint(.voidAccent)\n\nPicker("View", selection: $view) { Text("Cards").tag(0); Text("Rows").tag(1) }\n  .pickerStyle(.segmented)', android: 'Switch(\n  checked = alerts, onCheckedChange = onAlerts,\n  thumbContent = { if (alerts) Icon(Icons.Filled.Check, null) },\n  colors = VoidSwitchColors(),\n)\n\nSingleChoiceSegmentedButtonRow { /* SegmentedButton per option */ }' },
+    dlg: { ios: '.sheet(isPresented: $showDetail) {\n  PositionDetail(position)\n    .presentationDetents([.medium, .large])\n    .presentationDragIndicator(.visible)\n}\n\n.confirmationDialog("Remove this wallet?", isPresented: $confirm) {\n  Button("Remove wallet", role: .destructive) { remove() }\n  Button("Cancel", role: .cancel) { }\n}', android: 'ModalBottomSheet(\n  onDismissRequest = onClose,\n  sheetState = rememberModalBottomSheetState(),\n  dragHandle = { BottomSheetDefaults.DragHandle() },\n) { PositionDetail(position) }\n\nAlertDialog(\n  onDismissRequest = onCancel,\n  title = { Text("Remove this wallet?") },\n  text = { Text("Its positions disappear from your list.") },\n  confirmButton = { TextButton(onClick = onRemove) { Text("Remove") } },\n  dismissButton = { TextButton(onClick = onCancel) { Text("Cancel") } },\n)' },
+    msg: { ios: '// toast: custom overlay, top capsule, 4 s, pauses while touched\n.overlay(alignment: .top) { VoidToast(message: "Wallet added", action: undo) }', android: 'scope.launch {\n  snackbarHostState.showSnackbar("Wallet added", actionLabel = "Undo", duration = SnackbarDuration.Short)\n}' },
+    nav: { ios: 'NavigationStack { WalletList() }\n  .navigationTitle("Wallets")                  // large title, back chevron from the stack', android: 'TopAppBar(\n  title = { Text("Wallets") },\n  navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },\n)' }
+  };
+  var NOTES = {
+    btn: { web: '<span><b>Role:</b> button, or link for <code>&lt;a&gt;</code>. <b>Keys:</b> Enter and Space, Enter on a link.</span><span><b>States:</b> pressed <code>:active</code>, focus <code>:focus-visible</code>, loading <code>aria-busy</code>, disabled the real attribute.</span>', ios: '<span><b>Name:</b> from the title. Always include a press state. Loading changes the label and shows an activity indicator.</span><span><b>Target:</b> at least 44 by 44 pt.</span>', android: '<span><b>Name:</b> from content. Icon buttons need a content description. <b>Target:</b> 48 by 48 dp.</span><span>Loading changes the label and shows a progress indicator.</span>' },
+    fld: { web: '<span><b>Name:</b> the <code>&lt;label for&gt;</code>. Error shown by CSS after interaction (<code>:user-invalid</code>); a short script adds <code>aria-invalid</code>. Validate on blur and submit. The server validates again.</span><span><b>Keyboard:</b> <code>inputmode</code> and <code>autocomplete</code>.</span>', ios: '<span><b>Label:</b> separate from the placeholder. Validate when the person leaves the field. Show a clear button. Right keyboard type.</span>', android: '<span><b>Label:</b> floats above the outline. Error text sits in supporting text. Outline is 3 to 1.</span>' },
+    sel: { web: '<span><b>Switch:</b> checkbox with <code>role="switch"</code>, Space toggles, label never changes with state.</span><span><b>Segment and chips:</b> radio group arrows between options, checkboxes tab. The group is named by a <code>&lt;legend&gt;</code>.</span>', ios: '<span><b>Switch:</b> only in a list row, tinted with the accent. State is not colour alone.</span><span>No checkbox on iOS.</span>', android: '<span><b>Switch:</b> a check in the thumb marks on. <b>Checkbox:</b> 18 dp box inside a 48 dp target. Selected chip adds a check.</span>' },
+    dlg: { web: '<span><b>Sheet and dialog:</b> <code>&lt;dialog&gt;</code> labelled by its heading, a visible Close button, Esc and outside click. Cancel has <code>autofocus</code> so the destructive action is never the default.</span><span><b>Invoker:</b> <code>command</code> and <code>commandfor</code>, with a fallback script. <b>Menu:</b> popover with plain buttons, no <code>role="menu"</code>.</span>', ios: '<span><b>Sheet:</b> medium and large detents, a grabber, and a Done button. Dragging has the same result as the buttons (WCAG 2.5.7). Focus moves in and returns to the row. The page behind is inert.</span><span><b>Confirmation:</b> destructive role, Cancel separate and last.</span>', android: '<span><b>Sheet:</b> a drag handle that is also a 48 dp button, a close button, and system back. Focus moves in and returns. <b>Dialog:</b> title, supporting text, two text buttons, safe action focused first.</span>' },
+    msg: { web: '<span><b>Banner:</b> <code>role="status"</code> for updates, <code>role="alert"</code> only for urgent errors. <b>Toast:</b> a polite live region that pauses while hovered or focused.</span>', ios: '<span>Toast is custom: announce it to VoiceOver and keep it long enough to read.</span>', android: '<span>Snackbar is announced by TalkBack. One action at most.</span>' },
+    nav: { web: '<span><b>Landmarks:</b> <code>&lt;nav aria-label&gt;</code>, one <code>&lt;main&gt;</code>, skip link first. <code>aria-current="page"</code> marks the page. WCAG 2.4.11: sticky bars must not hide the focus.</span>', ios: '<span>Large title collapses on scroll. Back swipe comes from the stack.</span>', android: '<span>Back arrow is a 48 dp target with a description. System back is never shadowed.</span>' }
+  };
+
+  document.getElementById("s-btn").innerHTML = trio(
+    '<div class="demo">' + btnSet("web") + "</div>" + code("web", NOTES.btn.web),
+    '<div class="demo">' + btnSet("ios") + "</div>" + code("ios", NOTES.btn.ios, SNIP.btn.ios),
+    '<div class="demo">' + btnSet("android") + "</div>" + code("android", NOTES.btn.android, SNIP.btn.android));
+
+  function fldWeb() {
+    return '<form class="demo" id="addform-web" action="#main" method="post"><div data-src>' +
+      field("web", "n", "Label", { placeholder: "Main wallet", help: "Only you see this name." }) +
+      field("web", "a", "Wallet address", { placeholder: "0x… or name.eth", mono: true, attrs: ' name="address" required pattern="0x[0-9a-fA-F]{40}|[a-z0-9\\-]+(\\.[a-z0-9\\-]+)*\\.eth"', help: "Ethereum, Base, Arbitrum and Optimism share one address.", err: "Enter a 0x address with 42 characters, or a name that ends in .eth." }) +
+      field("web", "m", "Alert threshold", { value: "0.50", unit: "ETH", inputmode: "decimal", attrs: ' name="threshold" required pattern="[0-9]+([.,][0-9]+)?"', help: "Alert me when owed fees pass this amount.", err: "Enter an amount above 0, for example 0.50." }) +
+      '<div class="field"><label for="c-web">Default chain</label><div class="ctrl"><select id="c-web" name="chain"><option>Ethereum</option><option>Base</option><option>Arbitrum</option><option>Optimism</option></select></div></div>' +
+      field("web", "d", "Disabled", { value: "Synced from iCloud", disabled: true }) +
+      '</div><div class="row"><button class="btn" type="submit">Add wallet</button></div></form>';
+  }
+  function fldNative(p) {
+    return '<div class="demo">' + field(p, "n", "Label", { placeholder: "Main wallet", help: "Only you see this name." }) +
+      field(p, "a", "Wallet address", { placeholder: "0x… or name.eth", mono: true, paste: true, help: "Ethereum, Base, Arbitrum and Optimism share one address.", cls: "addr" }) +
+      field(p, "m", "Alert threshold", { value: "0.50", unit: "ETH", inputmode: "decimal", help: "Alert me when owed fees pass this amount.", cls: "amt" }) +
+      '<div class="search">' + field(p, "s", "Search", { placeholder: "Pool, token or chain", search: true }) + "</div></div>" +
+      '<div class="demo"><h3 class="cap">States</h3>' + field(p, "st1", "Focus", { value: "Main wal", focus: true, tab: false }) + field(p, "st2", "Valid", { value: "vitalik.eth", mono: true, state: "ok", tab: false, help: "ENS name, resolves to 0xd8dA…6045", helpIcon: I.check }) + field(p, "st3", "Error", { value: "0x71C7656E", mono: true, state: "error", tab: false, help: "An address has 42 characters and starts with 0x. This one has 10.", helpIcon: I.errsm }) + field(p, "st4", "Disabled", { value: "Synced from iCloud", disabled: true, state: "disabled" }) + "</div>";
+  }
+  document.getElementById("s-fld").innerHTML = trio(fldWeb() + code("web", NOTES.fld.web), fldNative("ios") + code("ios", NOTES.fld.ios, SNIP.fld.ios), fldNative("android") + code("android", NOTES.fld.android, SNIP.fld.android));
+
+  function selSet(p) {
+    var switches = '<div class="spec"><h3 class="cap">Switch</h3>' + sw("swa-" + p, "Out of range alerts", "Push when a position leaves its range", true) + sw("swb-" + p, "Weekly summary", "Mondays, 9:00", false) + "</div>";
+    var third = p === "ios" ? '<div class="spec"><h3 class="cap">Checkmark row</h3><label class="listrow"><input type="checkbox" checked><span>Include staked positions</span>' + I.check + '</label><label class="listrow"><input type="checkbox"><span>Hide dust under $1</span>' + I.check + '</label><p class="note">iOS has no checkbox. Use a switch, or a checkmark in a list row.</p></div>' : '<div class="spec"><h3 class="cap">Checkbox</h3>' + cb("cka-" + p, "Include staked positions", true) + cb("ckb-" + p, "Hide dust under $1", false) + "</div>";
+    return '<div class="demo"><div data-src class="specs">' + switches + third + '<div class="spec"><h3 class="cap">Segment</h3>' + seg(p, "View", ["Cards", "Rows"], 0) + seg(p, "Range", ["24 h", "7 d", "30 d"], 0) + '</div><div class="spec"><h3 class="cap">Filter chips</h3>' + checkChips("ch", p, [0, 1]) + "</div></div></div>";
+  }
+  document.getElementById("s-sel").innerHTML = trio(selSet("web") + code("web", NOTES.sel.web), selSet("ios") + code("ios", NOTES.sel.ios, SNIP.sel.ios), selSet("android") + code("android", NOTES.sel.android, SNIP.sel.android));
+
+  function stageHtml(p) {
+    var id = "ss-" + p, ios = p === "ios";
+    var rows = [["ETH / USDC", "$23,501"], ["WBTC / ETH", "$15,322"], ["XAI / ETH", "$2,190"]];
+    var detail = '<div class="ptop"><span class="coins" aria-hidden="true"><i class="coin" style="--cc:oklch(.55 .17 270)">E</i><i class="coin" style="--cc:oklch(.55 .15 250)">$</i></span><span class="status"><i></i>In range</span></div>' +
+      '<p class="figure big"><span class="sr">Position value </span>$23,501</p>' +
+      '<div class="range" role="img" aria-label="Range 3,180.00 to 3,620.00, price 3,412.55, in range" style="--l:.23;--u:.77;--p:.55"><span class="band"></span><span class="knob"></span></div><div class="range-labels" aria-hidden="true"><span>3,180.00</span><span>3,620.00</span></div>' +
+      '<div><div class="row-line"><span>Current price</span><b>3,412.55</b></div><div class="row-line"><span>Range</span><b>3,180.00 – 3,620.00</b></div><div class="row-line"><span>Owed fees</span><b>$284.36</b></div><div class="row-line"><span>ETH</span><b>0.0412</b></div><div class="row-line"><span>USDC</span><b>141.08</b></div></div>' +
+      '<button class="btn block" type="button">Collect fees</button>';
+    var head = ios ? '<span></span><h5 id="' + id + '-st">ETH / USDC</h5><button class="btn text m" type="button" data-close="' + p + '">Done</button>' : '<h5 id="' + id + '-st">ETH / USDC</h5><button class="ibtn" type="button" aria-label="Close" data-close="' + p + '">' + I.x + "</button>";
+    var confirm = ios ?
+      '<div class="ovl" id="' + id + '-dlg" role="alertdialog" aria-modal="true" aria-labelledby="' + id + '-dt" aria-describedby="' + id + '-dd" tabindex="-1"><div class="acard"><div class="at"><b id="' + id + '-dt">Remove this wallet?</b><span id="' + id + '-dd">Its positions disappear from your list.</span></div><button class="d" type="button" data-remove="' + p + '">Remove Wallet</button></div><div class="acard c"><button type="button" data-close-dlg="' + p + '">Cancel</button></div></div>' :
+      '<div class="ovl" id="' + id + '-dlg" role="alertdialog" aria-modal="true" aria-labelledby="' + id + '-dt" aria-describedby="' + id + '-dd" tabindex="-1"><h5 id="' + id + '-dt">Remove this wallet?</h5><p id="' + id + '-dd">Its positions disappear from your list. You can add it again later.</p><div class="row"><button class="btn text" type="button" data-close-dlg="' + p + '">Cancel</button><button class="btn text" type="button" data-remove="' + p + '">Remove</button></div></div>';
+    return '<div class="sstage" id="' + id + '" role="group" aria-label="Phone screen demo for ' + (ios ? "iOS" : "Android") + '">' +
+      '<div class="sbg" id="' + id + '-bg"><div class="sbar"><h4>Portfolio</h4><button class="ibtn" type="button" aria-label="More actions" aria-haspopup="true" aria-expanded="false" data-menu="' + p + '">' + I.dots + "</button></div>" +
+      rows.map(function (r) { return '<button class="srow" type="button" aria-haspopup="dialog" data-sheet="' + p + '"><span>' + r[0] + '</span><b class="figure">' + r[1] + "</b></button>"; }).join("") +
+      '<div class="row"><button class="btn tonal m" type="button" aria-haspopup="dialog" data-dialog="' + p + '">Remove wallet…</button></div><p class="note">Press a position for its sheet. Drag the handle, or use the buttons.</p></div>' +
+      '<div class="sscrim" data-scrim="' + p + '"></div>' +
+      '<div class="msheet" id="' + id + '-sheet" role="dialog" aria-modal="true" aria-labelledby="' + id + '-st" tabindex="-1"><button class="sgrab" type="button" aria-label="Sheet size. Press to expand or collapse" data-grab="' + p + '"></button><div class="shead" data-drag="' + p + '">' + head + '</div><div class="sbody">' + detail + "</div></div>" +
+      confirm +
+      '<div class="amenu" id="' + id + '-menu"><button type="button" data-menu-item="' + p + '">Rename</button><button type="button" data-menu-item="' + p + '">Copy address</button><button type="button" class="d" data-menu-item="' + p + '">Remove</button></div></div>';
+  }
+  document.getElementById("s-dlg").innerHTML = trio(
+    '<div class="demo"><div data-src><div class="row"><button class="btn tonal" type="button" command="show-modal" commandfor="detail-dialog">Position sheet</button><button class="btn tonal" type="button" command="show-modal" commandfor="confirm-dialog">Remove wallet…</button><button class="btn tonal" type="button" popovertarget="menu-1">More</button></div>' +
+    '<dialog class="sheetd sheetb" id="detail-dialog" aria-labelledby="detail-title" closedby="any"><div class="shead2"><h3 id="detail-title">ETH / USDC</h3><form method="dialog"><button class="ibtn" aria-label="Close">' + I.x + '</button></form></div>' +
+    '<p class="figure big"><span class="sr">Position value </span>$23,501</p><div class="range" role="img" aria-label="Range 3,180.00 to 3,620.00, price 3,412.55, in range" style="--l:.23;--u:.77;--p:.55"><span class="band"></span><span class="knob"></span></div><div class="range-labels" aria-hidden="true"><span>3,180.00</span><span>3,620.00</span></div>' +
+    '<div><div class="row-line"><span>Current price</span><b>3,412.55</b></div><div class="row-line"><span>Owed fees</span><b>$284.36</b></div></div><div class="row" style="margin-top:14px"><button class="btn block">Collect fees</button></div></dialog>' +
+    '<dialog class="sheetd" id="confirm-dialog" aria-labelledby="confirm-title" closedby="any"><form method="dialog"><h3 id="confirm-title">Remove this wallet?</h3><p>Its positions disappear from your list. You can add it again later.</p><div class="row"><button class="btn tonal" value="cancel" autofocus>Cancel</button><button class="btn danger" value="remove">Remove</button></div></form></dialog>' +
+    '<div class="menu" id="menu-1" popover><a href="#main">Rename</a><a href="#main">Copy address</a><button type="button" class="danger-i" popovertarget="menu-1" popovertargetaction="hide">Remove</button></div></div></div>' + code("web", NOTES.dlg.web),
+    stageHtml("ios") + code("ios", NOTES.dlg.ios, SNIP.dlg.ios),
+    stageHtml("android") + code("android", NOTES.dlg.android, SNIP.dlg.android));
+
+  function msgSet(p) {
+    var host = p === "android" ? "bottom" : "top";
+    return '<div class="stage"><div class="host ' + host + '" id="host-' + p + '" aria-live="polite"></div><span class="cap" style="position:absolute;left:18px;top:14px">' + (p === "android" ? "Snackbar appears at the bottom" : p === "ios" ? "Toast appears at the top" : "Toast sits at the bottom") + '</span><div class="row" style="margin-top:20px"><button class="btn tonal m" type="button" data-toast="ok:' + p + '">Success</button><button class="btn tonal m" type="button" data-toast="neutral:' + p + '">Neutral</button><button class="btn tonal m" type="button" data-toast="bad:' + p + '">Error</button></div></div>';
+  }
+  var banners = '<div class="demo"><div data-src>' + banner("", I.info, "Prices are 2 minutes old", "Positions refresh when you are online.", "Refresh") + banner("warn", I.warn, "You are offline", "Showing the last saved values.", "Dismiss") + banner("bad", I.err, "Base data is unavailable", "Other chains are up to date.", "Retry") + "</div></div>";
+  document.getElementById("s-msg").innerHTML = trio(msgSet("web") + code("web", NOTES.msg.web, '<div class="toasts" role="status" aria-live="polite">\n  <div class="toast"><span>Wallet added</span><button type="button">Undo</button></div>\n</div>'), msgSet("ios") + code("ios", NOTES.msg.ios, SNIP.msg.ios), msgSet("android") + code("android", NOTES.msg.android, SNIP.msg.android)) + '<div class="spec" style="margin-top:6px"><h3 class="cap">Banner, identical on every platform</h3>' + banners + "</div>";
+
+  document.getElementById("s-nav").innerHTML = trio(
+    '<div class="demo"><div data-src><div class="scrollbox" tabindex="-1"><nav class="topnav" aria-label="Primary"><a href="#main" aria-current="page">Portfolio</a><a href="#main">Alerts</a><a href="#main">Explore</a><a href="#main">Settings</a></nav><div class="body"><a href="#main">ETH / USDC</a><a href="#main">WBTC / ETH</a><a href="#main">XAI / ETH</a><a href="#main">USDC / USDT</a><a href="#main">ETH / BTC.b</a><a href="#main">OP / ETH</a><a href="#main">Add a position</a></div></div></div></div>' + code("web", NOTES.nav.web),
+    '<div class="navdemo"><div class="nav-i"><span class="back">' + I.chev + 'Portfolio</span><span>Edit</span></div><h3>Wallets</h3></div>' + code("ios", NOTES.nav.ios, SNIP.nav.ios),
+    '<div class="navdemo"><div class="nav-a"><button class="ibtn" type="button" aria-label="Back">' + I.arrow + '</button><h3>Wallets</h3><button class="ibtn" type="button" aria-label="More">' + I.dots + "</button></div></div>" + code("android", NOTES.nav.android, SNIP.nav.android));
+
+  /* in context */
+  function phone(p) {
+    var bar = p === "ios" ? '<div class="island"></div><div class="status-bar"><span>9:41</span><span>5G</span></div>' : '<div class="punch"></div><div class="status-bar"><span>9:41</span><span>5G ▮</span></div>';
+    var nav = p === "ios" ? '<div class="sheetnav"><button class="l" type="button" data-cancel="' + p + '">Cancel</button><h3>Add wallet</h3><span></span></div>' : '<div style="display:flex;align-items:center;gap:8px;min-height:56px;margin-left:-8px"><button class="ibtn" style="background:none" type="button" aria-label="Back" data-cancel="' + p + '">' + I.arrow + '</button><span style="font-size:22px;font-weight:600">Add wallet</span></div>';
+    var staked = p === "ios" ? sw("pst-" + p, "Include staked positions", "", true) : cb("pst-" + p, "Include staked positions", true);
+    return '<div class="phone-fit"><div class="phone ' + p + '"><div class="screen">' + bar + '<div class="host ' + (p === "ios" ? "top" : "bottom") + '" id="host-ph-' + p + '" style="' + (p === "ios" ? "top:54px" : "bottom:96px") + '" aria-live="polite"></div><div class="pscroll">' + nav + banner("", I.info, "Read only. VoidX never asks for keys.", "", "OK") + field(p, "pn", "Label", { placeholder: "Main wallet" }) + field(p, "pa", "Wallet address", { placeholder: "0x… or name.eth", mono: true, paste: true, help: "Paste an address or an ENS name.", cls: "addr" }) + '<div class="spec"><h3 class="cap">Chains</h3>' + checkChips("cp", p, [0]) + "</div>" + sw("pal-" + p, "Out of range alerts", "Push when a position leaves its range", true) + staked + '</div><div class="dock"><button class="btn block" type="button" id="psub-' + p + '" disabled><span class="lbl" data-l="Add wallet" data-load="Adding…">Add wallet</span></button></div><div class="homebar"></div></div></div></div>';
+  }
+  function browserFrame() {
+    return '<div class="browser"><div class="bar"><i></i><i></i><i></i><span>voidx.app/wallets/new</span></div><div class="page"><h3>Add wallet</h3>' + banner("", I.info, "Read only. VoidX never asks for keys.", "", "OK") + '<form id="ctxform-web" action="#main" method="post">' + field("web", "xn", "Label", { placeholder: "Main wallet" }) + field("web", "xa", "Wallet address", { placeholder: "0x… or name.eth", mono: true, attrs: ' name="address" required pattern="0x[0-9a-fA-F]{40}|[a-z0-9\\-]+(\\.[a-z0-9\\-]+)*\\.eth"', help: "Paste an address or an ENS name.", err: "Enter a 0x address with 42 characters, or a name that ends in .eth." }) + '<div><span class="cap" style="margin-bottom:8px">Chains</span>' + checkChips("cw", "web", [0]) + "</div>" + sw("xal-web", "Out of range alerts", "Push when a position leaves its range", true) + cb("xst-web", "Include staked positions", true) + '<div class="row"><button class="btn" type="submit">Add wallet</button><a class="btn text" href="#main">Cancel</a></div></form></div></div>';
+  }
+  document.getElementById("ctx").innerHTML = '<div class="plat web p-web" data-p="web" style="width:100%;justify-items:center"><span class="plabel">' + LABEL.web + "</span>" + browserFrame() + '</div><div class="plat ios p-ios" data-p="ios"><span class="plabel">' + LABEL.ios + "</span>" + phone("ios") + '</div><div class="plat android p-android" data-p="android"><span class="plabel">' + LABEL.android + "</span>" + phone("android") + "</div>";
+
+  /* markup printout from the live web demo */
+  function pretty(html) {
+    var raw = html.replace(/\s+/g, " ").replace(/> </g, "><").split(/(?=<)/).map(function (t) { return t.trim(); }).filter(Boolean), tokens = [];
+    for (var i = 0; i < raw.length; i++) {
+      var token = raw[i], next = raw[i + 1];
+      var opens = /^<[a-z]/i.test(token) && !/\/>$/.test(token) && !/^<(input|br|hr|img)\b/i.test(token);
+      if (opens && next && /^<\//.test(next) && !/^<[^>]*>[^<]*<\//.test(token)) { tokens.push(token + next); i++; } else tokens.push(token);
+    }
+    var depth = 0, out = [];
+    tokens.forEach(function (text) {
+      var closing = /^<\//.test(text), selfClose = /\/>$/.test(text) || /^<(input|br|hr|img)\b/i.test(text) || /^<[^>]*>[^<]*<\/[a-z0-9]+>$/i.test(text);
+      if (closing) depth = Math.max(0, depth - 1);
+      out.push(new Array(depth + 1).join("  ") + text);
+      if (!closing && !selfClose) depth++;
+    });
+    return out.join("\n");
+  }
+  document.querySelectorAll("code[data-print]").forEach(function (target) {
+    var holder = target.closest(".plat"), source = holder && holder.querySelector("[data-src]");
+    if (source) target.innerHTML = esc(pretty(source.innerHTML));
+  });
+
+  /* ---------- palette and platform ---------- */
+  var state = { pal: "auto", show: "all" };
+  try { var saved = JSON.parse(localStorage.getItem("voidx-uikit-1") || "null"); if (saved) { state.pal = saved.pal || "auto"; state.show = saved.show || "all"; } } catch (error) {}
+  function applyState() {
+    if (state.pal === "auto") root.removeAttribute("data-pal"); else root.setAttribute("data-pal", state.pal);
+    root.setAttribute("data-show", state.show);
+    document.querySelector('#pal input[value="' + state.pal + '"]').checked = true;
+    document.querySelector('#show input[value="' + state.show + '"]').checked = true;
+    try { localStorage.setItem("voidx-uikit-1", JSON.stringify(state)); } catch (error) {}
+    requestAnimationFrame(function () { requestAnimationFrame(function () { measure(); fit(); labRefresh(); }); });
+  }
+  document.getElementById("pal").addEventListener("change", function () { state.pal = document.querySelector("#pal input:checked").value; applyState(); });
+  document.getElementById("show").addEventListener("change", function () { state.show = document.querySelector("#show input:checked").value; applyState(); });
+  new MutationObserver(function () { requestAnimationFrame(measure); }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { requestAnimationFrame(measure); });
+
+  /* ---------- contrast from rendered colours ---------- */
+  var canvas = document.createElement("canvas"); canvas.width = canvas.height = 1;
+  var context = canvas.getContext("2d", { willReadFrequently: true });
+  function rgb(css) { context.clearRect(0, 0, 1, 1); context.fillStyle = "#000"; context.fillStyle = css; context.fillRect(0, 0, 1, 1); var d = context.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2], d[3] / 255]; }
+  function lum(c) { var v = c.slice(0, 3).map(function (x) { x /= 255; return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; }
+  function ratio(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function backdrop(element) { for (var node = element; node; node = node.parentElement) { var c = rgb(getComputedStyle(node).backgroundColor); if (c[3] > 0.98) return c; } return rgb(getComputedStyle(document.body).backgroundColor); }
+  var rows = [
+    ["Primary label", "text", "#bp-web", "color", 0, 4.5], ["Tonal label", "text", "#bt-web", "color", 0, 4.5], ["Text button", "text", "#bx-web", "color", 0, 4.5], ["Destructive label", "text", "#bd-web", "color", 0, 4.5],
+    ["Helper text", "text", ".plat.web .help", "color", 0, 4.5], ["Error text", "text", ".plat.web .err", "color", 0, 4.5], ["Selected chip (web, iOS)", "text", ".plat.web .chip:has(input:checked)", "color", 0, 4.5], ["Status in range", "text", ".status:not(.out)", "color", 0, 4.5], ["Status out of range", "text", ".status.out", "color", 0, 4.5],
+    ["Web field edge", "edge", ".plat.web .ctrl", "borderTopColor", 1, 3], ["iOS field edge", "edge", ".plat.ios .ctrl", "borderTopColor", 1, 3], ["Android field outline", "edge", ".plat.android .ctrl", "borderTopColor", 1, 3],
+    ["Web and iOS switch off track", "edge", ".plat.ios .switch input:not(:checked) ~ .trk", "backgroundColor", 1, 3], ["Android switch off outline", "edge", ".plat.android .switch input:not(:checked) ~ .trk", "borderTopColor", 1, 3],
+    ["Web checkbox border", "edge", ".plat.web .cb input:not(:checked)", "borderTopColor", 1, 3], ["Android checkbox border", "edge", ".plat.android .cb input:not(:checked)", "borderTopColor", 1, 3], ["Android segmented outline", "edge", ".segm", "borderTopColor", 1, 3], ["Unselected chip outline", "edge", ".plat.android .chip:not(:has(input:checked))", "borderTopColor", 1, 3], ["Switch on track", "edge", ".plat.ios .switch input:checked ~ .trk", "backgroundColor", 1, 3]
+  ];
+  function measure() {
+    var table = document.getElementById("contrast"), html = "<tr><th>Pair</th><th>Kind</th><th>Ratio</th><th>Need</th></tr>";
+    rows.forEach(function (item) {
+      var target = document.querySelector(item[2]); if (!target) return;
+      var value = ratio(rgb(getComputedStyle(target)[item[3]]), backdrop(item[4] ? target.parentElement : target)), pass = value >= item[5];
+      html += "<tr><td>" + item[0] + "</td><td>" + (item[1] === "text" ? "text" : "non-text") + '</td><td class="ratio ' + (pass ? "r-ok" : "r-bad") + '">' + value.toFixed(1) + " to 1 " + (pass ? "✓" : "✗") + "</td><td>" + item[5] + " to 1</td></tr>";
+    });
+    var ring = ratio(rgb(getComputedStyle(root).getPropertyValue("--accent").trim()), rgb(getComputedStyle(root).getPropertyValue("--surface").trim()));
+    html += '<tr><td>Focus ring vs surface</td><td>non-text</td><td class="ratio ' + (ring >= 3 ? "r-ok" : "r-bad") + '">' + ring.toFixed(1) + " to 1 " + (ring >= 3 ? "✓" : "✗") + "</td><td>3 to 1</td></tr>";
+    table.innerHTML = html;
+  }
+
+  /* ---------- interactions: small, none needed for the web core ---------- */
+  function ripple(button, event) {
+    if (reduced) return;
+    var box = button.getBoundingClientRect(), size = Math.max(box.width, box.height) * 2.2, dot = document.createElement("span");
+    dot.className = "ripple"; dot.style.width = dot.style.height = size + "px";
+    dot.style.left = (event.clientX - box.left - size / 2) + "px"; dot.style.top = (event.clientY - box.top - size / 2) + "px";
+    button.appendChild(dot); setTimeout(function () { dot.remove(); }, 520);
+  }
+  document.addEventListener("pointerdown", function (event) { var button = event.target.closest(".android .btn, .android .ibtn"); if (button && !button.disabled) ripple(button, event); });
+  function setLoading(button, on) {
+    var label = button.querySelector(".lbl");
+    if (on) { button.setAttribute("aria-busy", "true"); button.setAttribute("aria-disabled", "true"); } else { button.removeAttribute("aria-busy"); button.removeAttribute("aria-disabled"); }
+    if (label && label.dataset.load) label.textContent = on ? label.dataset.load : label.dataset.l;
+  }
+  function toast(p, kind, message, action, hostId) {
+    var host = document.getElementById(hostId); if (!host) return;
+    var node = document.createElement("div"), timer;
+    node.className = p === "android" ? "snack" : "toast"; node.setAttribute("role", "status");
+    node.innerHTML = "<span>" + message + "</span>" + (action ? '<button type="button">' + action + "</button>" : "");
+    host.innerHTML = ""; host.appendChild(node);
+    function dismiss() { node.classList.add("out"); setTimeout(function () { node.remove(); }, 220); }
+    function start() { timer = setTimeout(dismiss, 6000); } function stop() { clearTimeout(timer); }
+    start(); node.addEventListener("pointerenter", stop); node.addEventListener("pointerleave", start); node.addEventListener("focusin", stop); node.addEventListener("focusout", start);
+    var button = node.querySelector("button"); if (button) button.addEventListener("click", function () { stop(); dismiss(); });
+  }
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest("button"); if (!button) return;
+    if (button.hasAttribute("data-dismiss")) { var banner = button.closest(".banner"); banner.classList.add("gone"); setTimeout(function () { banner.hidden = true; setTimeout(function () { banner.hidden = false; banner.classList.remove("gone"); }, 1600); }, 240); return; }
+    if (button.hasAttribute("data-load-demo")) { setLoading(button, true); setTimeout(function () { setLoading(button, false); }, 1200); return; }
+    if (button.dataset.toast) { var parts = button.dataset.toast.split(":"), msg = { ok: ["Wallet added", "Undo"], neutral: ["Copied to clipboard", ""], bad: ["Could not reach Base", "Retry"] }[parts[0]]; toast(parts[1], parts[0], msg[0], msg[1], "host-" + parts[1]); return; }
+    if (button.dataset.paste) { pasteInto(button.dataset.paste); return; }
+    if (button.dataset.clear) { var target = document.getElementById(button.dataset.clear); target.value = ""; target.dispatchEvent(new Event("input", { bubbles: true })); target.focus(); return; }
+    if (button.dataset.cancel) toast(button.dataset.cancel, "neutral", "Nothing was added", "", "host-ph-" + button.dataset.cancel);
+  });
+
+  /* native-app style validation (iOS, Android): code decides, as in the app */
+  var addressPattern = /^0x[0-9a-fA-F]{40}$/, ensPattern = /^[a-z0-9-]+(\.[a-z0-9-]+)*\.eth$/i, example = "0x71C7656EC7ab88b098defB751B7401B5f6d8976F";
+  function setHelp(fieldNode, kind, text) {
+    fieldNode.classList.toggle("is-error", kind === "err"); fieldNode.classList.toggle("is-ok", kind === "ok");
+    var help = fieldNode.querySelector("[data-help]"); if (!help) return;
+    if (!fieldNode.dataset.dh) fieldNode.dataset.dh = help.textContent;
+    help.innerHTML = (kind === "ok" ? I.check : kind === "err" ? I.errsm : "") + "<span>" + (text || fieldNode.dataset.dh) + "</span>";
+  }
+  function validate(input, final) {
+    var fieldNode = input.closest(".field"), value = input.value.trim(), result = false;
+    if (addressPattern.test(value)) { setHelp(fieldNode, "ok", "Address looks right: " + value.slice(0, 6) + "…" + value.slice(-4)); result = true; }
+    else if (ensPattern.test(value)) { setHelp(fieldNode, "ok", "ENS name, resolves to 0xd8dA…6045"); result = true; }
+    else if (final && value) setHelp(fieldNode, "err", value.slice(0, 2) === "0x" ? "An address has 42 characters and starts with 0x. This one has " + value.length + "." : "Enter a 0x address or an ENS name that ends in .eth.");
+    else setHelp(fieldNode, "", "");
+    input.setAttribute("aria-invalid", String(!result && final && !!value));
+    var submit = input.id.indexOf("pa-") === 0 ? document.getElementById(input.id.replace("pa-", "psub-")) : null; if (submit) submit.disabled = !result;
+    return result;
+  }
+  document.addEventListener("input", function (event) {
+    var input = event.target; if (input.tagName !== "INPUT") return;
+    var nativeApp = input.closest(".plat.ios, .plat.android"); if (!nativeApp) return;
+    if (input.closest(".addr")) validate(input, false);
+    if (input.closest(".amt")) { var v = parseFloat(input.value.replace(",", ".")); setHelp(input.closest(".field"), isNaN(v) || v <= 0 ? "err" : "", isNaN(v) || v <= 0 ? "Enter an amount above 0, for example 0.50." : ""); }
+    var clr = input.parentElement.querySelector(".clr"); if (clr) clr.hidden = !input.value;
+  });
+  document.addEventListener("focusout", function (event) { var input = event.target; if (input.tagName === "INPUT" && input.closest(".plat.ios .addr, .plat.android .addr")) validate(input, true); });
+  function pasteInto(id) {
+    var input = document.getElementById(id);
+    function fill(text) { input.value = text; input.dispatchEvent(new Event("input", { bubbles: true })); validate(input, true); input.focus(); }
+    if (navigator.clipboard && navigator.clipboard.readText) navigator.clipboard.readText().then(function (text) { fill(text.trim() || example); }, function () { fill(example); }); else fill(example);
+  }
+  ["ios", "android"].forEach(function (p) {
+    var submit = document.getElementById("psub-" + p);
+    submit.addEventListener("click", function () {
+      setLoading(submit, true);
+      setTimeout(function () { setLoading(submit, false); var input = document.getElementById("pa-" + p); input.value = ""; document.getElementById("pn-" + p).value = ""; validate(input, false); submit.disabled = true; toast(p, "ok", "Wallet added", "Undo", "host-ph-" + p); }, 1000);
+    });
+  });
+
+  /* web enhancements: native validation does the work, a few lines link the message */
+  ["a-web", "m-web", "xa-web"].forEach(function (id) {
+    var input = document.getElementById(id); if (!input) return;
+    var hint = id + "-hint", err = id + "-err";
+    function sync() { var bad = input.matches(":user-invalid"); input.setAttribute("aria-invalid", String(bad)); input.setAttribute("aria-describedby", bad ? hint + " " + err : hint); }
+    input.addEventListener("blur", sync); input.addEventListener("input", sync); input.addEventListener("invalid", function () { setTimeout(sync, 0); });
+  });
+  ["addform-web", "ctxform-web"].forEach(function (id) { document.getElementById(id).addEventListener("submit", function (event) { event.preventDefault(); toast("web", "ok", "Wallet added", "Undo", "host-web"); }); });
+  if (!("commandForElement" in HTMLButtonElement.prototype)) {
+    document.querySelectorAll("[commandfor]").forEach(function (button) { button.addEventListener("click", function () { var dialog = document.getElementById(button.getAttribute("commandfor")); if (dialog && dialog.showModal) dialog.showModal(); }); });
+    var dialog = document.getElementById("confirm-dialog");
+    dialog.addEventListener("click", function (event) { var box = dialog.getBoundingClientRect(); if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close(); });
+  }
+  var menu = document.getElementById("menu-1");
+  menu.addEventListener("beforetoggle", function (event) {
+    if (event.newState !== "open") return;
+    var invoker = document.querySelector('[popovertarget="menu-1"]'), box = invoker.getBoundingClientRect();
+    menu.style.position = "fixed"; menu.style.inset = "auto"; menu.style.top = (box.bottom + 8) + "px"; menu.style.left = Math.max(8, Math.min(box.left, window.innerWidth - 236)) + "px";
+  });
+
+  function fit() {
+    document.querySelectorAll(".phone-fit").forEach(function (holder) {
+      var phone = holder.firstElementChild, available = holder.parentElement.clientWidth || 374, zoom = Math.min(1, available / 374);
+      phone.style.transform = "scale(" + zoom.toFixed(4) + ")"; holder.style.width = (374 * zoom) + "px"; holder.style.height = (800 * zoom) + "px";
+    });
+  }
+  window.addEventListener("resize", fit);
+
+  /* =====================================================================
+     Ghost layer: blocks, playground, semantics tables, accessibility lab
+     ===================================================================== */
+  document.querySelectorAll("main > .sheet > header").forEach(function (head, index) { head.classList.add("on-" + (index % 4 + 1)); });
+
+  /* surface for demos: page or one of the four colour blocks */
+  function applySurface(value) {
+    document.querySelectorAll(".demo, .stage, .mock, .navdemo, .browser").forEach(function (box) {
+      if (box.closest(".blocks, .playground")) return;
+      [1, 2, 3, 4].forEach(function (n) { box.classList.remove("on-" + n); });
+      if (value !== "0") box.classList.add("on-" + value);
+    });
+    requestAnimationFrame(function () { requestAnimationFrame(measure); });
+  }
+  document.getElementById("surf").addEventListener("change", function () { applySurface(document.querySelector("#surf input:checked").value); });
+
+  /* the kit on all four blocks */
+  document.getElementById("blocks").innerHTML = [1, 2, 3, 4].map(function (n) {
+    return '<div class="on-' + n + ' web"><h3 class="cap">Block ' + n + '</h3><div class="row"><button class="btn m" type="button" id="bk' + n + '-btn">Add wallet</button><button class="btn tonal m" type="button">Cancel</button></div>' +
+      '<div class="field"><label for="bk' + n + '-f">Wallet address</label><div class="ctrl" id="bk' + n + '-ctrl"><input id="bk' + n + '-f" class="mono" placeholder="0x… or name.eth"></div><p class="help" id="bk' + n + '-muted">Paste an address or an ENS name.</p></div>' +
+      sw("bk" + n + "-sw", "Alerts", "", false) + '<div class="chips"><label class="chip"><input type="checkbox" checked>Ethereum</label><label class="chip"><input type="checkbox">Base</label></div><span class="status"><i></i>In range</span></div>';
+  }).join("");
+
+  /* ---------- live position card ---------- */
+  var card = { price: 3412.55, lo: 3180, hi: 3620, live: true, force: false, out: false };
+  var figure = document.getElementById("pc-fig"), shown = "";
+  function whole(n) { return Math.round(n).toLocaleString("en-US"); }
+  function setFigure(text) {
+    if (text === shown) return;
+    var previous = shown; shown = text;
+    var offset = Math.max(0, text.length - previous.length), html = '<span class="cur">$</span>';
+    figure.innerHTML = html + text.split("").map(function (ch) { return '<span class="ch">' + ch + "</span>"; }).join("");
+    var chars = figure.querySelectorAll(".ch");
+    if (!reduced && previous) chars.forEach(function (node, i) { if (/\d/.test(text[i]) && previous[i - offset] !== text[i]) node.animate([{ transform: "translateY(55%)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 300, easing: "cubic-bezier(.2,.9,.2,1)" }); });
+  }
+  function renderCard(announce) {
+    var span = card.hi - card.lo, scaleLo = card.lo - span * 0.3, scaleSpan = span * 1.6;
+    var p = Math.min(0.96, Math.max(0.04, (card.price - scaleLo) / scaleSpan)), out = card.price < card.lo || card.price > card.hi, value = card.price * 6.88;
+    var range = document.getElementById("pc-range"), status = document.getElementById("pc-status");
+    range.style.setProperty("--p", p.toFixed(4)); range.toggleAttribute("data-out", out); status.toggleAttribute("data-out", out);
+    document.getElementById("pc-word").textContent = out ? "Out of range" : "In range";
+    var text = "Range 3,180.00 to 3,620.00, price " + card.price.toFixed(2) + ", " + (out ? "out of range" : "in range");
+    range.setAttribute("aria-label", text);
+    document.getElementById("pc-sr").textContent = "Position value $" + whole(value) + ".";
+    setFigure(whole(value));
+    if (announce && out !== card.out) document.getElementById("pc-live").textContent = "ETH / USDC is now " + (out ? "out of range" : "back in range") + ".";
+    card.out = out;
+  }
+  function stepCard() {
+    if (!card.live) return;
+    if (card.force) card.price = card.hi * 1.03; else card.price = Math.min(card.hi - 20, Math.max(card.lo + 20, card.price + (Math.random() - 0.5) * 46));
+    renderCard(true);
+  }
+  setInterval(stepCard, 2600);
+  document.getElementById("live-sw").addEventListener("change", function (event) { card.live = event.target.checked; });
+  document.getElementById("push-out").addEventListener("click", function (event) {
+    card.force = !card.force; event.target.textContent = card.force ? "Bring back in range" : "Push out of range";
+    if (!card.force) card.price = (card.lo + card.hi) / 2; else card.price = card.hi * 1.03; renderCard(true);
+  });
+  document.getElementById("refresh-pc").addEventListener("click", function (event) {
+    var button = event.currentTarget; setLoading(button, true);
+    setTimeout(function () { setLoading(button, false); if (!card.force) card.price = Math.min(card.hi - 20, Math.max(card.lo + 20, card.price + (Math.random() - 0.5) * 120)); renderCard(true); }, 900);
+  });
+  document.getElementById("pc-fill").addEventListener("change", function () {
+    var pcard = document.getElementById("pcard"); [1, 2, 3, 4].forEach(function (n) { pcard.classList.remove("on-" + n); });
+    pcard.classList.add("on-" + document.querySelector("#pc-fill input:checked").value);
+  });
+  renderCard(false);
+
+  /* knob travel for every range bar */
+  function setTravel() { document.querySelectorAll(".range").forEach(function (box) { var knob = box.querySelector(".knob"); if (knob && box.clientWidth) box.style.setProperty("--travel", (box.clientWidth - knob.offsetWidth) + "px"); }); }
+  if (window.ResizeObserver) { var travelObserver = new ResizeObserver(setTravel); document.querySelectorAll(".range").forEach(function (box) { travelObserver.observe(box); }); }
+  window.addEventListener("resize", setTravel); setTimeout(setTravel, 0);
+
+  /* ---------- semantics tables and gates ---------- */
+  var SEM = {
+    btn: [
+      ["Button", "<code>&lt;button&gt;</code>, role button, name from content", "<code>Button</code>, trait button, label from title", "<code>Button</code>, <code>Role.Button</code>, name from content"],
+      ["Icon button", "<code>aria-label=\"Refresh prices\"</code>, icon <code>aria-hidden</code>", "<code>.accessibilityLabel(\"Refresh prices\")</code>", "<code>contentDescription = \"Refresh prices\"</code>"],
+      ["Loading", "<code>aria-busy=\"true\"</code> and a label that changes to “Adding…”", "Label changes; progress view is an element with a label", "<code>stateDescription</code> “Adding” plus a labelled progress indicator"],
+      ["Disabled", "<code>disabled</code> attribute, removed from tab order", "<code>.disabled(true)</code>, trait not enabled", "<code>enabled = false</code>"],
+      ["Destructive", "Text says what it removes. Never the default in a dialog", "<code>role: .destructive</code>", "Text says what it removes. Confirm in a dialog"]
+    ],
+    fld: [
+      ["Label", "<code>&lt;label for&gt;</code> gives the name; placeholder is only a hint", "Title is the accessibility label; keep a visible label too", "<code>label = { Text }</code> becomes the name"],
+      ["Hint", "<code>aria-describedby</code> points at the hint", "<code>.accessibilityHint</code> only when the label is not enough", "<code>supportingText</code> is read as the description"],
+      ["Error", "<code>:user-invalid</code>, <code>aria-invalid</code>, message linked by id", "Announce with <code>AccessibilityNotification.Announcement</code>", "<code>isError</code> and <code>semantics { error(\"…\") }</code>"],
+      ["Required, type", "<code>required</code>, <code>inputmode</code>, <code>autocomplete</code>", "<code>.keyboardType</code>, <code>.textContentType</code>", "<code>KeyboardOptions</code>, autofill type"],
+      ["Clear, paste", "Real buttons with names, 44 px", "Trailing button labelled “Clear”", "Trailing icon with <code>contentDescription</code>"]
+    ],
+    sel: [
+      ["Switch", "<code>input[type=checkbox][role=switch]</code>; state is <code>checked</code>; Space toggles", "<code>Toggle</code>: trait switch button, value On or Off", "<code>Switch</code>, <code>Role.Switch</code>, toggleable, state On or Off"],
+      ["Checkbox", "Native checkbox, named by its label", "Not used. Switch or checkmark row", "<code>Checkbox</code>, <code>Role.Checkbox</code>, toggleable"],
+      ["Segment", "<code>fieldset</code> and <code>legend</code> with radios; arrows move", "<code>Picker</code> segmented: trait selected on the current option", "<code>SegmentedButton</code>, selected state, group named"],
+      ["Filter chip", "Checkbox inside a label", "Button with the selected trait", "<code>FilterChip(selected)</code>, selectable"],
+      ["Group name", "<code>legend</code> read before each option", "Group label on the container", "Container <code>semantics { contentDescription }</code>"]
+    ],
+    dlg: [
+      ["Sheet", "<code>&lt;dialog&gt;</code> labelled by its heading; Close button; Esc and outside click; page inert", "<code>.sheet</code> with detents; title announced; page behind inert", "<code>ModalBottomSheet</code>: dialog semantics, back closes"],
+      ["Drag handle", "Not needed; a Close button always exists", "Grabber plus a Done button, same result as dragging", "Handle is a 48 dp button that expands and collapses (WCAG 2.5.7)"],
+      ["Dialog", "<code>&lt;dialog&gt;</code> labelled by its heading; focus moves in; Esc closes", "System alert announces its title", "<code>AlertDialog</code>: title announced, focus trapped, back closes"],
+      ["Default action", "<code>autofocus</code> on Cancel, never on the destructive button", "Cancel role; destructive role on the other", "Focus lands on the safe action"],
+      ["Menu", "<code>popover</code> with plain buttons and links, no <code>role=\"menu\"</code>", "<code>Menu</code>, items are buttons", "<code>DropdownMenu</code>, items are buttons"],
+      ["Close", "Visible button plus Esc plus outside click", "Cancel button, swipe to dismiss has a button alternative", "Dismiss button, system back"]
+    ],
+    msg: [
+      ["Banner", "<code>role=\"status\"</code>; <code>role=\"alert\"</code> only when the error needs attention now", "Post an announcement when it appears", "<code>liveRegion = Polite</code>"],
+      ["Toast", "Polite live region that stays in the page; pauses while hovered or focused", "Announcement and at least 4 seconds on screen", "Snackbar is announced by TalkBack"],
+      ["Action", "Real button, 44 px", "Button in the toast", "One action, 48 dp"],
+      ["Dismiss", "Button with a name", "Swipe has a button alternative (WCAG 2.5.7)", "Dismiss action"]
+    ],
+    nav: [
+      ["Landmarks", "<code>nav</code> with a label, one <code>main</code>, skip link first", "<code>NavigationStack</code> title is the first thing announced", "<code>paneTitle</code> and top app bar title"],
+      ["Headings", "<code>h1</code> to <code>h3</code> in order", "<code>.accessibilityAddTraits(.isHeader)</code>", "<code>semantics { heading() }</code>"],
+      ["Current page", "<code>aria-current=\"page\"</code>", "Trait selected", "<code>selected = true</code>"],
+      ["Back", "A real link; browser back works", "System back and edge swipe", "System back is never shadowed"]
+    ],
+    own: [
+      ["Status", "Word in text, shape <code>aria-hidden</code>; change announced through a polite live region", "Label “In range”; post announcement on change", "<code>stateDescription</code> and a polite live region on change"],
+      ["Range bar", "<code>role=\"img\"</code> with a label that holds range, price and state", "Accessibility element with label and value", "<code>contentDescription</code> and <code>ProgressBarRangeInfo</code>"],
+      ["Figure", "Plain text; the digit tick is not announced; <code>aria-live</code> off", "Label with currency spoken in full", "Text; no live region for ticks"],
+      ["Live updates", "A switch pauses them (WCAG 2.2.2)", "Setting to pause, honours Reduce Motion", "Same, honours animator duration scale"]
+    ]
+  };
+  var GATES = ["Target 44 pt, 48 dp, 24 px minimum", "Text 4.5 to 1, edges 3 to 1", "Visible focus", "Keyboard and switch access", "Not colour alone", "Reduced-motion branch", "Works at 200% text"];
+  function sem(key, extra) {
+    var rowsHtml = SEM[key].map(function (r) { return '<tr><th scope="row">' + r[0] + '</th><td class="p-web">' + r[1] + '</td><td class="p-ios">' + r[2] + '</td><td class="p-android">' + r[3] + "</td></tr>"; }).join("");
+    var gates = GATES.concat(extra || []).map(function (g) { return "<li>" + g + "</li>"; }).join("");
+    return '<div class="semwrap"><div class="scroll"><table class="sem"><caption>Semantics: role, name, state</caption><thead><tr><th scope="col">Element</th><th scope="col" class="p-web">Web</th><th scope="col" class="p-ios">iOS</th><th scope="col" class="p-android">Android</th></tr></thead><tbody>' + rowsHtml + '</tbody></table></div><ul class="gates" aria-label="Gates this component is designed for">' + gates + "</ul></div>";
+  }
+  [["btn", "s-btn"], ["fld", "s-fld"], ["sel", "s-sel"], ["dlg", "s-dlg", ["Focus managed"]], ["msg", "s-msg"], ["nav", "s-nav", ["Focus never hidden"]]].forEach(function (item) { document.getElementById(item[1]).insertAdjacentHTML("beforeend", sem(item[0], item[2])); });
+  document.getElementById("h-own").closest("section").insertAdjacentHTML("beforeend", sem("own"));
+
+  /* ---------- accessibility lab ---------- */
+  var lab = { rm: false, hc: false, gs: false, tg: false, fo: false, sr: true };
+  document.querySelector(".labsw").innerHTML =
+    sw("lab-rm", "Reduce motion", "Replaces movement with fades, like the system setting", false) + sw("lab-hc", "Increase contrast", "Stronger edges and secondary text", false) + sw("lab-gs", "Grayscale", "Checks that nothing relies on colour alone", false) +
+    sw("lab-tg", "Show touch targets", "Dashed outline on every target", false) + sw("lab-fo", "Show focus order", "Numbers in tab order", false) + sw("lab-sr", "Screen reader readout", "Shows what Tab lands on", true);
+  var rmStyle = document.createElement("style"); document.head.appendChild(rmStyle);
+  var systemReduced = reduced;
+  function reduceRules() {
+    for (var i = 0; i < document.styleSheets.length; i++) {
+      try { var list = document.styleSheets[i].cssRules; for (var j = 0; j < list.length; j++) { if (list[j].type === CSSRule.MEDIA_RULE && /prefers-reduced-motion/.test(list[j].media.mediaText)) return Array.prototype.map.call(list[j].cssRules, function (r) { return r.cssText; }).join("\n"); } } catch (error) {}
+    }
+    return "";
+  }
+  function flag(name, on, value) { if (on) root.setAttribute(name, value || ""); else root.removeAttribute(name); }
+  function labRefresh() {
+    flag("data-contrast", lab.hc, "more"); flag("data-gray", lab.gs); flag("data-targets", lab.tg); flag("data-sr", lab.sr);
+    rmStyle.textContent = lab.rm ? reduceRules() : ""; reduced = systemReduced || lab.rm;
+    var zoom = document.querySelector("#zoom input:checked").value; if (zoom === "100") root.removeAttribute("data-zoom"); else root.setAttribute("data-zoom", zoom);
+    drawFocusOrder(); targetReport(); setTravel();
+  }
+  document.querySelector(".lab").addEventListener("change", function (event) {
+    var id = event.target.id; if (id) { var key = { "lab-rm": "rm", "lab-hc": "hc", "lab-gs": "gs", "lab-tg": "tg", "lab-fo": "fo", "lab-sr": "sr" }[id]; if (key) lab[key] = event.target.checked; }
+    labRefresh(); requestAnimationFrame(function () { requestAnimationFrame(function () { measure(); drawFocusOrder(); targetReport(); }); });
+  });
+  var FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select,summary,[tabindex]:not([tabindex="-1"])';
+  function visible(el) { var r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== "hidden"; }
+  function drawFocusOrder() {
+    var layer = document.getElementById("overlay"); layer.innerHTML = ""; if (!lab.fo) return;
+    Array.prototype.filter.call(document.querySelectorAll(FOCUSABLE), visible).slice(0, 160).forEach(function (el, i) {
+      var r = el.getBoundingClientRect(), dot = document.createElement("span"); dot.className = "fo"; dot.textContent = i + 1;
+      dot.style.left = (r.left + window.scrollX - 6) + "px"; dot.style.top = (r.top + window.scrollY - 6) + "px"; layer.appendChild(dot);
+    });
+  }
+
+  /* touch target report: real sizes of what is on screen */
+  var TARGET = '.ctrl input,select,button,a[href],summary,.chip,.switch,.cb,.seg label,.segm label,.listrow,.pick label';
+  function targetReport() {
+    var groups = [["Web", ".plat.web", 44], ["iOS", ".plat.ios", 44], ["Android", ".plat.android", 48], ["Playground and lab", ".playground, .lab, .blocks", 44], ["Page controls", ".top, .toc", 44]], total = 0, bad = [], html = "";
+    groups.forEach(function (g) {
+      var count = 0, fails = [];
+      document.querySelectorAll(g[1]).forEach(function (scope) {
+        if (!visible(scope) && scope.getBoundingClientRect().width === 0) return;
+        scope.querySelectorAll(TARGET).forEach(function (el) {
+          if (el.closest("dialog, [popover]")) return; var r = el.getBoundingClientRect(); if (r.width === 0) return;
+          var zoomed = parseFloat(getComputedStyle(scope).zoom || 1) || 1, size = Math.min(r.width, r.height) / zoomed; count++;
+          if (size < g[2] - 0.5) fails.push(accName(el).slice(0, 30) + " (" + Math.round(size) + " px)");
+        });
+      });
+      total += count; if (count) html += "<li><b>" + g[0] + ":</b> " + count + " targets, " + (fails.length ? '<span style="color:var(--danger)">' + fails.length + " under " + g[2] + " (" + esc(fails.slice(0, 4).join(", ")) + ")</span>" : "none under " + g[2]) + "</li>";
+    });
+    document.getElementById("lab-report").innerHTML = "<b>Touch targets measured on this page</b> (minimums: 44 pt iOS and web goal, 48 dp Android; WCAG 2.5.8 asks for 24 px)<ul>" + html + "</ul>";
+  }
+
+  /* screen reader readout: a simple accessible-name, role and state calculation */
+  function plain(node) {
+    var clone = node.cloneNode(true);
+    clone.querySelectorAll('[aria-hidden="true"], svg, input, select, style, script').forEach(function (n) { n.remove(); });
+    return clone.textContent.replace(/\s+/g, " ").trim();
+  }
+  function accName(el) {
+    var by = el.getAttribute("aria-labelledby"); if (by) return by.split(" ").map(function (id) { var n = document.getElementById(id); return n ? plain(n) : ""; }).join(" ").trim();
+    if (el.getAttribute("aria-label")) return el.getAttribute("aria-label");
+    if (el.labels && el.labels.length) return Array.prototype.map.call(el.labels, plain).join(" ").trim();
+    if (el.tagName === "LABEL") return plain(el);
+    return plain(el) || el.getAttribute("placeholder") || el.title || "";
+  }
+  function speak(el) {
+    var tag = el.tagName.toLowerCase(), type = (el.getAttribute("type") || "").toLowerCase(), role = el.getAttribute("role"), parts = [], states = [];
+    var name = accName(el), kind = role || ({ button: "button", a: "link", select: "pop-up button", summary: "disclosure triangle", textarea: "text area" }[tag]);
+    if (tag === "input") kind = role === "switch" ? "switch" : type === "checkbox" ? "checkbox" : type === "radio" ? "radio button" : type === "search" ? "search field" : "edit text";
+    var group = el.closest("fieldset"), legend = group && group.querySelector("legend"); if (legend && (type === "radio" || type === "checkbox")) parts.push(plain(legend) + ", group");
+    parts.push(name || "no name"); parts.push(kind || tag);
+    if (type === "checkbox" || type === "radio") states.push(el.checked ? (role === "switch" ? "on" : "checked") : (role === "switch" ? "off" : "not checked"));
+    if (el.getAttribute("aria-pressed")) states.push(el.getAttribute("aria-pressed") === "true" ? "pressed" : "not pressed");
+    if (el.getAttribute("aria-current")) states.push("current page");
+    if (el.disabled || el.getAttribute("aria-disabled") === "true") states.push("dimmed");
+    if (el.getAttribute("aria-busy") === "true") states.push("busy");
+    if (el.required) states.push("required"); if (el.getAttribute("aria-invalid") === "true") states.push("invalid entry");
+    if (tag === "input" && el.value && type !== "checkbox" && type !== "radio") states.push("value " + el.value);
+    var desc = el.getAttribute("aria-describedby"); if (desc) states.push(desc.split(" ").map(function (id) { var n = document.getElementById(id); return n && getComputedStyle(n).display !== "none" ? plain(n) : ""; }).filter(Boolean).join(". "));
+    return parts.concat(states.filter(Boolean)).join(", ");
+  }
+  document.addEventListener("focusin", function (event) { if (lab.sr) document.getElementById("sr-text").textContent = speak(event.target); });
+  var liveTimer;
+  new MutationObserver(function (records) {
+    if (!lab.sr) return;
+    for (var i = 0; i < records.length; i++) {
+      var target = records[i].target.nodeType === 3 ? records[i].target.parentElement : records[i].target, region = target && target.closest && target.closest('[aria-live="polite"],[aria-live="assertive"],[role="status"],[role="alert"]');
+      if (region && region.textContent.trim()) { document.getElementById("sr-text").textContent = "Announced (" + (region.getAttribute("role") === "alert" || region.getAttribute("aria-live") === "assertive" ? "assertive" : "polite") + "): " + region.textContent.trim(); clearTimeout(liveTimer); return; }
+    }
+  }).observe(document.body, { childList: true, characterData: true, subtree: true });
+  window.addEventListener("resize", function () { drawFocusOrder(); targetReport(); });
+
+  /* contrast on the four colour blocks */
+  [1, 2, 3, 4].forEach(function (n) {
+    rows.push(["Block " + n + " · button label", "text", "#bk" + n + "-btn", "color", 0, 4.5], ["Block " + n + " · hint text", "text", "#bk" + n + "-muted", "color", 0, 4.5], ["Block " + n + " · field edge", "edge", "#bk" + n + "-ctrl", "borderTopColor", 1, 3], ["Block " + n + " · switch off track", "edge", "#bk" + n + "-sw ~ .trk", "backgroundColor", 1, 3]);
+  });
+
+  /* ---------- sheet stage controller (iOS and Android stand-ins) ---------- */
+  var DETENT = { medium: 0.46, large: 0 };
+  ["ios", "android"].forEach(function (p) {
+    var stage = document.getElementById("ss-" + p), bg = stage.querySelector(".sbg"), sheetEl = stage.querySelector(".msheet"), dlg = stage.querySelector(".ovl"), menu = stage.querySelector(".amenu");
+    var grab = stage.querySelector(".sgrab"), opener = null, current = null, detent = "medium", dragging = null;
+    function lock(on) { if (on) bg.setAttribute("inert", ""); else bg.removeAttribute("inert"); stage.toggleAttribute("data-open", on); }
+    function setDetent(name) { detent = name; sheetEl.style.setProperty("--ty", name === "large" ? "0%" : (DETENT.medium * 100) + "%"); grab.setAttribute("aria-label", name === "large" ? "Sheet size. Press to collapse" : "Sheet size. Press to expand"); }
+    function restore() { var back = opener; opener = null; if (back) back.focus({ preventScroll: true }); }
+    function closeAll(skipRestore) {
+      sheetEl.classList.remove("open"); sheetEl.style.setProperty("--ty", "100%"); dlg.classList.remove("open"); menu.classList.remove("open");
+      var menuButton = stage.querySelector("[data-menu]"); menuButton.setAttribute("aria-expanded", "false");
+      var was = current; current = null; if (was === "sheet" || was === "dialog") lock(false); if (!skipRestore) restore();
+    }
+    function show(kind, from) {
+      if (current) closeAll(true); opener = from; current = kind;
+      if (kind === "sheet") { lock(true); sheetEl.classList.add("open"); setDetent("medium"); setTimeout(function () { sheetEl.focus({ preventScroll: true }); }, 30); }
+      if (kind === "dialog") { lock(true); dlg.classList.add("open"); setTimeout(function () { var first = dlg.querySelector("button:last-of-type"); (p === "ios" ? dlg.querySelector(".c button") : dlg.querySelector("button")).focus({ preventScroll: true }); }, 30); }
+      if (kind === "menu") { menu.classList.add("open"); from.setAttribute("aria-expanded", "true"); setTimeout(function () { menu.querySelector("button").focus({ preventScroll: true }); }, 30); }
+    }
+    stage.addEventListener("click", function (event) {
+      var t = event.target.closest("button, .sscrim"); if (!t) return;
+      if (t.hasAttribute("data-sheet")) { show("sheet", t); return; }
+      if (t.hasAttribute("data-dialog")) { show("dialog", t); return; }
+      if (t.hasAttribute("data-menu")) { if (current === "menu") closeAll(); else show("menu", t); return; }
+      if (t.hasAttribute("data-close") || t.hasAttribute("data-close-dlg") || t.classList.contains("sscrim") || t.hasAttribute("data-menu-item") || t.hasAttribute("data-remove")) { closeAll(); return; }
+      if (t.hasAttribute("data-grab")) { setDetent(detent === "medium" ? "large" : "medium"); return; }
+    });
+    stage.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && current) { event.preventDefault(); closeAll(); return; }
+      if (event.target === grab && (event.key === "ArrowUp" || event.key === "ArrowDown")) { event.preventDefault(); setDetent(event.key === "ArrowUp" ? "large" : "medium"); return; }
+      if (event.key === "Tab" && (current === "sheet" || current === "dialog")) {
+        var box = current === "sheet" ? sheetEl : dlg, list = Array.prototype.filter.call(box.querySelectorAll("button:not([disabled])"), function (b) { return b.offsetParent !== null; });
+        if (!list.length) return; var first = list[0], last = list[list.length - 1];
+        if (event.shiftKey && (document.activeElement === first || document.activeElement === box)) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    });
+    document.addEventListener("pointerdown", function (event) { if (current === "menu" && !event.target.closest("#ss-" + p + " .amenu, #ss-" + p + " [data-menu]")) closeAll(true); });
+    /* drag the sheet by its handle or header, snap to a detent or dismiss */
+    function start(event) {
+      if (current !== "sheet") return; var tgt = event.target; if (tgt.closest("button") && !tgt.closest(".sgrab")) return;
+      var height = sheetEl.offsetHeight, base = (detent === "large" ? 0 : DETENT.medium) * height;
+      dragging = { y: event.clientY, base: base, height: height, last: event.clientY, time: event.timeStamp, speed: 0, moved: false, target: event.currentTarget };
+      event.currentTarget.setPointerCapture(event.pointerId); sheetEl.classList.add("drag");
+    }
+    function move(event) {
+      if (!dragging) return; var dy = event.clientY - dragging.y; if (Math.abs(dy) > 3) dragging.moved = true;
+      var dt = Math.max(1, event.timeStamp - dragging.time); dragging.speed = (event.clientY - dragging.last) / dt; dragging.last = event.clientY; dragging.time = event.timeStamp;
+      sheetEl.style.setProperty("--ty", Math.max(0, dragging.base + dy) + "px");
+    }
+    function end(event) {
+      if (!dragging) return; var d = dragging; dragging = null; sheetEl.classList.remove("drag");
+      if (!d.moved) { return; }
+      var ty = Math.max(0, d.base + (event.clientY - d.y)), pos = ty / d.height;
+      if (pos > 0.74 || d.speed > 0.9) closeAll(); else setDetent(pos < DETENT.medium / 2 || d.speed < -0.6 ? "large" : "medium");
+      grab.dataset.moved = "1"; setTimeout(function () { delete grab.dataset.moved; }, 0);
+    }
+    [grab, stage.querySelector("[data-drag]")].forEach(function (handle) { handle.addEventListener("pointerdown", start); handle.addEventListener("pointermove", move); handle.addEventListener("pointerup", end); handle.addEventListener("pointercancel", end); });
+    grab.addEventListener("click", function (event) { if (grab.dataset.moved) { event.stopImmediatePropagation(); event.preventDefault(); } }, true);
+    sheetEl.style.setProperty("--ty", "100%");
+  });
+
+  applyState();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); fit(); labRefresh(); });
+})();
+</script>
+
+</body></html>

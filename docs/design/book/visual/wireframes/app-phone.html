@@ -1,0 +1,687 @@
+<!doctype html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VoidX Phone Screens</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: lab strip, page header with the Cards/Rows switch, headline, then a snap-scrolling row of compact colour-block cards (or Rows). Palette follows the viewer's theme: Dragonfruit in light, Neon Night in dark, values from ADR 0027. */
+:root {
+  --page: oklch(0.975 0.012 350);
+  --page-ink: oklch(0.22 0.05 350);
+  --surface: oklch(0.995 0.004 350);
+  --accent: oklch(0.54 0.224 350);
+  --accent-ink: oklch(0.98 0.01 350);
+  --amber: oklch(0.88 0.12 80);
+  --amber-ink: oklch(0.28 0.06 60);
+  --bouncy: cubic-bezier(.34, 1.56, .64, 1);
+  --wobbly: cubic-bezier(.5, 1.8, .4, .8);
+  --ease: cubic-bezier(.34, 1.56, .64, 1);
+  --dur: 900ms;
+  --lift-ease: cubic-bezier(.34, 1.56, .64, 1);
+  --lift-dur: 700ms;
+  --d-ease: cubic-bezier(.2, .8, .2, 1);
+  --d-dur: 520ms;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: oklch(0.16 0.03 320);
+    --page-ink: oklch(0.98 0.01 320);
+    --surface: oklch(0.23 0.04 320);
+    --accent: oklch(0.72 0.208 350);
+    --accent-ink: oklch(0.22 0.05 320);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: oklch(0.16 0.03 320);
+  --page-ink: oklch(0.98 0.01 320);
+  --surface: oklch(0.23 0.04 320);
+  --accent: oklch(0.72 0.208 350);
+  --accent-ink: oklch(0.22 0.05 320);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--page); color: var(--page-ink); }
+body { font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; transition: background 300ms, color 300ms; }
+.wrap { max-width: 1240px; margin-inline: auto; display: grid; gap: 20px; container: app / inline-size; }
+.wrap > * { min-width: 0; }
+:focus-visible { outline: 2px solid var(--page-ink); outline-offset: 4px; }
+.figure { font-variant-numeric: tabular-nums; }
+.tick { display: inline-flex; overflow: hidden; vertical-align: bottom; }
+.tick span { display: inline-block; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* lab */
+.lab { border-radius: 24px; background: var(--surface); box-shadow: 0 0 0 1px color-mix(in oklab, var(--page-ink) 9%, transparent); padding: 4px 16px; }
+.lab summary { cursor: pointer; padding: 12px 0; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; opacity: .75; }
+.lab .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px 22px; padding-block: 4px 16px; }
+.group { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.group h2 { margin: 0; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; opacity: .65; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button, .pillbtn { border: 0; border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; background: color-mix(in oklab, var(--page-ink) 8%, transparent); color: inherit; transition: transform 300ms var(--bouncy); text-align: left; }
+.seg button:active, .pillbtn:active { transform: scale(.93); }
+.seg button[aria-pressed="true"], .pillbtn[aria-pressed="true"] { background: var(--page-ink); color: var(--page); }
+.seg button small { display: block; font-weight: 500; font-size: 11px; opacity: .7; }
+.hint { margin: 0; font-size: 12px; line-height: 1.5; opacity: .75; max-width: 70ch; }
+
+/* page chrome */
+nav.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.logo { font-weight: 700; font-size: 22px; letter-spacing: -0.03em; display: flex; gap: 8px; align-items: center; }
+.logo i { width: 28px; height: 24px; background: currentColor; border-radius: 50% 50% 40% 40%; display: inline-block; }
+.viewtoggle { margin-left: auto; display: flex; gap: 4px; background: var(--surface); border-radius: 999px; padding: 4px; }
+.viewtoggle button { border: 0; background: none; color: inherit; font: inherit; font-weight: 600; font-size: 14px; padding: 8px 16px; border-radius: 999px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.viewtoggle button[aria-pressed="true"] { background: var(--page-ink); color: var(--page); }
+.viewtoggle svg { width: 16px; height: 16px; }
+.live { border: 0; border-radius: 999px; background: var(--surface); color: inherit; font: inherit; font-size: 13px; font-weight: 600; padding: 10px 14px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.live[aria-pressed="true"]::before { border-radius: 1px; background: color-mix(in oklab, var(--page-ink) 45%, transparent); }
+h1 { margin: 4px 0 0; text-align: center; font-size: clamp(34px, 6vw, 72px); font-weight: 400; letter-spacing: -0.035em; line-height: 1.05; text-wrap: balance; }
+h1 .pill { background: var(--accent); color: var(--accent-ink); border-radius: 22px; padding: 0 .18em; }
+.sub { text-align: center; font-size: 17px; margin: -6px 0 0; }
+
+/* card parts */
+.coins { display: flex; }
+.coin { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 9px; letter-spacing: -0.02em; font-weight: 700; background: color-mix(in oklab, var(--ink) 14%, var(--c)); color: var(--ink); box-shadow: 0 0 0 2px var(--c); }
+.coins { padding: 0; }
+.coins .tk + .tk { margin-left: -6px; }
+.toprow { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.chip { justify-self: start; white-space: nowrap; flex-shrink: 0; display: inline-flex; gap: 7px; align-items: center; background: var(--ink); color: var(--c); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; transform: rotate(-3deg); transition: background 200ms, color 200ms, transform 500ms var(--wobbly); }
+.chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; transition: border-radius 300ms var(--bouncy); }
+.chip[data-state="out"] { background: var(--amber); color: var(--amber-ink); transform: rotate(3deg); }
+.chip[data-state="out"]::before { border-radius: 1px; }
+.pair { margin: 0; font-size: 24px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; }
+.meta { font-size: 13px; opacity: .72; }
+.big { font-size: 56px; font-weight: 600; letter-spacing: -0.045em; line-height: .95; }
+.big sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
+.ftop { display: grid; gap: 14px; align-content: start; }
+.fbot { display: grid; gap: 10px; }
+.tk { flex: none; width: 15px; height: 15px; border-radius: 50%; display: inline-grid; place-items: center; font-style: normal; font-size: 8px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; background: var(--tk); color: var(--tkc, #fff); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 30%, transparent); }
+.tk svg { width: 55%; height: 62%; display: block; }
+.tk.big { width: 36px; height: 36px; font-size: 11px; box-shadow: 0 0 0 2px var(--c), inset 0 0 0 1px color-mix(in oklab, var(--ink) 24%, transparent); }
+.sym { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.amounts { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; line-height: 1.3; opacity: .82; }
+.amounts > span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.amounts b { font-weight: 600; }
+
+/* range bar: pill track, pill band, knob. Out of range the knob takes corners and turns into a diamond. */
+.bar { --k: 26px; container-type: inline-size; position: relative; height: 32px; margin-bottom: 22px; }
+.bar .track { position: absolute; inset: 0; border-radius: 999px; background: color-mix(in oklab, var(--ink) 12%, var(--c)); }
+.bar .zone { position: absolute; top: 10px; bottom: 10px; left: calc(var(--k) / 2 + var(--l) * (100cqw - var(--k))); width: calc((var(--u) - var(--l)) * (100cqw - var(--k))); border-radius: 999px; background: var(--band); transition: background 300ms; }
+.bar[data-state="out"] .zone { background: var(--out); }
+.bar .knob { position: absolute; left: 0; top: 50%; width: var(--k); height: var(--k); margin-top: calc(var(--k) / -2); will-change: transform; }
+.bar .knob i { position: absolute; inset: 0; border-radius: 50%; background: var(--ink); border: 4px solid var(--c); box-shadow: 0 0 0 1px color-mix(in oklab, var(--ink) 30%, transparent); }
+.bar .ends { position: absolute; left: 0; right: 0; top: calc(100% + 7px); display: flex; justify-content: space-between; font-size: 11px; opacity: .7; padding-inline: 4px; }
+/* bar variant: brackets on a hairline */
+[data-bar="brackets"] .bar { --k: 18px; height: 30px; margin-bottom: 22px; }
+[data-bar="brackets"] .bar .track { inset: auto 0; top: 14px; height: 2px; border-radius: 2px; background: color-mix(in oklab, var(--ink) 24%, transparent); }
+[data-bar="brackets"] .bar .zone { top: 6px; bottom: 6px; border-radius: 5px; background: color-mix(in oklab, var(--ink) 14%, transparent); border-inline: 2px solid var(--ink); }
+[data-bar="brackets"] .bar[data-state="out"] .zone { background: color-mix(in oklab, var(--ink) 14%, transparent); }
+[data-bar="brackets"] .bar .knob i { border-width: 3px; }
+
+/* details sheet */
+.sheet { display: grid; gap: 8px; align-content: start; }
+.sheet .row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+.sheet .row > span:first-child { color: color-mix(in oklab, var(--ink) 72%, transparent); }
+.sheet .row b { font-weight: 600; text-align: right; }
+.sheet .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.sheet .head b { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+.sheet .rule { height: 1px; background: color-mix(in oklab, var(--ink) 20%, transparent); }
+.sheet .ago { font-size: 11px; opacity: .6; }
+.sheet .mini { height: 38px; display: block; width: 100%; }
+
+/* Cards: responsive grid, the page scrolls down as usual */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 26px 22px; padding-block: 18px 16px; }
+.cards-grid .card { position: relative; border-radius: 30px; cursor: pointer; perspective: 1400px; outline-offset: 5px; isolation: isolate; }
+.cards-grid .card.hover, .cards-grid .card.open, .cards-grid .card:focus-visible { z-index: 4; }
+/* the shadow lives on its own layer and only fades and moves, so nothing repaints during the turn */
+.cards-grid .card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; pointer-events: none; box-shadow: 0 30px 42px -30px color-mix(in oklab, var(--page-ink) 42%, transparent); opacity: 0; transition: opacity 260ms ease-out, transform var(--lift-dur) var(--lift-ease); }
+.cards-grid .card.open::after, .cards-grid .card:focus-visible::after { opacity: 1; transform: translateY(-12px); }
+.lift { position: relative; height: 100%; border-radius: inherit; transition: transform var(--lift-dur) var(--lift-ease); will-change: transform; }
+.lift::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 6; pointer-events: none; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent); }
+.card.open .lift::after { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 22%, transparent); }
+.card.hover .lift { transform: translateY(-4px); }
+.card.open .lift, .card:focus-visible .lift { transform: translateY(-12px); }
+.card:active .lift { transform: translateY(-4px) scale(.97); transition-duration: 160ms; }
+.stage { position: relative; height: 100%; border-radius: inherit; }
+.face { border-radius: inherit; background: var(--c); color: var(--ink); }
+.front { min-height: 380px; height: 100%; padding: 24px; display: grid; gap: 14px; align-content: space-between; }
+.back { position: absolute; inset: 0; padding: 18px 20px; overflow: hidden; opacity: 0; pointer-events: none; }
+.card.open .back, .card:focus-visible .back { pointer-events: auto; }
+
+
+/* Drawer: the face slides up and uncovers a recessed well. Depth comes from a darker floor, a shade under the face edge, and details that rise from behind. */
+.anim-drawer .stage { overflow: hidden; clip-path: inset(0 round 30px); }
+.anim-drawer .back { opacity: 1; padding-top: calc(var(--handle, 122px) + 14px + 46px); background: var(--well); }
+.anim-drawer .back .more:not(.owed), .anim-drawer .back .mini { display: none; }
+.anim-drawer .front { min-height: 348px; }
+.anim-drawer .back .sheet { opacity: 0; transform: translateY(12px) scale(.98); transform-origin: 50% 0; transition: opacity 160ms ease-out, transform var(--d-dur) var(--d-ease); will-change: transform; }
+.anim-drawer .card.open .back .sheet, .anim-drawer .card:focus-visible .back .sheet { opacity: 1; transform: none; transition: opacity 260ms ease-out 90ms, transform var(--d-dur) var(--d-ease) 40ms; }
+.anim-drawer .front { position: relative; z-index: 1; will-change: transform; transition: transform var(--d-dur) var(--d-ease); }
+.anim-drawer .front::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; pointer-events: none; box-shadow: 0 14px 16px -8px var(--cast); opacity: 0; transition: opacity 240ms ease-out; }
+.anim-drawer .card.open .front::after, .anim-drawer .card:focus-visible .front::after { opacity: 1; }
+.anim-drawer .card.hover:not(.open) .front { transform: translateY(-30px); }
+.anim-drawer .card.hover:not(.open) .front::after { opacity: .55; }
+.anim-drawer .card.open .front, .anim-drawer .card:focus-visible .front { transform: translateY(calc(var(--shift, 180px) * -1)); }
+
+/* Drawer total: the face number is the same element all the way. The face slides up, the number counter-moves and shrinks, so it lands in the well and closing is the exact reverse. */
+.anim-drawer .front .ftop > .big { position: relative; z-index: 2; transform-origin: 0 0; will-change: transform; transition: transform var(--d-dur) var(--d-ease); }
+.anim-drawer .card.open .front .ftop > .big, .anim-drawer .card:focus-visible .front .ftop > .big { transform: translateY(var(--bdy, 0px)) scale(var(--bs, .6)); }
+.hero { display: none; }
+
+/* Hover peek: a strip of the well shows what is inside. */
+.peek { display: none; }
+.anim-drawer .peek { display: flex; position: absolute; z-index: 0; left: 0; right: 0; bottom: 0; height: 30px; padding: 0 24px; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 600; box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ink) 12%, transparent); transition: opacity 120ms ease-out 140ms; }
+.peek b { font-weight: 700; margin-left: 4px; }
+.peek .go { display: inline-flex; align-items: center; gap: 5px; opacity: .8; }
+.peek .go svg { width: 10px; height: 10px; }
+.anim-drawer .card.open .peek, .anim-drawer .card:focus-visible .peek { opacity: 0; transition: opacity 80ms linear; }
+
+/* Rows + Spotlight */
+.rows { display: grid; gap: 12px; }
+.rows .card { position: relative; border-radius: 26px; padding: 14px 18px; background: var(--c); color: var(--ink); display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr) auto auto; align-items: center; gap: 12px 22px; cursor: pointer; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 12%, transparent); transition: box-shadow 400ms, opacity 300ms, transform 500ms var(--ease); }
+.rows .card .bar { margin-bottom: 22px; margin-top: 0; }
+.rows .card.hover, .rows .card.open, .rows .card:focus-visible { z-index: 4; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 20px 34px -24px color-mix(in oklab, var(--page-ink) 55%, transparent); }
+.rows .value { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; text-align: right; }
+.rows .pair { font-size: 18px; }
+.rows .amounts { justify-content: flex-start; gap: 14px; margin-top: 4px; }
+.details { position: absolute; top: calc(100% + 12px); right: 0; width: min(380px, 100%); border-radius: 24px; background: var(--c); color: var(--ink); padding: 18px; box-shadow: 0 0 0 2px var(--ink), 0 34px 50px -26px color-mix(in oklab, var(--page-ink) 70%, transparent); opacity: 0; pointer-events: none; transform: translateY(-10px) scale(.9); transform-origin: 88% 0; transition: opacity 140ms ease-out, transform var(--dur) var(--ease); }
+.rows .card.open .details, .rows .card:focus-visible .details { opacity: 1; transform: none; pointer-events: auto; }
+.rows.has-open .card:not(.open) { opacity: .4; transform: scale(.985); }
+.rows .card.open { transform: scale(1.015); }
+@container app (max-width: 700px) {
+  .rows .card { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .rows .card .bar { grid-column: 1 / -1; order: 5; }
+  .rows .card .chip { display: none; }
+  .rows .amounts { display: none; }
+  .rows .pair { font-size: 16px; white-space: nowrap; }
+  .rows .value { font-size: 17px; }
+  .rows .card { padding: 12px 14px; gap: 8px 12px; }
+  .rows .tk.big { width: 30px; height: 30px; font-size: 9px; }
+  .rows .card .details { position: static; grid-column: 1 / -1; width: auto; max-height: 0; overflow: hidden; padding-block: 0; border-radius: 18px; box-shadow: none; transform: none; transition: max-height 380ms cubic-bezier(.2, .8, .2, 1), opacity 160ms ease-out, padding 240ms ease-out; }
+  .rows .card.open .details, .rows .card:focus-visible .details { max-height: 460px; padding-block: 14px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent); }
+}
+
+[hidden] { display: none !important; }
+.wrap-web { display: grid; gap: 20px; }
+
+/* devices */
+.devtoggle { margin-left: 0; justify-self: center; }
+.stage-phones { position: relative; }
+.phones-inner { display: flex; gap: 40px; transform-origin: 0 0; }
+.phone { flex: none; width: 374px; height: 818px; border-radius: 58px; padding: 12px; background: #0b0a0d; box-shadow: 0 40px 70px -34px rgba(20, 8, 30, .6), inset 0 0 0 2px #3a3640, inset 0 0 0 5px #0b0a0d; }
+.screen { position: relative; width: 100%; height: 100%; border-radius: 46px; overflow: hidden; background: var(--page); color: var(--page-ink); container: app / inline-size; transition: none; }
+.screen .island { position: absolute; z-index: 8; top: 11px; left: 50%; width: 112px; height: 32px; margin-left: -56px; border-radius: 20px; background: #000; }
+.screen .status { position: absolute; z-index: 7; top: 0; left: 0; right: 0; height: 58px; padding: 18px 30px 0 34px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 15px; font-weight: 700; background: linear-gradient(var(--page) 55%, transparent); pointer-events: none; }
+.screen .status svg { height: 13px; width: auto; display: block; }
+.screen .sicons { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
+.pscroll { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding: 62px 14px 120px; scrollbar-width: none; overscroll-behavior: contain; }
+.pscroll::-webkit-scrollbar { display: none; }
+.phead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.phead h2 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.03em; }
+.pseg { display: flex; gap: 2px; background: var(--surface); border-radius: 999px; padding: 3px; }
+.pseg button { border: 0; background: none; color: inherit; font: inherit; font-size: 12px; font-weight: 600; padding: 7px 11px; border-radius: 999px; cursor: pointer; }
+.pseg button[aria-pressed="true"] { background: var(--page-ink); color: var(--page); }
+.phero { text-align: center; margin: 8px 0 16px; }
+.phero p { margin: 0; font-size: 13px; opacity: .8; }
+.phero .pill { display: inline-block; margin: 6px 0; background: var(--accent); color: var(--accent-ink); border-radius: 20px; padding: 0 .2em; font-size: 44px; font-weight: 500; letter-spacing: -0.035em; line-height: 1.12; }
+.phone .cards-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-block: 10px 6px; }
+.phone .ftop > .big { font-size: 52px; }
+.tabbar { position: absolute; z-index: 7; left: 14px; right: 14px; bottom: 24px; height: 64px; border-radius: 34px; display: flex; justify-content: space-around; align-items: center; background: color-mix(in oklab, var(--surface) 74%, transparent); -webkit-backdrop-filter: blur(18px) saturate(1.5); backdrop-filter: blur(18px) saturate(1.5); box-shadow: 0 10px 28px -12px rgba(10, 0, 20, .5), inset 0 0 0 1px color-mix(in oklab, var(--page-ink) 9%, transparent); }
+.tabbar span { display: grid; justify-items: center; gap: 3px; font-size: 10px; font-weight: 700; opacity: .6; }
+.tabbar span.on { opacity: 1; color: var(--accent); }
+.tabbar svg { width: 22px; height: 22px; fill: currentColor; }
+/* iPhone Duo: two panes of 415 x 720 each, as one folded-flat screen or as two screens on a hinge */
+.duo { flex: none; width: 860px; height: 744px; display: flex; }
+.duo.seam { padding: 12px; border-radius: 56px; background: #0b0a0d; box-shadow: 0 40px 70px -34px rgba(20, 8, 30, .6), inset 0 0 0 2px #3a3640, inset 0 0 0 5px #0b0a0d; }
+.duo.seam .screen { border-radius: 44px; container: none; }
+.screen .homebar { z-index: 12; }
+.screen.sheet-open .pscroll { overflow: hidden; }
+.sheet-layer { position: absolute; inset: 0; z-index: 10; }
+.sheet-layer .scrim { position: absolute; inset: 0; background: color-mix(in oklab, #000 40%, transparent); }
+.psheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: calc(100% - 66px); overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; border-radius: 34px 34px 0 0; will-change: transform; }
+.psheet::-webkit-scrollbar { display: none; }
+.psheet .dcard { position: relative; border-radius: inherit; padding: 54px 22px 44px; box-shadow: none; }
+.psheet .grip { position: absolute; z-index: 2; top: 0; left: 0; right: 64px; height: 44px; display: grid; justify-items: center; align-items: start; padding: 10px 0 0 64px; touch-action: none; cursor: grab; }
+.psheet .grip::before { content: ""; width: 38px; height: 5px; border-radius: 3px; background: color-mix(in oklab, var(--ink) 30%, transparent); }
+.psheet .sclose { position: absolute; z-index: 3; top: 4px; right: 8px; width: 44px; height: 44px; border: 0; background: none; color: inherit; display: grid; place-items: center; cursor: pointer; }
+.psheet .sclose span { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in oklab, var(--ink) 14%, transparent); }
+.psheet { outline: none; }
+.psheet .sclose:focus-visible { outline: 2px solid var(--ink); border-radius: 50%; }
+.psheet .sclose svg { width: 12px; height: 12px; }
+.screen .rows .card:active { transform: scale(.985); transition-duration: 120ms; }
+.duo.two .phone { width: 415px; height: 744px; }
+.duo.two .hinge { flex: none; width: 30px; align-self: center; height: 300px; background: linear-gradient(90deg, #17151a, #45404d 45%, #17151a); border-radius: 6px; box-shadow: inset 0 0 0 1px #000; }
+.fpane { position: absolute; top: 0; bottom: 0; width: 50%; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; overscroll-behavior: contain; container: app / inline-size; }
+.fpane::-webkit-scrollbar { display: none; }
+.fleft { left: 0; padding: 62px 24px 108px 16px; }
+.fright { right: 0; padding: 62px 16px 30px 24px; }
+.fhinge { position: absolute; z-index: 6; left: 50%; top: 0; bottom: 0; width: 40px; margin-left: -20px; pointer-events: none; background: linear-gradient(90deg, transparent, rgba(0, 0, 0, .06) 36%, rgba(0, 0, 0, .15) 50%, rgba(0, 0, 0, .06) 64%, transparent); }
+.fhinge::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(0, 0, 0, .2); }
+.punch { position: absolute; z-index: 8; top: 14px; left: 75%; width: 13px; height: 13px; border-radius: 50%; background: #000; box-shadow: 0 0 0 3px #15141a; }
+.duo .tabbar { left: 14px; right: auto; width: calc(415px - 52px - 14px); }
+.duo.seam .tabbar { width: calc(50% - 48px); left: 16px; }
+.duo .status.right { justify-content: flex-end; }
+.dcard { border-radius: 30px; padding: 22px; background: var(--c); color: var(--ink); display: grid; gap: 14px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent); }
+.dcard .pair { font-size: 28px; }
+.dcard .dbig { font-size: 58px; font-weight: 600; letter-spacing: -0.045em; line-height: .95; }
+.dcard .dbig sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
+.dcard .bar { margin-bottom: 24px; }
+.dcard .sheet .head { display: none; }
+.dcard .sheet { border-top: 1px solid color-mix(in oklab, var(--ink) 20%, transparent); padding-top: 14px; }
+.duo-list .details { display: none; }
+.duo-list .card.sel { box-shadow: 0 0 0 2px var(--page-ink), 0 14px 26px -18px color-mix(in oklab, var(--page-ink) 60%, transparent); z-index: 2; }
+.homebar { position: absolute; z-index: 9; bottom: 8px; left: 50%; width: 134px; height: 5px; margin-left: -67px; border-radius: 3px; background: var(--page-ink); opacity: .85; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lift, .stage, .front, .back, .back .sheet, .hero, .details, .rows .card, .cards-grid .card::after { transform: none !important; transition: opacity 150ms !important; }
+  .card.open .back, .card:focus-visible .back { opacity: 1 !important; }
+  .card.open .front, .card:focus-visible .front { opacity: 0; visibility: visible !important; }
+  .chip, .chip::before { transition: none; }
+  .anim-drawer .front .ftop > .big { transform: none !important; }
+  .anim-drawer .hero { display: block; position: absolute; z-index: 3; left: var(--hx, 24px); top: calc(var(--handle, 122px) + 14px); font-size: 34px; color: var(--ink); opacity: 0; pointer-events: none; }
+  .anim-drawer .card.open .hero, .anim-drawer .card:focus-visible .hero { opacity: 1; }
+}
+
+body { padding-block: 24px 80px; }
+.wrap { gap: 44px; }
+.intro { display: grid; gap: 10px; }
+.intro h1 { text-align: left; font-size: clamp(30px, 5vw, 52px); margin: 0; }
+.intro p { margin: 0; max-width: 78ch; font-size: 14px; opacity: .8; line-height: 1.55; }
+.pal { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 12px; }
+.pal span.l { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; opacity: .65; margin-right: 6px; }
+.pal button { border: 0; border-radius: 999px; padding: 7px 14px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; background: color-mix(in oklab, var(--page-ink) 8%, transparent); color: inherit; }
+.pal button[aria-pressed="true"] { background: var(--page-ink); color: var(--page); }
+.spec { display: grid; gap: 12px; min-width: 0; }
+.spec > h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+.spec > .lead { margin: 0; font-size: 13px; opacity: .78; max-width: 82ch; line-height: 1.55; }
+.scroll { overflow-x: auto; padding: 10px 10px 22px; margin: -10px; }
+.row-wrap { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+.item { display: grid; gap: 8px; justify-items: start; min-width: 0; }
+.item > .cap { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; opacity: .65; }
+.static *, .static *::before, .static *::after { transition: none !important; animation: none !important; }
+/* frames */
+.browser { width: 1180px; flex: none; border-radius: 26px; background: var(--page); box-shadow: 0 0 0 1px color-mix(in oklab, var(--page-ink) 14%, transparent), 0 30px 50px -34px color-mix(in oklab, var(--page-ink) 50%, transparent); overflow: hidden; }
+.browser.sm { width: 560px; }
+.bbar { display: flex; align-items: center; gap: 7px; padding: 12px 18px; background: var(--surface); }
+.bbar i { width: 10px; height: 10px; border-radius: 50%; background: color-mix(in oklab, var(--page-ink) 22%, transparent); }
+.bbar .burl { margin: 0 auto; width: min(360px, 60%); text-align: center; font-size: 12px; padding: 5px 12px; border-radius: 999px; background: var(--page); opacity: .85; }
+.webapp { padding: 22px 28px 30px; display: grid; gap: 18px; align-content: start; container: app / inline-size; min-width: 0; }
+.browser.sm .webapp { padding: 18px 18px 24px; }
+.browser h1 { font-size: 60px; }
+.browser.sm h1 { font-size: 34px; }
+.appnav { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.navtabs { display: flex; gap: 4px; }
+.nt { padding: 8px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+.nt.on { background: var(--page-ink); color: var(--page); }
+.navmeta { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+.btn { border: 0; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; padding: 11px 20px; font: inherit; font-weight: 600; font-size: 14px; background: var(--page-ink); color: var(--page); white-space: nowrap; }
+.btn.ghost { background: color-mix(in oklab, var(--page-ink) 10%, transparent); color: inherit; }
+.btn.accent { background: var(--accent); color: var(--accent-ink); }
+.btn.sm { padding: 7px 14px; font-size: 13px; }
+.btn.off { opacity: .4; }
+.banner { background: var(--amber); color: var(--amber-ink); border-radius: 999px; padding: 9px 10px 9px 16px; display: flex; align-items: center; gap: 10px; justify-content: space-between; font-size: 14px; font-weight: 500; }
+.banner b { font-weight: 700; }
+.banner .btn { background: var(--amber-ink); color: var(--amber); padding: 8px 16px; }
+.banner .bi { width: 22px; height: 22px; border-radius: 50%; background: var(--amber-ink); color: var(--amber); display: inline-grid; place-items: center; font-weight: 800; font-size: 12px; flex: none; }
+.banner.soft { background: var(--surface); color: inherit; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--page-ink) 12%, transparent); }
+.banner.soft .btn { background: var(--page-ink); color: var(--page); }
+.toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: space-between; }
+.fchips { display: flex; gap: 8px; flex-wrap: wrap; }
+.fchip { padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; background: var(--surface); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--page-ink) 14%, transparent); }
+.fchip.on { background: var(--page-ink); color: var(--page); box-shadow: none; }
+.fchip.warn { background: var(--amber); color: var(--amber-ink); box-shadow: none; }
+.notes { text-align: center; font-size: 12px; opacity: .72; display: grid; gap: 6px; padding-top: 6px; }
+.notes u { cursor: pointer; }
+.panel { background: var(--surface); border-radius: 28px; padding: 20px 22px; box-shadow: 0 0 0 1px color-mix(in oklab, var(--page-ink) 9%, transparent); display: grid; gap: 12px; align-content: start; min-width: 0; }
+.panel h3 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -.02em; }
+.kv { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; padding: 9px 0; border-top: 1px solid color-mix(in oklab, var(--page-ink) 11%, transparent); }
+.kv:first-of-type { border-top: 0; }
+.kv > span:first-child { opacity: .68; }
+.kv b { font-weight: 600; text-align: right; }
+.kv .btn { padding: 5px 12px; font-size: 12px; }
+.needs { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; border: 1px dashed color-mix(in oklab, var(--page-ink) 50%, transparent); opacity: .75; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
+.pagehead { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pagehead h2 { margin: 0; font-size: 34px; font-weight: 700; letter-spacing: -.03em; }
+.pagehead .actions { margin-left: auto; display: flex; gap: 8px; }
+.cols2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.stackp { display: grid; gap: 14px; align-content: start; }
+.btnrow { display: flex; gap: 10px; flex-wrap: wrap; }
+.wallet { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid color-mix(in oklab, var(--page-ink) 11%, transparent); }
+.wallet:first-of-type { border-top: 0; }
+.wallet .av { width: 40px; height: 40px; border-radius: 50%; flex: none; background: var(--accent); box-shadow: inset 0 0 0 3px var(--surface); }
+.wallet:nth-of-type(2) .av { background: oklch(0.5 0.22 295); }
+.wallet.paused { opacity: .5; }
+.wallet .g { flex: 1; min-width: 0; display: grid; gap: 2px; } .wallet .g b { font-size: 15px; } .wallet .g span { font-size: 12px; opacity: .65; }
+.wallet .v { text-align: right; font-weight: 600; } .wallet .v span { display: block; font-size: 12px; font-weight: 500; opacity: .65; }
+.meter { height: 14px; border-radius: 999px; background: color-mix(in oklab, var(--page-ink) 12%, transparent); overflow: hidden; } .meter i { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+.field { border-radius: 22px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 16px; background: var(--page); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--page-ink) 18%, transparent); }
+.field.act { box-shadow: inset 0 0 0 2px var(--page-ink); }
+.field small { font-size: 12px; font-weight: 600; opacity: .7; }
+.alert { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-top: 1px solid color-mix(in oklab, var(--page-ink) 11%, transparent); }
+.alert:first-of-type { border-top: 0; }
+.alert .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--page-ink); flex: none; } .alert .dot.d { border-radius: 2px; transform: rotate(45deg); background: var(--amber); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--amber-ink) 40%, transparent); width: 12px; height: 12px; }
+.alert .g { flex: 1; min-width: 0; display: grid; gap: 2px; } .alert .g b { font-size: 15px; } .alert .g span { font-size: 12px; opacity: .65; }
+.alert .t { font-size: 12px; opacity: .65; }
+.alert .new { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); margin-left: 6px; }
+.emptyp { text-align: center; display: grid; gap: 10px; justify-items: center; padding: 26px 14px; } .emptyp b { font-size: 18px; } .emptyp span { font-size: 13px; opacity: .75; max-width: 34ch; }
+.seg2 { display: flex; gap: 4px; background: color-mix(in oklab, var(--page-ink) 8%, transparent); border-radius: 999px; padding: 4px; } .seg2 span { padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; } .seg2 .on { background: var(--page-ink); color: var(--page); }
+.sk { display: block; border-radius: 999px; background: color-mix(in oklab, var(--page-ink) 13%, transparent); }
+.skcard { border-radius: 30px; padding: 22px; display: grid; gap: 14px; min-height: 200px; align-content: space-between; background: color-mix(in oklab, var(--page-ink) 7%, var(--surface)); }
+.backdrop { background: color-mix(in oklab, var(--page-ink) 42%, var(--page)); border-radius: 26px; padding: 50px 28px; display: grid; place-items: center; width: 1180px; }
+.dialogp { width: min(460px, 100%); background: var(--surface); border-radius: 30px; padding: 22px 24px; display: grid; gap: 14px; box-shadow: 0 40px 60px -30px rgba(0, 0, 0, .5); }
+.dialogp h3 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+.dialogp .hd { display: flex; justify-content: space-between; align-items: center; }
+.rows.has-open.pad { padding-bottom: 350px; }
+/* phone extras */
+.phone .screen { background: var(--page); }
+.pcirc { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--page-ink) 12%, transparent); font-size: 20px; font-weight: 500; }
+.phone .banner { border-radius: 24px; font-size: 13px; padding: 9px 10px 9px 12px; }
+.phone .fchips { padding-block: 4px 2px; } .phone .fchip { padding: 7px 14px; font-size: 13px; }
+.phone .panel { border-radius: 24px; padding: 14px 16px; }
+.psheet.asheet { background: var(--surface); padding: 12px 20px 40px; display: grid; gap: 12px; }
+.asheet .grab { width: 38px; height: 5px; border-radius: 3px; background: color-mix(in oklab, var(--page-ink) 28%, transparent); margin: 0 auto 4px; }
+.asheet h3 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+.asheet .hd { display: flex; justify-content: space-between; align-items: center; }
+.phone .pagehead h2 { font-size: 26px; }
+.phone .dcard .dbig { font-size: 52px; }
+/* ipad */
+.padframe { width: 1180px; flex: none; border-radius: 34px; background: var(--page); padding: 12px; box-shadow: 0 0 0 1px color-mix(in oklab, var(--page-ink) 14%, transparent), 0 30px 50px -34px color-mix(in oklab, var(--page-ink) 50%, transparent), inset 0 0 0 7px #0b0a0d; }
+.padscreen { border-radius: 24px; overflow: hidden; background: var(--page); display: grid; grid-template-columns: 200px minmax(0, 1fr); min-height: 720px; position: relative; }
+.padscreen.det { grid-template-columns: 200px minmax(0, 1fr) 420px; }
+.side { padding: 48px 14px 22px; display: grid; gap: 6px; align-content: start; border-right: 1px solid color-mix(in oklab, var(--page-ink) 10%, transparent); }
+.side .logo { margin: 0 8px 18px; }
+.side .nt { padding: 11px 16px; }
+.padmain { padding: 22px 24px 28px; display: grid; gap: 16px; align-content: start; container: app / inline-size; min-width: 0; }
+.paddet { padding: 22px 22px 28px; border-left: 1px solid color-mix(in oklab, var(--page-ink) 10%, transparent); display: grid; gap: 14px; align-content: start; min-width: 0; }
+.padmain h1 { font-size: 44px; text-align: left; }
+.padmain .sub { text-align: left; font-size: 15px; }
+.padstatus { display: flex; justify-content: space-between; padding: 8px 24px 0; font-size: 13px; font-weight: 700; opacity: .75; position: absolute; top: 0; left: 0; right: 0; }
+.padscreen { padding-top: 0; }
+.legend { font-size: 12px; opacity: .7; }
+
+</style>
+<div class="wrap">
+<header class="intro"><span class="group"><h2>VoidX design book · working screens</h2></span><h1>Phone screens</h1><p>Working screens on a phone (iPhone and Android phone share the structure): Rows by default, a bottom sheet for details, the three tabs.</p>
+<div class="pal" role="group" aria-label="Scheme"><span class="l">Scheme</span><button type="button" data-pal="auto" aria-pressed="true">Auto</button><button type="button" data-pal="dragonfruit" aria-pressed="false">Dragonfruit</button><button type="button" data-pal="neon" aria-pressed="false">Neon Night</button></div>
+<p class="legend">Same card, Drawer, Spotlight and bottom-sheet look as the Ghost Cards prototype. Schemes, type and shape are examples; sizes are design-pending. Positions and wallets are example data. <em class="needs">server field</em> marks data the contract does not carry yet.</p></header>
+<div id="sections" style="display:grid;gap:44px"></div>
+</div>
+<script>
+(function(){
+var root=document.documentElement;var darkQuery=window.matchMedia('(prefers-color-scheme: dark)');
+  function lab(c) { var r = c[2] * Math.PI / 180; return [c[0], c[1] * Math.cos(r), c[1] * Math.sin(r)]; }
+  function lum(v) {
+    var L = v[0], a = v[1], b = v[2];
+    var l = Math.pow(L + 0.3963377774 * a + 0.2158037573 * b, 3), m = Math.pow(L - 0.1055613458 * a - 0.0638541728 * b, 3), s = Math.pow(L - 0.0894841775 * a - 1.291485548 * b, 3);
+    var rgb = [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s].map(function (x) { return Math.min(1, Math.max(0, x)); });
+    return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+  }
+  function ratio(x, y) { var a = lum(x), b = lum(y); return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); }
+  function mix(x, y, t) { return [x[0] * t + y[0] * (1 - t), x[1] * t + y[1] * (1 - t), x[2] * t + y[2] * (1 - t)]; }
+  function css(c) { return "oklch(" + c[0] + " " + c[1] + " " + c[2] + ")"; }
+  function inkFor(background, hue) {
+    var dark = [0.22, 0.05, hue], light = [0.98, 0.01, hue];
+    return ratio(lab(dark), lab(background)) >= ratio(lab(light), lab(background)) ? dark : light;
+  }
+  /* band colour: walks lightness away from the track until it holds 3:1 (WCAG 1.4.11), else falls back to the ink */
+  function bandFor(fill, ink, hue) {
+    var track = mix(lab(ink), lab(fill), 0.12), light = ink[0] > 0.5;
+    for (var i = 0; i < 34; i++) {
+      var l = light ? 0.7 + i * 0.01 : 0.55 - i * 0.012;
+      if (l > 0.985 || l < 0.12) break;
+      var candidate = [l, 0.13, hue];
+      if (ratio(lab(candidate), track) >= 3.1) return candidate;
+    }
+    return ink;
+  }
+  var palettes = {
+    dragonfruit: { name: "Dragonfruit", note: "light", hue: 350, bandHue: 345, page: [0.975, 0.012, 350], accent: [0.54, 0.224, 350], cards: [[0.54, 0.224, 350], [0.995, 0.001, 350], [0.16, 0.01, 350], [0.88, 0.07, 355]] },
+    neon: { name: "Neon Night", note: "dark", hue: 320, bandHue: 350, page: [0.16, 0.03, 320], accent: [0.72, 0.208, 350], cards: [[0.72, 0.208, 350], [0.5, 0.22, 295], [0.1, 0.01, 320], [0.88, 0.06, 230]] }
+  };
+  var positions = [
+    { id: "p1", base: "ETH", quote: "USDC", fee: "0.05%", chain: "Ethereum", lower: 3180, upper: 3620, price: 3412.55, home: 3412.55, unit: "USDC per ETH", value: 23501.12, fees: 284.36, digits: 2, amounts: [["ETH", "4.2081"], ["USDC", "9,140.22"]], owed: [["ETH", "0.0412"], ["USDC", "141.08"]] },
+    { id: "p2", base: "WBTC", quote: "ETH", fee: "0.3%", chain: "Ethereum", lower: 26.8, upper: 29.4, price: 28.12, unit: "ETH per WBTC", value: 15322.4, fees: 201.9, digits: 3, amounts: [["WBTC", "0.1517"], ["ETH", "1.2290"]], owed: [["WBTC", "0.0011"], ["ETH", "0.0270"]] },
+    { id: "p3", base: "XAI", quote: "ETH", fee: "1%", chain: "Arbitrum", lower: 0.0000412, upper: 0.0000689, price: 0.0000531, unit: "ETH per XAI", value: 2190.18, fees: 61.07, digits: 7, amounts: [["XAI", "41,920"], ["ETH", "0.6407"]], owed: [["XAI", "812"], ["ETH", "0.0177"]], partial: true },
+    { id: "p4", base: "USDC", quote: "USDT", fee: "0.01%", chain: "Arbitrum", lower: 0.9995, upper: 1.0004, price: 1.0001, unit: "USDT per USDC", value: 7200.2, fees: 65.11, digits: 4, amounts: [["USDC", "3,640.10"], ["USDT", "3,560.09"]], owed: [["USDC", "32.70"], ["USDT", "32.41"]] },
+    { id: "p5", base: "ETH", quote: "BTC.b", fee: "0.05%", chain: "Avalanche", lower: 0.029, upper: 0.033, price: 0.0338, unit: "BTC.b per ETH", value: 1840.55, fees: 22.4, digits: 4, amounts: [["ETH", "0.2150"], ["BTC.b", "0.0069"]], owed: [["ETH", "0.0021"], ["BTC.b", "0.0001"]], pinned: true },
+    { id: "p6", base: "OP", quote: "ETH", fee: "0.3%", chain: "Optimism", lower: 0.00052, upper: 0.00071, price: 0.0006, unit: "ETH per OP", value: 3115.8, fees: 48.2, digits: 6, amounts: [["OP", "1,894.00"], ["ETH", "0.5121"]], owed: [["OP", "22.10"], ["ETH", "0.0102"]] }
+  ];
+  function money(value) { return "$" + value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function whole(value) { return Math.round(value).toLocaleString("en-US"); }
+  function fixed(position, value) { return value.toLocaleString("en-US", { minimumFractionDigits: position.digits, maximumFractionDigits: position.digits }); }
+  function inRange(position) { return position.price >= position.lower && position.price <= position.upper; }
+  function span(position) { var width = position.upper - position.lower; return { start: position.lower - width * 0.35, end: position.upper + width * 0.35 }; }
+  function fraction(position, value) { var s = span(position); return Math.min(1, Math.max(0, (value - s.start) / (s.end - s.start))); }
+  function st(position) { return inRange(position) ? "in" : "out"; }
+  function word(position) { return inRange(position) ? "In range" : "Out of range"; }
+  function total() { return positions.reduce(function (sum, item) { return sum + item.value; }, 0); }
+  function feesTotal() { return positions.reduce(function (sum, item) { return sum + item.fees; }, 0); }
+  function inCount() { return positions.filter(inRange).length; }
+
+
+  /* placeholder token marks drawn inline; the product serves re-hosted logos and falls back to a monogram when logo is null */
+  var tokenMarks = {
+    ETH: { bg: "#627eea", svg: '<svg viewBox="0 0 10 16" fill="currentColor" aria-hidden="true"><path d="M5 0l4.6 8L5 10.6.4 8z"/><path d="M5 16l4.6-6.4L5 12.2.4 9.6z" opacity=".75"/></svg>' },
+    WBTC: { bg: "#f7931a", text: "\u20bf" },
+    USDC: { bg: "#2775ca", text: "$" },
+    USDT: { bg: "#26a17b", text: "T" },
+    "BTC.b": { bg: "#f7931a", text: "\u20bf" },
+    OP: { bg: "#ff0420", text: "OP" },
+    XAI: { bg: "#111111", text: "X", color: "#ff6fb5" }
+  };
+  function tokenIcon(symbol, big) {
+    var mark = tokenMarks[symbol] || { bg: "#7a6f8a", text: symbol.slice(0, 2) };
+    return '<i class="tk' + (big ? " big" : "") + '" aria-hidden="true" style="--tk:' + mark.bg + (mark.color ? ";--tkc:" + mark.color : "") + '">' + (mark.svg || mark.text) + "</i>";
+  }
+  function sym(symbol) { return symbol; }
+  function symIcon(symbol) { return '<span class="sym">' + tokenIcon(symbol) + symbol + "</span>"; }
+
+  /* ---------- markup ---------- */
+  function coins(position) { return '<span class="coins" aria-hidden="true">' + tokenIcon(position.base, true) + tokenIcon(position.quote, true) + "</span>"; }
+  function chip(position) { return '<span class="chip" data-status="' + position.id + '" data-state="' + st(position) + '">' + word(position) + "</span>"; }
+  function bar(position) {
+    var label = "Range " + fixed(position, position.lower) + " to " + fixed(position, position.upper) + ", price " + fixed(position, position.price) + ", " + word(position).toLowerCase();
+    return '<div class="bar" data-range="' + position.id + '" data-state="' + st(position) + '" style="--l:' + fraction(position, position.lower).toFixed(4) + ";--u:" + fraction(position, position.upper).toFixed(4) + '" role="img" aria-label="' + label + '"><div class="track"></div><div class="zone"></div><div class="knob"><i></i></div><div class="ends figure"><span>' + fixed(position, position.lower) + "</span><span>" + fixed(position, position.upper) + "</span></div></div>";
+  }
+  function title(position) { return '<div><h3 class="pair">' + position.base + " / " + position.quote + '</h3><span class="meta">' + position.fee + " · " + position.chain + (position.partial ? " · partial value" : "") + "</span></div>"; }
+  function histogram(position) {
+    var bars = "", count = 36, peak = fraction(position, (position.lower + position.upper) / 2), low = fraction(position, position.lower), high = fraction(position, position.upper);
+    for (var i = 0; i < count; i++) {
+      var center = (i + 0.5) / count, height = 8 + 70 * Math.exp(-Math.pow((center - peak) / 0.18, 2)) + 10 * Math.abs(Math.sin(i * 2.1));
+      bars += '<rect x="' + (i * 100 / count + 0.4).toFixed(2) + '" y="' + (100 - height).toFixed(1) + '" width="' + (100 / count - 0.8).toFixed(2) + '" height="' + height.toFixed(1) + '" rx="0.8" fill="currentColor" fill-opacity="' + (center >= low && center <= high ? 0.85 : 0.25) + '"/>';
+    }
+    return '<svg class="mini" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' + bars + "</svg>";
+  }
+  function sheet(position) {
+    return '<div class="sheet"><div class="head"><b>' + position.base + " / " + position.quote + '</b><span class="ago">Updated 12 s ago</span></div>' + histogram(position) +
+      '<div class="row"><span>Current price</span><b class="figure"><span class="tick" data-price="' + position.id + '">' + fixed(position, position.price) + "</span></b></div>" +
+      '<div class="row"><span>Range</span><b class="figure">' + fixed(position, position.lower) + " – " + fixed(position, position.upper) + "</b></div>" +
+      '<div class="row more"><span>Unit</span><b>' + position.unit + '</b></div><div class="rule more"></div>' +
+      position.amounts.map(function (a) { return '<div class="row more"><span>' + symIcon(a[0]) + '</span><b class="figure">' + a[1] + "</b></div>"; }).join("") +
+      '<div class="rule"></div><div class="row"><span>Owed fees</span><b class="figure">' + money(position.fees) + "</b></div>" +
+      position.owed.map(function (a) { return '<div class="row more owed"><span>' + symIcon(a[0]) + '</span><b class="figure">' + a[1] + "</b></div>"; }).join("") + "</div>";
+  }
+  function amounts(position) { return '<div class="amounts figure">' + position.amounts.map(function (a) { return "<span><b>" + a[1] + "</b> " + sym(a[0]) + "</span>"; }).join("") + "</div>"; }
+  function front(position) {
+    return '<div class="ftop"><div style="display:grid;gap:14px">' + '<div class="toprow">' + coins(position) + chip(position) + '</div>' + title(position) + '</div><div class="big figure"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + "</span></div></div><div class=\"fbot\">" + amounts(position) + bar(position) + "</div>";
+  }
+  function paintCard(element) {
+    var palette = paletteOf(element), fill = palette.cards[Number(element.dataset.card) % palette.cards.length], ink = inkFor(fill, palette.hue);
+    element.style.setProperty("--c", css(fill));
+    element.style.setProperty("--ink", css(ink));
+    element.style.setProperty("--band", css(bandFor(fill, ink, palette.bandHue)));
+    element.style.setProperty("--out", css(bandFor(fill, ink, 62)));
+    element.style.setProperty("--well", ink[0] > 0.5 ? "color-mix(in oklab, var(--c) 95%, black)" : "color-mix(in oklab, var(--c) 96%, var(--ink))");
+    element.style.setProperty("--cast", ink[0] > 0.5 ? "color-mix(in oklab, black 22%, transparent)" : "color-mix(in oklab, var(--ink) 30%, transparent)");
+  }
+  function setPaletteVars(element, palette) {
+    var dark = palette.page[0] < 0.5;
+    var surface = dark ? [Math.min(0.32, palette.page[0] + 0.07), palette.page[1] + 0.01, palette.page[2]] : [0.995, 0.004, palette.page[2]];
+    element.style.setProperty("--page", css(palette.page));
+    element.style.setProperty("--page-ink", css(inkFor(palette.page, palette.hue)));
+    element.style.setProperty("--surface", css(surface));
+    element.style.setProperty("--accent", css(palette.accent));
+    element.style.setProperty("--accent-ink", css(inkFor(palette.accent, palette.hue)));
+    element.style.colorScheme = dark ? "dark" : "light";
+  }
+  function cardHtml(position, index, view) {
+    var label = position.base + " / " + position.quote + ", " + word(position).toLowerCase() + ", press Enter for details";
+    if (view === "cards") return '<article class="card" tabindex="0" data-card="' + index + '" aria-label="' + label + '"><div class="lift"><div class="stage"><div class="face front">' + front(position) + '</div><div class="face back">' + sheet(position) + '<div class="peek" aria-hidden="true"><span>Owed fees<b>' + money(position.fees) + '</b></span><span class="go">Details<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 3.5l3 3"/></svg></span></div></div><div class="hero big figure" aria-hidden="true"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + "</span></div></div></div></article>";
+    return '<article class="card" tabindex="0" data-card="' + index + '" aria-label="' + label + '">' + coins(position) + '<div>' + title(position) + amounts(position) + '</div>' + bar(position) + '<span class="value figure"><span class="tick" data-value="' + position.id + '">' + money(position.value) + "</span></span>" + chip(position) + '<div class="details">' + sheet(position) + "</div></article>";
+  }
+  var statusIcons = '<span class="sicons"><svg viewBox="0 0 18 12" fill="currentColor" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 17 12" fill="currentColor" aria-hidden="true"><path d="M8.5 2.2c2.3 0 4.4.9 6 2.4l1-1.1A10.4 10.4 0 0 0 8.5.6C5.7.6 3.2 1.7 1.4 3.5l1 1.1a8.6 8.6 0 0 1 6.1-2.4zM8.5 6c1.3 0 2.5.5 3.4 1.3l1-1.1A7 7 0 0 0 8.5 4.4c-1.8 0-3.4.7-4.4 1.8l1 1.1C6 6.5 7.2 6 8.5 6zM8.5 9.5l1.9 2-1.9 1.3-1.9-1.3z"/></svg><svg viewBox="0 0 27 12" fill="currentColor" aria-hidden="true"><rect x=".5" y=".5" width="22" height="11" rx="3.2" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="19" height="8" rx="2"/><rect x="24" y="4" width="2" height="4" rx="1" opacity=".5"/></svg></span>';
+  var tabs = [
+    ["Portfolio", '<path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M14 2.1V10h7.9A9 9 0 0 0 14 2.1z" opacity=".6"/>', true],
+    ["Alerts", '<path d="M12 22a2.5 2.5 0 0 0 2.4-2H9.6A2.5 2.5 0 0 0 12 22zm7-6v-5a7 7 0 0 0-5-6.7V3a2 2 0 0 0-4 0v1.3A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/>'],
+    ["Explore", '<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm3.8 6.2-2.1 5.5-5.5 2.1 2.1-5.5z"/>'],
+    ["Settings", '<path d="M3 6h11v2H3zm15 0h3v2h-3zM3 16h3v2H3zm7 0h11v2H10z"/><circle cx="16" cy="7" r="2.6"/><circle cx="8" cy="17" r="2.6"/>']
+  ];
+  function dcardHtml(index, extra) {
+    var position = positions[index];
+    return '<div class="dcard" data-card="' + index + '">' + (extra || "") + '<div class="toprow">' + coins(position) + chip(position) + "</div>" + title(position) + '<div class="dbig figure"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + "</span></div>" + bar(position) + sheet(position) + "</div>";
+  }
+  function measureDrawer() {
+    var cards = Array.prototype.slice.call(document.querySelectorAll(".card")).filter(function (card) {
+      return card.querySelector(".front") && card.querySelector(".fbot") && card.querySelector(".ftop");
+    });
+    function handleOf(card) {
+      var top = card.querySelector(".ftop"), bottom = card.querySelector(".fbot");
+      var gap = Math.max(0, bottom.offsetTop - (top.offsetTop + top.offsetHeight));
+      return bottom.offsetHeight + 24 + Math.min(12, gap);
+    }
+    cards.forEach(function (card) {
+      var face = card.querySelector(".front"), top = card.querySelector(".ftop");
+      var handle = handleOf(card), shift = Math.max(0, face.offsetHeight - handle);
+      card.style.setProperty("--handle", handle + "px");
+      card.style.setProperty("--shift", shift + "px");
+      var big = top.querySelector(":scope > .big");
+      if (big) {
+        card.style.setProperty("--hx", big.offsetLeft + "px");
+        card.style.setProperty("--bdy", (shift - (big.offsetTop - (handle + 14))) + "px");
+        card.style.setProperty("--bs", (34 / parseFloat(getComputedStyle(big).fontSize)).toFixed(3));
+      }
+    });
+  }
+
+var state={palette:'auto'};
+function isDark(){var theme=root.getAttribute('data-theme');return theme?theme==='dark':darkQuery.matches;}
+function paletteNamed(name){return name==='auto'?(isDark()?palettes.neon:palettes.dragonfruit):palettes[name];}
+function activePalette(){return paletteNamed(state.palette);}
+function paletteOf(element){return activePalette();}
+function smooth(t){t=Math.min(1,Math.max(0,t));return t*t*(3-2*t);}
+var byId={};positions.forEach(function(p){byId[p.id]=p;});
+function placeKnobs(){document.querySelectorAll('.bar').forEach(function(el){
+ var p=byId[el.dataset.range],knob=el.querySelector('.knob'),shape=knob.firstElementChild,k=knob.offsetWidth,w=el.clientWidth;
+ var x=fraction(p,p.price),l=fraction(p,p.lower),u=fraction(p,p.upper),past=x<l?l-x:(x>u?x-u:0),m=smooth(past/0.06);
+ knob.style.transform='translate3d('+(x*Math.max(0,w-k)).toFixed(2)+'px,0,0)';
+ shape.style.borderRadius=((k/2)*(1-m)+7*m).toFixed(2)+'px';
+ shape.style.transform='scale('+(1-0.14*m).toFixed(3)+') rotate('+(45*m).toFixed(1)+'deg)';});}
+function applyPalette(){setPaletteVars(root,activePalette());document.querySelectorAll('.card, .dcard').forEach(paintCard);}
+function mountLists(){document.querySelectorAll('[data-mount]').forEach(function(host){
+ var o=JSON.parse(host.getAttribute('data-mount')),view=o.view,idx=o.idx||[0,1,2,3,4,5];
+ host.className=(view==='cards'?'cards-grid anim-drawer':'rows')+(o.cls?' '+o.cls:'');
+ host.innerHTML=idx.map(function(i){return cardHtml(positions[i],i,view);}).join('');
+ host.querySelectorAll('.card').forEach(function(el){var i=Number(el.dataset.card);
+  if((o.hover||[]).indexOf(i)>=0)el.classList.add('hover');
+  if((o.sel||[]).indexOf(i)>=0)el.classList.add('sel');
+  if((o.open||[]).indexOf(i)>=0){el.classList.add('open');host.classList.add('has-open');}});});}
+function refreshAll(){applyPalette();measureDrawer();placeKnobs();}
+function paintPalButtons(){document.querySelectorAll('.pal button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.pal===state.palette));});}
+window.GHOST={positions:positions,money:money,whole:whole,fixed:fixed,total:total,feesTotal:feesTotal,inCount:inCount,coins:coins,chip:chip,title:title,bar:bar,sheet:sheet,cardHtml:cardHtml,dcardHtml:dcardHtml,statusIcons:statusIcons,tabs:tabs,symIcon:symIcon,tokenIcon:tokenIcon,mountLists:mountLists,refreshAll:refreshAll,state:state,paintPalButtons:paintPalButtons,applyPalette:applyPalette,st:st,word:word};
+document.addEventListener('click',function(e){var b=e.target.closest('.pal button');if(!b)return;state.palette=b.dataset.pal;paintPalButtons();applyPalette();});
+darkQuery.addEventListener('change',function(){if(state.palette==='auto')applyPalette();});
+new MutationObserver(function(){if(state.palette==='auto')applyPalette();}).observe(root,{attributes:true,attributeFilter:['data-theme']});
+window.addEventListener('resize',function(){measureDrawer();placeKnobs();});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){measureDrawer();placeKnobs();});
+})();
+
+</script>
+<script>
+
+(function(){
+var G=window.GHOST,money=G.money,positions=G.positions;
+function btn(t,c){return '<span class="btn '+(c||'')+'">'+t+'</span>';}
+function needs(t){return '<em class="needs">'+(t||'server field')+'</em>';}
+function kv(a,b){return '<div class="kv"><span>'+a+'</span><b>'+b+'</b></div>';}
+function panel(inner,cls){return '<div class="panel '+(cls||'')+'">'+inner+'</div>';}
+function banner(text,act,soft){return '<div class="banner'+(soft?' soft':'')+'"><span style="display:flex;gap:10px;align-items:center"><i class="bi">!</i><span>'+text+'</span></span>'+(act?btn(act):'')+'</div>';}
+function fchips(all,out){return '<div class="fchips"><span class="fchip on">All '+all+'</span><span class="fchip'+(out?' warn':'')+'">Out of range '+out+'</span></div>';}
+function appnav(active,signed){return '<nav class="appnav"><span class="logo"><i aria-hidden="true"></i>voidx</span><div class="navtabs">'+['Portfolio','Alerts','Settings'].map(function(n){return '<span class="nt'+(n===active?' on':'')+'">'+n+'</span>';}).join('')+'</div><span class="navmeta"><span class="live">Updated 12 s ago</span>'+(signed?'':btn('Sign in','ghost sm'))+'</span></nav>';}
+function hero(){return '<h1>Your pools earned <span class="pill figure">'+money(G.feesTotal())+'</span></h1><p class="sub">in fees not yet collected, across '+positions.length+' positions worth an estimated <b class="figure">'+money(G.total())+'</b> · '+G.inCount()+' in range</p>';}
+function notes(){return '<div class="notes"><span>2 positions with unlisted tokens are hidden. <u>Show them</u></span><span>USD values are estimates. Token amounts are read from the chain at block 21,904,312.</span></div>';}
+function list(o){return '<div data-mount=\''+JSON.stringify(o)+'\'></div>';}
+function browser(inner,url,sm){return '<div class="scroll"><div class="browser'+(sm?' sm':'')+'"><div class="bbar"><i></i><i></i><i></i><span class="burl">'+url+'</span></div><div class="webapp">'+inner+'</div></div></div>';}
+function spec(h,lead,inner){return '<section class="spec"><h2>'+h+'</h2><p class="lead">'+lead+'</p>'+inner+'</section>';}
+function item(cap,inner){return '<div class="item"><span class="cap">'+cap+'</span>'+inner+'</div>';}
+function wrapRow(items){return '<div class="scroll"><div class="row-wrap">'+items.join('')+'</div></div>';}
+function toolbar(left,right){return '<div class="toolbar">'+left+(right||'')+'</div>';}
+function wallets(){return panel('<h3>Wallets</h3><div style="display:flex;justify-content:space-between;font-weight:600"><span>2 of 3 wallets</span><span style="opacity:.7">Free plan '+needs()+'</span></div><div class="meter"><i style="width:66%"></i></div><p style="margin:0;font-size:13px;opacity:.75">A limit is the number of wallets read. A paused wallet is kept but not read.</p>'
+ +'<div class="wallet"><span class="av"></span><div class="g"><b>Main wallet</b><span>0x12ab…ab34</span></div><div class="v">$26,200<span>4 positions '+needs()+'</span></div></div>'
+ +'<div class="wallet"><span class="av"></span><div class="g"><b>Savings</b><span>0x9f02…02c1</span></div><div class="v">$5,340<span>1 position</span></div></div>'
+ +'<div class="wallet paused"><span class="av"></span><div class="g"><b>Old wallet</b><span>0x77ee…ee90 · paused</span></div><div class="v"><span>Choose active</span></div></div>'
+ +'<div class="btnrow">'+btn('Add wallet','accent')+btn('Choose active wallets','ghost')+'</div>');}
+function alertsSigned(){return panel('<h3>Alerts</h3><span style="font-size:13px;opacity:.75">1 position out of range now '+needs()+'</span>'
+ +'<div class="alert"><i class="dot d"></i><div class="g"><b>ETH / BTC.b left its range<em class="new">new</em></b><span>Avalanche · Main wallet</span></div><span class="t">12:04</span></div>'
+ +'<div class="alert"><i class="dot"></i><div class="g"><b>ETH / USDC back in range</b><span>Ethereum · Main wallet</span></div><span class="t">Yesterday</span></div>'
+ +'<div class="alert"><i class="dot"></i><div class="g"><b>OP / ETH back in range</b><span>Optimism · Savings</span></div><span class="t">Mon</span></div>');}
+function alertsGuest(){return panel('<h3>Alerts</h3><div class="emptyp"><b>Alerts need an account</b><span>Get a note when a position leaves its range.</span>'+btn('Sign in','accent')+'</div>');}
+function settings(active){return panel('<h3>Settings</h3>'+kv('Account','Not signed in '+btn('Sign in','ghost'))+kv('Wallets','2 of 3 ›')+kv('Alert settings','›')
+ +kv('Positions view','<span class="seg2"><span'+(active==='rows'?' class="on"':'')+'>Rows</span><span'+(active==='cards'?' class="on"':'')+'>Cards</span></span>')+kv('Appearance','System ›')+kv('Plan','Free ›')+kv('About','Version 0.0.0 · Licence · Source · Privacy'));}
+function addWallet(limit){return '<div class="hd"><h3>Add wallet</h3>'+btn('Close','ghost sm')+'</div><div class="field act"><span>'+(limit?'0x9f02…02c1':'0x12ab…ab34')+'</span><small>valid</small></div><div class="btnrow">'+btn('Paste','ghost sm')+btn('Scan','ghost sm')+btn('Example','ghost sm')+'</div>'
+ +(limit?banner('Limit reached: 1 of 1 wallets. Sign in to watch more.','Sign in'):'<div class="wallet" style="border:0"><span class="av"></span><div class="g"><b>0x12ab…ab34</b><span>Read on 6 chains '+needs()+'</span></div></div>')+btn('Add wallet','accent');}
+function posDetails(){return panel('<h3>Details</h3>'+kv('Protocol','Uniswap V3')+kv('Fee tier','0.05% '+needs())+kv('Network','Avalanche')+kv('Position id','#123456')+kv('Custody','Wallet')+kv('Read block','21,904,312')+kv('Position owner','0x12ab…ab34 '+btn('Copy','ghost')));}
+function stateLoading(){return '<div class="sum"><span class="sk" style="width:60%;height:28px;margin:6px auto"></span><span class="sk" style="width:40%;height:12px;margin:8px auto"></span></div>'+[0,1].map(function(){return '<div class="skcard"><div style="display:flex;justify-content:space-between"><span class="sk" style="width:72px;height:34px"></span><span class="sk" style="width:90px;height:30px"></span></div><span class="sk" style="width:46%;height:20px"></span><span class="sk" style="width:60%;height:50px;border-radius:14px"></span><span class="sk" style="width:100%;height:32px"></span></div>';}).join('');}
+window.UI={btn:btn,needs:needs,kv:kv,panel:panel,banner:banner,fchips:fchips,appnav:appnav,hero:hero,notes:notes,list:list,browser:browser,spec:spec,item:item,wrapRow:wrapRow,toolbar:toolbar,wallets:wallets,alertsSigned:alertsSigned,alertsGuest:alertsGuest,settings:settings,addWallet:addWallet,posDetails:posDetails,stateLoading:stateLoading};
+})();
+
+</script>
+<script>
+
+window.PAGE={sections:function(){var U=window.UI,G=window.GHOST,P=G.positions,out=[];
+function tabbar(on){return '<div class="tabbar" aria-hidden="true">'+G.tabs.filter(function(t){return t[0]!=='Explore';}).map(function(t){return '<span'+(t[0]===on?' class="on"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+t[1]+'</svg>'+t[0]+'</span>';}).join('')+'</div>';}
+function phone(inner,tab,layer){return '<div class="phone"><div class="screen"><div class="island"></div><div class="status"><span>9:41</span>'+G.statusIcons+'</div><div class="pscroll">'+inner+'</div>'+(tab?tabbar(tab):'')+layer+'<div class="homebar"></div></div></div>';}
+function phead(t,right){return '<div class="phead"><h2>'+t+'</h2>'+(right||'')+'</div>';}
+function phero(){return '<div class="phero"><p>Your pools earned</p><span class="pill figure">'+G.money(G.feesTotal())+'</span><p>worth an estimated <b class="figure">'+G.money(G.total())+'</b> · '+G.inCount()+' of '+P.length+' in range</p></div>';}
+function sheetLayer(inner){return '<div class="sheet-layer"><div class="scrim"></div>'+inner+'</div>';}
+function dsheet(i){return '<div class="psheet">'+G.dcardHtml(i,'<div class="grip" aria-hidden="true"></div><span class="sclose"><span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></span></span>')+'</div>';}
+function asheet(inner){return '<div class="psheet asheet"><div class="grab"></div>'+inner+'</div>';}
+var plus=function(){return '<span class="pcirc">+</span>';};
+var main=U.banner('<b>1 out of range:</b> ETH / BTC.b','Show')+U.fchips(6,1);
+out.push(U.spec('Portfolio and details','Rows is the phone default. A tap opens a bottom sheet with the details (second screen): the sheet carries the position with its card Fill; swipe the handle down or tap outside to close. The Open link goes to the full Position screen (third). The Cards and Rows switch lives only in Settings.',
+ U.wrapRow([
+  U.item('Portfolio, Rows',phone(phead('Portfolio',plus())+phero()+main+U.list({view:'rows',idx:[0,1,2,3,4,5]}),'Portfolio','')),
+  U.item('Tap a row: bottom sheet',phone(phead('Portfolio',plus())+phero()+U.list({view:'rows',idx:[0,1,2]}),'Portfolio',sheetLayer(dsheet(1)))),
+  U.item('Position, pushed',phone('<div class="pagehead">'+U.btn('‹','ghost sm')+'<h2>Position</h2></div>'+U.banner('<b>Out of range:</b> price above range','Alert')+G.dcardHtml(4)+U.posDetails()+'<div class="btnrow" style="margin-top:12px">'+U.btn('Set alert','accent')+U.btn('Explorer','ghost')+'</div>',null,''))
+ ])));
+out.push(U.spec('Portfolio, Cards on a phone','A Settings choice. One column; a tap opens the same bottom sheet.',
+ U.wrapRow([U.item('Portfolio, Cards',phone(phead('Portfolio',plus())+phero()+U.list({view:'cards',idx:[0,1,2]}),'Portfolio','')),U.item('Settings',phone(phead('Settings')+U.settings('cards'),'Settings',''))])));
+out.push(U.spec('Portfolio states','Skeletons for pending scopes, a partial failure naming the chain, and the first visit with an example wallet.',
+ U.wrapRow([
+  U.item('Loading',phone(phead('Portfolio')+U.stateLoading(),'Portfolio','')),
+  U.item('Partial failure',phone(phead('Portfolio',plus())+'<div class="phero"><p>Your pools earned</p><span class="pill figure">$417.60</span><p>3 of 6 positions shown</p></div>'+U.banner('<b>Base did not answer.</b>','Retry')+U.list({view:'rows',idx:[1,2,3]}),'Portfolio','')),
+  U.item('First visit',phone(phead('Portfolio')+U.panel('<div class="emptyp"><b>Watch any wallet</b><span>Add an address or a name. Below, an example wallet.</span>'+U.btn('Add wallet','accent')+'</div>')+U.list({view:'rows',idx:[0,3]}),'Portfolio',''))
+ ])));
+out.push(U.spec('Add wallet','A bottom sheet. Ready shows a preview of the address; a plan-limit answer shows a banner with the next step and keeps the button enabled.',
+ U.wrapRow([
+  U.item('Ready',phone(phead('Portfolio',plus())+phero()+U.list({view:'rows',idx:[0,1]}),'Portfolio',sheetLayer(asheet(U.addWallet(false))))),
+  U.item('Plan-limit answer (guest)',phone(phead('Portfolio',plus())+phero()+U.list({view:'rows',idx:[0]}),'Portfolio',sheetLayer(asheet(U.addWallet(true)))))
+ ])));
+out.push(U.spec('Alerts and Wallets','Alerts is the second tab and stays visible for a guest. Wallets opens from Settings.',
+ U.wrapRow([U.item('Alerts, signed in',phone(phead('Alerts')+U.alertsSigned(),'Alerts','')),U.item('Alerts, guest',phone(phead('Alerts')+U.alertsGuest(),'Alerts','')),U.item('Wallets',phone('<div class="pagehead">'+U.btn('‹','ghost sm')+'<h2>Wallets</h2></div>'+U.wallets(),null,''))])));
+return out;}};
+
+</script>
+<script>
+
+(function(){
+var G=window.GHOST,U=window.UI;
+function build(){
+ var h=PAGE.sections().map(function(s){return s;}).join('');
+ document.getElementById('sections').innerHTML=h;
+ G.mountLists();G.paintPalButtons();G.refreshAll();
+ document.body.classList.add('static');
+ setTimeout(G.refreshAll,60);setTimeout(G.refreshAll,400);
+}
+build();
+})();
+
+</script>

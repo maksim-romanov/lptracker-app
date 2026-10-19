@@ -1,0 +1,346 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VoidX Widgets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap">
+<style>
+/* Layout: the verdict, then the Ghost card as widgets on iPhone, iPad and Mac, the Lock Screen, three rendering modes, six states, Android, and the limits. */
+:root, :root[data-pal="dragonfruit"] {
+  --bg: oklch(.975 .012 350); --surface: oklch(.995 .003 350); --field: oklch(.945 .014 350);
+  --edge: oklch(.6 .03 350); --line: oklch(.88 .015 350); --ink: oklch(.18 .02 350); --muted: oklch(.45 .03 350);
+  --accent: oklch(.54 .224 350); --on-accent: oklch(.99 .004 350); --amber: oklch(.86 .15 85); --on-amber: oklch(.22 .04 85);
+  --f1: oklch(.54 .224 350); --f1i: oklch(.98 .01 350); --f2: oklch(.995 .001 350); --f2i: oklch(.22 .05 350);
+  --f3: oklch(.16 .01 350); --f3i: oklch(.98 .01 350); --f4: oklch(.88 .07 355); --f4i: oklch(.22 .05 350);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-pal="dragonfruit"]) {
+    --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+    --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+    --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+    --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+    --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]:not([data-pal="dragonfruit"]), :root[data-pal="neon"] {
+  --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+  --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+  --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+  --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+  --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+  color-scheme: dark;
+}
+:root { --sel: color-mix(in oklab, var(--ink) 13%, var(--surface)); --font: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace; }
+.on-1 { --fill: var(--f1); --fi: var(--f1i); } .on-2 { --fill: var(--f2); --fi: var(--f2i); } .on-3 { --fill: var(--f3); --fi: var(--f3i); } .on-4 { --fill: var(--f4); --fi: var(--f4i); }
+.on-1, .on-2, .on-3, .on-4 { --bg: var(--fill); --ink: var(--fi); --surface: color-mix(in oklab, var(--fill) 88%, var(--fi)); --field: color-mix(in oklab, var(--fill) 80%, var(--fi)); --muted: color-mix(in oklab, var(--fi) 92%, var(--fill)); --line: color-mix(in oklab, var(--fill) 80%, var(--fi)); --edge: color-mix(in oklab, var(--fi) 72%, var(--fill)); --accent: var(--fi); --on-accent: var(--fill); --sel: color-mix(in oklab, var(--fi) 16%, var(--fill)); background: var(--bg); color: var(--ink); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; padding-inline: 16px; padding-block: 20px 72px; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, p { margin: 0; text-wrap: balance; }
+code { font-family: var(--mono); font-size: .9em; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.skip { position: absolute; left: 16px; top: -64px; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 999px; font-weight: 700; text-decoration: none; z-index: 50; }
+.skip:focus { top: 12px; }
+.wrap { max-width: 1160px; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+.wrap > * { min-width: 0; }
+.top h1 { font-size: clamp(44px, 8vw, 96px); line-height: .92; letter-spacing: -0.055em; font-weight: 700; }
+.top p { max-width: 66ch; margin-top: 12px; color: var(--muted); font-size: 17px; }
+.pick { display: inline-flex; gap: 2px; padding: 3px; background: var(--surface); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); border: 0; margin: 16px 0 0; }
+.pick label { position: relative; display: grid; place-items: center; min-height: 44px; min-width: 44px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.pick input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.pick label:has(input:checked) { background: var(--ink); color: var(--bg); }
+.pick label:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.toc ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.toc a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1px var(--edge); }
+.sheet { background: var(--surface); border-radius: 28px; padding: 12px; display: grid; gap: 14px; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.sheet > * { min-width: 0; }
+.sheet > header { padding: 24px 26px 26px; border-radius: 22px; display: grid; gap: 10px; }
+.sheet h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.04em; line-height: 1.02; }
+.sheet header p { color: var(--muted); max-width: 74ch; font-size: 16px; }
+.sheet > :not(header) { margin-inline: 12px; }
+.sheet > :last-child { margin-bottom: 12px; }
+.cap { font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl caption { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; }
+.tbl th, .tbl td { padding: 9px 12px 9px 0; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.tbl thead th { border-top: 0; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tbl tbody th { font-weight: 700; }
+.scroll { overflow-x: auto; }
+.note { font-size: 13px; color: var(--muted); }
+ul.rules { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.yes { color: var(--success, oklch(.47 .12 155)); font-weight: 700; } .no { font-weight: 700; color: oklch(.52 .2 25); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .yes { color: oklch(.8 .16 155); } :root:not([data-theme="light"]) .no { color: oklch(.72 .19 25); } }
+
+/* widget frames */
+.stage { display: flex; flex-wrap: wrap; gap: 22px 20px; align-items: flex-start; }
+.fig { display: grid; gap: 8px; align-content: start; margin: 0; min-width: 0; }
+.fig figcaption { font-size: 13px; color: var(--muted); max-width: 44ch; }
+.home, .wallp, .droidwall { overflow-x: auto; }
+.home { border-radius: 30px; padding: 16px; background: linear-gradient(160deg, color-mix(in oklab, var(--accent) 14%, var(--bg)), color-mix(in oklab, var(--ink) 10%, var(--bg))); box-shadow: inset 0 0 0 1px var(--line); }
+.wf { position: relative; border-radius: 28px; overflow: hidden; display: grid; }
+.wf.m.full { border-radius: 28px; }
+.v { padding: 14px 16px; gap: 0; }
+.v .rg { display: grid; gap: 3px; } .v .rg .rng { height: 16px; } .v .rg .rng .knob { width: 12px; height: 12px; margin-left: -6px; top: 2px; } .v .rg .rng .band { top: 5px; bottom: 5px; } .v .rg .lbl { font-size: 9px; }
+.v .fe { display: grid; gap: 1px; font-variant-numeric: tabular-nums; font-size: 12px; text-align: right; } .v .fe .k { font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); } .v .fe b { font-weight: 700; } .v .fe span:not(.k) { color: var(--muted); font-size: 10px; font-weight: 600; }
+.v .pl { display: inline-flex; gap: 4px; align-items: baseline; padding: 3px 10px; border-radius: 999px; background: color-mix(in oklab, var(--fi) 14%, transparent); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; } .v .pl b { font-weight: 700; } .v .pl i { font-style: normal; color: var(--muted); font-size: 10px; font-weight: 600; }
+.vb { grid-template-rows: auto 1fr auto; } .vb .h { display: flex; align-items: center; gap: 8px; min-width: 0; } .vb .h .nm { flex: 1; min-width: 0; } .vb .h .coin { width: 26px; height: 26px; }
+.vb .mid { display: flex; align-items: center; justify-content: space-between; gap: 10px; } .vb .mid .val { font-size: 36px; } .vb .mid .pls { display: grid; gap: 4px; justify-items: end; } .vb .rg { width: 56%; } .vb { grid-template-columns: 1fr auto; column-gap: 10px; }
+.vb .h { grid-column: 1 / -1; } .vb .mv { grid-column: 1; grid-row: 2; align-self: center; } .vb .mv .val { font-size: 36px; }
+.vb .rg { grid-column: 1; grid-row: 3; width: 100%; max-width: 190px; }
+.vb .pls { grid-column: 2; grid-row: 2 / 4; align-self: end; display: grid; gap: 4px; justify-items: end; }
+.v .pl.st { background: none; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--fi) 45%, transparent); font-size: 10px; font-weight: 700; padding: 3px 9px; gap: 5px; align-items: center; } .v .pl.st i { width: 6px; height: 6px; border-radius: 1px; background: currentColor; transform: rotate(45deg); color: inherit; font-size: 0; }
+.wf.s { width: 170px; height: 170px; } .wf.m { width: 360px; height: 170px; } .wf.l { width: 360px; height: 378px; } .wf.xl { width: 740px; height: 378px; }
+.wf.neutral { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); padding: 10px; gap: 10px; align-content: stretch; }
+.wf.m.neutral { grid-template-columns: 1fr 1fr; } .wf.l.neutral { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; } .wf.xl.neutral { grid-template-columns: repeat(4, 1fr); }
+.card { position: relative; display: grid; align-content: space-between; gap: 6px; padding: 14px; border-radius: 22px; min-width: 0; min-height: 0; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--fi) 14%, transparent); overflow: hidden; }
+.wf.full { border-radius: 28px; }
+.wf.full .card { border-radius: 0; box-shadow: none; padding: 16px; }
+.wf.m.full .card { padding: 14px 16px; gap: 4px; }
+.card .top { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.coins { display: flex; } .coin { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 10px; font-weight: 800; background: var(--cc); color: #fff; box-shadow: 0 0 0 2px var(--bg); } .coin + .coin { margin-left: -7px; }
+.card.big-c .coin { width: 36px; height: 36px; font-size: 12px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--ink); color: var(--bg); transform: rotate(-3deg); white-space: nowrap; }
+.chip i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.chip.out { background: var(--amber); color: var(--on-amber); } .chip.out i { border-radius: 1px; transform: rotate(45deg); }
+.chip.dot { padding: 0; width: 20px; height: 20px; justify-content: center; transform: none; } .chip.dot i { width: 8px; height: 8px; }
+.title { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+.meta { font-size: 11px; color: var(--muted); }
+.val { font-size: 30px; font-weight: 600; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; } .val sup { font-size: .42em; vertical-align: .9em; margin-right: 1px; }
+.card.big-c .val { font-size: 38px; }
+.wf.m .card.big-c .meta { display: none; }
+.wf.s .chip, .wf.m.neutral .chip, .wf.l .chip, .wf.a2 .chip, .wf.a4 .chip { font-size: 10px; padding: 3px 7px; gap: 4px; }
+.wf.s .coin, .wf.m.neutral .coin, .wf.l .coin, .wf.a2 .coin, .wf.a4 .coin { width: 24px; height: 24px; font-size: 9px; } .card.xl-c .val { font-size: 40px; } .card.xl-c .title { font-size: 18px; }
+.amt { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 600; font-variant-numeric: tabular-nums; gap: 4px; }
+.rng { position: relative; height: 18px; border-radius: 999px; background: var(--field); }
+.rng .band { position: absolute; top: 6px; bottom: 6px; border-radius: 999px; background: color-mix(in oklab, var(--accent) 55%, var(--surface)); left: var(--l); width: calc(var(--u) - var(--l)); }
+.rng .knob { position: absolute; top: 2px; width: 14px; height: 14px; margin-left: -7px; left: var(--p); border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px var(--surface); }
+.rng.out .knob { border-radius: 3px; transform: rotate(45deg) scale(.85); }
+.card.big-c .rng, .card.xl-c .rng { height: 24px; } .card.big-c .rng .knob, .card.xl-c .rng .knob { width: 18px; height: 18px; margin-left: -9px; top: 3px; } .card.big-c .rng .band, .card.xl-c .rng .band { top: 8px; bottom: 8px; }
+.lbl { display: flex; justify-content: space-between; font-size: 9.5px; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 2px; }
+.upd { font-size: 10px; color: var(--muted); font-weight: 600; }
+/* rendering modes */
+.tintmode .card, .tintmode.wf { --fill: color-mix(in oklab, var(--accent) 35%, #1b1b1d); --fi: color-mix(in oklab, var(--accent) 22%, #fff); background: var(--fill); color: var(--fi); }
+.tintmode .card { --bg: var(--fill); --ink: var(--fi); --field: color-mix(in oklab, var(--fi) 18%, var(--fill)); --muted: color-mix(in oklab, var(--fi) 85%, var(--fill)); --surface: var(--fill); --accent: var(--fi); }
+.tintmode.wf.neutral { background: color-mix(in oklab, var(--accent) 24%, #1b1b1d); }
+.tintmode .pl { background: rgba(255,255,255,.16); }
+.tintmode .rng { background: rgba(255,255,255,.16); } .tintmode .rng .band { background: rgba(255,255,255,.5); } .tintmode .rng .knob { background: #ffe3f3; box-shadow: 0 0 0 2px rgba(60,20,50,.9); } .tintmode .lbl, .tintmode .meta { color: rgba(255,230,245,.85); }
+.clearmode.wf { background: color-mix(in oklab, #fff 20%, transparent); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); box-shadow: inset 0 0 0 1px color-mix(in oklab, #fff 40%, transparent); }
+.clearmode .card { background: transparent; color: #fff; --ink: #fff; --bg: #5a5a5e; --muted: color-mix(in oklab, #fff 88%, transparent); --field: color-mix(in oklab, #fff 22%, transparent); --surface: #5a5a5e; --accent: #fff; --fill: #5a5a5e; --fi: #fff; box-shadow: inset 0 0 0 1px color-mix(in oklab, #fff 30%, transparent); }
+.clearmode .chip { background: #fff; color: #222; }  .clearmode .coin { box-shadow: 0 0 0 2px #7a7a80; }
+.wallp { border-radius: 26px; padding: 16px; background: linear-gradient(150deg, oklch(.5 .14 310), oklch(.35 .1 260)); }
+.wallp .cap, .wallp figcaption, .droidwall .cap, .droidwall figcaption { color: #fff; }
+.em { display: grid; grid-template-rows: auto 1fr auto; padding: 14px; gap: 6px; }
+.em .gc { display: flex; } .em .gc i { width: 28px; height: 28px; border-radius: 50%; border: 2px dashed color-mix(in oklab, var(--fi) 70%, transparent); background: color-mix(in oklab, var(--fi) 22%, var(--fill)); } .em .gc i + i { margin-left: -7px; }
+.em .cta { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: 11px; font-weight: 700; transform: rotate(-3deg); white-space: nowrap; }
+.em .tx { display: grid; align-content: end; gap: 2px; } .em .tx b { font-size: 17px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; } .em .tx span { font-size: 11px; color: var(--muted); }
+.em .gb { height: 16px; border-radius: 999px; border: 2px dashed color-mix(in oklab, var(--fi) 55%, transparent); }
+.em.mm { grid-template-columns: 1fr auto; column-gap: 12px; } .em.mm .h2 { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; } .em.mm .tx b { font-size: 24px; } .em.mm .gb { max-width: 190px; } .em.mm .big-plus { grid-column: 2; grid-row: 2 / 4; align-self: end; width: 56px; height: 56px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-size: 30px; font-weight: 600; line-height: 1; }
+.tintmode .em .gc i { background: #6b3a5c; border-color: rgba(255,227,243,.7); }
+.tintmode .em .cta, .tintmode .em .big-plus { background: rgba(255,255,255,.2); color: #ffe3f3; }
+.empty { display: grid; place-items: center; text-align: center; gap: 6px; align-content: center; height: 100%; padding: 14px; background: var(--surface); }
+.empty b { font-size: 14px; } .empty span { font-size: 11px; color: var(--muted); } .empty .plus { width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-weight: 800; font-size: 20px; }
+.errbar { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: color-mix(in oklab, var(--fi) 18%, transparent); width: fit-content; }
+/* lock screen */
+.lock { border-radius: 30px; padding: 20px 16px 18px; width: 300px; text-align: center; background: linear-gradient(170deg, oklch(.45 .13 330), oklch(.3 .08 280)); color: #fff; display: grid; gap: 12px; justify-items: center; }
+.lock .clock { font-size: 64px; font-weight: 600; letter-spacing: -0.05em; line-height: 1; } .lock .date { font-size: 14px; font-weight: 600; opacity: .9; }
+.lw { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.circ { width: 70px; height: 70px; position: relative; display: grid; place-items: center; } .circ svg { position: absolute; inset: 0; } .circ b { font-size: 20px; letter-spacing: -0.04em; line-height: 1; } .circ small { display: block; font-size: 7px; max-width: 40px; font-weight: 700; text-align: center; }
+.rect { width: 160px; border-radius: 16px; padding: 8px 10px; background: color-mix(in oklab, #fff 18%, transparent); text-align: left; display: grid; gap: 4px; font-size: 11px; font-weight: 700; }
+.rect .mini { height: 6px; border-radius: 3px; background: color-mix(in oklab, #fff 28%, transparent); position: relative; } .rect .mini::before { content: ""; position: absolute; top: 0; bottom: 0; left: 22%; right: 22%; background: #fff; border-radius: 3px; } .rect .mini i { position: absolute; top: -2px; left: var(--p); width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px oklch(.4 .1 300); }
+.inl { font-size: 13px; font-weight: 700; }
+/* android */
+.droid { font-family: Roboto, system-ui, sans-serif; }
+.droidwall { border-radius: 26px; padding: 16px; background: linear-gradient(150deg, oklch(.35 .08 200), oklch(.25 .08 250)); }
+.wf.a2 { width: 150px; height: 150px; } .wf.a4 { width: 330px; height: 150px; } .wf.a4 .vb { padding: 12px 14px; } .wf.a4 .vb .mid .val { font-size: 32px; } .wf.a44 { width: 330px; height: 330px; }
+.wf.a2 .card, .wf.a4 .card { border-radius: 24px; }
+.stage-wide { display: grid; gap: 22px; }
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top">
+    <h1>VoidX Widgets</h1>
+    <p>Home Screen: two widgets, both the Ghost card: <b>Small</b> (status, total, range) and <b>Medium</b> (status, total, range and owed fees for both tokens). Plus the Lock Screen widgets. The look carries over closely. What changes is motion and the system's own tinting. Wireframes with real proportions; point sizes vary by device.</p>
+    <fieldset class="pick" id="pal" aria-label="Palette"><label><input type="radio" name="pal" value="auto" checked>Auto</label><label><input type="radio" name="pal" value="dragonfruit">Dragonfruit</label><label><input type="radio" name="pal" value="neon">Neon Night</label></fieldset>
+  </header>
+  <nav class="toc" aria-label="Sections"><ul><li><a href="#h-v">Verdict</a></li><li><a href="#h-home">Home Screen</a></li><li><a href="#h-lock">Lock Screen</a></li><li><a href="#h-mode">Rendering modes</a></li><li><a href="#h-state">States</a></li><li><a href="#h-and">Android</a></li><li><a href="#h-lim">Limits</a></li><li><a href="#h-data">Data and refresh</a></li><li><a href="#h-dec">Decisions</a></li></ul></nav>
+
+  <main id="main" class="wrap">
+    <section class="sheet" aria-labelledby="h-v">
+      <header class="on-1"><h2 id="h-v">Verdict: feasible, with three honest differences</h2><p>A widget is SwiftUI, so the colour block, the overlapping coins with their ring, the tilted status chip, the big tabular figure and the range bar with its dot and diamond are all drawable. They look like the card in the design.</p></header>
+      <div class="scroll"><table class="tbl"><caption>What carries over and what does not</caption><thead><tr><th scope="col">Part of the card</th><th scope="col">iOS, iPadOS, macOS</th><th scope="col">Android</th></tr></thead><tbody>
+        <tr><th scope="row">Colour-block background</th><td><span class="yes">Yes</span>: container background, four fills</td><td><span class="yes">Yes</span>: background and corner radius</td></tr>
+        <tr><th scope="row">Coin pair and logos</th><td><span class="yes">Yes</span>, with images cached in the app group (a widget cannot load an image by itself)</td><td><span class="yes">Yes</span>, small cached bitmaps</td></tr>
+        <tr><th scope="row">Status chip, total, token amounts, owed fees t0 and t1</th><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td></tr>
+        <tr><th scope="row">Range bar, dot and diamond</th><td><span class="yes">Yes</span>, as static shapes</td><td>Yes, as a small bitmap drawn by the app (the widget cannot draw)</td></tr>
+        <tr><th scope="row">The display typeface</th><td>Yes if the font is bundled in the widget extension (to verify)</td><td><span class="no">No</span>: system font only</td></tr>
+        <tr><th scope="row">Knob glide, status morph, drawer</th><td><span class="no">No</span>: a widget is a snapshot, not a live view</td><td><span class="no">No</span></td></tr>
+        <tr><th scope="row">Digit roll</th><td>Partly: a numeric transition between two refreshes</td><td><span class="no">No</span></td></tr>
+      </tbody></table></div>
+      <ul class="rules">
+        <li><b>1. No motion of our own.</b> The widget shows a snapshot. It changes when the system reloads it.</li>
+        <li><b>2. The system tints.</b> In tinted and clear Home Screen styles the system replaces our background and colours. We design that case on purpose (below).</li>
+        <li><b>3. Freshness is limited.</b> Reloads run on a daily budget, roughly every 15 to 60 minutes. The widget says how old its numbers are.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-home">
+      <header class="on-2"><h2 id="h-home">Home Screen: Small and Medium</h2><p>Home Screen on iPhone, iPad and the Mac desktop, Home Screen on Android. Each shows one position and opens it on tap.</p></header>
+      <div class="home"><div class="stage" id="sizes"></div></div>
+      <div class="home" style="margin-top:0"><span class="cap">Medium on the four colour blocks</span><div class="stage" id="blocks"></div></div>
+      <ul class="rules">
+        <li><b>Small:</b> pair, status chip, total, range bar. Nothing else, so it reads at a glance.</li>
+        <li><b>Medium:</b> pair and status on one line, the total with owed fees of token 0 and token 1 as two pills beside it, and a short range bar with its two prices underneath. No fee tier or network line.</li>
+        <li><b>Which position:</b> chosen in the widget settings, or "the worst": out of range first, then the largest.</li>
+        <li><b>Fees are server-formatted strings</b> in token units, as in the app. The widget adds no USD for fees unless the app already shows it.</li>
+        <li><b>Whole widget is one tap target</b> to the position detail. No buttons inside.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-lock">
+      <header class="on-3"><h2 id="h-lock">Lock Screen</h2><p>Three accessory shapes, drawn in one vibrant tint. No full colour here, so the status is a word and a shape, and the range bar is a thin line with a dot.</p></header>
+      <div class="home" style="background:none;box-shadow:none;padding:0"><div class="lock" id="lock"><div class="date">Mon 5 October</div><div class="clock" aria-hidden="true">9:41</div>
+        <div class="lw"><div class="circ" id="circ"></div><div class="rect"><span>ETH / BTC.b · Out of range</span><div class="mini" style="--p:90%"><i></i></div><span style="font-weight:600">ETH / USDC · In range</span></div></div>
+        <div class="inl">◆ 1 out of range · ETH / USDC in range</div></div></div>
+      <ul class="rules">
+        <li><b>Circular:</b> a gauge. The dot sits where the price is inside the range; when it is out, the ring ends in a diamond and the centre shows the count.</li>
+        <li><b>Rectangular:</b> the worst position with its status word, a thin range line, and a second position.</li>
+        <li><b>Inline:</b> text only: "1 out of range".</li>
+        <li>Legible at any glass opacity and in Always On (reduced luminance). Positions are not shown by wallet name.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-mode">
+      <header class="on-4"><h2 id="h-mode">Rendering modes on the Home Screen</h2><p>Full colour is what we draw. The Tinted and Clear styles let the system apply its own look, and the system can remove our backgrounds. Medium in the three modes:</p></header>
+      <div class="wallp"><div class="stage" id="modes"></div></div>
+      <ul class="rules">
+        <li><b>Full colour:</b> the four colour blocks.</li>
+        <li><b>Tinted:</b> one tint, our fills become a darker version of it. Elements we group as accented take the tint; the rest stay neutral.</li>
+        <li><b>Clear:</b> glass with white content; our background group is removed.</li>
+        <li>In both, colour is gone, so the diamond and the words carry "out of range", and contrast is checked at both ends of the glass slider.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-state">
+      <header class="on-1"><h2 id="h-state">States</h2><p>Every state we show in the app has a widget version. Numbers are server-formatted strings from the app's snapshot. The widget never computes.</p></header>
+      <div class="home"><div class="stage" id="states"></div></div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-and">
+      <header class="on-2"><h2 id="h-and">Android widgets</h2><p>The same design in a simpler build: Glance widgets are a restricted set of components. The range bar is a small bitmap drawn by the app, and the font is the system font.</p></header>
+      <div class="droidwall droid"><div class="stage" id="droid"></div></div>
+      <ul class="rules">
+        <li><b>Sizes:</b> 2 by 2 (small) and 4 by 2 (medium), with responsive layouts so each size chooses the best fit.</li>
+        <li><b>Taps:</b> the whole widget opens its position through one click action.</li>
+        <li><b>Update:</b> the app or a scheduled job refreshes the snapshot, then updates the widget. No scrolling lists in the MVP.</li>
+        <li><b>Colour:</b> our palette, not the wallpaper's dynamic colour, as in the app.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-lim">
+      <header class="on-3"><h2 id="h-lim">What a widget cannot do</h2><p>The limits that shaped the wireframes.</p></header>
+      <div class="scroll"><table class="tbl"><caption>Limits per platform</caption><thead><tr><th scope="col">Limit</th><th scope="col">iOS, iPadOS, macOS</th><th scope="col">Android</th></tr></thead><tbody>
+        <tr><th scope="row">Live drawing and physics</th><td>Static shapes only. A refresh replaces the whole view.</td><td>No custom drawing; images only.</td></tr>
+        <tr><th scope="row">Remote images</th><td>Not loaded by the widget. Logos are cached by the app.</td><td>Small bitmaps only, supplied by the app.</td></tr>
+        <tr><th scope="row">Fonts</th><td>Bundled font works in the extension (verify per OS); macOS uses native sizes.</td><td>System fonts only.</td></tr>
+        <tr><th scope="row">Updates</th><td>A daily reload budget of roughly 40 to 70 refreshes; entries at least about 5 minutes apart. Push updates can supplement it.</td><td>An update call from the app or a scheduled job.</td></tr>
+        <tr><th scope="row">Interaction</th><td>Links per card; buttons and toggles through App Intents.</td><td>Click actions per element.</td></tr>
+        <tr><th scope="row">Appearance</th><td>The system may tint or clear it; backgrounds can be removed.</td><td>Optional system theming; we keep our palette.</td></tr>
+        <tr><th scope="row">Scrolling, input, video</th><td>None.</td><td>Lists are possible, text input is not worth it here.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-data">
+      <header class="on-4"><h2 id="h-data">Data, refresh and configuration</h2><p>Follows ADR 0003 (the server computes) and ADR 0019 (the widget reads the app's snapshot and never refreshes tokens).</p></header>
+      <ul class="rules">
+        <li><b>Snapshot.</b> The app writes the last response, with display strings, into the shared container before it asks the widget to reload. The widget formats nothing.</li>
+        <li><b>Freshness.</b> The widget shows "Updated 9:41" once the data is older than 30 minutes, and the stale state after two hours. Foreground refreshes, background refreshes and an app intent button all reload it without using the budget.</li>
+        <li><b>Estimates.</b> USD is an estimate, shown with a leading "~" when a token is unpriced, and the card says "partial value".</li>
+        <li><b>Configuration.</b> Position (the worst, or a chosen one) and block colour (automatic, or 1 to 4). Positions are an entity the system can search, the same one Siri and Spotlight use.</li>
+        <li><b>Deep link.</b> To the position (route in the OS 27 and surfaces page); if it no longer exists, to Portfolio.</li>
+        <li><b>Staleness is data, not decoration.</b> A widget that cannot refresh keeps its last value and says so. It never goes blank.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-dec">
+      <header class="on-2"><h2 id="h-dec">Accessibility, tests and decisions</h2><p>Extends <code>docs/decisions/0022-accessibility.md</code>.</p></header>
+      <ul class="rules">
+        <li><b>One spoken sentence per card:</b> "ETH / USDC, in range, 23,587 dollars, price inside 3,180 to 3,620, owed fees 0.0123 ETH and 31.40 USDC". The status is never only a colour.</li>
+        <li><b>Dynamic Type:</b> text grows with the system size; the status and value never truncate. At the largest sizes the pair and chip shrink first; the total, the range and the fees never do.</li>
+        <li><b>Contrast:</b> every fill keeps 4.5 to 1 for its ink; tinted and clear are checked at both ends of the glass slider.</li>
+        <li><b>Tests:</b> snapshot each family, in full colour, tinted and clear, light and dark, default and accessibility text sizes; Glance tests on Android; a manual pass with the slider at both ends and Always On.</li>
+        <li><b>Decision 1 (made):</b> Home Screen has only Small and Medium (one position, with total and owed fees for token 0 and token 1); the Lock Screen keeps its three shapes. Large, Extra large, two-card Medium, controls and Live Activities are out of scope for now.</li>
+        <li><b>Decision 2:</b> bundle the display font in the iOS widget extension if the licence allows; Android keeps the system font.</li>
+        <li><b>Decision 3:</b> no Live Activity and no push-updated widgets in the MVP (ADR 0014). The data section above covers freshness without them.</li>
+      </ul>
+      <p class="note">Sources: Apple, WidgetKit overview, "Keeping a widget up to date" and "Preparing widgets for additional contexts and appearances" (read through a renderer); Android, Jetpack Glance pages for building UI and user interaction. Sizes are proportions, not measured on a device. Custom font support in extensions and the exact Lock Screen tint behaviour were not verified here. The widget budget numbers are Apple's rough figures and the system can change them.</p>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  try { var saved = localStorage.getItem("voidx-wg-pal"); if (saved) { var radio = document.querySelector('#pal input[value="' + saved + '"]'); if (radio) radio.checked = true; } } catch (error) {}
+  function applyPal() { var value = document.querySelector("#pal input:checked").value; if (value === "auto") root.removeAttribute("data-pal"); else root.setAttribute("data-pal", value); try { localStorage.setItem("voidx-wg-pal", value); } catch (error) {} }
+  document.getElementById("pal").addEventListener("change", applyPal); applyPal();
+
+  var P = [
+    { t: "ETH / USDC", m: "0.05% · Ethereum", v: "23,587", a: ["4.2081 ETH", "9,140.22 USDC"], fe: ["0.0123 ETH", "31.40 USDC"], lo: "3,180.00", hi: "3,620.00", now: "3,402.18", p: 50, l: 24, u: 76, c: ["oklch(.55 .17 270)", "oklch(.52 .14 250)"], g: ["E", "$"], f: 1 },
+    { t: "WBTC / ETH", m: "0.3% · Ethereum", v: "15,222", a: ["0.1517 WBTC", "1.2290 ETH"], fe: ["0.00011 WBTC", "0.0042 ETH"], lo: "26.800", hi: "29.400", now: "27.912", p: 48, l: 24, u: 76, c: ["oklch(.72 .17 60)", "oklch(.55 .17 270)"], g: ["B", "E"], f: 2 },
+    { t: "XAI / ETH", m: "1% · Arbitrum · partial value", v: "~2,197", a: ["41,920 XAI", "0.6407 ETH"], fe: ["212 XAI", "0.0009 ETH"], lo: "0.0000412", hi: "0.0000689", now: "0.0000551", p: 52, l: 24, u: 76, c: ["oklch(.3 .02 300)", "oklch(.55 .17 270)"], g: ["X", "E"], f: 3 },
+    { t: "USDC / USDT", m: "0.01% · Arbitrum", v: "7,199", a: ["3,640.10 USDC", "3,560.09 USDT"], fe: ["1.92 USDC", "1.88 USDT"], lo: "0.9995", hi: "1.0004", now: "0.9999", p: 44, l: 24, u: 76, c: ["oklch(.52 .14 250)", "oklch(.6 .13 165)"], g: ["$", "T"], f: 4 },
+    { t: "ETH / BTC.b", m: "0.05% · Avalanche", v: "1,841", a: ["0.2150 ETH", "0.0069 BTC.b"], fe: ["0.0021 ETH", "0.0001 BTC.b"], lo: "0.0290", hi: "0.0330", now: "0.0338", p: 90, l: 24, u: 76, c: ["oklch(.55 .17 270)", "oklch(.72 .17 60)"], g: ["E", "B"], f: 1, out: true }
+  ];
+  function card(p, o) {
+    o = o || {}; var cls = "card on-" + (o.fill || p.f) + (o.big ? " big-c" : "") + (o.xl ? " xl-c" : ""), out = !!p.out;
+    var chip = o.dot ? '<span class="chip dot' + (out ? " out" : "") + '" title="' + (out ? "Out of range" : "In range") + '"><i></i></span>' : '<span class="chip' + (out ? " out" : "") + '"><i></i>' + (out ? "Out of range" : "In range") + "</span>";
+    var coins = '<span class="coins" aria-hidden="true"><i class="coin" style="--cc:' + p.c[0] + '">' + p.g[0] + '</i><i class="coin" style="--cc:' + p.c[1] + '">' + p.g[1] + "</i></span>";
+    var bar = '<div class="rng' + (out ? " out" : "") + '" style="--l:' + p.l + "%;--u:" + p.u + "%;--p:" + p.p + '%"><span class="band"></span><span class="knob"></span></div>';
+    var val = '<div class="val"><sup>$</sup>' + p.v.replace("~", "") + "</div>";
+    var body = '<div class="top">' + coins + chip + "</div>" + '<div><div class="title">' + p.t + "</div>" + (o.meta ? '<div class="meta">' + p.m + "</div>" : "") + "</div>" + (p.v.charAt(0) === "~" ? '<div><span class="meta">~ partial value</span>' + val + "</div>" : val) + bar;
+    if (o.state === "stale") body += '<div class="upd">Updated 2 h ago</div>';
+    if (o.state === "error") body += '<div class="errbar">Can’t refresh · last value</div>';
+    return '<div class="' + cls + '">' + body + "</div>";
+  }
+  function fig(cap, frameHtml, note) { return '<figure class="fig"><span class="cap">' + cap + "</span>" + frameHtml + (note ? "<figcaption>" + note + "</figcaption>" : "") + "</figure>"; }
+  function wf(size, inner, extra) { return '<div class="wf ' + size + " " + (extra || "") + '">' + inner + "</div>"; }
+
+  document.getElementById("sizes").innerHTML =
+    fig("Small", wf("s full", card(P[0])), "Status, total, range. Taps open the position.") +
+    fig("Medium", wf("m full", medium(P[0])), "Total, range, owed fees for both tokens.");
+  document.getElementById("modes").innerHTML =
+    fig("Full colour", wf("m full", medium(P[0]))) + fig("Tinted", wf("m full tintmode", medium(P[0]))) + fig("Clear", wf("m full clearmode", medium(P[0])));
+  document.getElementById("blocks").innerHTML = [P[0], P[1], P[2], P[3]].map(function (p) { return wf("m full", medium(p)); }).join("");
+  function parts(p, o) {
+    o = o || {}; var out = !!p.out;
+    var chip = '<span class="chip' + (out ? " out" : "") + '"><i></i>' + (out ? "Out of range" : "In range") + "</span>";
+    var coins = '<span class="coins" aria-hidden="true"><i class="coin" style="--cc:' + p.c[0] + '">' + p.g[0] + '</i><i class="coin" style="--cc:' + p.c[1] + '">' + p.g[1] + "</i></span>";
+    var val = '<div class="val"><sup>$</sup>' + p.v.replace("~", "") + "</div>";
+    var rg = '<div class="rg"><div class="rng' + (out ? " out" : "") + '" style="--l:' + p.l + "%;--u:" + p.u + "%;--p:" + p.p + '%"><span class="band"></span><span class="knob"></span></div><div class="lbl"><span>' + p.lo + "</span><span>" + p.hi + "</span></div></div>";
+    var title = '<div class="title">' + p.t + (p.v.charAt(0) === "~" ? ' <span class="meta">· partial</span>' : "") + "</div>";
+    return { chip: chip, coins: coins, val: val, rg: rg, title: title };
+  }
+  function medium(p, o) {
+    o = o || {}; var x = parts(p);
+    var note = o.state === "stale" ? "Updated 2 h ago" : o.state === "error" ? "Can’t refresh" : "";
+    return '<div class="card v vb on-' + (o.fill || p.f) + '"><div class="h">' + x.coins + '<div class="nm">' + x.title + "</div>" + x.chip + '</div><div class="mv">' + x.val + "</div>" + x.rg + '<div class="pls">' + pill(p.fe[0]) + pill(p.fe[1]) + (note ? '<span class="pl st"><i></i>' + note + "</span>" : "") + "</div></div>";
+  }
+  function pill(text) { var q = text.split(" "); return '<span class="pl"><b>' + q[0] + "</b><i>" + q[1] + "</i></span>"; }
+  var empty = '<div class="card em on-1"><div class="top"><span class="gc" aria-hidden="true"><i></i><i></i></span><span class="cta"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" fill="none"/></svg>Add</span></div><div class="tx"><b>Add a wallet</b><span>Paste an address in VoidX</span></div><div class="gb" aria-hidden="true"></div></div>';
+  var emptyMedium = '<div class="card em mm on-1"><div class="h2"><span class="gc" aria-hidden="true"><i></i><i></i></span><span class="cta"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" fill="none"/></svg>Add</span></div><div class="tx"><b>Add a wallet</b><span>Paste an address in VoidX to see your positions</span></div><div class="gb" aria-hidden="true"></div><div class="big-plus" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg></div></div>';
+  document.getElementById("states").innerHTML =
+    fig("In range", wf("s full", card(P[0]))) + fig("Out of range", wf("s full", card(P[4]))) + fig("Partial value", wf("s full", card(P[2]))) +
+    fig("Stale", wf("s full", card(P[0], { state: "stale" })), "Says how old it is.") + fig("Cannot refresh", wf("s full", card(P[3], { state: "error" })), "Keeps the last value.") + fig("No wallet", wf("s full", empty), "Opens Add wallet.") + fig("No wallet, medium", wf("m full", emptyMedium), "Same idea: ghost coins and bar mark where the position will be.") +
+    fig("Medium, out of range", wf("m full", medium(P[4]))) + fig("Medium, partial value", wf("m full", medium(P[2]))) + fig("Medium, stale", wf("m full", medium(P[3], { state: "stale" })), "The state is a third pill in the same column.") + fig("Medium, cannot refresh", wf("m full", medium(P[1], { state: "error" })));
+
+  /* lock screen gauge */
+  document.getElementById("circ").innerHTML = '<svg viewBox="0 0 70 70" aria-hidden="true"><circle cx="35" cy="35" r="30" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="6" stroke-linecap="round" stroke-dasharray="141 188" transform="rotate(135 35 35)"/><circle cx="35" cy="35" r="30" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-dasharray="40 188" stroke-dashoffset="-50" transform="rotate(135 35 35)"/><rect x="58" y="48" width="9" height="9" rx="2" fill="#fff" transform="rotate(45 62.5 52.5)"/></svg><span><b>1</b><small>out of range</small></span>';
+
+  /* android */
+  var dr = function (inner, size) { return '<div class="wf ' + size + ' droid">' + inner + "</div>"; };
+  document.getElementById("droid").innerHTML = fig("2 by 2", dr(card(P[0], {}), "a2 full")) + fig("4 by 2", dr(medium(P[0]), "a4 full"));
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,16 @@
+.claude/settings.local.json
+CLAUDE.local.md
+.drafts/
+.env
+.env.*
+buildServer.json
+.serena/
+.skills/
+.agent/
+*.xcodeproj
+*.xcworkspace
+Derived/
+.playwright/
+.logs/
+docs/design/book/_build/
+.DS_Store

@@ -1,0 +1,35 @@
+version = 1
+
+# The iOS and Android apps carry an additional permission under AGPL-3.0 section 7
+# for app-store distribution: see apps/ios-app/LICENSE-EXCEPTION.md and
+# apps/android-app/LICENSE-EXCEPTION.md.
+
+[[annotations]]
+path = ["apps/**", "packages/infra/**", "tools/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "VoidX contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = [
+  "packages/core/**",
+  "packages/contracts/**",
+  "packages/integration-kit/**",
+  "packages/design-tokens/**",
+  "integrations/**",
+  "e2e/**",
+  "docs/**",
+  ".agents/**",
+  ".claude/**",
+  "*.md",
+  "REUSE.toml",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "VoidX contributors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "CODE_OF_CONDUCT.md"
+precedence = "override"
+SPDX-FileCopyrightText = "Contributor Covenant contributors"
+SPDX-License-Identifier = "CC-BY-4.0"

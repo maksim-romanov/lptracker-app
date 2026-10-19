@@ -1,0 +1,258 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VoidX Mac and iPad Pass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap">
+<style>
+/* Layout: wireframes first (iPad states, Mac window, Mac settings), then the menu bar, keyboard, context menus, accessibility and the SwiftUI mapping. */
+:root, :root[data-pal="dragonfruit"] {
+  --bg: oklch(.975 .012 350); --surface: oklch(.995 .003 350); --field: oklch(.945 .014 350);
+  --edge: oklch(.6 .03 350); --line: oklch(.88 .015 350); --ink: oklch(.18 .02 350); --muted: oklch(.45 .03 350);
+  --accent: oklch(.54 .224 350); --on-accent: oklch(.99 .004 350); --amber: oklch(.86 .15 85); --on-amber: oklch(.22 .04 85);
+  --f1: oklch(.54 .224 350); --f1i: oklch(.98 .01 350); --f2: oklch(.995 .001 350); --f2i: oklch(.22 .05 350);
+  --f3: oklch(.16 .01 350); --f3i: oklch(.98 .01 350); --f4: oklch(.88 .07 355); --f4i: oklch(.22 .05 350);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-pal="dragonfruit"]) {
+    --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+    --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+    --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+    --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+    --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]:not([data-pal="dragonfruit"]), :root[data-pal="neon"] {
+  --bg: oklch(.16 .03 320); --surface: oklch(.21 .035 320); --field: oklch(.265 .04 320);
+  --edge: oklch(.58 .05 320); --line: oklch(.32 .045 320); --ink: oklch(.97 .01 340); --muted: oklch(.76 .04 330);
+  --accent: oklch(.72 .208 350); --on-accent: oklch(.16 .03 320);
+  --f1: oklch(.72 .208 350); --f1i: oklch(.22 .05 320); --f2: oklch(.5 .22 295); --f2i: oklch(.98 .01 320);
+  --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
+  color-scheme: dark;
+}
+:root { --sel: color-mix(in oklab, var(--ink) 13%, var(--surface)); --font: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace; }
+.on-1 { --fill: var(--f1); --fi: var(--f1i); } .on-2 { --fill: var(--f2); --fi: var(--f2i); } .on-3 { --fill: var(--f3); --fi: var(--f3i); } .on-4 { --fill: var(--f4); --fi: var(--f4i); }
+.on-1, .on-2, .on-3, .on-4 { --bg: var(--fill); --ink: var(--fi); --surface: color-mix(in oklab, var(--fill) 88%, var(--fi)); --muted: color-mix(in oklab, var(--fi) 92%, var(--fill)); --line: color-mix(in oklab, var(--fill) 80%, var(--fi)); --edge: color-mix(in oklab, var(--fi) 72%, var(--fill)); --accent: var(--fi); --on-accent: var(--fill); --sel: color-mix(in oklab, var(--fi) 16%, var(--fill)); background: var(--bg); color: var(--ink); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; padding-inline: 16px; padding-block: 20px 72px; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+h1, h2, h3, h4, p { margin: 0; text-wrap: balance; }
+code, kbd { font-family: var(--mono); font-size: .9em; }
+kbd { background: var(--sel); border-radius: 6px; padding: 1px 6px; white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 999px; font-weight: 700; text-decoration: none; z-index: 50; }
+.skip:focus { top: 12px; }
+.wrap { max-width: 1160px; margin-inline: auto; display: grid; gap: 22px; }
+.wrap > * { min-width: 0; }
+.top h1 { font-size: clamp(44px, 8vw, 96px); line-height: .92; letter-spacing: -0.055em; font-weight: 700; }
+.top p { max-width: 64ch; margin-top: 12px; color: var(--muted); font-size: 17px; }
+.toc ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.toc a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--ink); text-decoration: none; box-shadow: inset 0 0 0 1px var(--edge); }
+.sheet { background: var(--surface); border-radius: 28px; padding: 12px; display: grid; gap: 14px; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.sheet > * { min-width: 0; }
+.sheet > header { padding: 24px 26px 26px; border-radius: 22px; display: grid; gap: 10px; }
+.sheet h2 { font-size: clamp(28px, 4.4vw, 42px); letter-spacing: -0.04em; line-height: 1.02; }
+.sheet header p { color: var(--muted); max-width: 74ch; font-size: 16px; }
+.sheet > :not(header) { margin-inline: 12px; }
+.sheet > :last-child { margin-bottom: 12px; }
+.badge { white-space: nowrap; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: var(--sel); }
+.cap { font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl caption { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; }
+.tbl th, .tbl td { padding: 9px 12px 9px 0; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.tbl thead th { border-top: 0; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tbl tbody th { font-weight: 700; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.grid2 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: start; }
+.note { font-size: 13px; color: var(--muted); }
+
+/* wireframes */
+.frames { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); align-items: start; }
+.fig { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.device { border-radius: 22px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; min-height: 250px; }
+.mac { border-radius: 14px; box-shadow: 0 22px 40px -22px rgba(0, 0, 0, .5), inset 0 0 0 1px var(--line); }
+.tb { display: flex; align-items: center; gap: 8px; padding: 8px 12px; min-height: 40px; background: color-mix(in oklab, var(--surface) 90%, var(--bg)); box-shadow: 0 1px 0 var(--line); font-size: 12px; font-weight: 600; }
+.lights { display: inline-flex; gap: 6px; margin-right: 6px; } .lights i { width: 10px; height: 10px; border-radius: 50%; background: var(--edge); }
+.tb .sp { flex: 1; } .tb .btn { padding: 3px 9px; border-radius: 999px; background: var(--sel); font-size: 11px; font-weight: 700; }
+.tb .btn.p { background: var(--ink); color: var(--bg); }
+.cols { display: grid; min-height: 0; }
+.c3 { grid-template-columns: 0.8fr 1fr 1.3fr; } .c2 { grid-template-columns: 1fr 1.3fr; } .c1 { grid-template-columns: 1fr; }
+.col { padding: 10px 12px; display: grid; gap: 6px; align-content: start; font-size: 12px; border-left: 1px solid var(--line); min-width: 0; }
+.col:first-child { border-left: 0; }
+.col h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.col .row { padding: 6px 8px; border-radius: 8px; font-weight: 600; } .col .row.sel { background: var(--ink); color: var(--bg); }
+.col .big { font-size: 26px; font-weight: 600; letter-spacing: -0.04em; }
+.col .bar { height: 12px; border-radius: 999px; background: var(--field); position: relative; } .col .bar::before { content: ""; position: absolute; left: 25%; right: 25%; top: 3px; bottom: 3px; border-radius: 999px; background: color-mix(in oklab, var(--accent) 55%, var(--surface)); }
+.tab { display: flex; justify-content: space-around; padding: 8px; font-size: 11px; font-weight: 700; background: color-mix(in oklab, var(--surface) 90%, var(--bg)); box-shadow: 0 -1px 0 var(--line); }
+.tab span.on { color: var(--accent); }
+.tabtop { display: flex; justify-content: center; gap: 4px; }
+.tabtop span { padding: 3px 12px; border-radius: 999px; font-size: 11px; } .tabtop span.on { background: var(--ink); color: var(--bg); }
+.pn { display: grid; gap: 6px; }
+.menus { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 10px; font-size: 12px; font-weight: 600; background: var(--surface); box-shadow: 0 1px 0 var(--line); }
+.menus span { padding: 2px 8px; border-radius: 6px; } .menus span.b { font-weight: 800; }
+pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.6; background: var(--bg); border-radius: 16px; box-shadow: inset 0 0 0 1px var(--line); }
+ul.rules { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top">
+    <h1>VoidX Mac and iPad Pass</h1>
+    <p>The wide-screen pass over the navigation map: how the three tabs become a sidebar, what the Mac window and menu bar hold, and where iPad and Mac differ. Based on the Human Interface Guidelines for menus, toolbars, windows, settings, keyboards and pointing devices. Wireframes, not final design.</p>
+  </header>
+  <nav class="toc" aria-label="Sections"><ul><li><a href="#h-ipad">iPad</a></li><li><a href="#h-mac">Mac window</a></li><li><a href="#h-set">Settings window</a></li><li><a href="#h-menu">Menu bar</a></li><li><a href="#h-key">Keyboard and pointer</a></li><li><a href="#h-a11y">Accessibility</a></li><li><a href="#h-code">SwiftUI mapping</a></li><li><a href="#h-dec">Decisions</a></li></ul></nav>
+
+  <main id="main" class="wrap">
+    <section class="sheet" aria-labelledby="h-ipad">
+      <header class="on-1"><h2 id="h-ipad">iPad: one structure, three window widths</h2><p>iPad windows are resized by the person (Split View, Slide Over, Stage Manager), so the layout follows the window width, not the device. The same screens, three arrangements. Fewer modals and fewer full-screen transitions than on iPhone.</p></header>
+      <div class="frames">
+        <figure class="fig" style="margin:0"><span class="cap">Wide window</span>
+          <div class="device"><div class="tb"><span>◧</span><b>Portfolio</b><span class="sp"></span><span>Search</span><span class="btn p">+ Add</span></div>
+            <div class="cols c3"><div class="col"><h4>Sidebar</h4><div class="row sel">All wallets</div><div class="row">Main wallet</div><div class="row">Savings</div><div class="row">Alerts</div></div><div class="col"><h4>Positions</h4><div class="row sel">ETH / USDC</div><div class="row">WBTC / ETH</div><div class="row">XAI / ETH</div></div><div class="col"><h4>Detail</h4><div class="big">$23,501</div><div class="bar"></div><div>In range · $284.36 fees</div></div></div><div></div></div>
+          <figcaption class="note">Sidebar, list, detail. The sidebar lists wallets as a filter plus Alerts. Settings is not in the sidebar.</figcaption></figure>
+        <figure class="fig" style="margin:0"><span class="cap">Medium window</span>
+          <div class="device"><div class="tb"><span>◧</span><b>Portfolio</b><span class="sp"></span><span class="btn p">+ Add</span></div>
+            <div class="cols c2"><div class="col"><h4>Positions</h4><div class="row sel">ETH / USDC</div><div class="row">WBTC / ETH</div><div class="row">XAI / ETH</div></div><div class="col"><h4>Detail</h4><div class="big">$23,501</div><div class="bar"></div><div>In range</div></div></div><div class="tabtop" style="padding:6px"><span class="on">Portfolio</span><span>Alerts</span><span>Settings</span></div></div>
+          <figcaption class="note">The sidebar folds into a tab bar near the top and the sidebar button. List and detail stay side by side.</figcaption></figure>
+        <figure class="fig" style="margin:0"><span class="cap">Narrow window (Split View third, Slide Over)</span>
+          <div class="device"><div class="tb"><b>Portfolio</b><span class="sp"></span><span class="btn p">+</span></div>
+            <div class="cols c1"><div class="col"><h4>Positions</h4><div class="row">ETH / USDC</div><div class="row">WBTC / ETH</div><div class="row">XAI / ETH</div></div></div><div class="tab"><span class="on">Portfolio</span><span>Alerts</span><span>Settings</span></div></div>
+          <figcaption class="note">Behaves like the iPhone: bottom tab bar, one column, the detail is pushed with the zoom.</figcaption></figure>
+      </div>
+      <ul class="rules">
+        <li><b>Adapt by window width.</b> Use size classes and window width, not <code>userInterfaceIdiom</code>. The window can be resized live, so layouts must not break between states.</li>
+        <li><b>Add wallet is a form sheet</b>, centred, not a bottom sheet with detents. Sheets stay for scoped tasks only.</li>
+        <li><b>Window controls.</b> When the window is windowed, the system draws controls at the leading edge of the toolbar; keep leading toolbar items out of their way.</li>
+        <li><b>The menu bar auto-hides by default</b> on iPad, so every command also lives in the interface. In iPadOS 27 it can be kept visible and is left-aligned like on Mac (secondary source). The iPad Settings command opens the system Settings app, so our settings stay a tab or sidebar item.</li>
+        <li><b>OS 27 sidebars are edge to edge</b> again on iPad and Mac, and the Mac toolbar is uniform. Use the system sidebar and toolbar unstyled. Details and the Liquid Glass slider: <i>OS 27 and System Surfaces</i>.</li>
+        <li><b>Pointer.</b> System hover and lift effects on bars and tabs; our cards get a hover effect; no information appears on hover alone. <b>Drag and drop:</b> dropping an address on Portfolio opens Add wallet with it filled in.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-mac">
+      <header class="on-2"><h2 id="h-mac">Mac: a window with a sidebar, not a big phone</h2><p>The main window is a three-column window. Settings is not a tab: it is its own window under the app menu. Every toolbar item is also a menu command, because people can hide or customise the toolbar.</p></header>
+      <div class="frames" style="grid-template-columns:minmax(300px,1fr)">
+        <figure class="fig" style="margin:0"><span class="cap">Main window</span>
+          <div class="device mac"><div class="menus" aria-hidden="true"><span class="b">VoidX</span><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Position</span><span>Window</span><span>Help</span></div>
+            <div class="tb"><span class="lights"><i></i><i></i><i></i></span><span>◧</span><b>Portfolio</b><span class="sp"></span><span>Search</span><span class="btn">Share</span><span class="btn p">+ Add</span></div>
+            <div class="cols c3" style="min-height:260px"><div class="col"><h4>Portfolio</h4><div class="row sel">All wallets</div><div class="row">Main wallet</div><div class="row">Savings</div><h4 style="margin-top:8px">Alerts</h4><div class="row">All alerts</div></div><div class="col"><h4>Positions</h4><div class="row sel">ETH / USDC</div><div class="row">WBTC / ETH</div><div class="row">XAI / ETH</div><div class="row">USDC / USDT</div></div><div class="col"><h4>Detail</h4><div class="big">$23,501</div><div class="bar"></div><div>In range · Ethereum · 0.05%</div><div>Owed fees $284.36</div></div></div><div></div></div>
+          <figcaption class="note">The window title is "Portfolio", not the app name. No critical actions in a bottom bar. At most three toolbar groups: navigation, view, primary action.</figcaption></figure>
+      </div>
+      <ul class="rules">
+        <li><b>Sidebar:</b> wallets as a filter, then Alerts. Two levels at most. It collapses when the window gets narrow.</li>
+        <li><b>Detail replaces in place.</b> No push and no zoom on Mac. A short crossfade, none under Reduce Motion.</li>
+        <li><b>New windows are an option, not a default.</b> "Open in New Window" in the Position menu and the context menu opens a position in its own window.</li>
+        <li><b>Alerts without push.</b> The Alerts item shows the alert history and a note that push arrives on the phone. It is not hidden or disabled.</li>
+        <li><b>Search</b> in the toolbar searches positions and tokens, and <kbd>⌘F</kbd> focuses it.</li>
+      </ul>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-set">
+      <header class="on-3"><h2 id="h-set">Settings window</h2><p>Opened from the app menu or with <kbd>⌘,</kbd>. Minimise and zoom buttons are dimmed. The toolbar is not customisable and always shows the active pane; the window title follows the pane; the last pane is restored.</p></header>
+      <div class="frames" style="grid-template-columns:minmax(300px,520px)">
+        <figure class="fig" style="margin:0"><span class="cap">Settings, Wallets pane</span>
+          <div class="device mac"><div class="tb"><span class="lights"><i></i><i></i><i></i></span><b>Wallets</b></div>
+            <div class="tb" style="justify-content:center;gap:14px"><span>Account</span><span class="btn p">Wallets</span><span>Alerts</span><span>Plan</span></div>
+            <div class="cols c1" style="min-height:190px"><div class="col"><h4>Wallets · 2 of 3</h4><div class="row">0x1f9a…4c2b · Main wallet</div><div class="row">vitalik.eth · Savings</div><div class="row" style="color:var(--muted)">Add wallet…</div></div></div></div>
+          <figcaption class="note">Four panes: Account, Wallets, Alerts, Plan. Task-specific options stay on the screens they affect. Appearance follows the system and has no pane in the MVP.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-menu">
+      <header class="on-4"><h2 id="h-menu">Menu bar</h2><p>Menus keep their fixed order: app, File, Edit, View, then app-specific menus, Window, Help. Items are disabled, never hidden. One-word titles. macOS 27 shows fewer menu item images, so the title carries the meaning. Standard shortcuts stay standard; custom ones are few and use Command.</p></header>
+      <div class="scroll"><table class="tbl"><caption>Commands and shortcuts</caption><thead><tr><th scope="col">Menu</th><th scope="col">Items</th></tr></thead><tbody>
+        <tr><th scope="row">VoidX</th><td>About VoidX · Settings… <kbd>⌘,</kbd> · Hide <kbd>⌘H</kbd> · Quit <kbd>⌘Q</kbd></td></tr>
+        <tr><th scope="row">File</th><td>New Wallet… <kbd>⌘N</kbd> · Close Window <kbd>⌘W</kbd></td></tr>
+        <tr><th scope="row">Edit</th><td>Copy <kbd>⌘C</kbd> · Select All <kbd>⌘A</kbd> · Find <kbd>⌘F</kbd></td></tr>
+        <tr><th scope="row">View</th><td>Show or Hide Sidebar <kbd>⌃⌘S</kbd> · As Cards · As Rows · Refresh Prices <kbd>⌘R</kbd> · Pause Live Updates · Enter Full Screen <kbd>⌃⌘F</kbd></td></tr>
+        <tr><th scope="row">Go</th><td>Portfolio <kbd>⌘1</kbd> · Alerts <kbd>⌘2</kbd> · Back <kbd>⌘[</kbd> · Forward <kbd>⌘]</kbd></td></tr>
+        <tr><th scope="row">Position</th><td>Open · Open in New Window · Copy Address <kbd>⇧⌘C</kbd> · Copy Link · Open on Explorer · Share… · Mute Alerts</td></tr>
+        <tr><th scope="row">Window</th><td>Minimize <kbd>⌘M</kbd> · Zoom · the open windows</td></tr>
+        <tr><th scope="row">Help</th><td>VoidX Help · Send Feedback</td></tr>
+      </tbody></table></div>
+      <p class="note">Window and View exist even with one window or one view, as HIG asks. On iPad the same menus appear when the bar is revealed, and Settings there is the system Settings app. Control is never used as a modifier.</p>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-key">
+      <header class="on-1"><h2 id="h-key">Keyboard, context menus and pointer</h2><p>Full Keyboard Access handles buttons, switches and toolbar items. We add keyboard focus only to the lists, the sidebar and the fields.</p></header>
+      <div class="grid2">
+        <div class="scroll"><table class="tbl"><caption>Keyboard</caption><thead><tr><th scope="col">Keys</th><th scope="col">Does</th></tr></thead><tbody>
+          <tr><th scope="row"><kbd>Tab</kbd></th><td>Moves between focus groups: sidebar, list, detail, toolbar</td></tr>
+          <tr><th scope="row"><kbd>↑</kbd> <kbd>↓</kbd></th><td>Moves in the list or sidebar; the detail follows, focus does not</td></tr>
+          <tr><th scope="row"><kbd>Return</kbd></th><td>Opens the selected position; on iPhone and narrow windows pushes the detail</td></tr>
+          <tr><th scope="row"><kbd>⌘[</kbd></th><td>Back</td></tr>
+          <tr><th scope="row"><kbd>Esc</kbd></th><td>Closes a sheet or the search</td></tr>
+          <tr><th scope="row"><kbd>⌫</kbd></th><td>Removes the selected wallet, after a confirmation</td></tr>
+        </tbody></table></div>
+        <div class="scroll"><table class="tbl"><caption>Context menu (right-click, long-press)</caption><thead><tr><th scope="col">On</th><th scope="col">Items</th></tr></thead><tbody>
+          <tr><th scope="row">Position</th><td>Open · Open in New Window · Copy Address · Copy Link · Open on Explorer · Share… · Mute Alerts</td></tr>
+          <tr><th scope="row">Wallet (sidebar)</th><td>Rename · Copy Address · Remove…</td></tr>
+          <tr><th scope="row">Alert</th><td>Open Position · Mark as Read · Mute</td></tr>
+        </tbody></table></div>
+      </div>
+      <p class="note">Every context action is also a menu bar item and a custom accessibility action. Mac shows the pointing hand over links. Hover effects on iPad cards, none carrying information.</p>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-a11y">
+      <header class="on-2"><h2 id="h-a11y">Accessibility on these surfaces</h2><p>Follows <code>docs/decisions/0022-accessibility.md</code>. The wide layouts add focus groups, menu parity and window titles.</p></header>
+      <div class="scroll"><table class="tbl"><caption>What each surface must do</caption><thead><tr><th scope="col">Surface</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><th scope="row">Focus groups</th><td>Sidebar, list, detail and toolbar are separate groups. The primary item of a group takes focus when the group does. Selecting a row never moves focus into the detail.</td></tr>
+        <tr><th scope="row">VoiceOver</th><td>Each row is one element with the position and its range status; swipe and context actions are custom actions; headings and links are in the rotor; the cursor does not reset on live updates.</td></tr>
+        <tr><th scope="row">Voice Control</th><td>Every toolbar button has a name ("Add", "Share"); rows are named by the pair.</td></tr>
+        <tr><th scope="row">Menu bar and toolbar</th><td>Every toolbar item is also a menu command. Toolbar buttons have tooltips. The window title says where you are.</td></tr>
+        <tr><th scope="row">Text size</th><td>iPad scales with Dynamic Type and reflows. Mac has no Larger Text, so the window and the display zoom are tested.</td></tr>
+        <tr><th scope="row">Contrast and glass</th><td>Toolbars use the system look, so Increase Contrast and Reduce Transparency apply. Content stays on opaque colour blocks.</td></tr>
+        <tr><th scope="row">Motion</th><td>Detail changes crossfade on wide layouts and under Reduce Motion; the zoom stays on narrow windows.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-code">
+      <header class="on-3"><h2 id="h-code">SwiftUI mapping</h2><p>One multiplatform target, one navigation structure per width. These are sketches, not compiled.</p></header>
+      <pre><code>// iPad and Mac: tabs that become a sidebar
+TabView(selection: $section) {
+  Tab("Portfolio", systemImage: "chart.pie", value: Section.portfolio) { PortfolioSplit() }
+  Tab("Alerts", systemImage: "bell", value: Section.alerts) { AlertsSplit() }
+  #if !os(macOS)
+  Tab("Settings", systemImage: "gearshape", value: Section.settings) { SettingsList() }
+  #endif
+}
+.tabViewStyle(.sidebarAdaptable)
+
+// list and detail
+NavigationSplitView { WalletSidebar() } content: { PositionList(selection: $selected) } detail: { PositionDetail(id: selected) }
+
+// scenes: the main window with its commands, a window per position, the Mac settings window
+WindowGroup { RootView() }
+  .commands {
+    CommandGroup(replacing: .newItem) { Button("New Wallet…") { showAdd = true }.keyboardShortcut("n") }
+    CommandMenu("Position") { Button("Copy Address") { copyAddress() }.keyboardShortcut("c", modifiers: [.command, .shift]) }
+  }
+WindowGroup("Position", for: Position.ID.self) { $id in PositionDetail(id: id) }   // Open in New Window
+#if os(macOS)
+Settings { SettingsPanes() }          // opened with &#8984;,
+#endif
+
+// toolbar, search, context menu, tooltips
+.toolbar { ToolbarItem(placement: .primaryAction) { Button("Add", systemImage: "plus") { showAdd = true }.help("Add a wallet") } }
+.searchable(text: $query)
+.contextMenu { Button("Copy Address") { } }
+</code></pre>
+    </section>
+
+    <section class="sheet" aria-labelledby="h-dec">
+      <header class="on-4"><h2 id="h-dec">Decisions this pass makes</h2><p>The first two close open questions of the navigation map.</p></header>
+      <ol class="rules">
+        <li><b>On wide layouts, wallets are a sidebar filter.</b> That answers the wallet switcher question for iPad, Mac and tablets. On iPhone it stays a header menu, added after the first beta.</li>
+        <li><b>The detail is a column on wide layouts, a push on narrow ones.</b> Zoom runs only on narrow windows.</li>
+        <li><b>Settings on Mac is a window with four panes.</b> On iPad it is a tab or sidebar item, because the system owns <kbd>⌘,</kbd> there.</li>
+        <li><b>New windows are opt-in</b> from the Position menu and context menu.</li>
+        <li><b>The menu bar lists every command</b>, and every toolbar item is one of them. Cards and Rows stays a segmented picker; the macOS 27 <code>.tabs</code> style is for switching sections only.</li>
+      </ol>
+      <p class="note">Not read here: Apple's iPad multitasking pages and the WWDC25 session "Elevate the design of your iPad app" (session 208). Window width thresholds and the minimum Mac window size are for the component spec. Sources: HIG pages for the menu bar, toolbars, windows, settings, keyboards, pointing devices, focus and selection, sidebars and designing for iPadOS.</p>
+    </section>
+  </main>
+</div>
+
+</body></html>

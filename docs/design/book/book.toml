@@ -1,0 +1,13 @@
+[book]
+title = "VoidX design book"
+src = "."
+
+[build]
+build-dir = "_build"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+additional-css = ["theme/gitbook.css"]
+additional-js = ["theme/gitbook.js"]
+git-repository-icon = "fa-github"
