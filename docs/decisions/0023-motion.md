@@ -27,6 +27,7 @@ Chosen **shared motion tokens with CI budgets**.
   | `flip` | spring 0.63 s, bounce 0.375 | Drawer on web Cards, provisional until its values are fixed ([0055](0055-ghost-design-language.md)) |
   | `intent` | 110 ms | hover delay before the owed-fees hint |
   | `stagger` | 30 ms per item, at most 8 | lists; 0 when reduced |
+  | `scrub` | scroll position, no duration | the sticky header only: the hero total condensing into the bar; opacity and transform only; reduced: a `fast` opacity fade at the threshold ([research](../research/repo/sticky-header-motion.md)) |
 
 - Web: cross-document View Transitions between pages with a per-entity `view-transition-name`; Speculation Rules prefetch with `eagerness: moderate` on in-app links, no prerender, because a prerendered page would open `/stream` before anyone sees it; view transitions on frame reloads only where `data-vt` is set; springs as generated `linear()` curves; skeletons sized like the content; only `transform` and `opacity` animate, except the size of `::view-transition-group` snapshots, which are composited images, not layout; disclosures open at once and fade their content, never animating height (*convention*).
 - iOS: zoom navigation transitions, `contentTransition(.numericText(value:))` with monospaced digits, the value only giving the direction, sensory feedback on confirmations, one `Motion` helper that honours Reduce Motion.
