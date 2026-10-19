@@ -22,3 +22,4 @@ Chosen **native Swift** (`ios-app`: one multiplatform SwiftUI target for iOS, iP
 - The apps share contracts, not code: the OpenAPI spec, design tokens and chain metadata are generated into each ([0010](0010-wire-contract.md)).
 - `:core:model` on Android stays pure Kotlin, so Kotlin Multiplatform remains possible later.
 - UI work is done twice; the thin-client rule keeps that to presentation only.
+- Android ships after the MVP ([0056](0056-android-after-the-mvp.md)).

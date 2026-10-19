@@ -1,6 +1,6 @@
 # Integration model
 
-What a contributor adds and how the system finds it ([ADR 0006](../decisions/0006-integration-unit.md)). Step-by-step guides arrive with the `voidx` tools in M1. MVP families: `uniswap-v3` and `uniswap-v4`. Aerodrome and Velodrome come after the Aero launch through a research gate ([research/aero](../research/aero/audit-notes.md)).
+What a contributor adds and how the system finds it ([ADR 0006](../decisions/0006-integration-unit.md)). Step-by-step guides arrive with the `voidx` tools in M1a. MVP families: `uniswap-v3` and `uniswap-v4`. Aerodrome and Velodrome come after the Aero launch through a research gate ([research/aero](../research/aero/audit-notes.md)).
 
 ## Promise
 

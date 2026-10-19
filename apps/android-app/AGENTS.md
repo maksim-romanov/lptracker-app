@@ -1,5 +1,7 @@
 # android-app
 
+> Android ships after the MVP ([ADR 0056](../../docs/decisions/0056-android-after-the-mvp.md)). Until then this folder holds only this file: no code, steps, CI jobs or SDK bootstrap. Everything below applies when Android starts.
+
 Jetpack Compose app plus Glance widget. Design and plan: `docs/research/android-app/` and, once approved, `docs/specs/android-app-plan.md`. Stack: [ADR 0020](../../docs/decisions/0020-android-stack.md).
 
 ## Commands (*planned*)

@@ -18,7 +18,7 @@ Scope and placement
 Loop design
 - We define done as commands: every box in the spec's Acceptance criteria plus `bun run check --affected`. The agent ticks a box only after printing the command output, because Claude stops when work "looks done" unless a check it can run exists. [4][7]
 - We gate the stop twice. First a `/goal` condition per iteration, e.g. `/goal criterion 3 of docs/specs/<spec>.md holds: <command> exits 0, bun run check --affected is green, or stop after 20 turns`; the evaluator only reads the transcript, so the condition names the command whose output must appear. Second a Stop hook `voidx-loop/plugin/hooks/verify-done.sh` that runs the criteria commands and `check`, prints only the failing log path, exits 2 to block, and lets the stop through when `stop_hook_active` is true after writing a `BLOCKED` note. It acts only when `VOIDX_LOOP=1` (set in `--settings` `env`), so interactive sessions stay fast. [5][6][7]
-- We run one criterion group per iteration in a fresh `claude -p` session. State passes through git and `.agent/progress/<slug>.md` (already gitignored, no `.gitignore` change). The outer loop stops when all boxes are ticked, after N iterations, or after two iterations with no new commit. This is the Ralph pattern; Anthropic's harness needs the same bridge between sessions, and resets beat compaction on smaller models while newer models need fewer harness parts. [1][2][17]
+- We run one criterion group per iteration in a fresh `claude -p` session. State passes through git and the shared state folder outside the worktrees, `~/.claude/voidx-loop/state/<spec>/` ([orchestration](multi-agent-orchestration.md)). The outer loop stops when all boxes are ticked, after N iterations, or after two iterations with no new commit. This is the Ralph pattern; Anthropic's harness needs the same bridge between sessions, and resets beat compaction on smaller models while newer models need fewer harness parts. [1][2][17]
 - We commit per criterion on the worktree branch with `git commit -s` and `Assisted-by: Claude Code`, because commits are the recoverable checkpoints and `/rewind` does not track Bash changes. [1][4]
 - We write the failing test or fixture first for any observable criterion, in its own commit, then the code. [4]
 - We stop the agent from weakening the check: the Stop hook fails when `git diff main --diff-filter=D --name-only` lists a test file, or the diff touches a threshold or lint config, unless the spec says so. [1] (Matches the AGENTS.md rule "keep the threshold".)
@@ -35,8 +35,8 @@ Decomposition and gates
 - We do not adopt Spec Kit or Kiro: our `docs/specs/` format already holds spec, tasks and verification, and third-party skills are barred by [ADR 0047](../../decisions/0047-agent-tools-and-mcp.md). Their implement-until-converged loop is what the outer loop does. [18][19]
 
 Parallelism
-- We run at most two or three worktrees at once, one per workspace (server, ios, android), never two on `packages/contracts` or `packages/core`, because worktrees isolate files but share ports (Prism), Xcode and Gradle CPU, and each needs its own `bun install`; fan-out costs about 15x ([agent context](../../concepts/agent-context.md)). `isolation: worktree` on subagents only for mechanical refactors. [4][11]
-- We run no agent teams, agent view or `/batch` for feature work. [4]
+- (Updated 2026-10-19) Superseded by [orchestration](multi-agent-orchestration.md) and [resource limits](local-resource-limits.md): a weighted budget instead of a fixed worker count (step `size` S=1, M=2, L=3 against a budget of about 8, halved under memory pressure, at most 8 sessions), with disjoint `owns` sets, one host-wide build slot and one device slot; never two steps on `packages/contracts` or `packages/core` at once. Steps come from the spec's step list ([work decomposition](work-decomposition.md)).
+- We run no agent teams or `/batch` for feature work; agent view is allowed as a read-only monitor. [4]
 
 Guardrails
 - We run unattended loops with `--permission-mode dontAsk` and an explicit allowlist in the local `settings.json` (`bun run *`, `git add`, `git commit -s *`, read-only `git`, the native build commands), because auto mode's classifier pauses the run after 3 blocks in a row or 20 total and is not deterministic. Watched sessions may use auto mode. `--dangerously-skip-permissions` only inside a container or VM. [9]
@@ -66,7 +66,7 @@ AI policy
 | Piece | Location | Committed |
 |---|---|---|
 | Launcher, instructions, settings, plugin | `~/.claude/voidx-loop/` | no |
-| Handoff state | `.agent/progress/<slug>.md` per worktree | no, `.agent/` already in `.gitignore` |
+| Handoff state | `~/.claude/voidx-loop/state/<spec>/` (`tasks.json`, `events.jsonl`, `progress/`) | no, outside the repo |
 | Worktrees | `.claude/worktrees/` | no; needs one ignore line (below) |
 | Deny rules, hooks for formatting | `.claude/settings.json` | yes, unchanged |
 

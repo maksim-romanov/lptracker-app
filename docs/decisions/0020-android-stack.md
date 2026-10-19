@@ -34,5 +34,6 @@ Chosen **ViewModel + StateFlow with Metro**, because it is the most widely known
 
 ## Consequences
 
+- Applies when Android starts after the MVP ([0056](0056-android-after-the-mvp.md)).
 - Features see only the public repository interfaces of `:core:data`; implementations are `internal` and `:core:network` is an `implementation` dependency, enforced by Gradle visibility and a module-graph assertion.
 - Related: [0005](0005-dependency-injection.md), [0022](0022-accessibility.md), [0023](0023-motion.md).

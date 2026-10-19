@@ -8,7 +8,7 @@ What exists and how it fits together. Reasons live in the linked ADRs.
 flowchart TB
   web[Web browser<br/>SSR + Hotwire]
   ios[ios-app<br/>iOS · iPadOS · macOS]
-  android[android-app]
+  android[android-app<br/>after the MVP]
   server[apps/server<br/>HTML + /api/v1 + SSE]
   worker[apps/worker<br/>refresh · prices · logos · alerts]
   pg[(Postgres)]
@@ -19,15 +19,17 @@ flowchart TB
   prices[Price and logo sources]
   web --> server
   ios --> server
-  android --> server
+  android -.-> server
   server --> pg & redis & index & rpc
   worker --> pg & redis & index & rpc
-  worker --> push --> ios & android
+  worker --> push --> ios
+  push -.-> android
   worker --> prices
 ```
 
 - `server` serves HTML pages and fragments, the JSON API, the SSE stream and re-hosted logos (`/api/v1/logos`) from one process ([ADR 0028](decisions/0028-server-stack.md), [ADR 0046](decisions/0046-token-logos.md)).
 - `worker` refreshes watch targets, prices and the logo index, and sends alerts ([ADR 0026](decisions/0026-worker-and-alerts.md), [ADR 0045](decisions/0045-token-prices.md), [ADR 0046](decisions/0046-token-logos.md)).
+- Dashed lines are planned after the MVP ([ADR 0056](decisions/0056-android-after-the-mvp.md)).
 - Clients are thin: they format values the server derived ([ADR 0003](decisions/0003-server-owns-protocol-logic.md)).
 - Push goes through OneSignal behind the `Notifier` port ([ADR 0014](decisions/0014-push-via-onesignal.md)).
 

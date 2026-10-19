@@ -10,6 +10,8 @@ Scope: one MacBook (Apple M5, 10 cores, 24 GB RAM, about 220 GB free) running se
 
 ## Decisions
 
+- (Updated 2026-10-19) The owner replaced the fixed cap with a weighted budget: each step's `size` (S=1, M=2, L=3) counts against a budget of about 8, halved at 25-40% free memory and closed below 25%, with at most 8 sessions; the build and device slots stay. Android is after the MVP ([0056](../../decisions/0056-android-after-the-mvp.md)), so the slots serve Xcode and the iOS Simulator only.
+
 Budget
 - We run at most three agent sessions at once and at most one of each heavy job host-wide: one build slot (xcodebuild or Gradle, never both) and one device slot (one iOS Simulator or one Android emulator, never both). Light work (edit, git, `bun test`, Prism, Turbo typecheck) is unlimited. Reason: 24 GB must hold macOS and apps (about 5 GB), three Claude Code sessions (about 1 GB each *(measure)*), a Gradle daemon plus Kotlin daemon (about 6 GB at the caps below), Xcode compile peaks (several GB *(measure)*) and a device (2 to 4 GB *(measure)*); two builds at once reach swap. [4][5][9][10]
 - We give each worktree its own agent but not its own device: agents queue on the device slot and every UI check starts from `simctl erase` or `-no-snapshot` state set by `prepare-device`, so a shared device does not leak state between agents. [8][autonomy-loops]

@@ -14,6 +14,19 @@ Run it before the first code in an app, or before using a framework, library or 
 
 The `research-app` skill walks through steps 1–4. A PR with app code links its approved plan; CI checks the status (*planned*).
 
+## Iterations and steps
+
+How an approved spec becomes agent work ([decomposition research](research/agent-tools/work-decomposition.md)).
+
+- An iteration is one roadmap milestone with one approved spec. A spec with more than about 30 steps is split before approval.
+- A step is one fresh agent session in one workspace that ends when one command exits 0. Steps live in `docs/specs/<spec>.steps.json`, approved with the spec ([format](specs/README.md#steps)).
+- Phases run in this order: 0 contracts, fixtures, mocks and tokens; 1 core; 2 server and data; 3 client logic; 4 UI kit; 5 screens; 6 motion check on devices; 7 audits. Client logic runs against the mock API, in parallel with the server.
+- Each client (web, iOS) has its own gate step `core-green-<client>`. It depends on every step of phases 0 to 3 that client needs, and every phase 4 to 7 step of that client depends on it directly or through another step, so UI work starts only after the core it uses passes.
+- UI steps build what the approved design prototype shows (iteration D0 on the [roadmap](roadmap.md)) and list it in `reads`. A screen that is not in the prototype is drawn there first.
+- A component or screen step is done only with its motion, reduced-motion branch and accessibility checks passing; phase 6 checks motion budgets and parity on devices, not missing work.
+- Phase 7 has three parts: an agent QA pass that drives the running app (simulator through a mobile MCP server, the web through Playwright) on fixture data only and records findings; a screenshot review against the design rubric; the owner's acceptance against the prototype. Findings become fix steps; thresholds stay ([hard rules](../AGENTS.md#hard-rules)).
+- Steps run in parallel when their dependencies are done and their `owns` globs do not overlap. Steps that touch `packages/contracts` or `packages/core` run alone. How many run at once depends on step `size` and free memory ([resource limits](research/agent-tools/local-resource-limits.md)).
+
 ## Every change
 
 | Step | Rule |

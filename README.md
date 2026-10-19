@@ -1,6 +1,6 @@
 # VoidX
 
-Open-source tracker for liquidity positions across DeFi protocols and chains, on the web, iOS, iPadOS, macOS and Android.
+Open-source tracker for liquidity positions across DeFi protocols and chains, on the web, iOS, iPadOS and macOS, with Android after the MVP.
 
 The first release watches any address on Ethereum, Arbitrum, Base and Optimism across Uniswap V3 and Uniswap V4: token amounts, owed fees and range status, with alerts when a position leaves its range. New protocols and chains are added as integrations, mostly by the community.
 

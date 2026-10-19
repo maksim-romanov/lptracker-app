@@ -59,4 +59,4 @@ Each request re-sends the whole history. The prompt cache makes the repeated par
 
 ## Not used
 
-Output-compressing proxies and command-rewriting hooks (they drop information and can break cache markers), terse "caveman" output styles (lower quality, against [writing-docs](../writing-docs.md)), Haiku for review agents, wide fan-out and agent teams.
+Output-compressing proxies and command-rewriting hooks (they drop information and can break cache markers), terse "caveman" output styles (lower quality, against [writing-docs](../writing-docs.md)), Haiku for review agents, agent teams, and more sessions than the weighted budget in [resource limits](../research/agent-tools/local-resource-limits.md).

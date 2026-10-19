@@ -5,7 +5,7 @@
 | [vision.md](vision.md) | What VoidX is, for whom, MVP scope, non-goals |
 | [architecture.md](architecture.md) | What exists and how it fits together |
 | [glossary.md](glossary.md) | The words we use and the identifier grammars |
-| [roadmap.md](roadmap.md) | Order of work, M0 to M6 (with M3.5) |
+| [roadmap.md](roadmap.md) | Order of work: iterations D0 to M6 |
 | [workflow.md](workflow.md) | Research gate and how a change moves to merge |
 | [writing-docs.md](writing-docs.md) | How to write docs here |
 | [concepts/data-rule.md](concepts/data-rule.md) | Index versus chain, blocks, failures |

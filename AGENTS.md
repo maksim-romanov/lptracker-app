@@ -1,6 +1,6 @@
 # VoidX
 
-Open-source tracker for LP positions across protocols and chains. Web (SSR), iOS, iPadOS, macOS, Android.
+Open-source tracker for LP positions across protocols and chains. Web (SSR), iOS, iPadOS, macOS; Android after the MVP ([ADR 0056](docs/decisions/0056-android-after-the-mvp.md)).
 
 The repo is docs-only until M0. No command below exists yet. To verify a doc change, run the [fluff test](docs/writing-docs.md#fluff-test) and check every link resolves. Do not create `package.json`, `mise.toml` or scripts; M0 has its own spec.
 
@@ -22,7 +22,7 @@ The repo is docs-only until M0. No command below exists yet. To verify a doc cha
 | Contract change end to end | `bun run api:sync` |
 | Verify an integration | `bun run verify:protocol <family>` |
 
-`check` = `codegen`, `typecheck`, `lint`, `test`, in every workspace including the native wrappers. Agents run `check --affected`; on failure read the log file whose path it prints, not the whole output. `api:sync` = `codegen` + both native client builds + oasdiff, only for contract changes. Swift checks need macOS with Xcode; Android checks need the Android SDK.
+`check` = `codegen`, `typecheck`, `lint`, `test`, in every workspace including the native wrappers. Agents run `check --affected`; on failure read the log file whose path it prints, not the whole output. `api:sync` = `codegen` + the iOS client build + oasdiff, only for contract changes. Swift checks need macOS with Xcode; Android checks (after the MVP) need the Android SDK.
 
 ## Hard rules
 

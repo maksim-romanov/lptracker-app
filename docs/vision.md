@@ -6,7 +6,7 @@ Liquidity providers spread positions across protocols and chains. Each protocol 
 
 ## Product
 
-VoidX is an open-source platform for tracking and, later, interacting with smart contracts. The first product tracks LP positions for any address, on the web, iOS, iPadOS, macOS and Android, with alerts when a position leaves or re-enters its range.
+VoidX is an open-source platform for tracking and, later, interacting with smart contracts. The first product tracks LP positions for any address, on the web, iOS, iPadOS and macOS (Android after the MVP, [0056](decisions/0056-android-after-the-mvp.md)), with alerts when a position leaves or re-enters its range.
 
 ## Users
 
@@ -21,7 +21,7 @@ VoidX is an open-source platform for tracking and, later, interacting with smart
 | Protocols | Uniswap V3, Uniswap V4 |
 | Chains | Ethereum, Arbitrum, Base, Optimism |
 | Values | Token amounts per position, owed fees per token, range in pool price terms; USD prices and totals as estimates, marked partial when a token is unpriced ([prices](concepts/prices-and-logos.md)) |
-| Clients | Web (SSR), iOS, iPadOS, macOS, Android, widgets |
+| Clients | Web (SSR), iOS, iPadOS, macOS, widgets; Android after the MVP |
 | Access | Watch-only addresses; guest mode; passkey accounts for sync and push |
 | Alerts | Range exit and re-entry; no push on macOS |
 | Plans | Guest 1 wallet, Free 3, Pro 25 with early warnings; Pro granted manually ([plans](concepts/plans-and-entitlements.md)) |

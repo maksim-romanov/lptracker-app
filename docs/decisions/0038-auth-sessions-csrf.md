@@ -35,5 +35,5 @@ CSRF and sensitive actions:
 
 ## Consequences
 
-- The domain is frozen before M4, before the first production passkey; staging and local development use their own RP IDs ([0044](0044-domain-as-configuration.md)).
+- The domain is frozen before M4a, before the first production passkey; staging and local development use their own RP IDs ([0044](0044-domain-as-configuration.md)).
 - Idempotency rules for these endpoints are in [concepts/resilience.md](../concepts/resilience.md): auth ceremonies are never replayed.

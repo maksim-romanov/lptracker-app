@@ -1,6 +1,6 @@
 # Design book
 
-A design-neutral base for building the web, iOS, iPadOS, macOS and Android clients from scratch. It fixes structure, names, rules and behaviour and fixes colour roles and leaves shape details and imagery for a later design pass.
+A design-neutral base for building the web, iOS, iPadOS and macOS clients from scratch; Android sections apply when Android starts ([ADR 0056](../../decisions/0056-android-after-the-mvp.md)). It fixes structure, names, rules and behaviour and fixes colour roles and leaves shape details and imagery for a later design pass.
 
 Read in this order: [foundations](foundations/README.md), [components](components/README.md), then the [screen](screens/README.md) or [widget](widgets/README.md) you build.
 

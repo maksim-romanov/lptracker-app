@@ -19,7 +19,7 @@ Chosen **Maestro flows plus native gates**, because one flow per journey proves 
 
 | Layer | Tool | Covers |
 |---|---|---|
-| Journeys on iPhone, iPad, Android | Maestro, `e2e/flows/<journey>.yaml`, one file for every platform | user paths and spoken labels |
+| Journeys on iPhone and iPad (Android after the MVP, [0056](0056-android-after-the-mvp.md)) | Maestro, `e2e/flows/<journey>.yaml`, one file for every platform | user paths and spoken labels |
 | Screen states, accessibility audits, large text, macOS, system UI | XCUITest (XCTest), Compose UI tests with `enableAccessibilityChecks()` on the emulator, UI Automator for widgets and system dialogs; no Espresso tests | what Maestro cannot check ([0022](0022-accessibility.md), [research](../research/repo/native-ui-tests.md)) |
 | Pixels | swift-snapshot-testing (Swift Testing), Roborazzi | visual regressions |
 | Logic | Swift Testing, JUnit on the JVM | domain, decoding, formatting |
@@ -30,7 +30,7 @@ Chosen **Maestro flows plus native gates**, because one flow per journey proves 
 - Test ids are kebab-case and identical on both platforms (`accessibilityIdentifier`, `testTag` with `testTagsAsResourceId` set once at the root). Ids avoid regex characters.
 - The Maestro CLI is pinned in mise. CI turns off its analytics, update check and AI notice.
 - Free CLI only; Maestro Cloud is never used.
-- PRs run flows tagged `smoke`: a step in the `ios` job and an `e2e-android` job on Linux with KVM. A nightly run covers every flow in light and dark and a second locale, and does not block merges.
+- PRs run flows tagged `smoke`: a step in the `ios` job; an `e2e-android` job on Linux with KVM joins when Android starts. A nightly run covers every flow in light and dark and a second locale, and does not block merges.
 - Each check lives in one layer; a Maestro flow never re-asserts what an audit or snapshot covers.
 - Maestro screenshots are never a visual gate; snapshots stay with swift-snapshot-testing and Roborazzi.
 - Agents verify text first, pixels second: ARIA snapshots on the web and the UI tree on native (`inspect_screen`, `android layout`, the XCUITest hierarchy, Roborazzi `dumpUiTree`); pixels only against committed baselines ([native research](../research/repo/native-agent-verification.md)).
@@ -42,6 +42,6 @@ Chosen **Maestro flows plus native gates**, because one flow per journey proves 
 ## Consequences
 
 - Smoke journeys are a third PR check on native apps, next to the accessibility audits and snapshots ([0023](0023-motion.md)).
-- From M4 the apps read the real API in some flows, so `inspect_screen` output carries on-chain strings and is untrusted ([0047](0047-agent-tools-and-mcp.md)).
+- From M4b the apps read the real API in some flows, so `inspect_screen` output carries on-chain strings and is untrusted ([0047](0047-agent-tools-and-mcp.md)).
 - CI time budgets are measured in M0.
 - Related: [0019](0019-ios-stack.md), [0020](0020-android-stack.md), [0037](0037-ci-and-supply-chain.md).

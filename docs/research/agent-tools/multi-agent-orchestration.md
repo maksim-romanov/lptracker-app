@@ -35,7 +35,7 @@ Handoff, merge, failure
 - We stop and ask the owner on the AGENTS.md list (unknown address or ABI, new dependency, core change, unapproved plan, two docs disagree) plus: ownership collision, third failure, budget cap hit. The worker sets `blocked` with the question; the `agent_needs_input` hook notifies the owner. [8]
 
 Width
-- We run 3 workers by default and at most 5, only when their `owns` sets are disjoint and at most one touches Xcode and one Gradle, because Anthropic advises 3-5 teammates ("three focused outperform five scattered"), usage scales about linearly with agents (multi-agent about 15x a chat), and ten parallel sessions burn quota about ten times faster. Above 5 conflict and merge cost reportedly grows faster than speed-up (secondary, no benchmark). [1][8][13][11]
+- (Updated 2026-10-19: replaced by the weighted budget in [resource limits](local-resource-limits.md): S=1, M=2, L=3 against about 8, halved at 25-40% free memory, closed below 25%, one build and one device slot.) Originally: 3 workers by default and at most 5, because Anthropic advises 3-5 teammates ("three focused outperform five scattered"), usage scales about linearly with agents (multi-agent about 15x a chat), and ten parallel sessions burn quota about ten times faster. Above 5 conflict and merge cost reportedly grows faster than speed-up (secondary, no benchmark). [1][8][13][11]
 - We start each worker's cost cap at `--max-budget-usd` per task and a global daily cap in the launcher. [14]
 
 ## Facts that constrain us

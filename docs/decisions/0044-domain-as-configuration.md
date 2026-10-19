@@ -1,4 +1,4 @@
-# 0044 · The domain is configuration, frozen before M4
+# 0044 · The domain is configuration, frozen before M4a
 
 - Status: proposed
 - Deciders: Maksim Romanov
@@ -10,11 +10,11 @@ Depthly is the brand and VoidX the product; the owner holds `depthly.xyz` but ma
 ## Options
 
 - **Pick the final domain now** and hard-code it.
-- **Keep the domain in one place per platform** with working values, and freeze it before M4.
+- **Keep the domain in one place per platform** with working values, and freeze it before M4a.
 
 ## Decision
 
-Chosen **one place per platform, frozen before M4**, because a change before the first real user then costs a config edit, not a refactor.
+Chosen **one place per platform, frozen before M4a**, because a change before the first real user then costs a config edit, not a refactor.
 
 | Platform | Where the domain lives |
 |---|---|
@@ -36,6 +36,6 @@ Internal names never depend on the domain: `@voidx/*` packages, `voidx-*` apps, 
 
 ## Consequences
 
-- Freezing the domain is an M4 checklist item, done before the first production passkey and the first store submission; after that, changing it orphans every passkey and needs new store listings.
+- Freezing the domain is the first M4a step, done before the first production passkey and the first store submission; after that, changing it orphans every passkey and needs new store listings.
 - The `depthly.xyz` apex must serve both `.well-known` files for as long as the RP ID is in use, whatever else runs there.
 - Until the freeze, test passkeys and signed builds are disposable.

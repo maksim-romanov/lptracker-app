@@ -1,19 +1,33 @@
 # Roadmap
 
-Every milestone in the table is in the MVP; this is the order. The web proves the architecture first. The native apps start in parallel on a mock API generated from the contract. Every app, and every area of one not yet researched, starts with the [research gate](workflow.md#research-gate).
+Every iteration below is in the MVP. An iteration is one approved spec with at most about 30 steps ([workflow](workflow.md#iterations-and-steps)). MVP clients are the web and the Apple family; Android follows the MVP ([ADR 0056](decisions/0056-android-after-the-mvp.md)). Every app, and every area of one not yet researched, starts with the [research gate](workflow.md#research-gate).
 
-| Milestone | Server and web | Apps | Operations |
+| # | Iteration | Content | Owner input |
 |---|---|---|---|
-| **M0 · Skeleton** | Repo, mise, Turborepo tasks `codegen typecheck lint test check`, dependency-cruiser, `core` ports, draft `contracts` and `openapi.json`, manifest JSON schemas | Tuist and Gradle skeletons, design-token pipeline, UI kit v0, E2E harness (Maestro) on the mock API | `.claude/` setup, CI on pull requests |
-| **M1 · Thin slice** | `uniswap-v3` on Ethereum and Arbitrum: RPC enumeration, token amounts and owed fees, Redis cache, SSR page with cached scopes and lazy frames for misses, one failed scope shown next to the other. Kit: scaffold, record and replay, bronze checks, draft `add-protocol` skill | Portfolio screen (Cards and Rows) on mock data; UI kit: Ghost card, range bar, status chip ([0055](decisions/0055-ghost-design-language.md)) | Deploy pipeline, Postgres backups with a restore test |
-| **M2 · Architecture test** | Base and Optimism as chain files only (Base has its own position manager address); `uniswap-v4` as the second family (third-party subgraph plus `rpc-logs`, hooks, native ETH). The diff stays in `integrations/`, with zero core changes | Render an unknown family from the display descriptor; golden decode tests | ADRs move from `proposed` to `accepted` |
-| **M3 · Full data scope** | Both families on all four chains; silver and gold tiers; PR bot | Position detail (Drawer on Cards, Spotlight on Rows, bottom sheet on phones) and range view | |
-| **M3.5 · USD** | Worker job queue and scheduler for price and logo jobs; price sources and logo pipeline; USD values, partial totals, re-hosted logos ([prices and logos](concepts/prices-and-logos.md)) | USD values, unpriced and monogram states | Price source cost metering |
-| **M4 · Contract and accounts** | Freeze the domain ([ADR 0044](decisions/0044-domain-as-configuration.md)) and `/api/v1` with oasdiff, `/api/v1/meta`, passkeys, watchlist sync; plans, wallet limits and manual Pro grants; signed-in reads live like guest reads | iOS and Android on the real API; sign-in | SLOs and alerts |
-| **M5 · Background** | Watch targets, stored snapshots, range alerts through OneSignal, early-warning alerts for Pro | Push handling (not macOS), alert settings | External API budget alerts and brownout |
-| **M6 · Breadth** | Self-hosting guide, lite mode, push relay design | Widgets, iPadOS and macOS polish | |
+| D0 | **Design** | One clickable prototype of every MVP screen on web, iPhone and iPad/Mac, light and dark, every state (loading, empty, error, partial, unpriced) and the motion in [0023](decisions/0023-motion.md); screen docs in [design book](design/book/README.md) updated. Runs in parallel with M0 | approves the prototype before M1b phase 4 |
+| M0 | **Skeleton** | Repo, mise, Turborepo `check`, TS gates, `core` ports, draft `contracts` and mock, integration schemas, token pipeline, Tuist skeleton, UI kit v0 (status chip, range bar, card shell), e2e harness, agent QA setup, CI | first snapshot baselines, CI settings, iOS simulator runtime |
+| M1a | **Data** | Contract with nullable prices and totals and the error model ([0039](decisions/0039-error-model.md)); `uniswap-v3` on Ethereum and Arbitrum; RPC enumeration, amounts, owed fees, Redis cache; every MVP index source and native ETH in the kit; scaffold, record and replay, bronze checks; address-safe logs, rate limits, RPC budget, error tracking, `/readyz`; `instance.config` and a dev `docker compose` | missing addresses or start blocks |
+| Ops1 | **Deploy** | Deploy pipeline with a migrate step, uptime probe | hosting and deploy secrets |
+| M1b | **First screens** | SSR portfolio page (cached scopes, lazy frames, failed scope), Portfolio Cards and Rows, add wallet, first visit, Settings on iOS; web gates (Playwright, axe, html-validate, Lighthouse, visual regression); draft `add-protocol` skill | acceptance against the prototype |
+| M2 | **Architecture test** | Base and Optimism as chain files only; `uniswap-v4` (third-party subgraph, `rpc-logs`, hooks, native ETH) with zero core changes; unknown family rendered from the display descriptor; golden decode tests | accepts the ADRs |
+| M3a | **Full data scope** | Both families on all four chains; silver and gold tiers; PR bot; load test of the 8 s lookup SLO. Its spec is approved only after M2's result | — |
+| M3b | **Position detail** | Drawer on Cards, Spotlight on Rows, bottom sheet on phones, range view, on web and iOS | acceptance against the prototype |
+| M3.5 | **USD and storage** | Postgres, migrations, backups with a restore test; worker job queue and scheduler; price sources and logo pipeline ([prices and logos](concepts/prices-and-logos.md)); USD values and partial totals; price-source cost metering | price provider keys |
+| M4a | **Accounts** | Domain, RP ID and bundle id frozen first ([0044](decisions/0044-domain-as-configuration.md)); passkeys, sessions and CSRF, watchlist sync, account deletion; `/api/v1/meta`; `/api/v1` frozen with oasdiff last | the domain freeze |
+| R1 | **Release** | Store pipeline ([0033](decisions/0033-release-and-versioning.md)), feature-flag evaluation ([0031](decisions/0031-feature-flags-openfeature.md)), SLO alerts | Apple developer account |
+| M4b | **Apps on the real API** | iOS on the real API, sign-in, Wallets, plans, wallet limits and manual Pro grants | Apple team ID, associated domains |
+| M5a | **Background** | Watch targets, stored snapshots, range alerts through OneSignal, early-warning alerts for Pro, external API budgets and brownout | OneSignal key |
+| M5b | **Push** | Push handling on iOS (not macOS), alerts list, alert settings | APNs key |
+| M6 | **Breadth** | Self-hosting guide, lite mode, push relay design, widgets, iPadOS and macOS polish | App Group |
 
-M2 is the test of the integration promise: if `uniswap-v4` needs a core change, the abstraction is fixed before M3.
+- Inside an iteration, phases 0 to 3 (contracts, core, server, client logic) pass the gate `core-green-web` or `core-green-ios` before that client's UI work starts.
+- The next iteration's steps may start once the current one passed its gates, but never touch `packages/contracts` or `packages/core` while the current iteration's UI steps run.
+- While one iteration runs, research and the next spec are prepared, so the owner approves ahead and agents do not wait.
+- M2 is the test of the integration promise: if `uniswap-v4` needs a core change, the abstraction is fixed before M3a.
+
+## After the MVP: Android
+
+Research gate on `docs/research/android-app/`, then the Android client on the frozen contract ([ADR 0056](decisions/0056-android-after-the-mvp.md), stack in [ADR 0020](decisions/0020-android-stack.md)).
 
 ## After the MVP: personalisation
 

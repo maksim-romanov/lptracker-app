@@ -17,7 +17,7 @@ Every doc in this repo is read by coding agents first and people second. Each li
 | Why the product exists, scope, non-goals | [vision.md](vision.md) |
 | Why a decision was made | [decisions/](decisions/), one ADR each; `proposed` ADRs may be edited, `accepted` ones are superseded |
 | What exists now and how it fits together | [architecture.md](architecture.md) and [concepts/](concepts/) |
-| How to do a task | `docs/guides/` (from M1) or a skill in `.agents/skills/` |
+| How to do a task | `docs/guides/` (from M1a) or a skill in `.agents/skills/` |
 | What an agent must run or never do in a folder | that folder's `AGENTS.md` |
 | What to build next | [specs/](specs/) |
 | What we learned from outside sources | [research/](research/) |

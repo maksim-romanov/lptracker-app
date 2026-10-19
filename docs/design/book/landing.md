@@ -10,7 +10,7 @@ The marketing page. One section for now (the Hero) on one grid, so more sections
 | Headline | "Your DeFi yield on your Home Screen." | Three lines at desktop; fluid size, minimum 40, maximum 88 |
 | Supporting line | "Widgets, and a push when it needs you." | One sentence |
 | Primary button | "Track your wallet" | Height 56; full width on phone; opens Add wallet |
-| Facts line | iPhone, iPad, Mac, Android; Free; Open source | Hidden on short screens; separated by dots, no check icons |
+| Facts line | iPhone, iPad, Mac; Free; Open source | Hidden on short screens; separated by dots, no check icons |
 | Visual | Phone showing the real Portfolio, a push stack, widgets | Decorative; never covers a number; hidden from screen readers |
 | Footer | Name, three links, "USD values are estimates." | Height 56; stacks on phone; no border |
 
