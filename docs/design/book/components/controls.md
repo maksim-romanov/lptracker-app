@@ -37,6 +37,23 @@
 - **Rules.** A pressed chip changes more than colour (a check mark or weight). A chip with a nonzero attention count may use the status role.
 - **A11y.** Toggle button with pressed state; group is labelled "Filter positions".
 
+## Wallet tags
+
+*control, scope*
+
+- **Anatomy.** One tag per wallet (avatar, label, position count), then Add wallet. On iPad wide and Mac the tags are the sidebar's wallet rows.
+- **Rules.** A pressed tag scopes the screen to that wallet; several may be pressed; none pressed means all wallets. Counts come from the server (*needs server field*).
+- **Size.** One row; wraps on wide layouts, scrolls sideways under 600 px. Hit area `target.min`.
+- **A11y.** Toggle buttons with pressed state in a group labelled "Wallets".
+
+## Filter bar
+
+*control, filters on web*
+
+- **Anatomy.** Groups Networks, Protocols and Status, each a label and Filter chips with a logo mark; Reset when anything is set. Under 600 px and when the header is condensed: one scrolling row, group labels hidden, groups split by a hairline.
+- **Phone.** A Filters button with the active count, an Out of range quick chip and the active chips with remove; the button opens a bottom sheet with Status, Wallets, Networks and Protocols lists and "Show N positions".
+- **A11y.** Group labelled "Filter positions"; each chip a toggle button.
+
 ## Text field
 
 *input, label above*

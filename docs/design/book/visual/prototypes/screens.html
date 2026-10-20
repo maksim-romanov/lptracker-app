@@ -2,7 +2,7 @@
 <title>VoidX Screens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..800&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a control strip (platform, screen, palette), then one stage: a browser frame for Web, a row of iPhone frames for iPhone. Everything is built from the Ghost tokens of ADR 0055 and the engine of the cards prototype: palette in OKLCH, ink picked by contrast, range bar with spring physics, Drawer on Web cards. */
 :root {
@@ -22,7 +22,7 @@
 :root[data-theme="dark"] { --page: oklch(0.16 0.03 320); --page-ink: oklch(0.98 0.01 320); --surface: oklch(0.23 0.04 320); --accent: oklch(0.72 0.208 350); --accent-ink: oklch(0.22 0.05 320); color-scheme: dark; }
 * { box-sizing: border-box; }
 html, body { background: var(--page); color: var(--page-ink); }
-body { margin: 0; font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+body { margin: 0; font-family: "DM Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
 h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; }
 a { color: inherit; }
@@ -56,7 +56,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .chip[data-state="out"] { background: var(--amber); color: var(--amber-ink); transform: rotate(3deg); } .chip[data-state="out"]::before { border-radius: 1px; }
 .pair { font-size: 24px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; }
 .meta { font-size: 13px; color: color-mix(in oklab, var(--ink, var(--page-ink)) 92%, var(--c, var(--page))); }
-.big { font-size: 56px; font-weight: 600; letter-spacing: -0.045em; line-height: .95; } .big sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
+.big { font-size: 56px; font-weight: 700; letter-spacing: -0.015em; line-height: .95; } .big sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
 .ftop { display: grid; gap: 14px; align-content: start; } .fbot { display: grid; gap: 10px; }
 .tk { flex: none; width: 15px; height: 15px; border-radius: 50%; display: inline-grid; place-items: center; font-style: normal; font-size: 8px; font-weight: 800; line-height: 1; background: var(--tk); color: var(--tkc, #fff); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink, var(--page-ink)) 30%, transparent); }
 .tk svg { width: 55%; height: 62%; display: block; }
@@ -120,7 +120,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .rows .card { position: relative; border-radius: 26px; padding: 14px 18px; background: var(--c); color: var(--ink); display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr) auto auto; align-items: center; gap: 12px 22px; cursor: pointer; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 12%, transparent); transition: box-shadow 400ms, opacity 300ms, transform 500ms var(--ease); }
 .rows .card .bar { margin-bottom: 22px; margin-top: 0; }
 .rows .card.hover, .rows .card.open, .rows .card:focus-visible { z-index: 4; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent), 0 20px 34px -24px color-mix(in oklab, var(--page-ink) 55%, transparent); }
-.rows .value { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; text-align: right; }
+.rows .value { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; text-align: right; }
 .rows .pair { font-size: 18px; } .rows .amounts { justify-content: flex-start; gap: 14px; margin-top: 4px; }
 .details { position: absolute; top: calc(100% + 12px); right: 0; width: min(380px, 100%); border-radius: 24px; background: var(--c); color: var(--ink); padding: 18px; box-shadow: 0 0 0 2px var(--ink), 0 34px 50px -26px color-mix(in oklab, var(--page-ink) 70%, transparent); opacity: 0; pointer-events: none; transform: translateY(-10px) scale(.9); transform-origin: 88% 0; transition: opacity 140ms ease-out, transform var(--dur) var(--ease); }
 .rows .card.open .details, .rows .card:focus-visible .details { opacity: 1; transform: none; pointer-events: auto; }
@@ -164,13 +164,20 @@ h1[tabindex="-1"]:focus { outline: none; }
 .layer.list.condensed .pscroll > .toolbar { background: color-mix(in oklab, var(--page) 80%, transparent); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%); box-shadow: 0 1px 0 var(--hair); }
 @media (prefers-reduced-motion: reduce) { .ctotal, .pbar { transform: none !important; transition: opacity 150ms linear; } }
 @media (prefers-reduced-transparency: reduce) { .site::before, .pbar, .layer.list.condensed .pscroll > .toolbar, .browser.condensed .page > .toolbar .fbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--page); } }
-.logo { font-weight: 700; font-size: 22px; letter-spacing: -0.03em; display: flex; gap: 8px; align-items: center; text-decoration: none; } .logo i { width: 28px; height: 24px; background: currentColor; border-radius: 50% 50% 40% 40%; display: inline-block; }
+.logo { font-weight: 700; font-size: 22px; letter-spacing: -0.02em; display: flex; gap: 8px; align-items: center; text-decoration: none; } .logo i { width: 28px; height: 24px; background: currentColor; border-radius: 50% 50% 40% 40%; display: inline-block; }
 .site nav { display: flex; gap: 4px; }
 .site nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font-weight: 600; font-size: 15px; text-decoration: none; }
 .site nav a[aria-current="page"] { background: var(--page-ink); color: var(--page); }
 .site .grow { flex: 1; }
 .site .fresh { font-size: 13px; color: var(--muted); display: inline-flex; align-items: center; gap: 8px; } .site .fresh::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
 .site .fresh.paused::before { border-radius: 1px; background: var(--edge); }
+.site .fresh.stale { color: var(--page-ink); } .site .fresh.stale::before { background: var(--amber); box-shadow: 0 0 0 2px color-mix(in oklab, var(--amber) 35%, transparent); }
+/* tokens only (M1 to M3): the base amount is the big figure, no USD anywhere */
+.big.tok { font-size: 46px; display: flex; align-items: baseline; gap: 6px; } .big.tok sup.sym { font-size: .4em; vertical-align: 0; margin: 0; letter-spacing: 0; opacity: .72; }
+.tok2 { font-size: 17px; font-weight: 650; margin-top: -10px; opacity: .8; }
+.dbig.tok { display: flex; align-items: baseline; gap: 8px; } .dbig.tok sup.sym { font-size: .36em; vertical-align: 0; letter-spacing: 0; opacity: .72; }
+.valuecell.tok { gap: 1px; } .valuecell.tok .owedcap { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .6; }
+.valuecell.tok .owedline { font-size: 13px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 999px; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; background: var(--page-ink); color: var(--page); }
 .btn.ghost { background: none; color: inherit; box-shadow: inset 0 0 0 1.5px var(--edge); }
 .btn.accent { background: var(--accent); color: var(--accent-ink); }
@@ -178,8 +185,8 @@ h1[tabindex="-1"]:focus { outline: none; }
 .page { padding: 8px 28px 44px; display: grid; gap: 14px; }
 .page.narrow { max-width: 820px; margin-inline: auto; width: 100%; padding-top: 24px; }
 .page > * { min-width: 0; }
-.headline { margin: 6px 0 0; text-align: center; font-size: clamp(32px, 5.4vw, 64px); font-weight: 400; letter-spacing: -0.035em; line-height: 1.06; text-wrap: balance; }
-.headline .pill { background: var(--accent); color: var(--accent-ink); border-radius: 22px; padding: 0 .18em; font-weight: 500; }
+.headline { margin: 6px 0 0; text-align: center; font-size: clamp(32px, 5.4vw, 64px); font-weight: 700; letter-spacing: -0.012em; line-height: 1.06; text-wrap: balance; }
+.headline .pill { background: var(--accent); color: var(--accent-ink); border-radius: 22px; padding: 0 .18em; font-weight: 700; }
 .subline { text-align: center; font-size: 16px; color: var(--muted); }
 .subline b { color: var(--page-ink); font-weight: 700; }
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
@@ -190,7 +197,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .chips button.dim { opacity: .45; }
 .chips .cdiv { flex: none; width: 1px; height: 24px; align-self: center; background: color-mix(in oklab, var(--page-ink) 18%, transparent); margin: 0 2px; }
 /* iPad and Mac: frames and columns */
-.widestage { display: grid; justify-items: center; gap: 12px; padding: 8px 0 24px; }
+.widestage { display: grid; justify-items: center; gap: 12px; padding: 8px 0 24px; } .widestage > .msettings { width: 100%; display: grid; justify-items: center; gap: 12px; }
 .widecol { display: grid; gap: 8px; justify-items: center; width: 100%; } .widecol > p { font-size: 13px; color: var(--muted); }
 .ipad { width: min(100%, calc(var(--w) * 1px)); aspect-ratio: var(--w) / 820; border-radius: 40px; padding: 14px; background: #0b0a0d; box-shadow: 0 40px 70px -34px rgba(20, 8, 30, .6), inset 0 0 0 2px #3a3640; }
 .ipad .screen, .macwin .screen { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--page); color: var(--page-ink); display: flex; flex-direction: column; }
@@ -201,7 +208,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .cols2 { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); }
 .side2 { display: flex; flex-direction: column; gap: 2px; padding: 12px 10px; background: color-mix(in oklab, var(--page-ink) 4%, var(--page)); border-right: 1px solid var(--hair); overflow-y: auto; }
 .side2.mac { background: color-mix(in oklab, var(--page-ink) 6%, var(--page)); }
-.sbrand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 19px; letter-spacing: -0.03em; padding: 4px 10px 10px; } .sbrand i { width: 24px; height: 21px; background: currentColor; border-radius: 50% 50% 40% 40%; }
+.sbrand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 19px; letter-spacing: -0.02em; padding: 4px 10px 10px; } .sbrand i { width: 24px; height: 21px; background: currentColor; border-radius: 50% 50% 40% 40%; }
 .scap { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: 12px 10px 4px; }
 .srow2 { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; transition: background 160ms; }
 .srow2 > span:not(.wav) { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -223,7 +230,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .mhead.slim { justify-content: center; min-height: 0; padding-block: 6px; }
 .mid2:not(.condensed) .mhead.slim { padding-block: 0; }
 .mid2 > .toolbar { position: sticky; z-index: 5; top: 44px; margin-inline: -16px !important; padding: 6px 16px; transition: background 250ms; }
-.mid2.condensed > .toolbar { background: color-mix(in oklab, var(--page) 78%, transparent); -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%); box-shadow: 0 1px 0 var(--hair); } .mhead h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mid2.condensed > .toolbar { background: color-mix(in oklab, var(--page) 78%, transparent); -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%); box-shadow: 0 1px 0 var(--hair); } .mhead h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mid2 .pfilters, .mid2 > .wtags { margin-inline: -16px; padding-inline: 16px; }
 .mid2 > .wtags { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-top: 4px; }
 .mid2 > .wtags button { flex: none; min-height: 34px; font-size: 13px; padding: 0 12px 0 4px; gap: 6px; } .mid2 > .wtags .wav { width: 26px; height: 26px; font-size: 12px; }
@@ -252,6 +259,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .mptabs button { display: grid; justify-items: center; gap: 3px; min-width: 76px; padding: 6px 10px; border: 0; border-radius: 10px; background: none; color: var(--muted); font: inherit; font-size: 12px; font-weight: 650; cursor: pointer; } .mptabs svg { width: 22px; height: 22px; }
 .mptabs button[aria-selected="true"] { background: color-mix(in oklab, var(--page-ink) 8%, transparent); color: var(--accent); }
 .mpbody { overflow-y: auto; padding: 18px 22px; display: grid; gap: 14px; align-content: start; }
+
 
 /* filters: grouped bar on web, Filters button and sheet on phone */
 .lm { flex: none; width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--lm); font-style: normal; color: #fff; font-size: 8.5px; font-weight: 800; letter-spacing: -0.02em; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
@@ -335,8 +343,8 @@ h1[tabindex="-1"]:focus { outline: none; }
 .crumbs { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); padding-top: 8px; flex-wrap: wrap; } .crumbs a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--page-ink); } .crumbs span[aria-current] { color: var(--page-ink); font-weight: 600; }
 .herocard { border-radius: 34px; padding: 28px; background: var(--c); color: var(--ink); display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent); }
 .herocard .left { display: grid; gap: 14px; align-content: space-between; } .herocard .right { display: grid; gap: 10px; align-content: end; }
-.herocard h1 { font-size: 36px; font-weight: 400; letter-spacing: -0.03em; line-height: 1.08; }
-.herocard .dbig { font-size: 72px; font-weight: 600; letter-spacing: -0.045em; line-height: .95; } .herocard .dbig sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
+.herocard h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
+.herocard .dbig { font-size: 72px; font-weight: 700; letter-spacing: -0.015em; line-height: .95; } .herocard .dbig sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
 .herocard .bar { margin-bottom: 26px; }
 .herocard .lrow { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; } .herocard .lrow span:first-child { color: color-mix(in oklab, var(--ink, var(--page-ink)) 92%, var(--c, var(--page))); } .herocard .lrow b { font-weight: 600; } .herocard .lrow small { font-weight: 500; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -359,7 +367,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 
 /* Empty (guest) */
 .emptycard { border-radius: 34px; padding: 34px; background: var(--c); color: var(--ink); display: grid; gap: 18px; justify-items: start; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent); }
-.emptycard h1, .emptycard h2 { font-size: clamp(30px, 5vw, 52px); font-weight: 400; letter-spacing: -0.035em; line-height: 1.06; text-wrap: balance; }
+.emptycard h1, .emptycard h2 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -0.012em; line-height: 1.06; text-wrap: balance; }
 .emptycard p { font-size: 16px; max-width: 46ch; color: color-mix(in oklab, var(--ink, var(--page-ink)) 92%, var(--c, var(--page))); }
 .addform { display: flex; gap: 10px; width: 100%; max-width: 560px; flex-wrap: wrap; }
 .addform label { flex: 1 1 260px; display: grid; gap: 6px; font-size: 13px; font-weight: 700; }
@@ -372,7 +380,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 
 /* iPhone */
 .stage-phones { position: relative; }
-.phones-inner { display: flex; gap: 40px; transform-origin: 0 0; align-items: flex-start; }
+.phones-inner { display: flex; flex-wrap: wrap; gap: 40px; transform-origin: 0 0; align-items: flex-start; }
 .phonecol { display: grid; gap: 14px; justify-items: center; align-content: start; width: 374px; } .phonecol > p { font-size: 13px; font-weight: 600; color: var(--muted); text-align: center; }
 .phone { flex: none; width: 374px; height: 818px; border-radius: 58px; padding: 12px; background: #0b0a0d; box-shadow: 0 40px 70px -34px rgba(20, 8, 30, .6), inset 0 0 0 2px #3a3640, inset 0 0 0 5px #0b0a0d; }
 .screen { position: relative; width: 100%; height: 100%; border-radius: 46px; overflow: hidden; background: var(--page); color: var(--page-ink); container: app / inline-size; }
@@ -381,7 +389,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .screen .status svg { height: 13px; width: auto; display: block; } .sicons { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
 .layer { position: absolute; inset: 0; background: var(--page); }
 .pscroll { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding: 62px 14px 120px; scrollbar-width: none; overscroll-behavior: contain; } .pscroll::-webkit-scrollbar { display: none; }
-.phead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; } .phead h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; }
+.phead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; } .phead h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
 .pgroup { display: flex; align-items: center; gap: 8px; }
 .iconbtn { border: 0; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; background: color-mix(in oklab, var(--page-ink) 9%, transparent); } .iconbtn svg { width: 20px; height: 20px; }
 .pseg { display: flex; gap: 2px; background: var(--surface); border-radius: 999px; padding: 3px; box-shadow: inset 0 0 0 1px var(--hair); } .pseg button { border: 0; background: none; min-height: 44px; font-size: 13px; font-weight: 600; padding: 0 14px; border-radius: 999px; cursor: pointer; } .pseg button[aria-pressed="true"] { background: var(--page-ink); color: var(--page); }
@@ -397,11 +405,26 @@ h1[tabindex="-1"]:focus { outline: none; }
 .navbar .nacts { display: flex; gap: 8px; } .navbar .iconbtn { background: color-mix(in oklab, var(--surface) 80%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px var(--hair); }
 .dscroll { padding-top: 112px; display: grid; gap: 16px; align-content: start; }
 .dcard { border-radius: 30px; padding: 22px; background: var(--c); color: var(--ink); display: grid; gap: 12px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent); }
-.dcard h1 { font-size: 28px; font-weight: 400; letter-spacing: -0.03em; line-height: 1.1; }
-.dcard .dbig { font-size: 58px; font-weight: 600; letter-spacing: -0.045em; line-height: .95; } .dcard .dbig sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
+.dcard h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+.dcard .dbig { font-size: 58px; font-weight: 700; letter-spacing: -0.015em; line-height: .95; } .dcard .dbig sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
 .dcard .bar { margin-bottom: 26px; } .dcard .lrow { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; } .dcard .lrow span:first-child { color: color-mix(in oklab, var(--ink, var(--page-ink)) 92%, var(--c, var(--page))); } .dcard .lrow b { font-weight: 600; } .dcard .lrow small { font-weight: 500; }
 .dscroll .actions { display: grid; grid-template-columns: 1fr 1fr; } .dscroll .actions .btn { width: 100%; }
-.screen.pushing .layer.list { transform: scale(.97); filter: brightness(.96); }
+.psheet { position: absolute; z-index: 17; left: 0; right: 0; bottom: 0; height: calc(100% - 54px); border-radius: 34px 34px 0 0; background: var(--page); color: var(--page-ink); box-shadow: 0 -20px 50px -20px rgba(0, 0, 0, .5); display: flex; flex-direction: column; transform: translateY(38%); transition: transform 420ms var(--d-ease, cubic-bezier(.2, .9, .3, 1)); touch-action: none; }
+.psheet[data-detent="large"] { transform: none; }
+.psheet.dragging { transition: none; }
+.psgrab { flex: none; position: relative; display: grid; justify-items: center; align-content: start; min-height: 50px; padding-top: 8px; box-sizing: border-box; cursor: grab; }
+.psgrab .psclose { position: absolute; right: 14px; top: 10px; width: 32px; height: 32px; min-height: 0; }
+.psbody { flex: 1; min-height: 0; overflow: hidden; padding: 6px 16px 40px; display: grid; gap: 16px; align-content: start; scrollbar-width: none; }
+.psbody::-webkit-scrollbar { display: none; }
+.psheet[data-detent="large"] .psbody { overflow-y: auto; touch-action: pan-y; }
+.psbody .actions, .det2 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .psbody .actions .btn, .det2 .actions .btn { width: 100%; } .actions.three > :first-child { grid-column: 1 / -1; }
+.pshint { order: -1; display: none; }
+.psheet[data-detent="medium"] .pshint { display: block; order: 0; position: absolute; left: 0; right: 0; bottom: calc(38% + 10px); text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); pointer-events: none; z-index: 1; }
+.psheet[data-detent="medium"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: 38%; height: 72px; background: linear-gradient(to bottom, transparent, var(--page) 70%); pointer-events: none; }
+.dscrim { transition: opacity 250ms; }
+.psheet ~ .scrim2:not(.dscrim) { z-index: 18; } .psheet ~ .sheet2 { z-index: 19; }
+.sover .psheet { height: calc(100% - 24px); border-radius: 26px 26px 0 0; }
+@media (prefers-reduced-motion: reduce) { .psheet { transition: none; } }
 
 
 
@@ -441,7 +464,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .tickok { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--page-ink); color: var(--page); } .tickok svg { width: 12px; height: 12px; }
 .toast { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 999px; background: var(--page-ink); color: var(--page); font-size: 14px; font-weight: 600; width: fit-content; justify-self: center; }
 .nopos { border-radius: 34px; padding: 32px; background: var(--c); color: var(--ink); display: grid; gap: 16px; justify-items: start; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent); }
-.nopos h1, .nopos h2 { font-size: clamp(28px, 4.6vw, 46px); font-weight: 400; letter-spacing: -0.035em; line-height: 1.06; text-wrap: balance; }
+.nopos h1, .nopos h2 { font-size: clamp(28px, 4.6vw, 46px); font-weight: 700; letter-spacing: -0.012em; line-height: 1.06; text-wrap: balance; }
 .nopos p { font-size: 16px; max-width: 54ch; color: color-mix(in oklab, var(--ink) 92%, var(--c)); }
 .ghostbar { width: min(420px, 100%); height: 32px; border-radius: 999px; border: 2px dashed color-mix(in oklab, var(--ink) 55%, transparent); position: relative; } .ghostbar::after { content: ""; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; border: 2px dashed color-mix(in oklab, var(--ink) 55%, transparent); }
 .nopos .btn { background: var(--ink); color: var(--c); } .nopos .btn.ghost { background: none; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
@@ -490,7 +513,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .lhero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 36px; align-items: center; padding-block: 14px 8px; }
 .eyebrow { display: inline-flex; width: fit-content; align-items: center; gap: 8px; min-height: 30px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 700; background: color-mix(in oklab, var(--page-ink) 8%, transparent); }
 .ltext { display: grid; gap: 18px; justify-items: start; }
-.ltext h1 { font-size: clamp(34px, 4.6vw, 60px); font-weight: 400; letter-spacing: -0.04em; line-height: 1.02; text-wrap: balance; }
+.ltext h1 { font-size: clamp(34px, 4.6vw, 60px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.02; text-wrap: balance; }
 .ltext h1 .pill { background: var(--accent); color: var(--accent-ink); border-radius: 22px; padding: 0 .16em; font-weight: 500; display: inline-block; white-space: nowrap; }
 .ltext > p { font-size: 18px; color: var(--muted); max-width: 46ch; }
 .ltext .addform .input { background: var(--surface); }
@@ -523,7 +546,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) { .float { animation: none; } }
 .fsec { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 40px; align-items: center; padding: 36px 28px; }
 .fsec.rev { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); } .fsec.rev .ftext { order: 2; }
-.ftext { display: grid; gap: 14px; justify-items: start; } .ftext h2 { font-size: clamp(28px, 3.6vw, 46px); font-weight: 400; letter-spacing: -0.035em; line-height: 1.06; text-wrap: balance; } .ftext p { font-size: 17px; color: var(--muted); max-width: 46ch; }
+.ftext { display: grid; gap: 14px; justify-items: start; } .ftext h2 { font-size: clamp(28px, 3.6vw, 46px); font-weight: 700; letter-spacing: -0.012em; line-height: 1.06; text-wrap: balance; } .ftext p { font-size: 17px; color: var(--muted); max-width: 46ch; }
 .ftext ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; } .ftext li::before { content: "\2713\00a0"; font-weight: 800; }
 .plate { border-radius: 36px; padding: 28px; min-height: 380px; display: grid; place-items: center; gap: 18px; position: relative; overflow: hidden; }
 .plate.p1 { background: linear-gradient(150deg, oklch(0.5 0.15 330), oklch(0.32 0.1 285)); } .plate.p2 { background: linear-gradient(170deg, oklch(0.42 0.12 320), oklch(0.26 0.07 280)); } .plate.p3 { background: color-mix(in oklab, var(--page-ink) 7%, var(--page)); }
@@ -532,7 +555,7 @@ h1[tabindex="-1"]:focus { outline: none; }
 .wgs { width: 170px; height: 170px; } .wgm { width: 360px; height: 170px; grid-template-columns: 1fr auto; column-gap: 10px; }
 .wg .tk.big { width: 26px; height: 26px; font-size: 9px; } .wg .chip { font-size: 11px; padding: 3px 9px; } .wg .chip::before { width: 7px; height: 7px; }
 .wg .wgtop { display: flex; align-items: center; justify-content: space-between; gap: 6px; } .wgm .wgtop { grid-column: 1 / -1; }
-.wg .wgtitle { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; } .wg .wgval { font-size: 32px; font-weight: 600; letter-spacing: -0.05em; line-height: 1; } .wg .wgval sup { font-size: .42em; vertical-align: .9em; margin-right: 1px; }
+.wg .wgtitle { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; } .wg .wgval { font-size: 32px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; } .wg .wgval sup { font-size: .42em; vertical-align: .9em; margin-right: 1px; }
 .wg .bar { --k: 16px; height: 18px; margin: 0; } .wg .bar .ends { display: none; } .wg .bar .zone { top: 5px; bottom: 5px; } .wgm .bar { grid-column: 1; }
 .wgpills { display: grid; gap: 4px; justify-items: end; align-self: end; grid-row: 2 / 4; grid-column: 2; }
 .wgpill { display: inline-flex; gap: 4px; align-items: baseline; padding: 3px 10px; border-radius: 999px; background: color-mix(in oklab, var(--ink) 14%, transparent); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; } .wgpill b { font-weight: 700; } .wgpill i { font-style: normal; font-size: 10px; font-weight: 600; opacity: .85; }
@@ -540,21 +563,21 @@ h1[tabindex="-1"]:focus { outline: none; }
 .lockmock { width: 300px; border-radius: 30px; padding: 20px 16px 18px; text-align: center; background: linear-gradient(170deg, oklch(0.45 0.13 330), oklch(0.3 0.08 280)); color: #fff; display: grid; gap: 12px; justify-items: center; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6); }
 .lockmock .date { font-size: 14px; font-weight: 600; opacity: .92; } .lockmock .clock { font-size: 64px; font-weight: 600; letter-spacing: -0.05em; line-height: 1; }
 .lockmock .lw { display: flex; gap: 10px; align-items: center; justify-content: center; }
-.gauge { width: 70px; height: 70px; position: relative; display: grid; place-items: center; } .gauge svg { position: absolute; inset: 0; } .gauge b { font-size: 20px; letter-spacing: -0.04em; line-height: 1; } .gauge small { display: block; font-size: 7px; font-weight: 700; max-width: 40px; text-align: center; }
+.gauge { width: 70px; height: 70px; position: relative; display: grid; place-items: center; } .gauge svg { position: absolute; inset: 0; } .gauge b { font-size: 20px; letter-spacing: -0.015em; line-height: 1; } .gauge small { display: block; font-size: 7px; font-weight: 700; max-width: 40px; text-align: center; }
 .lrect { width: 168px; border-radius: 16px; padding: 8px 10px; background: color-mix(in oklab, #fff 18%, transparent); text-align: left; display: grid; gap: 4px; font-size: 11px; font-weight: 700; } .lrect .ln { height: 6px; border-radius: 3px; background: color-mix(in oklab, #fff 28%, transparent); position: relative; } .lrect .ln i { position: absolute; top: -2px; left: var(--p); width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #fff; }
 .notif { width: 320px; border-radius: 22px; padding: 12px 14px; background: color-mix(in oklab, var(--page) 88%, transparent); color: var(--page-ink); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); box-shadow: 0 20px 40px -18px rgba(0, 0, 0, .55); display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; text-align: left; }
 .notif .appicon { grid-row: 1 / 4; width: 40px; height: 40px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; } .notif .appicon i { width: 22px; height: 18px; background: currentColor; border-radius: 50% 50% 40% 40%; }
 .notif .nh { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); font-weight: 600; } .notif b { font-size: 14px; } .notif span.nb { font-size: 13px; color: var(--muted); }
 .platgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; padding-inline: 28px; }
 .plat { border-radius: 26px; padding: 20px; display: grid; gap: 8px; align-content: start; background: var(--c); color: var(--ink); min-height: 190px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 14%, transparent); } .plat h3 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; } .plat p { font-size: 14px; color: color-mix(in oklab, var(--ink) 92%, var(--c)); } .plat svg { width: 34px; height: 34px; }
-.cta2 { margin: 12px 28px 8px; border-radius: 36px; padding: 40px 32px; background: var(--c); color: var(--ink); display: grid; gap: 16px; justify-items: center; text-align: center; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 14%, transparent); } .cta2 h2 { font-size: clamp(30px, 4vw, 52px); font-weight: 400; letter-spacing: -0.035em; line-height: 1.05; text-wrap: balance; } .cta2 .store { background: var(--ink); color: var(--c); }
+.cta2 { margin: 12px 28px 8px; border-radius: 36px; padding: 40px 32px; background: var(--c); color: var(--ink); display: grid; gap: 16px; justify-items: center; text-align: center; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 14%, transparent); } .cta2 h2 { font-size: clamp(30px, 4vw, 52px); font-weight: 700; letter-spacing: -0.012em; line-height: 1.05; text-wrap: balance; } .cta2 .store { background: var(--ink); color: var(--c); }
 .footer2 { padding: 24px 28px 36px; display: flex; gap: 12px 24px; flex-wrap: wrap; justify-content: space-between; font-size: 14px; color: var(--muted); }
 @media (max-width: 860px) { .lhero2, .fsec, .fsec.rev { grid-template-columns: minmax(0, 1fr); } .fsec.rev .ftext { order: 0; } .platgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lvisual { height: 560px; } .lvisual .float.hide-narrow { display: none; } .heroPhone { left: calc(50% - 123px); } .wgm { width: 100%; max-width: 360px; } }
 @container app (max-width: 900px) { .lhero2, .fsec, .fsec.rev { grid-template-columns: minmax(0, 1fr); } .fsec.rev .ftext { order: 0; } .platgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lvisual .float.hide-narrow { display: none; } .heroPhone { left: calc(50% - 123px); } }
 
 /* intro */
 .hero-block { margin: 8px 28px 0; border-radius: 44px; background: var(--c); color: var(--ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: center; padding: 56px 0 0 48px; overflow: hidden; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 14%, transparent); }
-.hero-block .hb-text { display: grid; gap: 18px; justify-items: start; padding-bottom: 56px; } .hero-block .hb-text > h1 { font-size: clamp(38px, 5vw, 72px); font-weight: 400; letter-spacing: -0.04em; line-height: 1.02; text-wrap: balance; max-width: 12ch; }
+.hero-block .hb-text { display: grid; gap: 18px; justify-items: start; padding-bottom: 56px; } .hero-block .hb-text > h1 { font-size: clamp(38px, 5vw, 72px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.02; text-wrap: balance; max-width: 12ch; }
 .hero-block .hb-text > p { font-size: 18px; max-width: 30ch; color: color-mix(in oklab, var(--ink) 92%, var(--c)); }
 .hero-block .store { background: var(--ink); color: var(--c); } .hero-block .hb-text .sub3 { color: color-mix(in oklab, var(--ink) 92%, var(--c)); } .hero-block .hb-text .sub3 span::before { color: var(--ink); }
 .hb-visual { position: relative; height: 540px; max-width: 520px; } .hb-visual .notif { width: 262px; } .hb-visual .heroPhone { left: 250px; top: 30px; width: 270px; height: 590px; } .hb-visual .heroPhone .scaler { transform: scale(.72); }
@@ -563,9 +586,9 @@ h1[tabindex="-1"]:focus { outline: none; }
 
 /* intro B: cards first, colour block in the middle */
 .cardsfirst { display: grid; gap: 6px; }
-.cf-head { text-align: center; padding: 28px 28px 0; display: grid; gap: 10px; justify-items: center; } .cf-head h1 { font-size: clamp(36px, 5.4vw, 72px); font-weight: 400; letter-spacing: -0.04em; line-height: 1.02; text-wrap: balance; max-width: 16ch; }
+.cf-head { text-align: center; padding: 28px 28px 0; display: grid; gap: 10px; justify-items: center; } .cf-head h1 { font-size: clamp(36px, 5.4vw, 72px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.02; text-wrap: balance; max-width: 16ch; }
 .hero-mid { margin: 18px 28px 8px; border-radius: 44px; background: var(--c); color: var(--ink); text-align: center; padding: 56px 28px 0; overflow: hidden; display: grid; justify-items: center; gap: 18px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 14%, transparent); }
-.hero-mid h2 { font-size: clamp(32px, 4.6vw, 62px); font-weight: 400; letter-spacing: -0.04em; line-height: 1.02; text-wrap: balance; max-width: 14ch; }
+.hero-mid h2 { font-size: clamp(32px, 4.6vw, 62px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.02; text-wrap: balance; max-width: 14ch; }
 .hero-mid .btn { background: var(--ink); color: var(--c); min-height: 56px; padding: 0 30px; font-size: 17px; }
 .hero-mid .sub3 { justify-content: center; color: color-mix(in oklab, var(--ink) 92%, var(--c)); } .hero-mid .sub3 span::before { color: var(--ink); }
 .hm-visual { position: relative; width: min(700px, 100%); height: 470px; margin-top: 10px; }
@@ -613,6 +636,81 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   .anim-drawer .hero { display: block; position: absolute; z-index: 3; left: var(--hx, 24px); top: calc(var(--handle, 122px) + 14px); font-size: 34px; color: var(--ink); opacity: 0; pointer-events: none; }
   .anim-drawer .card.open .hero, .anim-drawer .card:focus-visible .hero { opacity: 1; }
 }
+.pctfield { display: inline-flex; align-items: center; justify-content: center; min-width: 64px; min-height: 36px; padding: 0 12px; border-radius: 12px; background: color-mix(in oklab, var(--page-ink) 7%, transparent); font-weight: 700; font-variant-numeric: tabular-nums; }
+/* addresses and hashes: SF Mono on Apple, DM Mono elsewhere (ADR 0055) */
+.addr { font-family: ui-monospace, "SF Mono", "DM Mono", Menlo, monospace; font-weight: 500; letter-spacing: 0; }
+
+/* web: the page follows the width of its own browser window */
+#stage-web > .browser { max-width: var(--bw, none); margin-inline: auto; transition: max-width 300ms cubic-bezier(.2, 0, 0, 1); }
+.wtabbar { display: none; }
+@container app (max-width: 839px) {
+  .site { padding-inline: 20px; gap: 12px; flex-wrap: nowrap; } .site nav a { padding: 0 12px; } .site > .btn { flex: none; }
+  .ctotal > span { display: none; } .site .fresh { white-space: nowrap; }
+  .browser.condensed .page > .toolbar .fbar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .browser.condensed .page > .toolbar .fbar::-webkit-scrollbar { display: none; }
+  .browser.condensed .page > .toolbar .fgroup, .browser.condensed .page > .toolbar .fopts { flex: none; flex-wrap: nowrap; }
+  .page { padding-inline: 20px; }
+  .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
+  .headline { font-size: 46px; }
+}
+@container app (max-width: 600px) {
+  .site { padding: 10px 16px; gap: 10px; flex-wrap: nowrap; min-height: 60px; box-sizing: border-box; }
+  .site .logo { font-size: 20px; } .site nav { display: none; }
+  .site .fresh { font-size: 0; gap: 0; } .site .fresh::before { width: 9px; height: 9px; }
+  .site > .btn { min-height: 38px; padding: 0 14px; font-size: 14px; flex: none; }
+  .ctotal > span { display: none; }
+  .page { padding: 4px 16px 24px; gap: 12px; }
+  .page.narrow { padding-top: 12px; }
+  .page > .wtags { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 2px; padding: 2px 16px; }
+  .page > .wtags::-webkit-scrollbar { display: none; }
+  .page > .wtags button { flex: none; min-height: 38px; font-size: 13px; padding: 0 12px 0 4px; gap: 6px; } .page > .wtags .wav { width: 28px; height: 28px; font-size: 12px; }
+  .headline { text-align: left; font-size: 34px; margin-top: 2px; } .headline .pill { border-radius: 14px; }
+  .subline { text-align: left; font-size: 14px; margin: 0; }
+  .banner { padding: 10px 12px; gap: 10px; font-size: 13px; border-radius: 18px; } .banner .icon { width: 24px; height: 24px; } .banner .btn { min-height: 36px; padding: 0 12px; font-size: 13px; }
+  .page > .toolbar { top: 60px; flex-wrap: nowrap; gap: 6px; margin-inline: -16px; padding-inline: 16px; }
+  .toolbar .fbar, .browser.condensed .page > .toolbar .fbar { flex-wrap: nowrap; align-items: center; overflow-x: auto; scrollbar-width: none; padding: 5px; gap: 6px; border-radius: 999px; }
+  .toolbar .fbar::-webkit-scrollbar { display: none; }
+  .fbar .flabel { display: none; }
+  .fbar .fgroup { display: flex; flex: none; gap: 6px; align-items: center; }
+  .fbar .fgroup + .fgroup { padding-left: 6px; box-shadow: -1px 0 0 var(--hair); }
+  .fbar .fopts { flex-wrap: nowrap; }
+  .fbar .fopt, .browser.condensed .page > .toolbar .fopt { flex: none; min-height: 34px; font-size: 13px; padding: 0 10px 0 5px; gap: 6px; } .fbar .fopt .lm { width: 22px; height: 22px; }
+  .fbar .sseg { flex: none; } .fbar .sseg button { min-height: 30px; font-size: 13px; padding: 0 10px; white-space: nowrap; }
+  .fbar .freset { flex: none; margin-left: 0; font-size: 13px; }
+  .toolbar .viewtoggle { flex: none; align-self: center; padding: 3px; }
+  .toolbar .viewtoggle button { min-height: 36px; padding: 0 9px; font-size: 0; gap: 0; }
+  .cards-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-top: 10px; }
+  .front { min-height: 236px; padding: 20px; gap: 10px; }
+  .big { font-size: 46px; } .big.tok { font-size: 38px; }
+  .rows { gap: 10px; }
+  .browser .rows .card { grid-template-columns: auto minmax(0, 1fr) auto; padding: 12px 14px; gap: 8px 12px; }
+  .browser .rows .card .bar { grid-column: 1 / -1; order: 5; } .browser .rows .card .chip, .browser .rows .amounts, .browser .rows .details { display: none; }
+  .browser .rows .pair { font-size: 16px; white-space: nowrap; } .browser .rows .meta { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .browser .rows .value { font-size: 17px; } .browser .rows .tk.big { width: 30px; height: 30px; font-size: 9px; }
+  .browser .rows .card .chipwrap { display: none; }
+  .overlay { place-items: end center; padding: 0; }
+  .dialog { width: 100%; border-radius: 28px 28px 0 0; padding: 20px 16px 24px; position: sticky; bottom: 0; }
+  .dialog .dfoot .btn { flex: 1; }
+  .wtabbar { display: flex; position: sticky; bottom: 0; z-index: 20; justify-content: space-around; padding: 6px 12px 10px; background: color-mix(in oklab, var(--page) 80%, transparent); -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%); box-shadow: 0 -1px 0 var(--hair); }
+  .wtabbar a { display: grid; justify-items: center; gap: 2px; min-width: 72px; min-height: 48px; align-content: center; font-size: 11px; font-weight: 700; color: var(--muted); text-decoration: none; }
+  .wtabbar a[aria-current="page"] { color: var(--accent); } .wtabbar svg { width: 22px; height: 22px; fill: currentColor; }
+}
+@media (prefers-reduced-transparency: reduce) { .wtabbar { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background: var(--page) !important; } }
+
+/* prototype chrome on a narrow screen */
+.ctlmore { display: none; }
+@media (max-width: 700px) {
+  body { padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px)); }
+  .ctl { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 8px; padding: 10px; border-radius: 20px; }
+  .ctl .group { flex-wrap: nowrap; min-width: 0; }
+  .ctl .label { flex: none; width: 64px; }
+  .ctl .seg { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; min-width: 0; max-width: 100%; }
+  .ctl .seg::-webkit-scrollbar { display: none; }
+  .ctl .seg button { flex: none; min-height: 38px; padding: 0 12px; }
+  .ctl .group.extra { display: none; } .ctl.more .group.extra { display: flex; }
+  .ctl .group.extra:has(.pillbtn) { flex-wrap: wrap; }
+  .ctlmore { display: block; align-self: flex-start; }
+}
+
 </style>
 
 <a class="skip" href="#stage">Skip to the screens</a>
@@ -620,17 +718,21 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   <div class="ctl" role="group" aria-label="Prototype controls">
     <div class="group"><span class="label" id="l-platform">Platform</span><div class="seg" id="platforms" role="group" aria-labelledby="l-platform"></div></div>
     <div class="group"><span class="label" id="l-screen">Screens</span><div class="seg" id="screens" role="group" aria-labelledby="l-screen"></div></div>
-    <div class="group"><span class="label" id="l-pal">Palette</span><div class="seg" id="palettes" role="group" aria-labelledby="l-pal"></div></div>
-    <div class="group" id="formgroup" hidden><span class="label" id="l-form">Form</span><div class="seg" id="formstates" role="group" aria-labelledby="l-form"></div></div>
-    <div class="group"><button class="pillbtn" type="button" id="pause" aria-pressed="false">Pause live prices</button><button class="pillbtn" type="button" id="nudge" aria-pressed="false">Push ETH / USDC out of range</button></div>
+    <div class="group" id="widthgroup"><span class="label" id="l-width">Width</span><div class="seg" id="widths" role="group" aria-labelledby="l-width"></div></div>
+    <div class="group extra"><span class="label" id="l-pal">Palette</span><div class="seg" id="palettes" role="group" aria-labelledby="l-pal"></div></div>
+    <div class="group extra"><span class="label" id="l-values">Values</span><div class="seg" id="valuesSeg" role="group" aria-labelledby="l-values"></div></div>
+    <div class="group extra"><span class="label" id="l-data">Data</span><div class="seg" id="dataSeg" role="group" aria-labelledby="l-data"></div></div>
+    <div class="group extra" id="formgroup" hidden><span class="label" id="l-form">Form</span><div class="seg" id="formstates" role="group" aria-labelledby="l-form"></div></div>
+    <div class="group extra"><button class="pillbtn" type="button" id="pause" aria-pressed="false">Pause live prices</button><button class="pillbtn" type="button" id="nudge" aria-pressed="false">Push ETH / USDC out of range</button></div>
+    <button class="pillbtn ctlmore" type="button" id="ctlmore" aria-expanded="false">More controls</button>
   </div>
   <p class="hint" id="hint"></p>
   <main id="stage"><div id="stage-web"></div><div id="stage-phones" class="stage-phones" hidden><div class="phones-inner" id="phones-inner"></div></div></main>
   <details class="notesbox"><summary>Notes for build: data, states, accessibility, platform mechanics</summary><div class="ngrid">
     <div><h3>Data on screen (position model)</h3><ul><li>Portfolio: <code>totals.all</code> (owed fees sum is derived on the server too), <code>positions[]</code>, <code>scopes[]</code> for the partial-failure banner, <code>asOf</code>, <code>readBlock</code>.</li><li>Card: pair from <code>pool.token0/1</code>, fee and chain, <code>value</code>, principal <code>amounts</code>, <code>range</code> (<code>lower</code>, <code>upper</code>, <code>barPosition</code>, <code>status</code>).</li><li>Position: owed amounts only when <code>feeAccrual.mode</code> is <code>claimable</code>; <code>display.details[]</code> renders the Details box, so a new family needs no app release.</li><li>Clients format strings; nothing is computed on the device.</li></ul></div>
-    <div><h3>States covered</h3><ul><li>First visit with example data, Add wallet (paste, looking up, ready, not an address, name not found, already watched, guest limit), reading each chain, no positions, Wallets (guest at the limit, paused after a downgrade, remove confirmation), loading, partial failure, out of range, partial value (never $0), unlisted-token badge.</li><li>Not drawn yet: signed-in header, sign-in sheet, retired and not-configured scopes, truncated scope, low amounts confidence, stale price age, QR scan, Android.</li></ul></div>
-    <div><h3>Accessibility</h3><ul><li>One <code>h1</code> per screen; focus goes to it on push. Back returns focus to the tapped row.</li><li>Status is a word and a shape (dot, diamond), never colour alone; the range bar has a text label with the numbers.</li><li>Muted text is a solid colour, measured at 4.5:1 or better on all four fills in both schemes; token marks are decorative and hidden from the screen reader.</li><li>Targets are 44 pt or more; filters and view switch are real buttons with pressed state.</li><li>Live prices update in place; only a status change is announced.</li></ul></div>
-    <div><h3>Platform mechanics</h3><ul><li>Web: real pages and links; the Drawer opens in place, Open is a link to the position page with a cross-document view transition. Cards and Rows are one list with two layouts.</li><li>iPhone: Rows by default; push with zoom from the tapped row (<code>matchedTransitionSource</code> and zoom transition); tab bar stays. Reduce Motion becomes a cross-fade.</li><li>Android: the same screens with Navigation 3 and shared bounds; the position screen is a destination, not a sheet.</li><li>iPad and Mac reuse these as list and detail columns (see the Mac and iPad pass).</li></ul></div>
+    <div><h3>States covered</h3><ul><li>First visit with example data, Add wallet (paste, looking up, ready, not an address, name not found, already watched, guest limit and signed-in limit, with the button left enabled), reading each chain, no positions, Wallets (guest at the limit, paused after a downgrade, remove confirmation), loading, partial failure, out of range, partial value (never $0), unlisted-token badge, stale data (last values stay, the age shows), guest over the limit (the first wallet shows with a Sign in line), tokens only for M1 to M3 (no USD anywhere; the hero counts positions in range).</li><li>Not drawn yet: signed-in header, sign-in sheet, retired and not-configured scopes, truncated scope, low amounts confidence, stale price age, QR scan, Android.</li></ul></div>
+    <div><h3>Accessibility</h3><ul><li>One <code>h1</code> per screen; focus goes to it when the position sheet opens. Closing the sheet returns focus to the tapped row.</li><li>Status is a word and a shape (dot, diamond), never colour alone; the range bar has a text label with the numbers.</li><li>Muted text is a solid colour, measured at 4.5:1 or better on all four fills in both schemes; token marks are decorative and hidden from the screen reader.</li><li>Targets are 44 pt or more; filters and view switch are real buttons with pressed state.</li><li>Live prices update in place; only a status change is announced.</li></ul></div>
+    <div><h3>Platform mechanics</h3><ul><li>Web: real pages and links; the Drawer opens in place, Open is a link to the position page with a cross-document view transition. Cards and Rows are one list with two layouts.</li><li>iPhone and Slide Over: Rows by default; a tap opens the position sheet at medium (<code>presentationDetents([.fraction(0.62), .large])</code>), drag up for everything. Reduce Motion becomes a cross-fade.</li><li>Android: the same screens with Navigation 3 and shared bounds; the position screen is a destination, not a sheet.</li><li>iPad and Mac reuse these as list and detail columns (see the Mac and iPad pass).</li></ul></div>
   </div></details>
   <div class="sr" aria-live="polite" id="announcer"></div>
 </div>
@@ -686,8 +788,13 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   };
 
   /* ---------- state ---------- */
-  var state = { platform: "web", webScreen: "portfolio", phoneSet: "flow", view: "cards", phoneView: "rows", formState: "ready", hero: "block", walletPlan: "guest", account: "guest",  filter: "all", wallets: [], chains: [], protocols: [], ipadSet: "wide", macSet: "main", palette: "auto", paused: false, sel: 0 };
+  var state = { platform: "web", webScreen: "portfolio", phoneSet: "flow", view: "cards", phoneView: "rows", formState: "ready", hero: "block", walletPlan: "guest", account: "guest",  filter: "all", wallets: [], chains: [], protocols: [], ipadSet: "wide", macSet: "main", palette: "auto", paused: false, sel: 0, values: "usd", data: "live", webWidth: "fit" };
   try { var saved = JSON.parse(localStorage.getItem("voidx-screens-1") || "null"); if (saved) { for (var key in state) { if (saved[key] !== undefined) state[key] = saved[key]; } } } catch (error) {}
+  (function readHash() {
+    var match = /^#(web|iphone|ipad|mac)-([a-z]+)$/.exec(location.hash); if (!match) return;
+    var key = { web: "webScreen", iphone: "phoneSet", ipad: "ipadSet", mac: "macSet" }[match[1]];
+    state.platform = match[1]; state[key] = match[2];
+  })();
   function save() { try { localStorage.setItem("voidx-screens-1", JSON.stringify(state)); } catch (error) {} }
   function isDark() { var theme = root.getAttribute("data-theme"); return theme ? theme === "dark" : darkQuery.matches; }
   function paletteNamed(name) { return name === "auto" ? (isDark() ? palettes.neon : palettes.dragonfruit) : palettes[name]; }
@@ -714,9 +821,16 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     Optimism: '<i class="lm" style="--lm:#ff0420" aria-hidden="true"><b>OP</b></i>'
   };
   var protocolMarks = { "Uniswap v3": '<i class="lm" style="--lm:#ff007a" aria-hidden="true"><b>v3</b></i>', "Uniswap v4": '<i class="lm" style="--lm:#ff007a" aria-hidden="true"><b>v4</b></i>' };
+  var clockIcon = '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l2.5 2"/></svg>';
   var statusIconOut = '<svg class="si" viewBox="0 0 12 12" aria-hidden="true"><rect x="2.5" y="2.5" width="7" height="7" rx="1.2" transform="rotate(45 6 6)" fill="currentColor"/></svg>';
   var slidersIcon = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h8M15 6h2M3 14h2M9 14h8"/><circle cx="13" cy="6" r="2"/><circle cx="7" cy="14" r="2"/></svg>';
   function money(value) { return "$" + value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function usd() { return state.values !== "tokens"; }
+  function stale() { return state.data === "stale"; }
+  function freshText() { return stale() ? "Updated 14 min ago" : state.paused ? "Prices as of 9:41" : "Updated 12 s ago"; }
+  function tokenList(list) { return list.map(function (a) { return a[1] + " " + a[0]; }).join(" · "); }
+  function tokenBig(position) { return '<span class="tick">' + position.amounts[0][1] + '</span><sup class="sym">' + position.amounts[0][0] + "</sup>"; }
+  function visibleWallets() { return state.data === "over" ? wallets.slice(0, 1) : wallets; }
   function whole(value) { return Math.round(value).toLocaleString("en-US"); }
   function fixed(position, value) { return value.toLocaleString("en-US", { minimumFractionDigits: position.digits, maximumFractionDigits: position.digits }); }
   function inRange(position) { return position.price >= position.lower && position.price <= position.upper; }
@@ -725,7 +839,11 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   function st(position) { return inRange(position) ? "in" : "out"; }
   function word(position) { return inRange(position) ? "In range" : "Out of range"; }
   var byId = {}; positions.forEach(function (position) { byId[position.id] = position; });
-  function scopeList() { return state.scenario === "partial" ? positions.filter(function (p) { return p.chain !== "Arbitrum"; }) : positions; }
+  function scopeList() {
+    if (state.scenario === "partial") return positions.filter(function (p) { return p.chain !== "Arbitrum"; });
+    if (state.data === "over") return positions.filter(function (p) { return p.wallet === wallets[0].id; });
+    return positions;
+  }
   function total(list) { return (list || scopeList()).reduce(function (sum, item) { return sum + item.value; }, 0); }
   function feesTotal(list) { return (list || scopeList()).reduce(function (sum, item) { return sum + item.fees; }, 0); }
   function inCount(list) { return (list || scopeList()).filter(inRange).length; }
@@ -783,17 +901,22 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     return '<div class="sheet"><div class="head"><b>' + position.base + " / " + position.quote + '</b><a class="open" href="#" data-open="' + index + '" aria-label="Open ' + position.base + " / " + position.quote + ' position">Open</a></div>' +
       '<div class="row"><span>Current price</span><b class="figure"><span class="tick" data-price="' + position.id + '">' + fixed(position, position.price) + "</span></b></div>" +
       '<div class="row"><span>Range</span><b class="figure">' + fixed(position, position.lower) + " – " + fixed(position, position.upper) + "</b></div>" +
-      '<div class="rule"></div><div class="row"><span>Owed fees</span><b class="figure">' + money(position.fees) + "</b></div>" +
-      position.owed.map(function (a) { return '<div class="row more owed"><span>' + symIcon(a[0]) + '</span><b class="figure">' + a[1] + "</b></div>"; }).join("") + "</div>";
+      '<div class="rule"></div>' + (usd() ? '<div class="row"><span>Owed fees</span><b class="figure">' + money(position.fees) + "</b></div>" : '<div class="row"><span>Owed fees</span></div>') +
+      position.owed.map(function (a) { return '<div class="row' + (usd() ? " more" : "") + ' owed"><span>' + symIcon(a[0]) + '</span><b class="figure">' + a[1] + "</b></div>"; }).join("") + "</div>";
   }
   function rowSheet(position, index) { return drawerSheet(position, index).replace("rule", "rule more"); }
   function amounts(position) { return '<div class="amounts figure">' + position.amounts.map(function (a) { return "<span><b>" + a[1] + "</b> " + a[0] + "</span>"; }).join("") + "</div>"; }
-  function front(position) { return '<div class="ftop"><div style="display:grid;gap:14px"><div class="toprow">' + coins(position) + chip(position) + "</div>" + title(position) + '</div><div class="big figure"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + '</span></div><div class="owedline figure"><span>Owed fees</span><b>' + money(position.fees) + "</b></div></div><div class=\"fbot\">" + amounts(position) + bar(position) + "</div>"; }
+  function front(position) {
+    if (!usd()) return '<div class="ftop"><div style="display:grid;gap:14px"><div class="toprow">' + coins(position) + chip(position) + "</div>" + title(position) + '</div><div class="big figure tok">' + tokenBig(position) + '</div><div class="tok2 figure">' + position.amounts[1][1] + " " + position.amounts[1][0] + '</div><div class="owedline figure"><span>Owed fees</span><b>' + tokenList(position.owed) + "</b></div></div><div class=\"fbot\">" + bar(position) + "</div>";
+    return '<div class="ftop"><div style="display:grid;gap:14px"><div class="toprow">' + coins(position) + chip(position) + "</div>" + title(position) + '</div><div class="big figure"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + '</span></div><div class="owedline figure"><span>Owed fees</span><b>' + money(position.fees) + "</b></div></div><div class=\"fbot\">" + amounts(position) + bar(position) + "</div>";
+  }
   function cardHtml(position, index, view) {
-    var label = position.base + " / " + position.quote + ", " + word(position).toLowerCase() + ", " + money(position.value);
+    var label = position.base + " / " + position.quote + ", " + word(position).toLowerCase() + ", " + (usd() ? money(position.value) : tokenList(position.amounts));
     var hit = '<button class="cardhit" type="button" aria-expanded="false" aria-label="' + label + '"></button>';
-    if (view === "cards") return '<article class="card" data-card="' + index + '" data-pos="' + position.id + '">' + hit + '<div class="lift"><div class="stage"><div class="face front">' + front(position) + '</div><div class="face back">' + drawerSheet(position, index) + '<div class="peek" aria-hidden="true"><span>Owed fees<b>' + money(position.fees) + '</b></span><span class="go">Details<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 3.5l3 3"/></svg></span></div></div><div class="hero big figure" aria-hidden="true"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + "</span></div></div></div></article>";
-    return '<article class="card" data-card="' + index + '" data-pos="' + position.id + '">' + hit + coins(position) + "<div>" + title(position) + amounts(position) + "</div>" + bar(position) + '<div class="valuecell"><span class="value figure"><span class="tick" data-value="' + position.id + '">' + money(position.value) + '</span></span><span class="owedline figure">' + money(position.fees) + " owed</span></div>" + chip(position) + '<div class="details">' + rowSheet(position, index) + "</div></article>";
+    if (view === "cards") return '<article class="card" data-card="' + index + '" data-pos="' + position.id + '">' + hit + '<div class="lift"><div class="stage"><div class="face front">' + front(position) + '</div><div class="face back">' + drawerSheet(position, index) + '<div class="peek" aria-hidden="true"><span>Owed fees<b>' + (usd() ? money(position.fees) : position.owed[0][1] + " " + position.owed[0][0] + " +1") + '</b></span><span class="go">Details<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 3.5l3 3"/></svg></span></div></div><div class="hero big figure' + (usd() ? "" : " tok") + '" aria-hidden="true">' + (usd() ? '<sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + "</span>" : tokenBig(position)) + "</div></div></div></article>";
+    var valueCell = usd() ? '<span class="value figure"><span class="tick" data-value="' + position.id + '">' + money(position.value) + '</span></span><span class="owedline figure">' + money(position.fees) + " owed</span>"
+      : '<span class="owedcap">Owed</span><span class="owedline figure">' + position.owed[0][1] + " " + position.owed[0][0] + '</span><span class="owedline figure">' + position.owed[1][1] + " " + position.owed[1][0] + "</span>";
+    return '<article class="card" data-card="' + index + '" data-pos="' + position.id + '">' + hit + coins(position) + "<div>" + title(position) + amounts(position) + "</div>" + bar(position) + '<div class="valuecell' + (usd() ? "" : " tok") + '">' + valueCell + "</div>" + chip(position) + '<div class="details">' + rowSheet(position, index) + "</div></article>";
   }
 
   /* ---------- knob physics (from the cards prototype) ---------- */
@@ -875,8 +998,8 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
       element.addEventListener("click", function (event) { state.sel = Number(element.dataset.card); save(); renderAll(); event.stopPropagation(); });
       return;
     }
-    if (onOpen === "push") {
-      element.addEventListener("click", function (event) { pushPosition(element); event.stopPropagation(); });
+    if (onOpen === "sheet") {
+      element.addEventListener("click", function (event) { openSheet(element); event.stopPropagation(); });
       return;
     }
     var enterTimer = null, leaveTimer = null, peekOnly = container.classList.contains("cards-grid");
@@ -898,8 +1021,23 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
 
   /* ---------- shared screen parts ---------- */
   function headline(list, partial) {
+    if (!usd()) return '<h1 class="headline"><span class="pill figure"><span class="tick" data-incount>' + inCount(list) + "</span> of " + list.length + '</span> positions in range</h1>' +
+      '<p class="subline">across ' + walletCount(list) + " and " + chainCount(list) + ". Each position shows its token amounts and the fees it has earned.</p>";
     return '<h1 class="headline">Your pools earned <span class="pill figure"><span class="tick" data-fees>' + money(feesTotal(list)) + '</span></span></h1>' +
       '<p class="subline">in fees not yet collected, across <span data-count>' + list.length + '</span> positions worth an estimated <b class="figure"><span class="tick" data-total>' + money(total(list)) + '</span></b>' + (partial ? " so far" : "") + ' · <span class="tick" data-incount>' + inCount(list) + '</span> in range</p>';
+  }
+  function walletCount(list) { var n = visibleWallets().filter(function (w) { return list.some(function (p) { return p.wallet === w.id; }); }).length; return n + (n === 1 ? " wallet" : " wallets"); }
+  function chainCount(list) { var n = chainNames.filter(function (c) { return list.some(function (p) { return p.chain === c; }); }).length; return n + (n === 1 ? " network" : " networks"); }
+  function stateBanners(list) {
+    var out = "";
+    if (state.data === "over") out += '<div class="banner" role="status"><span class="icon" aria-hidden="true">1</span><span class="grow"><b>Showing 1 of 3 saved wallets.</b> Guests watch 1 wallet. Sign in to watch all 3.</span><button class="btn" type="button" data-go="signin">Sign in</button></div>';
+    if (stale()) out += '<div class="banner stale" role="status"><span class="icon" aria-hidden="true">' + clockIcon + '</span><span class="grow"><b>Updated 14 min ago.</b> Ethereum is slow to answer. These are the last values read; they update when it catches up.</span><button class="btn ghost" type="button">Retry</button></div>';
+    return out + outSummary(list);
+  }
+  function compactTotal(list) { return usd() ? money(feesTotal(list)) + " earned · " + inCount(list) + " of " + list.length + " in range" : inCount(list) + " of " + list.length + " in range · " + walletCount(list); }
+  function heroMini(list, partial) {
+    if (!usd()) return '<div class="phero"><p>Your pools</p><span class="pill figure"><span class="tick" data-incount>' + inCount(list) + "</span> of " + list.length + " in range</span><p>" + list.length + " positions across " + walletCount(list) + "</p></div>";
+    return '<div class="phero"><p>Your pools earned</p><span class="pill figure"><span class="tick" data-fees>' + money(feesTotal(list)) + '</span></span><p>' + (partial ? "so far, worth " : "worth ") + 'an estimated <b class="figure"><span class="tick" data-total>' + money(total(list)) + '</span></b> · <span class="tick" data-incount>' + inCount(list) + '</span> of <span data-count>' + list.length + "</span> in range</p></div>";
   }
   function countFor(kind, value) { return scopeList().filter(function (p) { return p[kind] === value && matches(p, kind); }).length; }
   function optHtml(kind, value, mark, label) {
@@ -941,7 +1079,7 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   }
   function walletTags() {
     var base = scopeList();
-    return '<div class="wtags" role="group" aria-label="Wallets">' + wallets.map(function (w) {
+    return '<div class="wtags" role="group" aria-label="Wallets">' + visibleWallets().map(function (w) {
       var n = base.filter(function (p) { return p.wallet === w.id && matches(p, "wallet"); }).length;
       return '<button type="button" data-wallet="' + w.id + '" aria-pressed="' + (state.wallets.indexOf(w.id) >= 0) + '"><span class="wav" style="--hue:' + hueOf(w.label) + '" aria-hidden="true">' + w.label.replace(/^0x/, "").slice(0, 1).toUpperCase() + "</span>" + w.label + " <span>" + n + "</span></button>";
     }).join("") + '<button type="button" class="wadd" data-go="addwallet">' + icons.plus + "Add wallet</button></div>";
@@ -952,7 +1090,7 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     return '<div class="banner warn" role="status"><span class="icon" aria-hidden="true">!</span><span class="grow"><b>' + out.length + " out of range:</b> " + out.map(function (p) { return p.base + " / " + p.quote; }).join(", ") + '</span><button class="btn" type="button" data-filter="out">Show</button></div>';
   }
   function notesHtml(extra) {
-    return '<div class="notes"><p>2 positions with unlisted tokens are hidden. <button type="button">Show them</button></p><p>USD values are estimates. Token amounts are read from the chain at block ' + blockNumber + '.</p>' + (extra || "") + "</div>";
+    return '<div class="notes"><p>2 positions with unlisted tokens are hidden. <button type="button">Show them</button></p><p>' + (usd() ? "USD values are estimates. " : "") + "Token amounts are read from the chain at block " + blockNumber + '.</p>' + (extra || "") + "</div>";
   }
   function skeletonRows(count) { var out = ""; for (var i = 0; i < count; i++) out += '<div class="sk" aria-hidden="true"><span style="display:flex;gap:10px;align-items:center"><i style="width:56px;height:36px"></i><span style="flex:1;display:grid;gap:8px"><i style="width:55%;height:14px"></i><i style="width:35%;height:10px"></i></span><i style="width:70px;height:18px"></i></span><i style="width:100%;height:28px"></i></div>'; return out; }
   function skeletonCards(count) { var out = ""; for (var i = 0; i < count; i++) out += '<div class="sk" aria-hidden="true"><div style="display:grid;gap:12px"><i class="a"></i><i class="b"></i></div><i class="c"></i><i class="d"></i></div>'; return out; }
@@ -960,13 +1098,20 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   /* ---------- Web pages ---------- */
   function site(current) {
     var links = [["portfolio", "Portfolio"], ["alerts", "Alerts"], ["settings", "Settings"]];
-    var condensed = current === "portfolio" && state.webScreen === "portfolio" ? '<span class="ctotal figure" aria-hidden="true">Earned <b class="cpill">' + money(feesTotal(scoped())) + "</b><span>" + money(total(scoped())) + " est.</span></span>" : "";
-    return '<header class="site"><a class="logo" href="#"><i aria-hidden="true"></i>voidx</a><nav aria-label="Main">' + links.map(function (link) { return '<a href="#" data-nav="' + link[0] + '"' + (link[0] === current ? ' aria-current="page"' : "") + ">" + link[1] + "</a>"; }).join("") + "</nav>" + condensed + '<span class="grow"></span><span class="fresh' + (state.paused ? " paused" : "") + '">' + (state.paused ? "Prices as of 9:41" : "Updated 12 s ago") + '</span>' + (state.account === "guest" ? '<a class="btn ghost" href="#" data-go="signin">Sign in</a>' : '<a class="btn ghost" href="#" data-nav="settings" aria-label="Account">' + "<span class=\"mono\" style=\"--hue:20;width:28px;height:28px;font-size:13px\" aria-hidden=\"true\">A</span>Account</a>") + '</header>';
+    webTab = current;
+    var list = scoped(), condensed = current !== "portfolio" || state.webScreen !== "portfolio" ? "" : usd() ? '<span class="ctotal figure" aria-hidden="true">Earned <b class="cpill">' + money(feesTotal(list)) + "</b><span>" + money(total(list)) + " est.</span></span>" : '<span class="ctotal figure" aria-hidden="true">In range <b class="cpill">' + inCount(list) + " of " + list.length + "</b><span>" + walletCount(list) + "</span></span>";
+    var guest = state.account === "guest" || state.data === "over";
+    return '<header class="site"><a class="logo" href="#"><i aria-hidden="true"></i>voidx</a><nav aria-label="Main">' + links.map(function (link) { return '<a href="#" data-nav="' + link[0] + '"' + (link[0] === current ? ' aria-current="page"' : "") + ">" + link[1] + "</a>"; }).join("") + "</nav>" + condensed + '<span class="grow"></span><span class="fresh' + (stale() ? " stale" : state.paused ? " paused" : "") + '">' + freshText() + '</span>' + (guest ? '<a class="btn ghost" href="#" data-go="signin">Sign in</a>' : '<a class="btn ghost" href="#" data-nav="settings" aria-label="Account">' + "<span class=\"mono\" style=\"--hue:20;width:28px;height:28px;font-size:13px\" aria-hidden=\"true\">A</span>Account</a>") + '</header>';
   }
-  function browserFrame(url, body) { return '<div class="browser"><div class="urlbar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="url">' + url + "</span></div>" + body + "</div>"; }
+  var webTab = "portfolio";
+  function webTabbar() {
+    var links = [["portfolio", 0], ["alerts", 1], ["settings", 2]];
+    return '<nav class="wtabbar" aria-label="Main, narrow window">' + links.map(function (link) { var tab = tabs[link[1]]; return '<a href="#" data-nav="' + link[0] + '"' + (link[0] === webTab ? ' aria-current="page"' : "") + '><svg viewBox="0 0 24 24" aria-hidden="true">' + tab[1] + "</svg>" + tab[0] + "</a>"; }).join("") + "</nav>";
+  }
+  function browserFrame(url, body) { var tabbarHtml = body.indexOf('class="site"') >= 0 ? webTabbar() : ""; return '<div class="browser"><div class="urlbar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="url">' + url + "</span></div>" + body + tabbarHtml + "</div>"; }
   function webPortfolio(overlay) {
     var list = scoped();
-    return browserFrame("voidx.example/portfolio", site("portfolio") + '<div class="page">' + walletTags() + headline(list, false) + outSummary(list) +
+    return browserFrame("voidx.example/portfolio", site("portfolio") + '<div class="page">' + walletTags() + headline(list, false) + stateBanners(list) +
       '<div class="toolbar">' + chipsHtml(list) + '<span class="grow"></span><div class="viewtoggle" role="group" aria-label="View"><button type="button" data-view="cards" aria-pressed="' + (state.view === "cards") + '"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="1" y="2" width="6" height="12" rx="2"/><rect x="9" y="2" width="6" height="12" rx="2"/></svg>Cards</button><button type="button" data-view="rows" aria-pressed="' + (state.view === "rows") + '"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="1" y="2" width="14" height="3" rx="1.5"/><rect x="1" y="6.5" width="14" height="3" rx="1.5"/><rect x="1" y="11" width="14" height="3" rx="1.5"/></svg>Rows</button></div></div>' +
       '<section id="list" aria-label="Positions"></section>' + notesHtml() + "</div>" + (overlay || ""));
   }
@@ -984,9 +1129,9 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   }
   var gaugeSvg = '<svg viewBox="0 0 70 70" aria-hidden="true"><circle cx="35" cy="35" r="30" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="6" stroke-linecap="round" stroke-dasharray="141 188" transform="rotate(135 35 35)"/><circle cx="35" cy="35" r="30" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-dasharray="40 188" stroke-dashoffset="-50" transform="rotate(135 35 35)"/><rect x="58" y="48" width="9" height="9" rx="2" fill="#fff" transform="rotate(45 62.5 52.5)"/></svg>';
   function lockMock(withNotif) {
-    return '<div class="lockmock"><div class="date">Mon 5 October</div><div class="clock">9:41</div><div class="lw"><div class="gauge">' + gaugeSvg + '<span><b>1</b><small>out of range</small></span></div><div class="lrect"><span>ETH / BTC.b · Out of range</span><div class="ln"><i style="--p:92%"></i></div><span style="font-weight:600">ETH / USDC · In range</span></div></div>' + (withNotif ? notifCard() : "") + "</div>";
+    return '<div class="lockmock"><div class="date">Mon 5 October</div><div class="clock">9:41</div><div class="lw"><div class="gauge">' + gaugeSvg + '<span><b>1</b><small>out of range</small></span></div><div class="lrect"><span>ETH / cbBTC · Out of range</span><div class="ln"><i style="--p:92%"></i></div><span style="font-weight:600">ETH / USDC · In range</span></div></div>' + (withNotif ? notifCard() : "") + "</div>";
   }
-  function notifCard() { return '<div class="notif"><span class="appicon" aria-hidden="true"><i></i></span><div class="nh"><span>VoidX</span><span>now</span></div><b>ETH / BTC.b left its range</b><span class="nb">Price 0.0338, range 0.0290 to 0.0330</span></div>'; }
+  function notifCard() { return '<div class="notif"><span class="appicon" aria-hidden="true"><i></i></span><div class="nh"><span>VoidX</span><span>now</span></div><b>ETH / cbBTC left its range</b><span class="nb">Price 0.0338, range 0.0290 to 0.0330</span></div>'; }
   function phoneRaw(layers) { return '<div class="phone"><div class="screen" data-pal="' + state.palette + '"><div class="island"></div><div class="status"><span>9:41</span>' + statusIcons + "</div>" + layers + tabbar() + '<div class="homebar"></div></div></div>'; }
   var apple = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>';
   function storeButtons() { return '<div class="stores"><a class="store" href="#"><small>Download for iPhone</small><b>App Store</b></a><a class="store" href="#"><small>Get it for Android</small><b>Google Play</b></a></div>'; }
@@ -1017,10 +1162,11 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   function positionSections(position, opts) {
     opts = opts || {};
     var amountRows = position.amounts.map(function (a) { return '<div class="lrow2"><span>' + symIcon(a[0]) + (position.partial && a[0] === "XAI" ? '<span class="badge">Unlisted</span>' : "") + '</span><b class="figure">' + a[1] + "</b></div>"; }).join("");
-    var feeRows = '<div class="lrow2 total"><span>Total</span><b class="figure">' + money(position.fees) + "</b></div>" + position.owed.map(function (a) { return '<div class="lrow2"><span>' + symIcon(a[0]) + '</span><b class="figure">' + a[1] + "</b></div>"; }).join("");
+    var feeRows = (usd() ? '<div class="lrow2 total"><span>Total</span><b class="figure">' + money(position.fees) + "</b></div>" : "") + position.owed.map(function (a) { return '<div class="lrow2"><span>' + symIcon(a[0]) + '</span><b class="figure">' + a[1] + "</b></div>"; }).join("");
     var details = [["Protocol", position.protocol], ["Fee tier", position.fee], ["Network", position.chain], ["Position", "#" + position.num], ["Custody", "Wallet"], ["Read at block", blockNumber]].map(function (r) { return '<div class="lrow2"><span>' + r[0] + '</span><b class="figure">' + r[1] + "</b></div>"; }).join("") +
-      '<div class="lrow2"><span>Owner</span><b class="figure">' + owner + '</b><button class="copy" type="button" aria-label="Copy owner address">' + icons.copy + "</button></div>";
-    return sectionBox("Principal", amountRows, position.partial ? "XAI has no price, so only ETH is counted in the total. VoidX never shows an unpriced token as $0." : "Token amounts are exact. USD is an estimate.") +
+      '<div class="lrow2"><span>Owner</span><b class="figure addr">' + owner + '</b><button class="copy" type="button" aria-label="Copy owner address">' + icons.copy + "</button></div>";
+    var principalNote = !usd() ? "Token amounts are exact, read from the chain at block " + blockNumber + "." : position.partial ? "XAI has no price, so only ETH is counted in the total. VoidX never shows an unpriced token as $0." : "Token amounts are exact. USD is an estimate.";
+    return sectionBox("Principal", amountRows, principalNote) +
       sectionBox("Owed fees", feeRows, "Swap fees earned and not yet collected.") +
       sectionBox("Details", details, "");
   }
@@ -1028,8 +1174,12 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     var above = position.price > position.upper, gap = above ? (position.price / position.upper - 1) * 100 : (1 - position.price / position.lower) * 100;
     return '<div class="banner warn" role="status"><span class="icon" aria-hidden="true">!</span><span class="grow"><b>Out of range.</b> The price is ' + gap.toFixed(1) + "% " + (above ? "above" : "below") + " your range, so this position earns no fees until it is back " + (above ? "under " + fixed(position, position.upper) : "over " + fixed(position, position.lower)) + ".</span></div>";
   }
+  function detailFigure(position) {
+    if (!usd()) return '<div class="dbig figure tok">' + tokenBig(position) + '</div><span class="meta figure">and ' + position.amounts[1][1] + " " + position.amounts[1][0] + " · owed fees " + tokenList(position.owed) + "</span>";
+    return '<div class="dbig figure"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + '</span></div><span class="meta figure">est. · ' + tokenList(position.amounts) + " · owed fees " + money(position.fees) + "</span>";
+  }
   function heroBlock(position, index) {
-    return '<section class="herocard" data-card="' + index + '" aria-labelledby="pos-title"><div class="left"><div class="toprow">' + coins(position) + chip(position) + '</div><div><h1 id="pos-title">' + position.base + " / " + position.quote + '</h1><span class="meta">' + position.protocol + ' · ' + position.fee + " · " + position.chain + " · #" + position.num + (position.partial ? " · partial value" : "") + '</span></div><div class="dbig figure"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + '</span></div><span class="meta figure">est. · owed fees ' + money(position.fees) + '</span></div><div class="right">' + histogram(position) + bar(position) +
+    return '<section class="herocard" data-card="' + index + '" aria-labelledby="pos-title"><div class="left"><div class="toprow">' + coins(position) + chip(position) + '</div><div><h1 id="pos-title">' + position.base + " / " + position.quote + '</h1><span class="meta">' + position.protocol + ' · ' + position.fee + " · " + position.chain + " · #" + position.num + (position.partial ? " · partial value" : "") + '</span></div>' + detailFigure(position) + '</div><div class="right">' + histogram(position) + bar(position) +
       '<div class="lrow"><span>Current price</span><b class="figure"><span class="tick" data-price="' + position.id + '">' + fixed(position, position.price) + "</span> <small>" + position.unit + '</small></b></div><div class="lrow"><span>Range</span><b class="figure">' + fixed(position, position.lower) + " – " + fixed(position, position.upper) + "</b></div></div></section>";
   }
   function webPosition() {
@@ -1057,28 +1207,24 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     if (scenario === "empty") return phoneFirstVisit(); if (scenario === "empty-old") return '<div class="layer list"><div class="pscroll">' + common + '<div class="emptycard" data-card="0" style="margin-top:8px;padding:24px;gap:14px"><div class="coins" aria-hidden="true">' + tokenIcon("ETH", true) + tokenIcon("USDC", true) + '</div><h2 style="font-size:30px">Watch any wallet.</h2><p style="font-size:15px">Paste an address or an ENS name. No account needed.</p><form class="addform" onsubmit="return false"><label>Address or ENS name<input type="text" placeholder="0x… or name.eth" autocomplete="off"></label><button class="btn" type="submit" style="width:100%">Add wallet</button></form><div class="examples"><button type="button">vitalik.eth</button><button type="button">Example wallet</button></div></div></div></div>';
     var partial = scenario === "partial";
     var rows = partial ? list : list;
-    return '<div class="layer list"><div class="pbar" aria-hidden="true"><b>Portfolio</b><span class="figure">' + money(feesTotal(list)) + " earned · " + inCount(list) + " of " + list.length + " in range</span></div>" + '<div class="pscroll">' + common +
-      '<div class="phero"><p>Your pools earned</p><span class="pill figure"><span class="tick" data-fees>' + money(feesTotal(list)) + '</span></span><p>' + (partial ? "so far, worth " : "worth ") + 'an estimated <b class="figure"><span class="tick" data-total>' + money(total(list)) + '</span></b> · <span class="tick" data-incount>' + inCount(list) + '</span> of <span data-count>' + list.length + "</span> in range</p></div>" +
-      (partial ? '<div class="banner warn" role="status"><span class="icon" aria-hidden="true">!</span><span class="grow"><b>Arbitrum didn’t answer.</b> Showing 4 of 6.</span><button class="btn" type="button">Retry Arbitrum</button></div>' : outSummary(list)) +
+    return '<div class="layer list"><div class="pbar" aria-hidden="true"><b>Portfolio</b><span class="figure">' + compactTotal(list) + "</span></div>" + '<div class="pscroll">' + common + heroMini(list, partial) +
+      (partial ? '<div class="banner warn" role="status"><span class="icon" aria-hidden="true">!</span><span class="grow"><b>Arbitrum didn’t answer.</b> Showing 4 of 6.</span><button class="btn" type="button">Retry Arbitrum</button></div>' : stateBanners(list)) +
       '<div class="toolbar" style="margin:6px 0 4px">' + chipsHtml(list) + '</div>' +
       '<div data-phone-list aria-label="Positions" role="region"></div>' +
       notesHtml("") + "</div></div>" + (state.fsheet ? filterSheet() : "");
   }
+  function positionActions() { return '<div class="actions three"><button class="btn accent" type="button">' + icons.bell + 'Set alert</button><button class="btn ghost" type="button">' + icons.share + 'Share</button><a class="btn ghost" href="#">' + icons.ext + "Explorer</a></div>"; }
   function detailInner(index) {
     var position = positions[index];
     return (inRange(position) ? "" : outBanner(position)) +
-      '<section class="dcard" data-card="' + index + '" aria-labelledby="pt-' + position.id + '"><div class="toprow">' + coins(position) + chip(position) + '</div><div><h1 id="pt-' + position.id + '" tabindex="-1">' + position.base + " / " + position.quote + '</h1><span class="meta">' + position.protocol + ' · ' + position.fee + " · " + position.chain + (position.partial ? " · partial value" : "") + '</span></div><div class="dbig figure"><sup>$</sup><span class="tick" data-whole="' + position.id + '">' + whole(position.value) + '</span></div><span class="meta figure">est. · owed fees ' + money(position.fees) + "</span>" + histogram(position) + bar(position) +
+      '<section class="dcard" data-card="' + index + '" aria-labelledby="pt-' + position.id + '"><div class="toprow">' + coins(position) + chip(position) + '</div><div><h1 id="pt-' + position.id + '" tabindex="-1">' + position.base + " / " + position.quote + '</h1><span class="meta">' + position.protocol + ' · ' + position.fee + " · " + position.chain + (position.partial ? " · partial value" : "") + '</span></div>' + detailFigure(position) + histogram(position) + bar(position) +
       '<div class="lrow"><span>Current price</span><b class="figure"><span class="tick" data-price="' + position.id + '">' + fixed(position, position.price) + "</span> <small>" + position.unit + '</small></b></div><div class="lrow"><span>Range</span><b class="figure">' + fixed(position, position.lower) + " – " + fixed(position, position.upper) + "</b></div></section>" +
-      positionSections(position) + '<div class="actions"><a class="btn ghost" href="#">' + icons.ext + 'Explorer</a><button class="btn accent" type="button">' + icons.bell + 'Set alert</button></div><p class="note2" style="text-align:center">Updated 12 s ago</p>';
-  }
-  function phoneDetail(index, interactive) {
-    var position = positions[index];
-    return '<div class="layer detail"><div class="navbar"><button class="backbtn" type="button" ' + (interactive ? "data-back" : "") + ' aria-label="Back to Portfolio">' + icons.back + 'Portfolio</button><div class="nacts"><button class="iconbtn" type="button" aria-label="Set alert for ' + position.base + " / " + position.quote + '">' + icons.bell + '</button><button class="iconbtn" type="button" aria-label="Share">' + icons.share + '</button></div></div><div class="pscroll dscroll">' + detailInner(index) + '</div></div>';
+      positionActions() + positionSections(position) + '<p class="note2" style="text-align:center">' + freshText() + "</p>";
   }
   function buildPhones() {
     var inner = document.getElementById("phones-inner"), html = "";
     if (state.phoneSet === "flow") {
-      html = phone("Portfolio: tap a position", phoneList("ok"), "phone-main") + phone("Position, in range", phoneDetail(0, false)) + phone("Position, out of range", phoneDetail(4, false));
+      html = phone("Portfolio: tap a position", phoneList("ok"), "phone-main") + phone("Sheet, first level: the summary", phoneList("ok") + detailSheet(0, "medium")) + phone("Pulled up: everything, with links", phoneList("ok") + detailSheet(4, "large"));
     } else if (state.phoneSet === "add") {
       html = phone("First visit", phoneFirstVisit()) + phone("Add wallet: paste or type", phoneFirstVisit("idle")) + phone("Add wallet: ready", phoneFirstVisit("ready"));
     } else if (state.phoneSet === "problems") {
@@ -1089,9 +1235,9 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
       var gear2 = '<button class="iconbtn" type="button" aria-label="Alert settings">' + gear + "</button>";
       html = phone("Guest", phoneTab("Alerts", alertsBody("guest"), gear2), "", 1) + phone("Signed in", phoneTab("Alerts", alertsBody("list"), gear2), "", 1) + phone("Signed in, no alerts", phoneTab("Alerts", alertsBody("empty"), gear2), "", 1);
     } else if (state.phoneSet === "rules") {
-      html = phone("Alert settings", phonePush("Alerts", "Alert settings", alertSettingsBody(false)), "", 1) + phone("Push is off", phonePush("Alerts", "Alert settings", alertSettingsBody(true)), "", 1) + phone("Alert rule, from a position", phoneDetail(4, false) + phoneSheet2("ETH / BTC.b", ruleBody(false)), "", 0);
+      html = phone("Alert settings", phonePush("Alerts", "Alert settings", alertSettingsBody(false)), "", 1) + phone("Push is off", phonePush("Alerts", "Alert settings", alertSettingsBody(true)), "", 1) + phone("Alert rule, from a position", phoneList("ok") + detailSheet(4, "large") + phoneSheet2("ETH / cbBTC", ruleBody(false)), "", 0);
     } else if (state.phoneSet === "account") {
-      html = phone("Sign in", phoneTab("Alerts", alertsBody("guest")) + phoneSheet2("Sign in", signInBody()), "", 1) + phone("Merge wallets", phoneTab("Alerts", alertsBody("empty")) + mergeAlert(), "", 1) + phone("Alert rule, guest", phoneDetail(4, false) + phoneSheet2("ETH / BTC.b", ruleBody(true)), "", 0);
+      html = phone("Sign in", phoneTab("Alerts", alertsBody("guest")) + phoneSheet2("Sign in", signInBody()), "", 1) + phone("Merge wallets", phoneTab("Alerts", alertsBody("empty")) + mergeAlert(), "", 1) + phone("Alert rule, guest", phoneList("ok") + detailSheet(4, "large") + phoneSheet2("ETH / cbBTC", ruleBody(true)), "", 0);
     } else if (state.phoneSet === "settings") {
       html = phone("Settings, guest", phoneTab("Settings", settingsBody("guest")), "", 2) + phone("Settings, signed in", phoneTab("Settings", settingsBody("free")), "", 2) + phone("Plan", phonePush("Settings", "Plan", plansBody("free")), "", 2);
     } else if (state.phoneSet === "wallets") {
@@ -1103,26 +1249,62 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     }
     inner.innerHTML = html;
   }
-  /* push: the detail grows out of the tapped card; back shrinks it into the same card */
-  function pushPosition(card) {
-    var screen = card.closest(".screen"); if (!screen || screen.querySelector(".layer.detail")) return;
-    var index = Number(card.dataset.card), list = screen.querySelector(".layer.list");
-    var detail = document.createElement("div"); detail.innerHTML = phoneDetail(index, true); detail = detail.firstElementChild; detail.style.zIndex = 12;
-    screen.insertBefore(detail, screen.querySelector(".tabbar")); list.inert = true; screen.classList.add("pushing");
-    applyPalette(); mountSims();
-    var zoom = screen.getBoundingClientRect().width / screen.offsetWidth || 1;
-    function inset() { var s = screen.getBoundingClientRect(), r = card.getBoundingClientRect(); return "inset(" + ((r.top - s.top) / zoom) + "px " + ((s.right - r.right) / zoom) + "px " + ((s.bottom - r.bottom) / zoom) + "px " + ((r.left - s.left) / zoom) + "px round 26px)"; }
-    var style = getComputedStyle(root), ease = style.getPropertyValue("--d-ease").trim() || "ease-out", duration = parseFloat(style.getPropertyValue("--d-dur")) || 520;
-    if (!reduced) detail.animate([{ clipPath: inset(), opacity: 0.2 }, { clipPath: "inset(0px 0px 0px 0px round 46px)", opacity: 1 }], { duration: duration, easing: ease });
-    else detail.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150 });
-    var title = detail.querySelector("h1"); if (title) title.focus({ preventScroll: true });
-    detail.querySelector("[data-back]").addEventListener("click", function () {
-      function done() { detail.remove(); list.inert = false; screen.classList.remove("pushing"); if (card.isConnected) card.focus({ preventScroll: true }); }
-      if (reduced) { done(); return; }
-      var out = detail.animate([{ clipPath: "inset(0px 0px 0px 0px round 46px)", opacity: 1 }, { clipPath: inset(), opacity: 0.2 }], { duration: duration * 0.85, easing: ease, fill: "forwards" }); out.onfinish = done;
-    });
+  /* position details on iPhone and Slide Over: a sheet with two heights. Medium (62 %) shows the summary; drag up for everything */
+  function detailSheet(index, detent) {
+    var position = positions[index];
+    return '<div class="scrim2 dscrim"></div><div class="psheet" role="dialog" aria-modal="true" aria-labelledby="pt-' + position.id + '" data-detent="' + (detent || "medium") + '">' +
+      '<div class="psgrab"><span class="grip2" aria-hidden="true"></span><button class="psclose iconbtn" type="button" data-psclose aria-label="Close">' + icons.close + "</button></div>" +
+      '<div class="psbody">' + detailInner(index) + '<p class="pshint" aria-hidden="true">Pull up for amounts, fees and details</p></div></div>';
   }
-
+  function wireSheet(sheet, onClose) {
+    var host = sheet.parentElement, scrim = sheet.previousElementSibling, body = sheet.querySelector(".psbody"), drag = null;
+    function mid() { return sheet.offsetHeight * 0.38; }
+    function zoom() { return host.getBoundingClientRect().height / host.offsetHeight || 1; }
+    function settle(detent) { sheet.classList.remove("dragging"); sheet.style.transform = ""; sheet.dataset.detent = detent; body.scrollTop = 0; }
+    function close() {
+      function done() { sheet.remove(); scrim.remove(); if (onClose) onClose(); }
+      if (reduced) { done(); return; }
+      sheet.classList.remove("dragging"); sheet.style.transform = "translateY(100%)"; scrim.style.opacity = "0"; setTimeout(done, 320);
+    }
+    scrim.addEventListener("click", close);
+    sheet.querySelector("[data-psclose]").addEventListener("click", function (event) { event.stopPropagation(); close(); });
+    sheet.addEventListener("keydown", function (event) { if (event.key === "Escape") close(); });
+    sheet.querySelector(".psgrab").addEventListener("click", function (event) { if (event.target.closest("[data-psclose]") || sheet.dataset.moved) return; settle(sheet.dataset.detent === "large" ? "medium" : "large"); });
+    sheet.addEventListener("pointerdown", function (event) {
+      var large = sheet.dataset.detent === "large";
+      if (large && !event.target.closest(".psgrab") && body.scrollTop > 0) return;
+      drag = { y: event.clientY, from: large ? 0 : mid(), at: large ? 0 : mid(), t: performance.now(), v: 0, id: event.pointerId, moved: false };
+      delete sheet.dataset.moved;
+    });
+    sheet.addEventListener("pointermove", function (event) {
+      if (!drag || event.pointerId !== drag.id) return;
+      var dy = (event.clientY - drag.y) / zoom();
+      if (!drag.moved) { if (Math.abs(dy) < 6) return; drag.moved = true; sheet.dataset.moved = "1"; sheet.classList.add("dragging"); sheet.setPointerCapture(event.pointerId); }
+      var at = Math.max(0, drag.from + dy), now = performance.now();
+      drag.v = (at - drag.at) / Math.max(1, now - drag.t); drag.at = at; drag.t = now;
+      sheet.style.transform = "translateY(" + at.toFixed(1) + "px)";
+      event.preventDefault();
+    });
+    function release() {
+      if (!drag) return; var state2 = drag; drag = null;
+      if (!state2.moved) return;
+      var projected = state2.at + state2.v * 160, half = mid();
+      if (projected > half + sheet.offsetHeight * 0.22) close(); else settle(projected < half / 2 ? "large" : "medium");
+      setTimeout(function () { delete sheet.dataset.moved; }, 0);
+    }
+    sheet.addEventListener("pointerup", release); sheet.addEventListener("pointercancel", release);
+  }
+  function openSheet(card) {
+    var host = card.closest(".sover") || card.closest(".screen"); if (!host || host.querySelector(".psheet")) return;
+    var holder = document.createElement("div"); holder.innerHTML = detailSheet(Number(card.dataset.card));
+    var scrim = holder.firstElementChild, sheet = holder.lastElementChild, list = host.querySelector(".layer.list");
+    host.appendChild(scrim); host.appendChild(sheet); if (list) list.inert = true;
+    applyPalette(); mountSims();
+    if (!reduced) { sheet.animate([{ transform: "translateY(100%)" }, { transform: "translateY(38%)" }], { duration: 420, easing: getComputedStyle(root).getPropertyValue("--d-ease").trim() || "ease-out" }); scrim.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250 }); }
+    else sheet.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150 });
+    var title = sheet.querySelector("h1"); if (title) title.focus({ preventScroll: true });
+    wireSheet(sheet, function () { if (list) list.inert = false; if (card.isConnected) card.focus({ preventScroll: true }); });
+  }
 
   /* ---------- onboarding: add wallet, reading, no positions, wallets ---------- */
   var forms = {
@@ -1132,7 +1314,8 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     invalid: { label: "Not an address", value: "0x4f3a9c", status: "invalid" },
     notfound: { label: "Name not found", value: "vitalick.eth", status: "notfound" },
     duplicate: { label: "Already watched", value: "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B", status: "duplicate" },
-    limit: { label: "Plan limit", value: "vitalik.eth", status: "limit" }
+    limit: { label: "Plan limit, guest", value: "vitalik.eth", status: "limit" },
+    limitfree: { label: "Plan limit, signed in", value: "vitalik.eth", status: "limitfree" }
   };
   function hueOf(text) { var h = 0; for (var i = 0; i < text.length; i++) h = (h * 31 + text.charCodeAt(i)) % 360; return h; }
   function mono(text, seed) { return '<span class="mono" aria-hidden="true" style="--hue:' + hueOf(seed || text) + '">' + text.slice(0, 1).toUpperCase() + "</span>"; }
@@ -1146,16 +1329,19 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     if (status === "invalid") message = '<p class="fstat err" id="' + ids + '-m" role="alert">' + icons.warn + "<span>Not an address. EVM addresses start with 0x and have 42 characters.</span></p>";
     if (status === "notfound") message = '<p class="fstat err" id="' + ids + '-m" role="alert">' + icons.warn + "<span>Can’t find “vitalick.eth”.</span></p>";
     if (status === "duplicate") message = '<p class="fstat err" id="' + ids + '-m" role="alert">' + icons.warn + '<span>You already watch this wallet.<button class="act" type="button">Show</button></span></p>';
-    if (status === "ready" || status === "limit") message = '<p class="sr" id="' + ids + '-m" role="status">vitalik.eth found, address 0xd8dA…6045</p>';
+    var atLimit = status === "limit" || status === "limitfree";
+    if (status === "ready" || atLimit) message = '<p class="sr" id="' + ids + '-m" role="status">vitalik.eth found, address 0xd8dA…6045</p>';
     input += message + "</div>";
-    var preview = (status === "ready" || status === "limit") ? '<div class="wprev">' + mono("V", "vitalik.eth") + '<b>vitalik.eth</b><span class="sub2">0xd8dA…6045</span><span class="reads">Read on every supported chain.</span></div>' : "";
-    var limit = status === "limit" ? '<div class="banner" role="status"><span class="icon" aria-hidden="true">1</span><span class="grow"><b>Guests watch 1 wallet.</b> Sign in for 3.</span><button class="btn" type="button">Sign in</button></div>' : "";
+    var preview = (status === "ready" || atLimit) ? '<div class="wprev">' + mono("V", "vitalik.eth") + '<b>vitalik.eth</b><span class="sub2 addr">0xd8dA…6045</span><span class="reads">Read on every supported chain.</span></div>' : "";
+    var limit = status === "limit" ? '<div class="banner" role="alert"><span class="icon" aria-hidden="true">1</span><span class="grow"><b>You watch 1 of 1 wallets.</b> That is the guest limit. Sign in to watch 3.</span><button class="btn" type="button">Sign in</button></div>'
+      : status === "limitfree" ? '<div class="banner" role="alert"><span class="icon" aria-hidden="true">3</span><span class="grow"><b>You watch 3 of 3 wallets.</b> That is the Free limit. Remove one, or see what a higher plan adds.</span><button class="btn" type="button" data-nav="plans">See plans</button></div>' : "";
     var tools = status === "" || status === "invalid" || status === "notfound" ? '<div class="rowbtns"><button class="btn ghost" type="button">' + icons.paste + 'Paste</button>' + (where === "phone" ? '<button class="btn ghost" type="button">' + icons.qr + 'Scan QR</button>' : "") + '<button class="btn ghost" type="button">vitalik.eth</button></div>' : "";
     return input + preview + limit + tools;
   }
-  function walletAdd(key) { var status = forms[key].status; var ok = status === "ready"; return '<button class="btn block' + (ok ? "" : "") + '" type="button"' + (ok ? "" : " disabled") + ">Add wallet</button>"; }
+  function canSubmit(key) { var status = forms[key].status; return status === "ready" || status === "limit" || status === "limitfree"; }
+  function walletAdd(key) { var ok = canSubmit(key); return '<button class="btn block' + (ok ? "" : "") + '" type="button"' + (ok ? "" : " disabled") + ">Add wallet</button>"; }
   function webDialog(key) {
-    return '<div class="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><div class="dhead"><h2 id="dlg-t">Add wallet</h2><button class="iconbtn" type="button" aria-label="Close">' + icons.close + "</button></div>" + walletBody(key, "web") + '<div class="dfoot"><button class="btn ghost" type="button">Cancel</button><button class="btn" type="button"' + (forms[key].status === "ready" ? "" : " disabled") + ">Add wallet</button></div></div></div>";
+    return '<div class="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><div class="dhead"><h2 id="dlg-t">Add wallet</h2><button class="iconbtn" type="button" aria-label="Close">' + icons.close + "</button></div>" + walletBody(key, "web") + '<div class="dfoot"><button class="btn ghost" type="button">Cancel</button><button class="btn" type="button"' + (canSubmit(key) ? "" : " disabled") + ">Add wallet</button></div></div></div>";
   }
   function webAddWallet() { return webPortfolio(webDialog(state.formState)); }
   function phoneSheet(key) {
@@ -1177,14 +1363,14 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   }
   function walletRows(list) {
     return list.map(function (w) {
-      return '<div class="wrow' + (w.paused ? " paused" : "") + '">' + mono(w.name.replace("0x", "").slice(0, 1) || "W", w.name) + '<div class="name">' + w.name + (w.paused ? '<span class="pill2 pause">Paused</span>' : "") + '</div><button class="iconbtn" type="button" aria-label="Remove ' + w.name + '">' + icons.trash + '</button><span class="sub2">' + w.addr + " · " + w.info + "</span></div>";
+      return '<div class="wrow' + (w.paused ? " paused" : "") + '">' + mono(w.name.replace("0x", "").slice(0, 1) || "W", w.name) + '<div class="name">' + w.name + (w.paused ? '<span class="pill2 pause">Paused</span>' : "") + '</div><button class="iconbtn" type="button" aria-label="Remove ' + w.name + '">' + icons.trash + '</button><span class="sub2"><span class="addr">' + w.addr + "</span> · " + (usd() ? w.info : w.info.replace(/ · \$.*/, "")) + "</span></div>";
     }).join("");
   }
   var walletsGuest = [{ name: "Main wallet", addr: "0xAb58…eC9B", info: "6 positions · $53,170" }];
   var walletsFree = [{ name: "Main wallet", addr: "0xAb58…eC9B", info: "6 positions · $53,170" }, { name: "vitalik.eth", addr: "0xd8dA…6045", info: "5 positions · $212,400" }, { name: "Trading", addr: "0x91c2…7e40", info: "2 positions · $8,310" }, { name: "0x3Fe0…a1B2", addr: "0x3Fe0…a1B2", info: "3 positions", paused: true }, { name: "nft-fund.eth", addr: "0x77a9…d03c", info: "1 position", paused: true }];
   function meterHtml(plan) {
     var guest = plan === "guest";
-    return '<div class="meter"><div class="top2"><b>' + (guest ? "1 of 1 wallets" : "3 of 3 wallets") + '</b><span class="small">' + (guest ? "Guest" : "Free plan") + '</span></div><div class="track2" aria-hidden="true"><i style="--w:100%"></i></div><p class="small">' + (guest ? "Guests watch 1 wallet. Sign in for 3 and alerts." : "2 wallets are paused: read-only, no alerts. Pick 3 to keep.") + '</p><div class="rowbtns">' + (guest ? '<button class="btn" type="button">Sign in</button>' : '<button class="btn" type="button">Choose active wallets</button>') + '<button class="btn ghost" type="button" disabled>Add wallet</button></div></div>';
+    return '<div class="meter"><div class="top2"><b>' + (guest ? "1 of 1 wallets" : "3 of 3 wallets") + '</b><span class="small">' + (guest ? "Guest" : "Free plan") + '</span></div><div class="track2" aria-hidden="true"><i style="--w:100%"></i></div><p class="small">' + (guest ? "Guests watch 1 wallet. Sign in for 3 and alerts." : "2 wallets are paused: read-only, no alerts. Pick 3 to keep.") + '</p><div class="rowbtns">' + (guest ? '<button class="btn" type="button">Sign in</button>' : '<button class="btn" type="button">Choose active wallets</button>') + '<button class="btn ghost" type="button">Add wallet</button></div></div>';
   }
   function webWallets() {
     var plan = state.walletPlan || "guest";
@@ -1239,7 +1425,7 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   function alertSettingsBody(denied) {
     return (denied ? '<div class="banner warn" role="status"><span class="icon" aria-hidden="true">!</span><span class="grow"><b>Push is off.</b> Turn it on in system settings.</span><button class="btn" type="button">Open Settings</button></div>' : "") +
       group("Push", srow("Push notifications", sw(!denied, "Push notifications"), "Alerts arrive on this phone"), "") +
-      group("Rules", srow("Left range", sw(true, "Left range")) + srow("Back in range", sw(true, "Back in range")) + srow("Early warning", '<span class="pill2">Pro</span>' + sw(false, "Early warning", true), "Before the price reaches the edge"), "One alert per position every 30 min.");
+      group("Rules", srow("Left range", sw(true, "Left range")) + srow("Back in range", sw(true, "Back in range")) + srow("Early warning", '<span class="pill2">Pro</span>' + sw(true, "Early warning"), "Before the price reaches the edge") + srow("Warn at", '<span class="pctfield" role="spinbutton" aria-label="Warn at percent from the edge" aria-valuenow="5" tabindex="0">5 %</span>', "From the range edge"), "One alert per position every 30 min.");
   }
   function plansBody(account) {
     var cur = account === "guest" ? 0 : 1;
@@ -1248,7 +1434,7 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   }
   function ruleBody(guest) {
     return guest ? '<div class="banner" role="status"><span class="icon" aria-hidden="true">1</span><span class="grow"><b>Alerts need an account.</b></span><button class="btn" type="button" data-go="signin">Sign in</button></div>' :
-      groupNoHead(srow("Left range", sw(true, "Left range")) + srow("Back in range", sw(true, "Back in range")) + srow("Early warning", '<span class="pill2">Pro</span>' + sw(false, "Early warning", true)));
+      groupNoHead(srow("Left range", sw(true, "Left range")) + srow("Back in range", sw(true, "Back in range")) + srow("Early warning", '<span class="pill2">Pro</span>' + sw(true, "Early warning")) + srow("Warn at", '<span class="pctfield" role="spinbutton" aria-label="Warn at percent from the edge" aria-valuenow="5" tabindex="0">5 %</span>'));
   }
   function signInBody() { return '<p class="fhelp">With a passkey. No password.</p><button class="btn block" type="button">Continue with a passkey</button><button class="btn ghost block" type="button">Continue as guest</button>'; }
   function mergeAlert() { return '<div class="alertwrap"><div class="alert2" role="alertdialog" aria-labelledby="mg-t" aria-describedby="mg-d"><div class="body"><b id="mg-t">Merge your wallets?</b><p id="mg-d">Add the wallet on this device to your account.</p></div><div class="abtns"><button type="button">Not now</button><button type="button" class="okbtn">Merge</button></div></div></div>'; }
@@ -1277,7 +1463,7 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
   var screensPhone = [["flow", "Portfolio and Position"], ["add", "Add a wallet"], ["problems", "Add wallet: problems"], ["after", "After adding"], ["wallets", "Wallets"], ["alerts", "Alerts"], ["rules", "Alert settings"], ["account", "Sign in"], ["settings", "Settings and plan"], ["states", "States"]];
   var hints = {
     web: "Hover a card, or Tab to it and press Enter. Open goes to the position page.",
-    iphone: "Rows by default. A tap pushes the position out of the row. Example data.",
+    iphone: "Rows by default. A tap opens the position sheet; drag it up for everything, down to close. Example data.",
     ipad: "The layout follows the window width, not the device. Wide: sidebar, list and detail. Medium: tabs on top, list and detail. Slide Over: the iPhone layout. Select a row to show it in the detail column.",
     mac: "One main window with a sidebar, list and detail; every toolbar item is also a menu command. Settings is its own window (Command comma)."
   };
@@ -1293,16 +1479,15 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     }
     return '<nav class="side2' + (mac ? " mac" : "") + '" aria-label="Sidebar">' + (mac ? "" : '<div class="sbrand"><i aria-hidden="true"></i>voidx</div>') +
       '<span class="scap">Portfolio</span><button type="button" class="srow2' + (!state.wallets.length ? " on" : "") + '" data-swallet="all">' + allIcon + "<span>All wallets</span><em>" + base.length + "</em></button>" +
-      wallets.map(wrow).join("") + '<button type="button" class="srow2 add">' + icons.plus + "<span>Add wallet</span></button>" +
+      visibleWallets().map(wrow).join("") + '<button type="button" class="srow2 add">' + icons.plus + "<span>Add wallet</span></button>" +
       '<span class="scap">Alerts</span><button type="button" class="srow2">' + icons.bell + "<span>Alerts</span><em>1</em></button>" +
       (mac ? "" : '<div class="sgrow"></div><button type="button" class="srow2">' + gear + "<span>Settings</span></button>") + "</nav>";
   }
   function wideList(tabsOnTop, mac) {
     var list = scoped(), picked = state.wallets.length === 1 ? wallets.filter(function (w) { return w.id === state.wallets[0]; })[0] : null;
     return '<section class="mid2 compact" aria-label="Positions">' +
-      (tabsOnTop ? '<div class="mhead slim"><span class="mtotal figure">' + money(feesTotal(list)) + " earned · " + inCount(list) + " of " + list.length + " in range</span></div>" + walletTags() : '<div class="mhead"><div class="mtitlebox"><h1>' + (picked ? picked.label : "All wallets") + '</h1><span class="mtotal figure">' + money(feesTotal(list)) + " earned · " + inCount(list) + " of " + list.length + " in range</span></div>" + (mac ? "" : '<div class="pgroup"><button class="iconbtn" type="button" aria-label="Search">' + searchIcon + '</button><button class="iconbtn" type="button" aria-label="Add wallet">' + icons.plus + "</button></div>") + "</div>") +
-      '<div class="phero"><p>Your pools earned</p><span class="pill figure"><span class="tick" data-fees>' + money(feesTotal(list)) + '</span></span><p>worth an estimated <b class="figure"><span class="tick" data-total>' + money(total(list)) + '</span></b> · <span class="tick" data-incount>' + inCount(list) + "</span> of " + list.length + " in range</p></div>" +
-      outSummary(list) + '<div class="toolbar" style="margin:4px 0">' + phoneFilters(list) + "</div>" + '<div data-wide-list aria-label="Positions" role="region"></div></section>';
+      (tabsOnTop ? '<div class="mhead slim"><span class="mtotal figure">' + compactTotal(list) + "</span></div>" + walletTags() : '<div class="mhead"><div class="mtitlebox"><h1>' + (picked ? picked.label : "All wallets") + '</h1><span class="mtotal figure">' + compactTotal(list) + "</span></div>" + (mac ? "" : '<div class="pgroup"><button class="iconbtn" type="button" aria-label="Search">' + searchIcon + '</button><button class="iconbtn" type="button" aria-label="Add wallet">' + icons.plus + "</button></div>") + "</div>") +
+      heroMini(list, false) + stateBanners(list) + '<div class="toolbar" style="margin:4px 0">' + phoneFilters(list) + "</div>" + '<div data-wide-list aria-label="Positions" role="region"></div></section>';
   }
   function wideDetail() { return '<section class="det2" aria-label="Position">' + detailInner(state.sel) + "</section>"; }
   function ipadFrame(width, body, label) {
@@ -1342,8 +1527,8 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
       renderList(host, "rows", shown(), "select");
       host.querySelectorAll(".card").forEach(function (card) { if (Number(card.dataset.card) === state.sel) card.classList.add("selected"); });
     });
-    document.querySelectorAll(".solist [data-phone-list]").forEach(function (host) { renderList(host, "rows", shown(), "select"); });
-    applyPalette(); mountSims(); renderControls(); setupCondense();
+    document.querySelectorAll(".solist [data-phone-list]").forEach(function (host) { renderList(host, "rows", shown(), "sheet"); });
+    applyPalette(); mountSims(); renderControls(); setupCondense(); fitWide();
     document.getElementById("hint").textContent = hints[state.platform];
   }
   /* sticky header: the hero's figure passing under the bar condenses the bar (docs/research/repo/sticky-header-motion.md) */
@@ -1373,19 +1558,32 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     document.getElementById("stage-web").hidden = phones; document.getElementById("stage-phones").hidden = !phones;
     if (!phones) {
       var pages = { portfolio: function () { return webPortfolio(); }, position: webPosition, loading: webLoading, empty: webEmpty, partial: webPartial, addwallet: webAddWallet, reading: webReading, nopositions: webNoPositions, wallets: webWallets, alerts: function () { return webAlerts(); }, alertsettings: webAlertSettings, settings: webSettings, plans: webPlans, signin: webSignIn };
+      if (!pages[state.webScreen]) state.webScreen = "portfolio";
       document.getElementById("stage-web").innerHTML = pages[state.webScreen]();
       var host = document.getElementById("list"); if (host) renderList(host, state.view, shown());
-      document.querySelectorAll("[data-phone-list]").forEach(function (phoneHost) { renderList(phoneHost, "rows", positions, "push"); });
+      document.querySelectorAll("[data-phone-list]").forEach(function (phoneHost) { renderList(phoneHost, "rows", positions, "sheet"); });
     } else {
       buildPhones();
-      document.querySelectorAll("[data-phone-list]").forEach(function (host) { var screenId = host.closest(".screen").id; var partialPhone = host.closest(".phonecol").querySelector("p").textContent.indexOf("Arbitrum") === 0; renderList(host, state.phoneView, partialPhone ? positions.filter(function (p) { return p.chain !== "Arbitrum"; }) : shown(), "push"); });
+      document.querySelectorAll("#phones-inner .psheet").forEach(function (sheet) { var list = sheet.parentElement.querySelector(".layer.list"); if (list) list.inert = true; wireSheet(sheet, function () { if (list) list.inert = false; }); });
+      document.querySelectorAll("[data-phone-list]").forEach(function (host) { var screenId = host.closest(".screen").id; var partialPhone = host.closest(".phonecol").querySelector("p").textContent.indexOf("Arbitrum") === 0; renderList(host, state.phoneView, partialPhone ? positions.filter(function (p) { return p.chain !== "Arbitrum"; }) : shown(), "sheet"); });
     }
-    applyPalette(); mountSims(); measureDrawer(); renderControls(); fitPhones(); setupCondense();
+    document.getElementById("stage-web").style.height = "";
+    applyWidth(); applyPalette(); mountSims(); measureDrawer(); renderControls(); fitPhones(); setupCondense();
     document.getElementById("hint").textContent = hints[state.platform];
+  }
+  function applyWidth() { document.getElementById("stage-web").style.setProperty("--bw", state.webWidth === "fit" ? "none" : state.webWidth + "px"); }
+  function fitWide() {
+    var stage = document.getElementById("stage-web"), inner = stage.querySelector(".widestage"); if (!inner) { stage.style.height = ""; return; }
+    var frame = inner.querySelector(".ipad, .macwin"), natural = frame.classList.contains("ipad") ? Number(frame.style.getPropertyValue("--w")) : (inner.querySelector(".msettings") ? 640 : 1240);
+    var available = stage.clientWidth, zoom = Math.min(1, available / natural);
+    inner.style.width = natural + "px"; inner.style.transformOrigin = "0 0";
+    inner.style.transform = "translateX(" + Math.max(0, (available - natural * zoom) / 2).toFixed(1) + "px) scale(" + zoom.toFixed(4) + ")";
+    stage.style.height = zoom < 1 ? Math.ceil(inner.offsetHeight * zoom) + "px" : "";
   }
   function fitPhones() {
     var stage = document.getElementById("stage-phones"), inner = document.getElementById("phones-inner"); if (stage.hidden) return;
-    var count = inner.querySelectorAll(".phonecol").length, natural = count * 374 + (count - 1) * 40, available = stage.clientWidth, zoom = Math.min(1, available / natural);
+    var count = inner.querySelectorAll(".phonecol").length, available = stage.clientWidth, perRow = Math.max(1, Math.min(count, Math.floor((available + 40) / 414)));
+    var natural = perRow * 374 + (perRow - 1) * 40, zoom = Math.min(1, available / natural);
     inner.style.width = natural + "px"; inner.style.transform = "translateX(" + Math.max(0, (available - natural * zoom) / 2).toFixed(1) + "px) scale(" + zoom.toFixed(4) + ")";
     stage.style.height = Math.ceil((inner.offsetHeight) * zoom + 8) + "px";
   }
@@ -1394,6 +1592,10 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     document.getElementById("platforms").innerHTML = seg([["web", "Web"], ["iphone", "iPhone"], ["ipad", "iPad"], ["mac", "Mac"]], state.platform, "platform");
     document.getElementById("screens").innerHTML = state.platform === "web" ? seg(screensWeb, state.webScreen, "screen") : state.platform === "ipad" ? seg(screensIpad, state.ipadSet, "screen") : state.platform === "mac" ? seg(screensMac, state.macSet, "screen") : seg(screensPhone, state.phoneSet, "screen");
     var showAcct = state.platform === "web" && ["alerts", "alertsettings", "settings", "plans", "signin"].indexOf(state.webScreen) >= 0, showForm = state.platform === "web" && state.webScreen === "addwallet", showPlan = state.platform === "web" && state.webScreen === "wallets"; var showHero = state.platform === "web" && state.webScreen === "empty"; document.getElementById("formgroup").hidden = !(showForm || showPlan || showHero || showAcct); document.getElementById("l-form").textContent = showHero ? "Intro" : showAcct ? "Account" : showPlan ? "Plan" : "Form"; document.getElementById("formstates").innerHTML = showAcct ? seg([["guest", "Guest"], ["free", "Signed in"]], state.account, "acct") : showHero ? seg([["block", "Block on top"], ["cards", "Cards first"]], state.hero, "hero") : showPlan ? seg([["guest", "Guest, at the limit"], ["free", "Free, after a downgrade"]], state.walletPlan || "guest", "wplan") : seg(Object.keys(forms).map(function (k) { return [k, forms[k].label]; }), state.formState, "form");
+    document.getElementById("widthgroup").hidden = state.platform !== "web";
+    document.getElementById("widths").innerHTML = seg([["fit", "Fit"], ["390", "Phone 390"], ["820", "Tablet 820"], ["1280", "Desktop 1280"]], state.webWidth, "width");
+    document.getElementById("valuesSeg").innerHTML = seg([["usd", "USD estimates, M3.5 on"], ["tokens", "Tokens only, M1 to M3"]], state.values, "values");
+    document.getElementById("dataSeg").innerHTML = seg([["live", "Live"], ["stale", "Stale"], ["over", "Guest over the limit"]], state.data, "data");
     document.getElementById("palettes").innerHTML = seg([["auto", "Auto"], ["dragonfruit", "Dragonfruit"], ["neon", "Neon Night"]], state.palette, "palette");
     var pause = document.getElementById("pause"); pause.setAttribute("aria-pressed", String(state.paused)); pause.textContent = "Pause live prices";
     var nudge = document.getElementById("nudge"); nudge.setAttribute("aria-pressed", String(!inRange(positions[0]))); nudge.textContent = inRange(positions[0]) ? "Push ETH / USDC out of range" : "Bring ETH / USDC back in range";
@@ -1405,9 +1607,13 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     else if (d.form) { state.formState = d.form; save(); renderAll(); }
     else if (d.hero) { state.hero = d.hero; save(); renderAll(); }
     else if (d.acct) { state.account = d.acct; save(); renderAll(); }
+    else if (d.width) { state.webWidth = d.width; save(); applyWidth(); renderControls(); }
+    else if (button.id === "ctlmore") { var more = document.querySelector(".ctl").classList.toggle("more"); button.setAttribute("aria-expanded", String(more)); button.textContent = more ? "Fewer controls" : "More controls"; }
+    else if (d.values) { state.values = d.values; save(); renderAll(); }
+    else if (d.data) { state.data = d.data; save(); renderAll(); }
     else if (d.wplan) { state.walletPlan = d.wplan; save(); renderAll(); }
     else if (d.palette) { state.palette = d.palette; save(); applyPalette(); renderControls(); }
-    else if (button.id === "pause") { state.paused = !state.paused; save(); renderControls(); var fresh = document.querySelector(".fresh"); if (fresh) { fresh.classList.toggle("paused", state.paused); fresh.textContent = state.paused ? "Prices as of 9:41" : "Updated 12 s ago"; } }
+    else if (button.id === "pause") { state.paused = !state.paused; save(); renderControls(); var fresh = document.querySelector(".fresh"); if (fresh) { fresh.classList.toggle("paused", state.paused && !stale()); fresh.textContent = freshText(); } }
     else if (button.id === "nudge") { var first = positions[0]; first.pinned = true; first.price = inRange(first) ? first.upper * 1.03 : first.home; refresh(first, first.price > first.home ? "up" : "down"); renderControls(); }
   });
   document.getElementById("stage").addEventListener("click", function (event) {
@@ -1457,7 +1663,7 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
     q("[data-outcount]", function (el) { el.textContent = String(scoped().filter(function (p) { return !inRange(p); }).length); });
   }
   setInterval(function () {
-    if (document.hidden || state.paused) return;
+    if (document.hidden || state.paused || stale()) return;
     var movable = positions.filter(function (p) { return !p.pinned; }), position = movable[Math.floor(Math.random() * movable.length)];
     var width = position.upper - position.lower, center = (position.upper + position.lower) / 2;
     var next = Math.max(position.lower * 0.5, position.price + (Math.random() - 0.5) * width * 0.34 + (center - position.price) * 0.05), direction = next >= position.price ? "up" : "down";
@@ -1466,7 +1672,7 @@ a.srow { color: inherit; text-decoration: none; } .srow .lt { display: grid; gap
 
   darkQuery.addEventListener("change", function () { if (state.palette === "auto") applyPalette(); });
   new MutationObserver(function () { if (state.palette === "auto") applyPalette(); }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-  if (window.ResizeObserver) new ResizeObserver(function () { measureDrawer(); fitPhones(); }).observe(document.getElementById("app"));
+  if (window.ResizeObserver) new ResizeObserver(function () { measureDrawer(); fitPhones(); if (state.platform === "ipad" || state.platform === "mac") fitWide(); }).observe(document.getElementById("app"));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureDrawer);
   applyWeight(); renderAll();
 })();

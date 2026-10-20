@@ -2,7 +2,7 @@
 <title>VoidX Landing Scroll</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..800&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a control strip (platform, screen, palette), then one stage: a browser frame for Web, a row of iPhone frames for iPhone. Everything is built from the Ghost tokens of ADR 0055 and the engine of the cards prototype: palette in OKLCH, ink picked by contrast, range bar with spring physics, Drawer on Web cards. */
 :root {
@@ -22,7 +22,7 @@
 :root[data-theme="dark"] { --page: oklch(0.16 0.03 320); --page-ink: oklch(0.98 0.01 320); --surface: oklch(0.23 0.04 320); --accent: oklch(0.72 0.208 350); --accent-ink: oklch(0.22 0.05 320); color-scheme: dark; }
 * { box-sizing: border-box; }
 html, body { background: var(--page); color: var(--page-ink); }
-body { margin: 0; font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+body { margin: 0; font-family: "DM Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
 h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; }
 a { color: inherit; }
@@ -1307,7 +1307,7 @@ body { padding: 0; } .wrap { max-width: none; gap: 0; }
     ctx.stroke();
     ctx.globalCompositeOperation = lightInk ? "lighter" : "source-over";
     for (var sp2 = 0; sp2 < segs; sp2++) { if (shown - sp2 < 1) continue; var u = (time * 0.18 + sp2 * 0.31) % 1; ctx.globalAlpha = 0.9 * reveal; var pxx = lerp(np[sp2][0], np[sp2 + 1][0], u), pyy = lerp(np[sp2][1], np[sp2 + 1][1], u); ctx.drawImage(sprite, pxx - 14, pyy - 14, 28, 28); }
-    ctx.font = "600 12px 'Plus Jakarta Sans', system-ui, sans-serif"; ctx.textBaseline = "middle";
+    ctx.font = "600 12px 'DM Sans', system-ui, sans-serif"; ctx.textBaseline = "middle";
     for (var n = 0; n < np.length; n++) {
       var show = clamp(shown - n + 0.6, 0, 1), pulse = 0.5 + 0.5 * Math.sin(time * 1.5 + n);
       ctx.globalCompositeOperation = lightInk ? "lighter" : "source-over";

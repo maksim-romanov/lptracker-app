@@ -1,34 +1,65 @@
 # Portfolio
 
-The first tab. Shows everything the watchlist holds and what needs attention first.
+## Job
+
+See every watched position at once and what needs attention first. The first tab and the start destination.
+
+## Prototype
+
+[screens.html#web-portfolio](../visual/prototypes/screens.html#web-portfolio), [#iphone-flow](../visual/prototypes/screens.html#iphone-flow), [#ipad-wide](../visual/prototypes/screens.html#ipad-wide), [#mac-main](../visual/prototypes/screens.html#mac-main). Status: D0 base, in progress ([prototypes](../prototypes.md)); until it is approved, this page wins where they differ.
 
 ## Regions, in order
 
 | # | Region | Component | Shows |
 |---|---|---|---|
-| 1 | Header | Navigation bar | Title "Portfolio", Add wallet action |
-| 2 | Summary | Value (display-lg), supporting line | Estimated total value from `totals.all.valueUsd` (null before prices exist: show "n/a"); owed fees total and positions in range count (*needs server field*) |
-| 3 | Attention banner | Banner | Positions out of range: names and a Show action. Hidden at zero (the out-of-range count is a *needs server field*) |
-| 4 | Filters | Filter chip | All and Out of range with counts (*needs server field*) |
-| 5 | Positions | Position row (Rows) or card (Cards) | Sorted by value (*needs server field*); out-of-range first only when the filter is active |
-| 6 | Notes | Text | Hidden positions with unlisted tokens and a Show control; USD is an estimate; block read at (per scope, from `readBlock`) |
+| 1 | Header | Navigation bar (web: site header) | Title "Portfolio", Add wallet; web adds the tabs, the updated line and Sign in or Account. Condensed slot: the summary figure once the summary scrolls under the bar ([navigation](../components/navigation.md)) |
+| 2 | Wallets | Wallet tags | One tag per wallet with its position count (*needs server field*), then Add wallet. Tapping tags scopes every region below to those wallets |
+| 3 | Summary | Headline with a pill, supporting line | USD: owed fees total in the pill (*needs server field*), `totals.all` as an estimate, in range count (*needs server field*). Tokens only: "K of N positions in range" across wallets and networks (*needs server field*, every count); no USD |
+| 4 | Notices | Banner | Notices in the order of [screen state](../foundations/screen-state.md#notices-on-screen); out of range names the pairs and offers Show |
+| 5 | Filters | Filter bar (web), Filters button and sheet (phone) | Networks, protocols and status (All, Out of range), each with its count (*needs server field*); Reset when any is set |
+| 6 | View | Cards / Rows toggle | Web only; remembered, the same preference as in Settings |
+| 7 | Positions | Position card (Cards) or position row (Rows) | Sorted in the server's order (*needs server field*: by value, or by amount when tokens only); tokens only: base amount as the figure, then the quote amount and owed fees per token |
+| 8 | Notes | Text | Hidden positions with unlisted tokens and Show; USD is an estimate (USD only); block read at, from `readBlock` |
 
 ## States
 
-| State | What changes |
+| State | On the wire | What changes |
+|---|---|---|
+| `loading` | Scopes `pending` | Skeleton rows for pending scopes; finished scopes render as they arrive |
+| `empty` `no-wallet` | No watch entry | Example wallet with an example label; one primary action, Add wallet |
+| `empty` `no-positions` | Every scope `ok`, no position | Says what VoidX reads; Add another wallet |
+| `partialFailure` | Some scopes `failed` | Banner names the chain, offers Retry for it; counts say what they cover, "4 of 6" |
+| `stale` | *needs server field* | Updated line shows its age with an amber dot; banner with Retry; values stay; live updates stop |
+| `planLimit`, guest over the limit | `planLimit` notice | Only the first `wallets.max` wallets show; banner "Showing 1 of 3 saved wallets" with Sign in |
+| Tokens only | `prices` absent (M1 to M3) | No USD anywhere: summary counts positions in range; cards and rows show token amounts |
+| `outOfRange` | *needs server field* | Banner with the pairs; Show sets the status filter |
+
+## Layout
+
+| Class | Web | iOS and iPadOS | macOS |
+|---|---|---|---|
+| compact, under 600 | Header: logo, updated dot, Sign in; tabs move to a bottom tab bar. Wallet tags and filters scroll in one row each. Summary left-aligned. Rows by default; Cards in one column when chosen | iPhone and Slide Over: large title, wallet tags under it, centred summary, Filters button and sheet, Rows | — |
+| medium, 600 to 839 | Cards in two columns; filters in a grouped bar | Half screen: tabs on top, list and detail side by side | — |
+| expanded, 840 and up | Centred summary, grouped filter bar, cards grid | Sidebar with wallets, list column, detail column; selecting a row fills the detail | Same as iPad wide plus toolbar (search, share, set alert, Add) |
+
+## Motion
+
+| Transition | Token |
 |---|---|
-| Loading | Skeleton rows for scopes still pending; finished scopes render as they arrive |
-| First visit | No wallet: example wallet with an example label, one primary action Add wallet |
-| No positions | A wallet exists but holds none read: states what is read, offers Add another wallet |
-| Partial failure | Banner names the failed chain and offers Retry for it; counts say what they cover, for example "3 of 6" (*needs server field*) |
-| Stale | Updated line shows its age; values stay, never blank |
-| Guest at limit | Add wallet shows the server's `plan-limit` answer and offers Sign in. If a saved list exceeds the limit (for example after the limit was lowered), the first `wallets.max` wallets show, with a line built from the `planLimit` notice (*needs server field*) and Sign in |
+| Summary condensing into the header; filters pinning under it | `scrub`; reduced: `fast` opacity fade |
+| Card details on web: Drawer (Cards), Spotlight (Rows) | `flip`, `gentle` ([0055](../../../decisions/0055-ghost-design-language.md)) |
+| Row to the position sheet, and between its two heights | `gentle`; follows the finger while dragged; reduced: crossfade |
+| Range bar knob following the price | `gentle`; reduced: jumps |
 
 ## Navigation and focus
 
 | Item | Rule |
 |---|---|
 | In | Tab bar, widget tap, link; start destination |
-| Out | Position details (bottom sheet on phone, Drawer or Spotlight on web, detail column on wide); the Open link goes to the Position screen, Add wallet (sheet), Alerts |
+| Out | Position (Drawer or Spotlight then Open on web, a two-level sheet on iPhone and Slide Over ([bottom sheet](../components/overlays.md#bottom-sheet)), detail column on wide), Add wallet (sheet or dialog), Alerts |
 | Focus | Title on arrival. Selecting a row on wide layouts keeps focus on the list |
-| View | Rows on phone and Cards on wide layouts by default. Cards and Rows is a preference in Settings, not a control on this screen |
+| View | Rows on phone and Cards on wide layouts by default |
+
+## Acceptance
+
+Rubric defaults, plus: every state above at 390, 820 and 1280 px on web, and on iPhone, iPad wide and Mac main.

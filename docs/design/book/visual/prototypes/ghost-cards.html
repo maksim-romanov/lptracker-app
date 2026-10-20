@@ -2,7 +2,7 @@
 <title>VoidX Ghost Cards</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..800&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: lab strip, page header with the Cards/Rows switch, headline, then a snap-scrolling row of compact colour-block cards (or Rows). Palette follows the viewer's theme: Dragonfruit in light, Neon Night in dark, values from ADR 0027. */
 :root {
@@ -42,7 +42,7 @@
 }
 * { box-sizing: border-box; }
 html, body { background: var(--page); color: var(--page-ink); }
-body { font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; transition: background 300ms, color 300ms; }
+body { font-family: "DM Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; transition: background 300ms, color 300ms; }
 .wrap { max-width: 1240px; margin-inline: auto; display: grid; gap: 20px; container: app / inline-size; }
 .wrap > * { min-width: 0; }
 :focus-visible { outline: 2px solid var(--page-ink); outline-offset: 4px; }
@@ -66,7 +66,7 @@ body { font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; p
 
 /* page chrome */
 nav.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.logo { font-weight: 700; font-size: 22px; letter-spacing: -0.03em; display: flex; gap: 8px; align-items: center; }
+.logo { font-weight: 700; font-size: 22px; letter-spacing: -0.02em; display: flex; gap: 8px; align-items: center; }
 .logo i { width: 28px; height: 24px; background: currentColor; border-radius: 50% 50% 40% 40%; display: inline-block; }
 .viewtoggle { margin-left: auto; display: flex; gap: 4px; background: var(--surface); border-radius: 999px; padding: 4px; }
 .viewtoggle button { border: 0; background: none; color: inherit; font: inherit; font-weight: 600; font-size: 14px; padding: 8px 16px; border-radius: 999px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
@@ -91,7 +91,7 @@ h1 .pill { background: var(--accent); color: var(--accent-ink); border-radius: 2
 .chip[data-state="out"]::before { border-radius: 1px; }
 .pair { margin: 0; font-size: 24px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; }
 .meta { font-size: 13px; opacity: .72; }
-.big { font-size: 56px; font-weight: 600; letter-spacing: -0.045em; line-height: .95; }
+.big { font-size: 56px; font-weight: 700; letter-spacing: -0.015em; line-height: .95; }
 .big sup { font-size: .42em; vertical-align: 1em; margin-right: 2px; }
 .ftop { display: grid; gap: 14px; align-content: start; }
 .fbot { display: grid; gap: 10px; }
@@ -217,7 +217,7 @@ h1 .pill { background: var(--accent); color: var(--accent-ink); border-radius: 2
 .pscroll { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding: 62px 14px 120px; scrollbar-width: none; overscroll-behavior: contain; }
 .pscroll::-webkit-scrollbar { display: none; }
 .phead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
-.phead h2 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.03em; }
+.phead h2 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
 .pseg { display: flex; gap: 2px; background: var(--surface); border-radius: 999px; padding: 3px; }
 .pseg button { border: 0; background: none; color: inherit; font: inherit; font-size: 12px; font-weight: 600; padding: 7px 11px; border-radius: 999px; cursor: pointer; }
 .pseg button[aria-pressed="true"] { background: var(--page-ink); color: var(--page); }

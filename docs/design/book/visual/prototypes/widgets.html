@@ -2,7 +2,7 @@
 <title>VoidX Widgets</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..800&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: the verdict, then the Ghost card as widgets on iPhone, iPad and Mac, the Lock Screen, three rendering modes, six states, Android, and the limits. */
 :root, :root[data-pal="dragonfruit"] {
@@ -31,7 +31,7 @@
   --f3: oklch(.1 .01 320); --f3i: oklch(.98 .01 320); --f4: oklch(.88 .06 230); --f4i: oklch(.22 .05 320);
   color-scheme: dark;
 }
-:root { --sel: color-mix(in oklab, var(--ink) 13%, var(--surface)); --font: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace; }
+:root { --sel: color-mix(in oklab, var(--ink) 13%, var(--surface)); --font: "DM Sans", system-ui, -apple-system, sans-serif; --mono: ui-monospace, "SF Mono", "DM Mono", Menlo, monospace; }
 .on-1 { --fill: var(--f1); --fi: var(--f1i); } .on-2 { --fill: var(--f2); --fi: var(--f2i); } .on-3 { --fill: var(--f3); --fi: var(--f3i); } .on-4 { --fill: var(--f4); --fi: var(--f4i); }
 .on-1, .on-2, .on-3, .on-4 { --bg: var(--fill); --ink: var(--fi); --surface: color-mix(in oklab, var(--fill) 88%, var(--fi)); --field: color-mix(in oklab, var(--fill) 80%, var(--fi)); --muted: color-mix(in oklab, var(--fi) 92%, var(--fill)); --line: color-mix(in oklab, var(--fill) 80%, var(--fi)); --edge: color-mix(in oklab, var(--fi) 72%, var(--fill)); --accent: var(--fi); --on-accent: var(--fill); --sel: color-mix(in oklab, var(--fi) 16%, var(--fill)); background: var(--bg); color: var(--ink); }
 * { box-sizing: border-box; }

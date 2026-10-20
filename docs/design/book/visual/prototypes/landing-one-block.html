@@ -2,7 +2,7 @@
 <title>VoidX Landing One Block</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300..800&family=Geist:wght@400..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..800&family=DM+Mono:wght@400;500&family=Geist:wght@400..800&display=swap">
 <style>
 /* Layout: a control strip (platform, screen, palette), then one stage: a browser frame for Web, a row of iPhone frames for iPhone. Everything is built from the Ghost tokens of ADR 0055 and the engine of the cards prototype: palette in OKLCH, ink picked by contrast, range bar with spring physics, Drawer on Web cards. */
 :root {
@@ -22,7 +22,7 @@
 :root[data-theme="dark"] { --page: oklch(0.16 0.03 320); --page-ink: oklch(0.98 0.01 320); --surface: oklch(0.23 0.04 320); --accent: oklch(0.72 0.208 350); --accent-ink: oklch(0.22 0.05 320); color-scheme: dark; }
 * { box-sizing: border-box; }
 html, body { background: var(--page); color: var(--page-ink); }
-body { margin: 0; font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+body { margin: 0; font-family: "DM Sans", system-ui, -apple-system, sans-serif; padding-inline: 16px; padding-block: 16px 64px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
 h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; }
 a { color: inherit; }
@@ -419,7 +419,7 @@ html { background: #07060a; } @media (prefers-color-scheme: dark) { html:not([da
 :root { --pad: max(clamp(20px, 4vw, 56px), env(safe-area-inset-left), env(safe-area-inset-right)); }
 .onepage { width: 100%; min-height: 100vh; min-height: 100svh; background: var(--c); color: var(--ink); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; container: app / inline-size; overflow-x: clip; }
 .onepage :focus-visible { outline-color: var(--ink); outline-offset: 3px; }
-.o-head, .o-text, .o-foot { font-family: "Geist", "Plus Jakarta Sans", system-ui, sans-serif; font-feature-settings: "ss01", "cv11"; }
+.o-head, .o-text, .o-foot { font-family: "Geist", "DM Sans", system-ui, sans-serif; font-feature-settings: "ss01", "cv11"; }
 .onepage.black { --c: #07060a !important; --ink: #f6f2f7 !important; }
 .o-head { display: flex; align-items: center; gap: 16px; padding: 18px var(--pad); padding-top: max(18px, env(safe-area-inset-top)); }
 .o-head .logo { color: var(--ink); } .o-head nav { display: flex; gap: 2px; margin-left: 12px; } .o-head nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; font-weight: 550; font-size: 15px; letter-spacing: -0.005em; text-decoration: none; } .o-head .grow { flex: 1; }

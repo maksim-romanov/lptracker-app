@@ -6,7 +6,7 @@
 
 - **Use.** Add wallet, set alert, sign in, share options, and position details on phone. Not for navigation.
 - **Anatomy.** Handle, title, close button, content, primary action at the bottom.
-- **Size.** Detents at medium and large on phone; centred dialog or side sheet on wide layouts.
+- **Size.** Detents at medium (62 % of the height) and large on phone and in Slide Over; centred dialog or side sheet on wide layouts. Position details open at medium; dragging the handle up, or tapping it, goes to large; dragging down past medium closes.
 - **Rules.** The handle is also a button. Dragging always has a Cancel or Done. The page behind is inert. Closing returns focus to the opener.
 - **Motion.** `gentle` in and out; scrim fades with `fast`.
 

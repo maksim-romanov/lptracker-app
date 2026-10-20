@@ -17,10 +17,10 @@
 
 *Cards view, all clients*
 
-- **Anatomy.** Top: pair, status chip. Middle: pair name, meta. Hero value. Bottom: amounts and range bar.
+- **Anatomy.** Top: pair, status chip. Middle: pair name, meta. Hero value, owed fees line. Bottom: amounts and range bar.
 - **Fill.** Card takes one of the four Fills by index modulo 4; the Ink is chosen by contrast.
 - **States.** Default, hover (peek of owed fees), open, focused, loading, out of range.
-- **Size.** Width fluid from 260 up; height content-driven, minimum 340 on web (both *design-pending*). Cards form a grid that wraps into rows, columns at least 260 wide; on a phone it is one column.
+- **Size.** Width fluid from 260 up; height content-driven, minimum 296 on web and 236 under 600 px, from screens.html (both *design-pending*). Cards form a grid that wraps into rows, columns at least 260 wide; on a phone it is one column.
 - **Behaviour.** Web: hover only hints (peek of owed fees); click or Enter opens details in place with the Drawer (the face slides up and uncovers the details); an explicit Open link goes to the position page. Touch: tap opens a bottom sheet; native wide layouts use the detail column. Disclosure uses a real button with aria-expanded.
 - **A11y.** The card is an article with one button as the hit area. Hidden details are inert while closed. Escape closes and returns focus.
 - **Tokens.** `color.fill-1` to `color.fill-4`, `color.on-fill-1` to `color.on-fill-4`, `radius.lg space.inset.md elevation.level1 intent flip`
@@ -35,14 +35,14 @@ Fields come from the [position model](../../../concepts/position-model.md). A ca
 | Pair name | `Token.symbol`, sanitized | yes | yes | Wraps to two lines, never truncated |
 | Fee and chain | fee percent (*needs server field*; the raw `pool.fee` is not formatted on the client), `chain` | yes | no | V4 with `dynamicFee`: the word "dynamic" |
 | Status | `range.status`, word plus shape | yes | no | No `range` (full-range share): no bar; the status word is pending |
-| Value | `value.valueUsd` | yes | no | Null shows "n/a"; `partial` adds "partial value" to the meta line; never zero |
+| Value | `value.valueUsd` | yes | no | `partial` adds "partial value" to the meta line; never zero. Tokens only (no `prices`): the base token amount is the figure and the quote amount sits under it |
 | Principal | `amounts` with role `principal`, per token | yes | yes | Exact strings formatted by the client |
 | Range bar | `range.barPosition` | yes | yes | Unknown: dashed track, no marker |
 | Updated | `asOf` | no | yes | An age line; stale values stay |
 | Current price | `range.current` in the quote token | no | yes | |
 | Range | `range.lower` to `range.upper` | no | yes | |
 | Liquidity histogram | *needs server field* | no | yes | Omitted until a field exists |
-| Owed fees, total | *needs server field* | no | yes | Replaced by a line when `feeAccrual` is `redirected` or `compounded` |
+| Owed fees, total | *needs server field* | yes | yes | Tokens only: the per-token amounts instead. Replaced by a line when `feeAccrual` is `redirected` or `compounded` |
 | Owed fees, per token | `amounts` with role `owed` | peek only | yes | Only when `feeAccrual.mode` is `claimable` |
 | Open link | position `ref` | no | yes | Goes to the Position screen |
 
@@ -58,7 +58,7 @@ Never on a card: read block, custody, position id, owner, rewards (empty in the 
 - **Rules.** Shape changes with status, so colour is never the only cue. All parts need 3:1 against the surface or fill under them.
 - **Motion.** Marker follows the value with the `gentle` spring; under reduced motion it jumps.
 - **A11y.** One image with text: status, quote token price, range low and high. Updated in place, not re-announced on every tick; a status change is announced once.
-- **Tokens.** `radius.full`; colours are the ink of the surface it sits on: `color.on-fill-N` on a card, `color.on-surface` on a row ([ADR 0055](../../../decisions/0055-ghost-design-language.md)). Track is a hairline, band two brackets with a light fill, marker a dot (in range) or diamond (out of range).
+- **Tokens.** `radius.full`; colours are the ink of the surface it sits on: `color.on-fill-N` on a card, `color.on-surface` on a row ([ADR 0055](../../../decisions/0055-ghost-design-language.md)). Track is a rounded bar, band a lighter pill inside it, marker a round knob (in range) that turns into a diamond (out of range), as in [ghost-cards.html](../visual/prototypes/ghost-cards.html).
 - **Data.** `range.lower range.upper range.current range.barPosition range.status`
 
 ## Status chip
