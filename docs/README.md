@@ -19,6 +19,7 @@
 | [concepts/plans-and-entitlements.md](concepts/plans-and-entitlements.md) | Guest, Free, Pro; entitlements, grants, limits, future billing |
 | [concepts/code-style.md](concepts/code-style.md) | Declarative, clean code rules per language and the lint rules that enforce them |
 | [concepts/agent-context.md](concepts/agent-context.md) | What agents load, CLI vs MCP, quiet output, subagents, sessions, CI limits |
+| [guides/add-a-protocol.md](guides/add-a-protocol.md), [guides/add-a-chain.md](guides/add-a-chain.md) | Adding a protocol or a chain, step by step |
 | [decisions/](decisions/) | One ADR per decision |
 | [specs/](specs/README.md) | What to build next |
 | [research/](research/README.md) | What we learned before building |

@@ -24,6 +24,8 @@ Chosen **pluggable sources**. `integration-kit` provides the `PositionIndex` sou
 
 A deployment lists one or more sources. MVP defaults: Uniswap V3 `rpc-enumeration`; Uniswap V4 `subgraph-third-party` (the official v4-subgraph) with `rpc-logs` as the keyless fallback. Aerodrome and Velodrome wait for the Aero launch ([0050](0050-mvp-scope.md)).
 
+A new family takes the first source that works, in this order: `rpc-enumeration`, `aggregator`, `subgraph-third-party` with `rpc-logs` behind it, `rpc-logs` alone when the scan from `fromBlock` fits the request budget, `subgraph-own`. A full-history log scan ranks below a subgraph because its cost grows with the chain's age. A third-party subgraph is used only after it passes the checklist in [index sources research](../research/integrations/index-sources.md#evaluation-checklist-for-a-third-party-index). It is referenced by Subgraph ID on The Graph gateway; hosted-service, Studio test and Alchemy Subgraph URLs are never used. `subgraph-own` needs the owner's approval and is written from scratch.
+
 Subgraph queries are always batched by owner (`owner_in`, at most 100 owners), refs are cached with a last-good value and the gap is filled by `rpc-logs`, which keeps the official instance inside The Graph's free query tier.
 
 ## Consequences

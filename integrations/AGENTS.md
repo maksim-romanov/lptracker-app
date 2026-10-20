@@ -1,6 +1,6 @@
 # integrations
 
-Chains and protocol families. Model: [integration model](../docs/concepts/integration-model.md). Step-by-step guides arrive with the `voidx` tools in M1a.
+Chains and protocol families. Model: [integration model](../docs/concepts/integration-model.md). Steps: [add a protocol](../docs/guides/add-a-protocol.md), [add a chain](../docs/guides/add-a-chain.md).
 
 ## Fit gate
 

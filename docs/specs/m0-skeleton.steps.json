@@ -378,7 +378,7 @@
       "role": "qa",
       "workspace": "docs",
       "owns": [
-        "docs/design/book/review-rubric.md"
+        "docs/design/book/rubric.md"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
@@ -809,7 +809,7 @@
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
-        "docs/design/book/review-rubric.md",
+        "docs/design/book/rubric.md",
         "docs/decisions/0048-e2e-testing.md"
       ],
       "depends_on": [
@@ -827,8 +827,8 @@
     },
     {
       "id": "M0-S27",
-      "title": "CI workflow",
-      "summary": "Writes the single `ci.yml`: change detection, guard, check on Linux, the iOS job with the Maestro smoke step, and `ci-ok` as the one required check.",
+      "title": "CI workflow, issue forms and PR template",
+      "summary": "Writes the single `ci.yml`: change detection, guard, check on Linux, the iOS job with the Maestro smoke step, and `ci-ok` as the one required check; adds the issue forms and the PR template.",
       "phase": 7,
       "size": "S",
       "client": "shared",
@@ -840,7 +840,8 @@
       "reads": [
         "docs/specs/m0-skeleton.md",
         "docs/research/repo/ci.md",
-        "docs/decisions/0037-ci-and-supply-chain.md"
+        "docs/decisions/0037-ci-and-supply-chain.md",
+        "docs/guides/add-a-protocol.md"
       ],
       "depends_on": [
         "M0-S13",
@@ -850,7 +851,8 @@
       "done_when": "bun run check",
       "criteria": [
         "A PR touching only `docs/` runs `changes`, `guard` and `ci-ok`, and skips `check` and `ios`; `ci-ok` is the single required check.",
-        "The measured `ios` job time on the M0 PR is recorded in docs/research/repo/ci.md."
+        "The measured `ios` job time on the M0 PR is recorded in docs/research/repo/ci.md.",
+        "The New integration issue form has every field in docs/guides/add-a-protocol.md#1-issue; the PR template asks for the source of every address."
       ],
       "owner_gate": true,
       "owner_reason": "CI runs on GitHub with settings only you can change: required checks, runner choice, secrets."

@@ -43,7 +43,7 @@ Each operator states their plans in `instance.config.providers.<name>.limits`:
 - Outbound calls pass a token bucket at 80% of `requestsPerSecond`.
 - Every RPC, Graph and price-source call reports cost units, including the Chainlink and pool reads made for prices.
 - The official instance's budget for external APIs (RPC, The Graph, price sources) is $50 per month; price sources use free tiers only, with the operator's own 1inch and CoinGecko Demo keys. Alerts fire at 50% and 80%; at 100% the `ops.brownout` flag turns on ([brownout](resilience.md#inbound-protection)), with scope code `BUDGET_EXHAUSTED` for skipped work.
-- Subgraph queries are batched by owners (`owner_in`, up to 100), so The Graph stays within its free tier: 100,000 queries a month free, then $2 per 100,000.
+- Subgraph queries are batched by owners (`owner_in`, up to 100), so The Graph stays within its free tier of 100,000 queries a month; the overage price is unverified ([index sources](../research/integrations/index-sources.md#facts-that-constrain-us)).
 
 ## Cache
 

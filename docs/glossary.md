@@ -21,6 +21,7 @@ One term per concept. Code identifiers, docs and UI copy use these words and no 
 | **Lifecycle** | Maturity of a family: `development`, `alpha`, `beta`, `stable`, `unmaintained`, `deprecated`. See [state model](concepts/state-model.md). | |
 | **Quality tier** | `bronze`, `silver`, `gold`, `platinum`; bronze is the merge gate. | level |
 | **Cassette** | Recorded RPC or HTTP responses that CI replays instead of calling the network; folder `cassettes/`. | mock, fixture |
+| **Agent checkpoint** | The plan an agent posts on an accepted *New integration* issue before any code; with the issue it is the spec ([add a protocol](guides/add-a-protocol.md#4-agent-checkpoint)). | |
 | **Test wallet** | A known owner address whose positions a cassette records. | |
 | **kitApiVersion** | Version of `integration-kit` a manifest targets. Not the wire `apiVersion`. | |
 

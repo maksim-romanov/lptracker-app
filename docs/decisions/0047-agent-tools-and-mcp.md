@@ -16,7 +16,7 @@ Contributors add chains and protocols with coding agents that want chain access,
 
 Chosen **one read-only server; the rest opt-in**, because project config is code that runs on other people's machines.
 
-- No `.mcp.json` in M0. When the `add-protocol` skill lands (M1b), its only server is the Etherscan keyless MCP (`https://mcp-keyless.etherscan.io/mcp`): source, ABI, creation block, logs.
+- No `.mcp.json` in M0. When the `add-protocol` skill lands (M1a), its only server is the Etherscan keyless MCP (`https://mcp-keyless.etherscan.io/mcp`): source, ABI, creation block, logs.
 - A later entry must be `https`, read-only, keyless and on a maintainer allowlist. No credential of any kind: no `headers`, no `${VAR}`, no OAuth servers, no `stdio`.
 - Tools that need an API key or OAuth are allowed in local or user scope (`claude mcp add --scope local|user`, stored in `~/.claude.json`), never in git. Keys come from environment variables or a password manager.
 - Committed settings never set `enableAllProjectMcpServers` or `enabledMcpjsonServers`. Agent jobs in CI run with `--strict-mcp-config`.

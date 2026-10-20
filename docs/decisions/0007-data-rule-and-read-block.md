@@ -17,7 +17,7 @@ Indexes lag, differ in schema and miss custody changes; chain reads are exact bu
 Chosen **index for identifiers, chain for quantities**, because it is exact where it matters and still discovers every position.
 
 - `PositionRef` has no quantity fields.
-- The chain file's `readPolicy` tag (`safe`, `finalized` or `latest`) picks the block. `readBlock` is resolved once per snapshot from the pool's median head for that tag and pinned by block hash: every `eth_call` passes `{ blockHash }` (EIP-1898), so one snapshot never mixes forks across providers.
+- The chain file's `readPolicy` tag (`safe`, `finalized` or `latest`) picks the block. `readBlock` is resolved once per snapshot from the pool's median head for that tag and pinned by block hash: every `eth_call` passes `{ blockHash }` (EIP-1898), so one snapshot never mixes forks across providers. A chain uses `safe` when it trails head by 60 s or less, else `latest`, because values should follow the protocol's own UI: Ethereum and Arbitrum `safe` trail by 10 to 14 minutes, Base and OP Mainnet by 32 s ([chain parameters](../research/integrations/chain-parameters.md)). On `latest` a rare reorg shows a value for one snapshot until the next one corrects it.
 - Every ref is verified at `readBlock` along its custody chain (`ownerOf`, staking contract, LP `balanceOf`). The result is `verified`, `burned` (known "nonexistent token" reverts only) or `moved`.
 - Refs from earlier snapshots are kept and re-verified (sticky refs), so an index that runs ahead of or behind `readBlock` never drops a position.
 - Logs between `indexBlock` and `readBlock` fill the gap (hybrid mode). Past `maxIndexLagBlocks` the source is refused and the scope reports `INDEX_STALE`.
@@ -27,5 +27,6 @@ Chosen **index for identifiers, chain for quantities**, because it is exact wher
 ## Consequences
 
 - Values trail the protocol's own UI by the `readPolicy` lag; chains whose lag exceeds full-node state history set `requiresArchive`.
+- On a `latest` chain the pinned block can be reorged out, and calls by its hash then fail; the snapshot resolves `readBlock` again once before its scope fails.
 - The worker diffs only scopes that were `ok` in both reads ([0017](0017-state-model.md)).
 - Off-chain rewards (Merkl and similar) would break the rule and are out of the MVP.

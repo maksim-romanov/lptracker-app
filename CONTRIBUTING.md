@@ -5,7 +5,7 @@ VoidX grows through integrations: new protocols and chains, added by the communi
 ## Before you start
 
 - Read [AGENTS.md](AGENTS.md) and the nearest `AGENTS.md` in the folder you change. Your agent reads them too.
-- Adding a protocol or chain: open a *new integration* issue first. Once it is labelled `accepted`, that issue plus your agent's checkpoint is the spec. Then follow [integrations/AGENTS.md](integrations/AGENTS.md) and the [integration model](docs/concepts/integration-model.md); step-by-step guides arrive with the tools in M1.
+- Adding a protocol or chain: open a *new integration* issue first. Once it is labelled `accepted`, that issue plus your agent's checkpoint, once a maintainer answers `go`, is the spec. Then follow [add a protocol](docs/guides/add-a-protocol.md) or [add a chain](docs/guides/add-a-chain.md).
 - Work that changes a public contract, adds a module or spans more than one workspace: open an issue and agree on a spec first ([docs/workflow.md](docs/workflow.md)).
 
 ## Pull requests
