@@ -70,30 +70,42 @@ Rules, enforced by dependency-cruiser (*planned*):
 
 ## Reading a portfolio
 
+The core use case `readPortfolio` orchestrates every step; the adapter only implements `discover` and `snapshot` ([integration model](concepts/integration-model.md#adapter)). Steps and results: [data rule](concepts/data-rule.md#discovery-then-verification).
+
 ```mermaid
 sequenceDiagram
   participant C as Client
-  participant S as server (core)
+  participant U as readPortfolio (core use case)
   participant R as Redis
   participant A as Adapter (family)
   participant I as Index source
   participant Ch as ChainReader
-  C->>S: POST /api/v1/portfolio/query {addresses}
+  C->>U: POST /api/v1/portfolio/query {addresses}
+  U->>Ch: heads of ≥2 endpoints per chain
+  Ch-->>U: readBlock { number, hash } per chain
   par one task per deployment
-    S->>R: snapshot (deployment, owner)?
-    R-->>S: hit, or miss with single-flight lock
-    S->>A: discover(ctx, owners)
-    A->>I: refsOf(owners)
-    I-->>A: PositionRef[] + indexBlock
-    A->>Ch: verify custody + read at readBlock
-    Ch-->>A: liquidity, ticks, owed fees, rewards
-    A-->>S: Position[] + display descriptor
-    S->>R: store snapshot
+    U->>R: snapshot (deployment, hmac(owner))?
+    R-->>U: hit, or miss with single-flight lease
+    U->>A: discover(ctx, owners)
+    A->>I: refsOf(owners), newest first
+    I-->>A: PositionRef[] with seenAtBlock + indexBlock
+    A-->>U: index refs
+    U->>R: sticky refs (deployment, hmac(owner))
+    U->>U: merge index refs and sticky refs
+    opt indexBlock < readBlock
+      U->>Ch: getLogs(indexBlock+1 .. readBlock)
+      Ch-->>U: gap refs
+    end
+    U->>A: snapshot(ctx, refs)
+    A->>Ch: custody at readBlock (verify)
+    A->>Ch: liquidity, ticks, fee growth via Multicall3
+    A-->>U: results + Position[] + display descriptor
+    U->>R: store snapshot, update sticky refs
   end
-  S-->>C: positions, pools, tokens, scopes
+  U-->>C: positions, pools, tokens, scopes
 ```
 
-A deployment that fails or passes the deadline becomes a scope with status `failed`; the rest of the portfolio still returns ([concepts/data-rule.md](concepts/data-rule.md)).
+A deployment that fails or passes the deadline becomes a scope with status `failed`; the rest of the portfolio still returns ([concepts/data-rule.md](concepts/data-rule.md#failure-is-not-absence)).
 
 ## Where to read next
 

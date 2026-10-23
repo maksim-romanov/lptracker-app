@@ -23,9 +23,18 @@ PR code:
 Recording (`/record`):
 
 - A maintainer comment triggers it and pins the commented commit SHA.
-- The job runs in an ephemeral container with no secrets.
-- It reaches RPC only through a recording proxy, authenticated with a short-lived OIDC token, a JSON-RPC method allowlist and a quota.
+- The job that runs PR code has `permissions: {}`, no secrets, runs in an ephemeral container, never saves a cache and restores only from its own cache key namespace.
+- A separate trusted job, which runs no PR code, mints a short-lived OIDC token scoped to the recording proxy and hands it over; the proxy enforces a JSON-RPC method allowlist and a quota.
 - Cassettes count toward quality tiers only when a maintainer signs them.
+
+Deploy: cloud trust policies pin the `job_workflow_ref` of the deploy workflow on `main`, and deploy jobs run in a protected `production` environment with required reviewers.
+
+Unattended agents (launcher runs, CI agent jobs):
+
+- Run with the sandbox enabled and no unsandboxed commands; writes stay inside the agent's worktree.
+- Network reaches only package registries and mise tool sources.
+- Allow rules name scripts (`bun run check`, `bun run codegen`), never a bare interpreter or shell.
+- iOS steps that the macOS Seatbelt sandbox breaks run under a separate macOS user with no git, `gh` or SSH credentials.
 
 Supply chain:
 

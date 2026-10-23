@@ -54,4 +54,4 @@ See which positions left or returned to their range, newest first. The second ta
 
 ## Acceptance
 
-Rubric defaults, plus: guest, list, no alerts and push off at 390, 820 and 1280 px on web and on iPhone; the Mac banner in the Mac main window. Status chips pass row 9 without colour.
+Rubric defaults, plus: guest, list, no alerts and push off at 390, 820 and 1280 px on web and on iPhone; the Mac banner in the Mac main window. Status chips pass row 6 without colour.

@@ -37,4 +37,5 @@ Chosen **one source plus enforcement**:
 ## Consequences
 
 - Any agent reads the same rules.
+- Unattended agents run sandboxed ([0037](0037-ci-and-supply-chain.md)).
 - Related: [0009](0009-record-replay-verification.md), [0025](0025-research-gate.md), [0047](0047-agent-tools-and-mcp.md), [writing docs](../writing-docs.md).

@@ -12,7 +12,7 @@ Decide before writing anything, then scaffold with `bun run new:protocol <family
 
 ## Scope of a PR
 
-Files under `integrations/`, plus the allowed app changes listed in the [integration model](../docs/concepts/integration-model.md#promise). Enforced by CI path scope (*planned*).
+Only `integrations/**`, plus the app files listed in the [integration model](../docs/concepts/integration-model.md#promise). Any other path fails CI path scope (allowlist, *planned*). Until adapters run sandboxed, only a maintainer merges a changed `adapter.ts` ([ADR 0036](../docs/decisions/0036-integration-trust.md)).
 
 ## Sources and tools
 

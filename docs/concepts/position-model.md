@@ -20,7 +20,7 @@ What every client receives. The server derives every number; clients format them
 | `totals` | `{ all, byChain, byOwner }` of `Total` | `byChain` keyed by CAIP-2, `byOwner` by CAIP-10 |
 | `scopes` | `Scope[]` | One per deployment asked |
 | `planLimit` | `{ key, limit, usage }` | Present when a guest query exceeded the limit (*proposed*) |
-| `version` | string | Changes whenever the payload changes |
+| `version` | opaque string | Changes whenever the payload changes; echoed back as `knownVersion`. The only field named `version` |
 | `asOf` | timestamp | |
 
 - Guests read with `POST /api/v1/portfolio/query` so addresses stay out of URLs and logs. HTTP caching does not apply to POST: the client sends the last `version` as `knownVersion` and gets `{ notModified: true }` when nothing changed. A query with more addresses than the guest `wallets.max` is answered for the first `wallets.max` with a `planLimit` notice ([plans](plans-and-entitlements.md#enforcement)).
@@ -44,15 +44,15 @@ What every client receives. The server derives every number; clients format them
 | `value` | `Total` | Principal, owed fees and rewards in USD |
 | `range` | `RangeView` or null | null only for full-range pool shares (v2-style); a V3 position at min/max tick keeps its range |
 | `readBlock` | `{ number, hash }` | |
-| `extension` | `{ type, version, data }` | Opaque, owned by the family |
+| `extension` | `{ type, schemaVersion, data }` | Opaque, owned by the family |
 | `display` | display descriptor | How any client renders family details |
 
 | Type | Fields |
 |---|---|
-| `TokenAmount` | `token`, `role` (`principal`, `owed`; open), `amount` (signed exact decimal string) |
+| `TokenAmount` | `token`, `role` (`principal`, `owed`; open), `amount` (exact decimal string, never negative) |
 | `Reward` | `token`, `amount`, `source` (the staking contract) |
 | `RangeView` | `quote` token, `lower`, `upper`, `current` (pool price in quote), `inverted` (same, other orientation), `barPosition` 0..1, `status` (`in`, `below`, `above`) |
-| `Pool` | `token0`, `token1` (ordered), `factory`, `tickSpacing`, `fee`; V4 adds `poolId`, `hooks`, `dynamicFee` (true when `fee == 0x800000`; the current LP fee then comes from `StateView.getSlot0`) |
+| `Pool` | `token0`, `token1` (ordered), `factory` (the pool's factory or manager contract), `tickSpacing`, `fee` (the current LP fee), `extension`, `display`. Family-only fields go in `extension` and `display`: `uniswap-v4` puts `poolId`, `hooks` and `dynamicFee` there (true when the key's `fee == 0x800000`; `fee` then comes from `StateView.getSlot0`). The shared fields fit every family, so M2 tests the shared model, not only discovery |
 | `Token` | `symbol` (sanitized), `decimals` (from the chain's `decimals()`, cached per address; unknown if missing, never guessed), `logo` (`{ hash }` or null; clients load `/api/v1/logos/<hash>/<size>.webp`, size 64, 128 or 256), `class` (`default`, `non_default`, `blocked`; open), `flags` (`rebasing`, `feeOnTransfer`, `spam`) |
 | `Price` | `usd` (exact decimal string), `source` (open: `chainlink`, `defillama`, `coingecko`, `oneinch`, `geckoterminal`, `dexscreener`, `pool`), `confidence` (`normal`, `low`), `asOf`, `status` (`fresh`, `stale`), `depegged` |
 | `Total` | `valueUsd` (exact decimal string, priced parts only; null when nothing is priced), `partial`, `unpricedCount` |
@@ -84,6 +84,10 @@ Invariants, checked by the conformance suite (*planned*):
 - `status` is `closed` only from a `burned` or `moved` verification result.
 - `range.lower ≤ range.upper`.
 - `ref` is unique and stable across snapshots.
+- Every `amount` is ≥ 0.
+- Fees are counted once: principal comes from liquidity only and never includes `tokensOwed`; `owed` holds fees and withdrawn principal not yet collected.
+- `liquidity == 0` ⇒ no `principal` amounts and `status` is `empty` or `closed`; `liquidity == 0` with every `owed` amount zero ⇒ hidden unless `include=empty` and not counted toward the display cap.
+- Replaying the same cassettes gives a byte-identical response.
 - A `Total` has `partial` true exactly when `unpricedCount > 0`; only `default` tokens with a `fresh` price add to `valueUsd`.
 
 ## Display descriptor
@@ -95,5 +99,5 @@ Invariants, checked by the conformance suite (*planned*):
 - `GET /api/v1/me` and the `plan-limit` problem: see [plans and entitlements](plans-and-entitlements.md#enforcement).
 - `GET /api/v1/meta`: `apiVersion`, `serverVersion`, `minClientVersion` (enforced only from the official instance), `features[]`, auth methods, guest `wallets.max` (*proposed*). Clients gate UI on `features`.
 - `GET /api/v1/meta/chains`, `GET /api/v1/meta/protocols`: runtime metadata with ETags; apps bundle a snapshot as fallback.
-- `/api/v1/stream` (SSE, JSON): `position.changed { ref, version }` where `version` is the readBlock number, `scope.updated { deployment }`, `resync`, heartbeat; monotonic ids for `Last-Event-ID`. Events are invalidation hints; the receiver re-fetches. Native apps poll in the MVP.
+- `/api/v1/stream` (SSE, JSON): `position.changed { ref, readBlock }` with the readBlock number, `scope.updated { deployment }`, `resync`, heartbeat; monotonic ids for `Last-Event-ID`. Events are invalidation hints; the receiver re-fetches. Native apps poll in the MVP.
 - The web page uses `/stream` instead: HTML Turbo Streams with the `reload-frame` action ([ADR 0018](../decisions/0018-web-ssr-hotwire.md)).

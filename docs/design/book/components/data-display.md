@@ -10,7 +10,7 @@
 - **Size.** Height follows content; minimum 72 (*design-pending*). The whole row is one tap target of at least `target.min` in height.
 - **Behaviour.** Press or Return opens the details: a bottom sheet on phone, the detail column on native wide layouts, a Spotlight panel under the row on web (the other rows dim), an inline expansion when the container is narrow; an Open link goes to the position screen. Long press or secondary click opens the row menu. Selecting a row in a split layout never moves focus.
 - **A11y.** One element. Spoken: pair, status, value, principal amounts, owed fees. Custom actions: Open, Set alert, Share, Copy address.
-- **Tokens.** `space.inset.sm color.surface-container-lowest color.outline-variant font.role.title-sm font.role.body`
+- **Tokens.** `space.inset.sm color.fill-1` to `color.fill-4`, `color.on-fill-1` to `color.on-fill-4`, `position-row.edge font.role.title-sm font.role.body`. Rows take a Fill by index like cards ([ghost-cards.html](../visual/prototypes/ghost-cards.html) `.rows .card`)
 - **Data.** `pool.token0/1 fee-percent (*needs server field*) chain value.valueUsd partial amounts[principal] amounts[owed] range.*`
 
 ## Position card
@@ -23,7 +23,7 @@
 - **Size.** Width fluid from 260 up; height content-driven, minimum 296 on web and 236 under 600 px, from screens.html (both *design-pending*). Cards form a grid that wraps into rows, columns at least 260 wide; on a phone it is one column.
 - **Behaviour.** Web: hover only hints (peek of owed fees); click or Enter opens details in place with the Drawer (the face slides up and uncovers the details); an explicit Open link goes to the position page. Touch: tap opens a bottom sheet; native wide layouts use the detail column. Disclosure uses a real button with aria-expanded.
 - **A11y.** The card is an article with one button as the hit area. Hidden details are inert while closed. Escape closes and returns focus.
-- **Tokens.** `color.fill-1` to `color.fill-4`, `color.on-fill-1` to `color.on-fill-4`, `radius.lg space.inset.md elevation.level1 intent flip`
+- **Tokens.** `color.fill-1` to `color.fill-4`, `color.on-fill-1` to `color.on-fill-4`, `radius.lg space.inset.md elevation.level0 position-card.edge intent flip` ([v0 card shell](../foundations/shape-and-elevation.md))
 
 ### Card data
 
@@ -33,7 +33,7 @@ Fields come from the [position model](../../../concepts/position-model.md). A ca
 |---|---|---|---|---|
 | Token pair | `Token.logo` of both tokens | yes | yes | Monogram when `logo` is null |
 | Pair name | `Token.symbol`, sanitized | yes | yes | Wraps to two lines, never truncated |
-| Fee and chain | fee percent (*needs server field*; the raw `pool.fee` is not formatted on the client), `chain` | yes | no | V4 with `dynamicFee`: the word "dynamic" |
+| Fee and chain | fee percent (*needs server field*; the raw `pool.fee` is not formatted on the client), `chain` | yes | no | V4 pool `display` marks a dynamic fee: the word "dynamic" |
 | Status | `range.status`, word plus shape | yes | no | No `range` (full-range share): no bar; the status word is pending |
 | Value | `value.valueUsd` | yes | no | `partial` adds "partial value" to the meta line; never zero. Tokens only (no `prices`): the base token amount is the figure and the quote amount sits under it |
 | Principal | `amounts` with role `principal`, per token | yes | yes | Exact strings formatted by the client |
@@ -55,10 +55,10 @@ Never on a card: read block, custody, position id, owner, rewards (empty in the 
 - **Anatomy.** Track, band (the position range), marker (current price), two end labels. Optional current price label on the position screen.
 - **Position.** Marker position is the server value `barPosition` in tick space (0 to 1). The client never computes it.
 - **States.** In range: marker is a circle inside the band. Out of range: marker changes shape and sits outside the band. Unknown: dashed track, no marker.
-- **Rules.** Shape changes with status, so colour is never the only cue. All parts need 3:1 against the surface or fill under them.
-- **Motion.** Marker follows the value with the `gentle` spring; under reduced motion it jumps.
+- **Rules.** Shape changes with status, so colour is never the only cue. Band and knob need 3:1 against the track; the track sits on the card's fill.
+- **Motion.** Marker follows the value with the `gentle` spring; under reduced motion it jumps. The v0 UI kit does not animate it ([motion](../foundations/motion.md#ui-kit-v0)).
 - **A11y.** One image with text: status, quote token price, range low and high. Updated in place, not re-announced on every tick; a status change is announced once.
-- **Tokens.** `radius.full`; colours are the ink of the surface it sits on: `color.on-fill-N` on a card, `color.on-surface` on a row ([ADR 0055](../../../decisions/0055-ghost-design-language.md)). Track is a rounded bar, band a lighter pill inside it, marker a round knob (in range) that turns into a diamond (out of range), as in [ghost-cards.html](../visual/prototypes/ghost-cards.html).
+- **Tokens.** `radius.full`; per-fill component tokens `range-bar.fill-N.track`, `.band`, `.band-out`, knob `color.on-fill-N` ringed in `color.fill-N` ([values](../foundations/colour.md#range-bar-and-status-chip-on-fills)). Track is a rounded bar, band a pill inside it, marker a round knob (in range) that turns into a diamond (out of range), as in [ghost-cards.html](../visual/prototypes/ghost-cards.html).
 - **Data.** `range.lower range.upper range.current range.barPosition range.status`
 
 ## Status chip
@@ -68,9 +68,9 @@ Never on a card: read block, custody, position id, owner, rewards (empty in the 
 - **Anatomy.** Shape marker (dot for in range, diamond for out) and a word.
 - **Variants.** `in-range out-of-range partial-value unlisted paused stale`. Unlisted marks a non-default token.
 - **Size.** Height 28 (*design-pending*). Never truncated; wraps to a second line before it is cut.
-- **Rules.** Always a word and a shape. A small decorative tilt is design, not structure.
+- **Rules.** Always a word and a shape. No tilt in v0 ([motion](../foundations/motion.md#ui-kit-v0)).
 - **A11y.** The text is the accessible name; the shape is hidden from the screen reader.
-- **Tokens.** `color.surface-container-high color.on-surface color.warning-container color.on-warning-container color.error-container color.on-error-container radius.full font.role.label`
+- **Tokens.** In range `status-chip.in.container` (`on-fill-N`) and `status-chip.in.content` (`fill-N`); out of range `status-chip.out.container` and `status-chip.out.content`, the same on every fill ([values](../foundations/colour.md#range-bar-and-status-chip-on-fills)); `radius.full font.role.label`. Other variants: design-pending
 
 ## Token pair
 

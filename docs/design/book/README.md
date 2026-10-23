@@ -7,9 +7,11 @@ Read in this order: [foundations](foundations/README.md), [components](component
 ## Which source wins
 
 1. An ADR. While a conflict with it is listed in [open questions](open-questions.md), build what the ADR says.
-2. An approved prototype: structure, components and visual values that have no token yet.
-3. The screen or widget page: regions, data, states, navigation.
+2. An approved prototype, on visual values only: colour, size, radius, layout, the look of each component. Its [known deviations](prototypes.md#known-deviations) do not count.
+3. The screen or widget page: regions, data, states, navigation and focus.
 4. The component page.
+
+Behaviour, accessibility and motion never come from a prototype: they come from [ADR 0022](../../decisions/0022-accessibility.md), [ADR 0023](../../decisions/0023-motion.md) and the pages, even where an approved prototype does something else.
 
 A draft or in-progress prototype ranks below the pages. When two sources disagree, quote both lines and ask ([AGENTS.md](../../../AGENTS.md)); never pick one silently.
 

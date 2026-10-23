@@ -14,9 +14,10 @@ The MVP screens: Portfolio, Position, Add wallet, Wallets, Alerts, Alert setting
 | Prototype | The deep link into [screens.html](../visual/prototypes/screens.html) (`#<platform>-<screen>`) and its status in [prototypes.md](../prototypes.md) |
 | Regions, in order | Region, component, the wire fields it shows. Reading order is focus order |
 | States | Every [screen state](../foundations/screen-state.md) kind and notice that applies, what triggers it on the wire, what changes on screen |
-| Layout | What changes per [layout class](../foundations/spacing-and-layout.md#layout-classes) and per platform (web, iOS, iPadOS, macOS) |
+| Layout | What changes per [layout class](../foundations/spacing-and-layout.md#layout-classes) and per platform (web, iOS, iPadOS, macOS); Apple layouts follow `horizontalSizeClass` and the `NavigationSplitView` collapse |
 | Motion | Each transition and its [motion token](../../../decisions/0023-motion.md) |
-| Navigation and focus | In, out, back, focus on arrival |
+| Frames and routes | Web: the route and its query params, which frame reloads when, the no-script path, and which counts and orders come from the server |
+| Navigation and focus | In, out, back, focus on arrival; web: no programmatic focus on page load, the skip link target |
 | Acceptance | The [rubric](../rubric.md) rows that need more than the defaults |
 
 A screen is done when every row of its States table has a fixture and a screenshot in the rubric matrix, and the rubric passes (phase 7 screenshot review, [workflow](../../../workflow.md)).

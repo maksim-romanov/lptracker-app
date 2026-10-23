@@ -4,7 +4,7 @@
     {
       "id": "M0-S01",
       "title": "Toolchains, workspaces, Turborepo graph and root scripts",
-      "summary": "Sets up the empty monorepo: pinned toolchains in mise, Bun workspaces, the Turborepo graph behind `bun run check`, and a stub for each root script (codegen, gates:canaries, guard, lint:docs, voidx, e2e, qa:validate, format) so later steps only fill their own folder.",
+      "summary": "Sets up the empty monorepo: pinned toolchains in mise, Bun workspaces, the Turborepo graph behind `bun run check`, every npm package and mise tool in the spec's Libraries table, the real `step:verify` script, and a stub for each other root script so later steps only fill their own folder.",
       "phase": 0,
       "size": "M",
       "client": "shared",
@@ -20,17 +20,20 @@
         ".gitignore",
         "*/*/package.json",
         "integrations/package.json",
-        "scripts/*/index.ts"
+        "scripts/*/index.ts",
+        "scripts/step-verify/**"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
-        "docs/research/repo/monorepo-toolchain.md"
+        "docs/research/repo/monorepo-toolchain.md",
+        "docs/workflow.md"
       ],
       "depends_on": [],
-      "done_when": "bun run check",
+      "done_when": "bun run check && bun run step:verify M0-S01",
       "criteria": [
         "`mise install` then `bun install --frozen-lockfile` on a clean macOS machine succeed with `MISE_LOCKED=1`.",
-        "Root scripts `codegen`, `gates:canaries`, `guard`, `lint:docs`, `voidx`, `e2e`, `qa:validate`, `format` exist; each stub points at `scripts/<name>/` and exits 0 until its step fills it."
+        "M0-S01 installs every npm package and mise tool in the Libraries table; no later step's diff touches `bun.lock`, `mise.toml` or `mise.lock`.",
+        "Root scripts `codegen`, `gates:canaries`, `guard`, `lint:docs`, `voidx`, `e2e`, `qa:validate`, `format`, `check:mac-ui` and `snapshots:record` exist and exit 0 until their step fills them; `step:verify` fails on an id with no tests or canaries."
       ],
       "owner_gate": false
     },
@@ -52,12 +55,18 @@
         "docs/decisions/0023-motion.md",
         "docs/decisions/0055-ghost-design-language.md",
         "docs/research/repo/token-pipeline.md",
-        "docs/research/repo/colour-and-contrast.md"
+        "docs/research/repo/colour-and-contrast.md",
+        "docs/design/book/foundations/tokens.md",
+        "docs/design/book/foundations/colour.md",
+        "docs/design/book/foundations/typography.md",
+        "docs/design/book/foundations/spacing-and-layout.md",
+        "docs/design/book/foundations/shape-and-elevation.md",
+        "docs/design/book/visual/prototypes/ghost-cards.html"
       ],
       "depends_on": [
         "M0-S01"
       ],
-      "done_when": "bun run check --filter=@voidx/design-tokens",
+      "done_when": "bun run check --filter=@voidx/design-tokens && bun run step:verify M0-S02",
       "criteria": [
         "Every colour token is inside the sRGB gamut, and the contrast test passes for every token pair in light and dark.",
         "Every motion token has a value in the `reduced` context, `stagger` is 0 there and every reduced spring has bounce 0."
@@ -84,15 +93,15 @@
       "depends_on": [
         "M0-S02"
       ],
-      "done_when": "bun run check --filter=@voidx/design-tokens",
+      "done_when": "bun run check --filter=@voidx/design-tokens && bun run step:verify M0-S03",
       "criteria": [],
       "owner_gate": false
     },
     {
       "id": "M0-S04",
       "title": "Core: domain types and port interfaces",
-      "summary": "Writes the domain model every part shares (positions, pools, tokens, chains, prices as optional values) and the port interfaces adapters implement later. Types only.",
-      "phase": 1,
+      "summary": "Writes the domain model every part shares (positions, pools, tokens, chains, prices as optional values) and the port interfaces in the spec's Ports table, each method taking an AbortSignal. Types only.",
+      "phase": 0,
       "size": "M",
       "client": "shared",
       "role": "backend",
@@ -104,12 +113,21 @@
         "docs/specs/m0-skeleton.md",
         "docs/concepts/position-model.md",
         "docs/concepts/state-model.md",
-        "docs/decisions/0004-ports-and-adapters.md"
+        "docs/decisions/0004-ports-and-adapters.md",
+        "docs/concepts/data-rule.md",
+        "docs/concepts/integration-model.md",
+        "docs/concepts/resilience.md",
+        "docs/concepts/providers-and-cache.md",
+        "docs/concepts/plans-and-entitlements.md",
+        "docs/decisions/0008-pluggable-discovery.md",
+        "docs/decisions/0015-redis-cache-behind-port.md",
+        "docs/decisions/0036-integration-trust.md",
+        "docs/decisions/0039-error-model.md"
       ],
       "depends_on": [
         "M0-S01"
       ],
-      "done_when": "bun run check --filter=@voidx/core",
+      "done_when": "bun run check --filter=@voidx/core && bun run step:verify M0-S04",
       "criteria": [],
       "owner_gate": false
     },
@@ -128,12 +146,15 @@
       "reads": [
         "docs/specs/m0-skeleton.md",
         "docs/decisions/0010-wire-contract.md",
-        "docs/decisions/0048-e2e-testing.md"
+        "docs/decisions/0048-e2e-testing.md",
+        "docs/concepts/position-model.md",
+        "docs/concepts/state-model.md",
+        "docs/glossary.md"
       ],
       "depends_on": [
         "M0-S04"
       ],
-      "done_when": "bun run check --filter=@voidx/contracts && bun run codegen && git diff --exit-code -- packages/contracts",
+      "done_when": "bun run check --filter=@voidx/contracts && bun run codegen --filter=@voidx/contracts && git diff --exit-code -- packages/contracts && bun run step:verify M0-S05",
       "criteria": [
         "`oasdiff breaking` fails between `openapi.json` and a copy with one field removed.",
         "A fixture with an unknown enum value decodes in `bun run check --filter=@voidx/contracts`."
@@ -143,7 +164,7 @@
     {
       "id": "M0-S06",
       "title": "Integration kit schemas, voidx validate, chain files, infra stub",
-      "summary": "Creates the schemas every chain and protocol file must pass, the `voidx validate` command, the Ethereum and Arbitrum chain files and the empty `infra` package.",
+      "summary": "Creates the schemas every chain and protocol file must pass, the `PositionIndex` sources that read only through `ChainReader` and `IndexTransport`, compile-only Uniswap V3 and V4 adapter stubs, the `voidx validate` command, the Ethereum and Arbitrum chain files and the empty `infra` package.",
       "phase": 0,
       "size": "M",
       "client": "shared",
@@ -158,14 +179,19 @@
       "reads": [
         "docs/specs/m0-skeleton.md",
         "integrations/AGENTS.md",
-        "docs/concepts/integration-model.md"
+        "docs/concepts/integration-model.md",
+        "docs/decisions/0008-pluggable-discovery.md",
+        "docs/decisions/0036-integration-trust.md",
+        "docs/research/integrations/chain-parameters.md"
       ],
       "depends_on": [
-        "M0-S04"
+        "M0-S04",
+        "M0-S05"
       ],
-      "done_when": "bun run voidx validate && bun run check --filter=@voidx/integration-kit --filter=@voidx/cli --filter=@voidx/infra --filter=@voidx/integrations",
+      "done_when": "bun run voidx validate && bun run check --filter=@voidx/integration-kit --filter=@voidx/cli --filter=@voidx/infra --filter=@voidx/integrations && bun run step:verify M0-S06",
       "criteria": [
-        "`bun run voidx validate` passes on `integrations/chains/*` and fails on a canary chain file with a misspelled key and on one with an address without a source URL."
+        "`bun run voidx validate` passes on `integrations/chains/*` and fails on a canary chain file with a misspelled key and on one with an address without a source URL.",
+        "Every method of every port in [Ports](#ports) takes an `AbortSignal`; the `uniswap-v3` and `uniswap-v4` adapter stubs typecheck with `satisfies ProtocolAdapter`, and a canary stub without `snapshot` fails `tsc` with `TS1360`."
       ],
       "owner_gate": false
     },
@@ -190,7 +216,7 @@
       "depends_on": [
         "M0-S04"
       ],
-      "done_when": "bun run check --filter=@voidx/server --filter=@voidx/worker",
+      "done_when": "bun run check --filter=@voidx/server --filter=@voidx/worker && bun run step:verify M0-S07",
       "criteria": [
         "`GET /livez` on the server returns 200 in its test."
       ],
@@ -199,7 +225,7 @@
     {
       "id": "M0-S08",
       "title": "Gate runner and dependency-cruiser rules with canaries",
-      "summary": "Adds the canary runner (`bun run gates:canaries`) every gate registers into, and the import-boundary rules with canaries proving they fail.",
+      "summary": "Fills the canary runner (`bun run gates:canaries`), which discovers every `canary.json` by folder convention, and adds the import-boundary rules with canaries proving they fail.",
       "phase": 3,
       "size": "M",
       "client": "shared",
@@ -208,19 +234,22 @@
       "owns": [
         ".dependency-cruiser.*",
         "scripts/gates/**",
-        "canaries/depcruise/**"
+        "canaries/dependency-cruiser/**",
+        "canaries/gates/**"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
-        "docs/concepts/code-style.md"
+        "docs/concepts/code-style.md",
+        "docs/research/repo/ts-quality-gates.md"
       ],
       "depends_on": [
         "M0-S05",
         "M0-S06",
         "M0-S07"
       ],
-      "done_when": "bun run check && bun run gates:canaries --filter=depcruise",
+      "done_when": "bun run check && bun run step:verify M0-S08",
       "criteria": [
+        "`bun run gates:canaries` fails on a canary folder without `canary.json` fields, on a canary whose tool passes, and on a filter that matches no canary.",
         "dependency-cruiser fails on canary imports from `integrations/` into `packages/infra`, from a server route into `infra`, and into a non-exported `core` path."
       ],
       "owner_gate": false
@@ -242,14 +271,16 @@
       "reads": [
         "docs/specs/m0-skeleton.md",
         "docs/concepts/code-style.md",
-        "docs/decisions/0049-typescript-toolchain.md"
+        "docs/decisions/0049-typescript-toolchain.md",
+        "docs/research/repo/ts-quality-gates.md"
       ],
       "depends_on": [
         "M0-S08"
       ],
-      "done_when": "bun run check && bun run gates:canaries --filter=biome",
+      "done_when": "bun run check && bun run step:verify M0-S09",
       "criteria": [
-        "Biome fails on a canary `fetch` in `integrations/`, a `z.enum` wire field in `packages/contracts`, a decorator in `packages/`, and an `<img>` without `alt` in Hono JSX.",
+        "Biome fails on a canary `fetch` in `integrations/` and in `packages/integration-kit`, a `z.enum` wire field in `packages/contracts`, a decorator in `packages/`, and an `<img>` without `alt` in Hono JSX; CI fails on a canary `biome-ignore` under `integrations/`.",
+        "A canary literal colour fails lint in CSS.",
         "A canary file breaking one code-style rule fails: a floating promise and a default export in TS.",
         "A canary literal duration fails lint in CSS: `transition: opacity 300ms`."
       ],
@@ -275,7 +306,7 @@
       "depends_on": [
         "M0-S08"
       ],
-      "done_when": "bun run gates:canaries --filter=licenses",
+      "done_when": "bun run check && bun run step:verify M0-S10",
       "criteria": [
         "The license gate fails on a canary GPL dependency in an MIT package."
       ],
@@ -284,7 +315,7 @@
     {
       "id": "M0-S11",
       "title": "Quiet checks, .logs/, format command and format hook",
-      "summary": "Makes checks agent-friendly: quiet on success, full logs in `.logs/`, a format command, and a hook that formats every file an agent edits.",
+      "summary": "Makes checks agent-friendly: quiet on success, full logs in `.logs/`, a format command, and a hook that formats every file an agent edits by calling mise-pinned binaries directly.",
       "phase": 3,
       "size": "S",
       "client": "shared",
@@ -294,7 +325,10 @@
         "scripts/check/**",
         "scripts/format/**",
         ".claude/hooks/**",
-        ".claude/settings.json"
+        ".claude/settings.json",
+        "package.json",
+        "turbo.json",
+        "canaries/format/**"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
@@ -304,10 +338,10 @@
       "depends_on": [
         "M0-S01"
       ],
-      "done_when": "CLAUDECODE=1 bun run check",
+      "done_when": "CLAUDECODE=1 bun run check && bun run step:verify M0-S11",
       "criteria": [
         "With `CLAUDECODE=1`, `bun run check` prints nothing on success; on a failing canary it prints only the failure and the path of the full log.",
-        "The format hook, fed the hook JSON for a misformatted canary `.ts` and `.swift` file, formats each, exits 0 and prints nothing."
+        "The format hook, fed the hook JSON for a misformatted canary `.ts` and `.swift` file, formats each, exits 0 and prints nothing; its command calls `mise exec` and `xcrun` binaries, not a repo script."
       ],
       "owner_gate": true,
       "owner_reason": "Adds the PostToolUse hook to the committed `.claude/settings.json`, which changes only with your approval."
@@ -325,7 +359,8 @@
         "scripts/lint-docs/**",
         ".markdownlint*",
         "lychee.toml",
-        "REUSE.toml"
+        "REUSE.toml",
+        "canaries/lint-docs/**"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
@@ -334,7 +369,7 @@
       "depends_on": [
         "M0-S01"
       ],
-      "done_when": "bun run lint:docs && reuse lint",
+      "done_when": "bun run lint:docs && reuse lint && bun run step:verify M0-S12",
       "criteria": [
         "`reuse lint` and `bun run lint:docs` (offline) pass; `lint:docs` fails on a canary `AGENTS.md` path that does not exist and on a skill without its `.claude/skills/` link."
       ],
@@ -343,7 +378,7 @@
     {
       "id": "M0-S13",
       "title": "Guard scripts and Renovate config",
-      "summary": "Writes the PR guard (DCO sign-off, lockfile guard, integration path scope) as local scripts with a self-test, and the Renovate config with a 7-day release age.",
+      "summary": "Writes the PR guard (DCO sign-off, lockfile guard, integration path allowlist, owner label for snapshot, canary and threshold changes, workflow pinning and no-retry checks) as local scripts with a self-test, and the Renovate config with a 7-day release age.",
       "phase": 3,
       "size": "S",
       "client": "shared",
@@ -351,48 +386,56 @@
       "workspace": ".",
       "owns": [
         "scripts/guard/**",
-        "renovate.json"
+        "renovate.json",
+        "canaries/guard/**"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
         "docs/research/repo/ci.md",
-        "docs/decisions/0016-licensing-and-dco.md"
+        "docs/decisions/0016-licensing-and-dco.md",
+        "docs/decisions/0036-integration-trust.md",
+        "docs/concepts/integration-model.md"
       ],
       "depends_on": [
         "M0-S01"
       ],
-      "done_when": "bun run guard --self-test && bunx renovate-config-validator",
+      "done_when": "bun run guard --self-test && bun run renovate-config-validator && bun run step:verify M0-S13",
       "criteria": [
-        "A PR commit without `Signed-off-by:` fails `guard`; a lockfile change under an integration-only diff fails `guard`; a diff touching `integrations/` and `packages/core/` fails `guard`.",
+        "`guard --self-test` fails: a commit without `Signed-off-by:`; a lockfile change under an integration-only diff; an integration diff with a path outside the allowlist; a snapshot, canary or protected threshold change without the `owner-approved` label.",
+        "`guard --workflows` fails on canary workflows with an action pinned by tag, with `permissions: write-all`, and with a test retry on `pull_request`.",
         "`renovate-config-validator` passes on the Renovate config."
       ],
       "owner_gate": false
     },
     {
       "id": "M0-S14",
-      "title": "Screenshot review rubric",
-      "summary": "Writes the rubric agents use to judge screenshots (hierarchy, contrast, spacing, states, motion, copy), so UX review is the same every time. You approve it.",
-      "phase": 0,
+      "title": "Screenshot review rubric, QA report validator, spec-verifier agent",
+      "summary": "Writes the rubric agents use to judge screenshots, the `qa:validate` script that checks agent QA and spec-verifier reports, and the read-only spec-verifier agent. You approve the rubric.",
+      "phase": 3,
       "size": "S",
       "client": "shared",
       "role": "qa",
-      "workspace": "docs",
+      "workspace": ".",
       "owns": [
-        "docs/design/book/rubric.md"
+        "docs/design/book/rubric.md",
+        "scripts/qa/**",
+        ".claude/agents/spec-verifier.md"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
         "docs/research/repo/native-agent-verification.md",
         "docs/research/server/agent-verification.md",
-        "docs/design/book/README.md"
+        "docs/design/book/README.md",
+        "docs/research/agent-tools/autonomy-loops.md"
       ],
       "depends_on": [
-        "M0-S01"
+        "M0-S01",
+        "M0-S12"
       ],
-      "done_when": "bun run lint:docs",
+      "done_when": "bun run lint:docs && bun run step:verify M0-S14",
       "criteria": [],
       "owner_gate": true,
-      "owner_reason": "The rubric decides what agents call good or bad UI; you approve its wording."
+      "owner_reason": "The rubric decides what agents call good or bad UI and the agent file lives in `.claude/`; you approve both."
     },
     {
       "id": "M0-S15",
@@ -420,11 +463,13 @@
         "docs/decisions/0019-ios-stack.md"
       ],
       "depends_on": [
-        "M0-S01"
+        "M0-S01",
+        "M0-S03"
       ],
-      "done_when": "tuist install && tuist generate --no-open && tuist inspect dependencies --only implicit",
+      "done_when": "tuist install && tuist generate --no-open && tuist inspect dependencies --only implicit && test \"$(git ls-files apps/ios-app | grep -c '\\.entitlements$')\" = 0",
       "criteria": [
-        "`tuist install && tuist generate --no-open` and `tuist inspect dependencies --only implicit` pass."
+        "iOS: `tuist install && tuist generate --no-open` and `tuist inspect dependencies --only implicit` pass; `git ls-files apps/ios-app | grep -c '\\.entitlements$'` prints 0.",
+        "`git grep -l xyz.depthly.voidx apps/` lists only the Tuist constant file."
       ],
       "owner_gate": false,
       "slots": [
@@ -434,25 +479,28 @@
     {
       "id": "M0-S16",
       "title": "iOS: generated APIClient and unknown-enum decode test",
-      "summary": "Generates the Swift API client from the contract inside `bun run codegen` and proves an unknown enum value decodes safely.",
+      "summary": "Generates the Swift API client from `openapi.swift.json` inside the iOS workspace's `codegen` task, which runs only on macOS, and proves an unknown enum value decodes safely.",
       "phase": 3,
       "size": "M",
       "client": "ios",
       "role": "ios",
       "workspace": "apps/ios-app",
       "owns": [
-        "apps/ios-app/Modules/Networking/**",
-        "apps/ios-app/openapi-generator-config.yaml"
+        "apps/ios-app/Modules/APIClient/**",
+        "apps/ios-app/openapi-generator-config.yaml",
+        "apps/ios-app/package.json"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
-        "docs/decisions/0010-wire-contract.md"
+        "docs/decisions/0010-wire-contract.md",
+        "docs/research/ios-app/skeleton.md"
       ],
       "depends_on": [
         "M0-S05",
-        "M0-S15"
+        "M0-S15",
+        "M0-S17"
       ],
-      "done_when": "bun run check --filter=@voidx/ios",
+      "done_when": "bun run check --filter=@voidx/ios && bun run step:verify M0-S16",
       "criteria": [
         "A fixture with an unknown enum value decodes in `--filter=@voidx/ios`."
       ],
@@ -463,32 +511,40 @@
     },
     {
       "id": "M0-S17",
-      "title": "iOS: check wrapper for iPhone, iPad and macOS",
-      "summary": "Makes `bun run check --filter=@voidx/ios` run the tests on an iPhone simulator, an iPad simulator and macOS quietly, failing early if the Xcode version is wrong.",
+      "title": "iOS: check wrapper, toolchain file, Mac UI and snapshot-record scripts",
+      "summary": "Makes `bun run check --filter=@voidx/ios` run the iPhone and iPad simulator tests and the macOS build and unit tests quietly, from the pinned values in `apps/ios-app/toolchain.json`, failing early on another Xcode build; adds `check:mac-ui` and `snapshots:record`.",
       "phase": 3,
       "size": "M",
       "client": "ios",
       "role": "ios",
       "workspace": "apps/ios-app",
       "owns": [
-        "apps/ios-app/scripts/**"
+        "apps/ios-app/scripts/**",
+        "apps/ios-app/package.json",
+        "apps/ios-app/toolchain.json",
+        "apps/ios-app/Canaries/ios-check/**"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
-        "docs/research/repo/native-ui-tests.md"
+        "docs/research/repo/native-ui-tests.md",
+        "docs/research/ios-app/skeleton.md",
+        "docs/research/repo/ci.md"
       ],
       "depends_on": [
         "M0-S15"
       ],
-      "done_when": "bun run check --filter=@voidx/ios",
+      "done_when": "bun run check --filter=@voidx/ios && bun run step:verify M0-S17",
       "criteria": [
-        "`bun run check --filter=@voidx/ios` runs the tests on an iPhone simulator, an iPad simulator and `platform=macOS`; `xcodebuild build -scheme VoidXWidgets` passes for iOS and macOS."
+        "`bun run check --filter=@voidx/ios` reads `apps/ios-app/toolchain.json`, fails early on another Xcode build, runs the tests on the iPhone and iPad simulators and the macOS build and unit tests; `xcodebuild build -scheme VoidXWidgets` passes for iOS and macOS.",
+        "`bun run check:mac-ui` runs the Mac UI audit (owner-run).",
+        "With `CI`, `CLAUDECODE=1` or `AGENT=1` set, a missing snapshot fails instead of recording; `bun run snapshots:record` records."
       ],
-      "owner_gate": false,
+      "owner_gate": true,
       "slots": [
         "build",
         "device"
-      ]
+      ],
+      "owner_reason": "Fill the exact Xcode build, iOS runtime and device names in `apps/ios-app/toolchain.json`."
     },
     {
       "id": "M0-S18",
@@ -507,9 +563,10 @@
         "docs/decisions/0048-e2e-testing.md"
       ],
       "depends_on": [
-        "M0-S16"
+        "M0-S16",
+        "M0-S17"
       ],
-      "done_when": "bun run check --filter=@voidx/ios",
+      "done_when": "bun run check --filter=@voidx/ios && bun run step:verify M0-S18",
       "criteria": [],
       "owner_gate": false,
       "slots": [
@@ -532,13 +589,14 @@
       "reads": [
         "docs/specs/m0-skeleton.md",
         "docs/concepts/code-style.md",
-        "apps/ios-app/docs/code-style.md"
+        "docs/research/ios-app/code-style.md"
       ],
       "depends_on": [
         "M0-S08",
-        "M0-S15"
+        "M0-S15",
+        "M0-S17"
       ],
-      "done_when": "bun run gates:canaries --filter=ios",
+      "done_when": "bun run check --filter=@voidx/ios && bun run step:verify M0-S19",
       "criteria": [
         "A canary literal colour fails lint in Swift.",
         "A canary file breaking one code-style rule fails: `ObservableObject` and `DispatchQueue` in Swift.",
@@ -552,7 +610,7 @@
     {
       "id": "M0-G1",
       "title": "core-green-web: everything the web UI needs passes",
-      "summary": "Checkpoint, not code: tokens, core, contracts, kit, server and all TS gates pass together before web UI work starts.",
+      "summary": "Checkpoint, not code: tokens, core, contracts, kit, server and all TS gates pass together. No M0 web step follows it (web UI moved to M1b); M0-G2 builds on it.",
       "phase": "gate",
       "size": "S",
       "client": "web",
@@ -573,11 +631,12 @@
         "M0-S10",
         "M0-S11",
         "M0-S12",
-        "M0-S13"
+        "M0-S13",
+        "M0-S03"
       ],
-      "done_when": "bun run check --filter='!@voidx/ios' && bun run gates:canaries",
+      "done_when": "bun run check --filter='!@voidx/ios' && bun run codegen --filter='!@voidx/ios' && git diff --exit-code && bun run gates:canaries --platform linux",
       "criteria": [
-        "`bun run codegen && git diff --exit-code` shows no changes."
+        "`bun run codegen --filter='!@voidx/ios' && git diff --exit-code` shows no changes on Linux, and `bun run codegen && git diff --exit-code` shows none on macOS."
       ],
       "owner_gate": false
     },
@@ -602,7 +661,7 @@
         "M0-S18",
         "M0-S19"
       ],
-      "done_when": "bun run check && bun run gates:canaries",
+      "done_when": "bun run check && bun run codegen && git diff --exit-code && bun run gates:canaries",
       "criteria": [
         "`bun run check` passes on macOS; `bun run check --filter='!@voidx/ios'` passes on Linux."
       ],
@@ -610,35 +669,6 @@
       "slots": [
         "build"
       ]
-    },
-    {
-      "id": "M0-S20",
-      "title": "Web UI kit v0 and a Debug-only gallery page",
-      "summary": "Builds the first web pieces from generated tokens only (status chip, static range bar, card shell with four fills) with their motion and reduced branch, and a Debug-only gallery page that shows every state.",
-      "phase": 4,
-      "size": "M",
-      "client": "web",
-      "role": "web",
-      "workspace": "apps/server",
-      "owns": [
-        "apps/server/src/ui/**",
-        "apps/server/styles/**",
-        "apps/server/src/routes/dev/**"
-      ],
-      "reads": [
-        "docs/specs/m0-skeleton.md",
-        "docs/decisions/0055-ghost-design-language.md",
-        "docs/design/book/components/data-display.md",
-        "docs/design/book/prototypes.md"
-      ],
-      "depends_on": [
-        "M0-G1"
-      ],
-      "done_when": "bun run check --filter=@voidx/server",
-      "criteria": [
-        "A canary literal colour fails lint in CSS."
-      ],
-      "owner_gate": false
     },
     {
       "id": "M0-S21",
@@ -657,12 +687,19 @@
         "docs/decisions/0055-ghost-design-language.md",
         "docs/design/book/components/data-display.md",
         "docs/design/book/prototypes.md",
-        "docs/decisions/0022-accessibility.md"
+        "docs/decisions/0022-accessibility.md",
+        "docs/design/book/visual/prototypes/ghost-cards.html",
+        "docs/design/book/foundations/colour.md",
+        "docs/design/book/foundations/motion.md",
+        "docs/design/book/foundations/layers-and-accessibility.md",
+        "docs/decisions/0018-web-ssr-hotwire.md",
+        "docs/decisions/0023-motion.md",
+        "docs/decisions/0027-design-tokens.md"
       ],
       "depends_on": [
         "M0-G2"
       ],
-      "done_when": "bun run check --filter=@voidx/ios",
+      "done_when": "bun run check --filter=@voidx/ios && bun run step:verify M0-S21",
       "criteria": [],
       "owner_gate": false,
       "slots": [
@@ -690,7 +727,7 @@
       "depends_on": [
         "M0-S21"
       ],
-      "done_when": "bun run check --filter=@voidx/ios",
+      "done_when": "bun run check --filter=@voidx/ios && bun run step:verify M0-S22",
       "criteria": [
         "Launching the iOS app with `route=gallery` shows the gallery, and the Maestro smoke flow asserts one id from it; a Release build ignores `route`."
       ],
@@ -720,7 +757,7 @@
       "depends_on": [
         "M0-S22"
       ],
-      "done_when": "bun run e2e --platform ios",
+      "done_when": "bun run e2e --platform ios && bun run step:verify M0-S23",
       "criteria": [
         "`bun run e2e` starts Prism on `openapi.mock.json`.",
         "`bun run e2e` passes the smoke flow on the iPhone simulator; a canary flow asserting a removed id fails."
@@ -749,10 +786,9 @@
         "docs/research/ios-app/motion.md"
       ],
       "depends_on": [
-        "M0-S21",
-        "M0-S20"
+        "M0-S21"
       ],
-      "done_when": "bun run check --filter=@voidx/ios",
+      "done_when": "bun run check --filter=@voidx/ios && bun run step:verify M0-S24",
       "criteria": [
         "The settling time of each spring on iOS is within 5% of its web `linear()` duration."
       ],
@@ -765,7 +801,7 @@
     {
       "id": "M0-S25",
       "title": "Accessibility gates: audits and AX5 snapshots",
-      "summary": "Runs the accessibility audit on iPhone, iPad and Mac and records snapshots at default and AX5 text in light, dark and right-to-left. You approve the first baselines.",
+      "summary": "Runs the accessibility audit on iPhone and iPad (Mac in CI and `check:mac-ui`) and records snapshots at default and AX5 text in light, dark and right-to-left with record mode `.never` outside `snapshots:record`. You approve the first baselines.",
       "phase": 7,
       "size": "L",
       "client": "ios",
@@ -773,7 +809,8 @@
       "workspace": "apps/ios-app",
       "owns": [
         "apps/ios-app/Tests/UITests/**",
-        "apps/ios-app/Tests/Snapshots/**"
+        "apps/ios-app/Tests/Snapshots/**",
+        "apps/ios-app/Canaries/accessibility/**"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
@@ -783,7 +820,7 @@
       "depends_on": [
         "M0-S22"
       ],
-      "done_when": "bun run check --filter=@voidx/ios",
+      "done_when": "bun run check --filter=@voidx/ios && bun run step:verify M0-S25",
       "criteria": [
         "A canary unlabeled button fails `performAccessibilityAudit()`; a canary label truncated at AX5 fails its snapshot."
       ],
@@ -796,16 +833,15 @@
     },
     {
       "id": "M0-S26",
-      "title": "Agent QA pass on the simulator and the web gallery",
-      "summary": "An agent drives the running app and the web gallery on fixture data, reads the UI tree, takes screenshots, judges them with the rubric and writes findings; findings never fail the step.",
+      "title": "Agent QA pass on the simulator",
+      "summary": "An agent drives the running iOS app on fixture data, reads the UI tree, takes screenshots, judges them with the rubric and writes findings; findings never fail the step. The browser pass moved to M1b.",
       "phase": 7,
       "size": "M",
       "client": "ios",
       "role": "qa",
       "workspace": ".",
       "owns": [
-        ".artifacts/agent-qa/**",
-        "scripts/qa/**"
+        ".artifacts/agent-qa/**"
       ],
       "reads": [
         "docs/specs/m0-skeleton.md",
@@ -815,11 +851,12 @@
       "depends_on": [
         "M0-S14",
         "M0-S23",
-        "M0-S25",
-        "M0-S20"
+        "M0-S25"
       ],
       "done_when": "bun run qa:validate .artifacts/agent-qa/m0-skeleton.json",
-      "criteria": [],
+      "criteria": [
+        "`bun run qa:validate .artifacts/agent-qa/m0-skeleton.json` passes on the agent QA report and fails on a report missing a rubric item."
+      ],
       "owner_gate": false,
       "slots": [
         "device"
@@ -828,7 +865,7 @@
     {
       "id": "M0-S27",
       "title": "CI workflow, issue forms and PR template",
-      "summary": "Writes the single `ci.yml`: change detection, guard, check on Linux, the iOS job with the Maestro smoke step, and `ci-ok` as the one required check; adds the issue forms and the PR template.",
+      "summary": "Writes the single `ci.yml` (change detection, guard, check on Linux, the iOS job with the Maestro smoke step and Swift codegen drift check, canaries in both jobs, toolchain values from `apps/ios-app/toolchain.json`, `ci-ok` as the one required check), CODEOWNERS, the issue forms and the PR template.",
       "phase": 7,
       "size": "S",
       "client": "shared",
@@ -841,40 +878,49 @@
         "docs/specs/m0-skeleton.md",
         "docs/research/repo/ci.md",
         "docs/decisions/0037-ci-and-supply-chain.md",
-        "docs/guides/add-a-protocol.md"
+        "docs/guides/add-a-protocol.md",
+        "docs/decisions/0036-integration-trust.md"
       ],
       "depends_on": [
         "M0-S13",
         "M0-S23",
-        "M0-S25"
+        "M0-S25",
+        "M0-S17"
       ],
-      "done_when": "bun run check",
+      "done_when": "bun run guard --workflows && bun run guard --codeowners",
       "criteria": [
-        "A PR touching only `docs/` runs `changes`, `guard` and `ci-ok`, and skips `check` and `ios`; `ci-ok` is the single required check.",
-        "The measured `ios` job time on the M0 PR is recorded in docs/research/repo/ci.md.",
-        "The New integration issue form has every field in docs/guides/add-a-protocol.md#1-issue; the PR template asks for the source of every address."
+        "`ci.yml` runs `gates:canaries --platform linux` in `check`, `--platform ios` and the Swift codegen drift check in `ios`, and reads Xcode and destinations only from `apps/ios-app/toolchain.json`; `guard --workflows` passes on it.",
+        "`.github/CODEOWNERS` covers every gate and config path named in [Scope](#scope): `bun run guard --codeowners` passes, and `guard --self-test` fails on a protected path missing from it.",
+        "A PR touching only `docs/` runs `changes`, `guard` and `ci-ok`, and skips `check` and `ios`; `ci-ok` is the single required check (owner-run).",
+        "A PR commit without `Signed-off-by:` fails `guard`; a PR adding a lockfile change under an integration-only diff fails `guard`; a PR touching `integrations/` and `packages/core/` fails `guard` (owner-run).",
+        "The measured `ios` job time on the M0 PR is recorded in [ci](../research/repo/ci.md) (owner-run).",
+        "Every item in [CI settings](#ci-settings-owner-run) is set (owner-run)."
       ],
       "owner_gate": true,
-      "owner_reason": "CI runs on GitHub with settings only you can change: required checks, runner choice, secrets."
+      "owner_reason": "CI runs on GitHub with settings only you can change: the ruleset, code-owner review, SHA pinning, token permissions and the `owner-approved` label."
     },
     {
       "id": "M0-S28",
       "title": "Verify every acceptance criterion",
-      "summary": "A fresh read-only reviewer re-runs every acceptance criterion of the M0 spec and reports gaps; criteria that need a real PR are listed for you.",
+      "summary": "A fresh read-only spec-verifier re-runs every acceptance criterion of the M0 spec and writes a report; the step exits on that report, and criteria that need a real PR are listed as owner-run.",
       "phase": 7,
       "size": "M",
       "client": "shared",
       "role": "qa",
       "workspace": ".",
-      "owns": [],
+      "owns": [
+        ".artifacts/spec-verifier/**"
+      ],
       "reads": [
-        "docs/specs/m0-skeleton.md"
+        "docs/specs/m0-skeleton.md",
+        "docs/specs/m0-skeleton.steps.json"
       ],
       "depends_on": [
         "M0-S26",
-        "M0-S27"
+        "M0-S27",
+        "M0-S14"
       ],
-      "done_when": "bun run check && bun run gates:canaries",
+      "done_when": "bun run qa:validate --spec-verifier .artifacts/spec-verifier/m0-skeleton.json",
       "criteria": [
         "All acceptance criteria in the spec."
       ],

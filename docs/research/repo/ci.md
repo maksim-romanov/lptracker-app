@@ -12,7 +12,7 @@ checked: 2026-09-30
 - We run one `ci.yml` workflow with no `paths:` filter. A `changes` job decides which platform jobs run and skips the rest with a job-level `if`. A workflow skipped by a path filter leaves its required checks `Pending` and blocks merge, while a job skipped by `if` reports `Success`. [22]
 - We make one aggregator job, `ci-ok` (`needs:` all jobs, `if: always()`, fails if any needed job failed or was cancelled), the only required status check in the `main` ruleset, with GitHub Actions as its expected source. This way, adding or skipping jobs never touches branch settings. [22] [25]
 - We run `bun run check --affected` with a full-history checkout (`fetch-depth: 0`, `filter: blob:none`). A shallow checkout makes Turborepo treat every package as changed. Turbo ≥ 2.2 picks the PR base, or the previous commit on push, from the GitHub context without `TURBO_SCM_BASE`. [9] [10]
-- We split `check` by OS. The Linux job runs `--affected` on everything except `ios-app`, and the iOS job runs `check --filter=ios-app` on macOS, because Swift checks need Xcode (AGENTS.md).
+- We split `check` by OS. The Linux job runs `--affected` on everything except `@voidx/ios`, and the iOS job runs `check --filter=@voidx/ios` on macOS, because Swift checks need Xcode (AGENTS.md).
 - We run iOS jobs on the `xcode-27` image while it is in preview, then on `macos-26` once it ships Xcode 27 ([M0 owner decision 1](../../specs/m0-skeleton.md#owner-decisions)), and select Xcode explicitly with `xcode-select`, never `macos-latest`. `macos-latest` moved to `macos-26` in June to July 2026 and will move again. The image ships several Xcode 26.x versions with 26.4.1 as default. [1] [2]
 - We hold at most two macOS jobs per PR, because the Free plan caps macOS at 5 concurrent jobs out of 20 total. [4]
 - We run Android on `ubuntu-latest`, not macOS. JVM-side checks (lint, unit, Roborazzi) need no emulator. When `connectedCheck` arrives, we enable KVM with the documented udev rule on the standard Linux runner. [7] [24]
@@ -26,7 +26,10 @@ checked: 2026-09-30
 - We pin every action to a full commit SHA with a version comment, and turn on the repo policy that fails workflows using unpinned actions. [17] [18]
 - We let Renovate update action SHAs and mise tools (`helpers:pinGitHubActionDigests`, `mise` manager) with a `minimumReleaseAge` of 7 days. With the default `internalChecksFilter: strict`, Renovate opens no branch before that age. We make one group for `github-actions` and one for `mise` tools, weekly. [15] [16]
 - We cancel superseded PR runs with the concurrency group `${{ github.workflow }}-${{ github.head_ref || github.run_id }}` and `cancel-in-progress: true`. The `run_id` fallback keeps every `main` push running. [21]
-- We require maintainer approval before workflows run for first-time contributors (the minimum; see Open questions). [20]
+- We require maintainer approval before workflows run for all outside collaborators, not only first-time contributors, because a fork run can use up the macOS concurrency cap. [20]
+- We run zizmor and actionlint in `guard` when `.github/` changes.
+- The DCO check exempts the Renovate bot, or Renovate signs off its commits (`commitBody` with `Signed-off-by`).
+- We enable Renovate `lockFileMaintenance` weekly, covering `bun.lock` and `mise.lock`.
 
 ## Facts that constrain us
 
@@ -47,20 +50,18 @@ checked: 2026-09-30
 
 | Workflow | Trigger | Jobs |
 |---|---|---|
-| `ci.yml` | `pull_request` to `main`, `push` to `main` | `changes` (ubuntu; `turbo query affected` → outputs `web`, `ios`, `android`, `integrations_only`); `guard` (ubuntu, always runs: lockfile guard and core path scope for integration PRs, `codegen` drift check, `reuse lint`, license check, docs-lint); `check` (ubuntu: `bun run check --affected` minus iOS); `ios` (`xcode-27`, if `ios`: Maestro smoke step, `check --filter=ios-app`, accessibility audit, snapshots); `android` (ubuntu, if `android`: Gradle lint, unit, Roborazzi); `e2e-android` (ubuntu with KVM, if `android`: Maestro smoke on the emulator, [e2e-testing](e2e-testing.md)); `ci-ok` (aggregator, the only required check) |
+| `ci.yml` | `pull_request` to `main`, `push` to `main` | `changes` (ubuntu; `turbo query affected` → outputs `web`, `ios`, `android`, `integrations_only`); `guard` (ubuntu, always runs: lockfile guard and the allowlist path scope for integration PRs, `codegen` drift check, `reuse lint`, license check, DCO check, docs-lint; zizmor and actionlint when `.github/` changes); `check` (ubuntu: `bun run check --affected` minus iOS); `ios` (`xcode-27`, if `ios`: Maestro smoke step, `check --filter=@voidx/ios`, accessibility audit, snapshots); `android` (ubuntu, if `android`: Gradle lint, unit, Roborazzi); `e2e-android` (ubuntu with KVM, if `android`: Maestro smoke on the emulator, [e2e-testing](e2e-testing.md)); `ci-ok` (aggregator, the only required check) |
 | Renovate | Mend-hosted GitHub App, no workflow file | configuration lives in `renovate.json` |
 
 Not in M0: `/record` (ADR 0037), release-please and signing (ADR 0033), nightly performance runs on physical devices (ADR 0023), AI review for trusted authors (ADR 0024).
 
 ## Open questions
 
-- Conflict: [ios-app audit notes](../ios-app/audit-notes.md) say "Xcode and Tuist are pinned in `mise.toml`". mise can pin Tuist but cannot install Xcode; CI takes Xcode from the runner image [1]. Where does the Xcode version live: a `.xcode-version` file or a `mise.toml` env var?
-- Conflict: AGENTS.md defines `check --affected` as one command covering native wrappers. CI must split it by OS (see Decisions). Should the root command skip `ios-app` automatically on Linux, or should the task graph declare it?
+- Resolved: [ios-app audit notes](../ios-app/audit-notes.md) say "Xcode and Tuist are pinned in `mise.toml`", but mise cannot install Xcode. Tuist is pinned in `mise.toml`; Xcode comes from the runner image and is checked by `compatibleXcodeVersions` in `Tuist.swift` ([M0 owner decision 1](../../specs/m0-skeleton.md#owner-decisions)).
+- Resolved: CI splits `check` by OS with filters, not the task graph: Linux runs `--filter='!@voidx/ios'`, macOS runs `--filter=@voidx/ios` ([M0 spec](../../specs/m0-skeleton.md)).
 - Tuist cache: tuist.dev docs and pricing returned 403. We have not verified whether the module cache needs a Tuist server account, or whether there is an OSS tier.
 - Should PRs use Vercel Remote Cache read-only (`--cache=remote:r`) [9]? Same-repo PRs would need `id-token: write`, which bends ADR 0037.
 - Gradle: stay on the proprietary default cache provider or use `basic` for supply-chain purity? [14]
-- Fork approval scope: first-time contributors only, or all outside collaborators? That trades maintainer clicks against the risk of fork runs using up the macOS minutes cap.
-- Neither actionlint nor zizmor has been researched yet. Both are candidates for the `guard` job when `.github/` changes.
 - When App Store submissions require the Xcode 27 SDK, how long will `macos-26` get Xcode 27 before we must use the `xcode-27` preview label? [3]
 
 ## Sources

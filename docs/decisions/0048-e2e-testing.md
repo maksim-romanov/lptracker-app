@@ -35,7 +35,7 @@ Chosen **Maestro flows plus native gates**, because one flow per journey proves 
 - Maestro screenshots are never a visual gate; snapshots stay with swift-snapshot-testing and Roborazzi.
 - Agents verify text first, pixels second: ARIA snapshots on the web and the UI tree on native (`inspect_screen`, `android layout`, the XCUITest hierarchy, Roborazzi `dumpUiTree`); pixels only against committed baselines ([native research](../research/repo/native-agent-verification.md)).
 - Every state renders from a named scenario: `?scenario=` and a `/__gallery` route on the web (dev only), the launch argument `route` opening a gallery screen in Debug builds.
-- A model reviewing screenshots against a written rubric is advisory and never a gate.
+- A model reviewing screenshots against the [rubric](../design/book/rubric.md) is advisory and never a gate; the owner's acceptance is the human gate, and rubric rows that only code can judge point to their automated check.
 - Baselines change only through a dedicated update command, in their own commit, accepted by the owner; an agent never updates a baseline to make a test pass.
 - The Maestro MCP (`maestro mcp`) is a personal opt-in pinned to the mise version; its cloud tools stay unauthenticated ([0047](0047-agent-tools-and-mcp.md)).
 

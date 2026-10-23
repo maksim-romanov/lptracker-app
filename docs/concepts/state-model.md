@@ -56,7 +56,7 @@ Each rule in `quality.yaml` has a machine id and is `done`, `todo` or `exempt` w
 
 | Tier | Adds |
 |---|---|
-| Bronze | Schema-valid manifest, conformance passes on cassettes, cassettes per deployment, source URL on every address, an owner |
+| Bronze | Schema-valid manifest, conformance invariants pass on cassettes ([list](position-model.md#limits)), cassettes per deployment, one value per deployment matched against an external expected value (the protocol's UI, API or explorer) with its source URL, source URL on every address, an owner |
 | Silver | Cassettes for closed, empty, out-of-range and staked positions; typed errors; fees and rewards separated |
 | Gold | Values checked against the protocol's own UI or API at pinned blocks |
 | Platinum | Scheduled live smoke test; at least two owners |

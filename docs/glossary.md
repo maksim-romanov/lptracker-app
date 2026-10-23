@@ -42,7 +42,7 @@ One term per concept. Code identifiers, docs and UI copy use these words and no 
 | **amountsConfidence** | `normal` or `low`; `low` when a V4 hook can bypass the pool curve on swaps. | |
 | **readPolicy** | Chain file field choosing the block tag reads use: `safe`, `finalized` or `latest`. | finality depth |
 | **indexBlock** | The latest block an index source has processed. | |
-| **readBlock** | The block, resolved once per snapshot from the pool's median head for the chain's `readPolicy` tag and pinned by hash (EIP-1898). | |
+| **readBlock** | The block a request reads one chain at, resolved once per request and chain from the pool's heads for the chain's `readPolicy` tag and pinned by hash (EIP-1898); see [providers and cache](concepts/providers-and-cache.md#read-block). | |
 | **Scope** | The result of one deployment in one response, with a status. | partial failure |
 | **Truncated** | Scope flag: more positions exist than the [per-scope cap](concepts/providers-and-cache.md#request-budget) returned. | |
 | **Snapshot** | Positions for one (deployment, owner) at one readBlock. | |
@@ -53,7 +53,7 @@ One term per concept. Code identifiers, docs and UI copy use these words and no 
 | **Paused wallet** | A wallet above the current plan limit: read-only, not monitored, no alerts. | |
 | **Portfolio** | All positions of a watchlist at a moment. | |
 | **Epoch** | Per (alert rule, position) transition sequence number; part of the alert outbox key. | window |
-| **Extension** | Opaque `{ type, version, data }` a family attaches to a position. | |
+| **Extension** | Opaque `{ type, schemaVersion, data }` a family attaches to a position or pool. | |
 | **Journey** | A user path tested end to end; its id is the Maestro flow name, the Playwright tag and the native test name ([ADR 0048](decisions/0048-e2e-testing.md)). | scenario (that is a fixture name) |
 | **Display descriptor** | Generic render instructions every client supports; labels carry `labelKey` for translation. | |
 | **Price** | A token's USD price at a time, with its sources, `confidence` and age; an external estimate, never a chain quantity. See [prices and logos](concepts/prices-and-logos.md). | price feed (for our output) |

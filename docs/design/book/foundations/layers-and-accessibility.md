@@ -16,7 +16,7 @@ Stacking order and the checks every screen must pass.
 | Contrast | Text 4.5:1, large text and controls 3:1, every state and both themes |
 | Targets | 44 pt minimum (48 dp on Android), spaced so neighbours are not hit by mistake |
 | Status | Word plus shape, never colour alone |
-| Focus | Native clients: one title per screen takes focus on arrival; back returns focus to the opener. Web page loads let the browser manage focus |
+| Focus | Native clients: one title per screen takes focus on arrival; back returns focus to the opener. Web: no programmatic focus on page load or frame reload; the first focusable element is a skip link to the main region |
 | Motion | Every motion has a reduced version; nothing flashes more than three times a second |
 | Names | Every control has a spoken name and a Voice Control input label; every list row is one element with custom actions |
 | Text size | Layouts survive the largest system text size without clipping |

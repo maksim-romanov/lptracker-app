@@ -56,4 +56,4 @@ Manage the watchlist and see the plan limit: which wallets count, which are paus
 
 ## Acceptance
 
-Rubric defaults, plus: every state above at 390, 820 and 1280 px on web, on iPhone and in the Mac Settings window. Row 9: a paused wallet carries the word "Paused", not only muted colour. Row 10: the remove button on each row is at least 44 pt.
+Rubric defaults, plus: every state above at 390, 820 and 1280 px on web, on iPhone and in the Mac Settings window. Row 6: a paused wallet carries the word "Paused", not only muted colour. The remove button on each row is at least 44 pt (accessibility audits).

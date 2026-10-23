@@ -25,5 +25,5 @@ Chosen **a public repo with GitHub-hosted runners**, because it gives Linux and 
 ## Consequences
 
 - Every commit and issue is public, so secrets and private notes never enter the repo.
-- Fork PRs run with a read-only token and no secrets.
+- Fork PRs run with a read-only token and no secrets, and only after a maintainer approves the run for any outside collaborator.
 - If GitHub ends free macOS minutes for public repos, the `ios` job moves to a self-hosted runner without changing the workflow shape.

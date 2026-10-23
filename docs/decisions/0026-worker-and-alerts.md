@@ -22,7 +22,7 @@ Chosen **shared watch targets with confirmed transitions** in `worker`:
 - Each refresh stores the latest snapshot and a coverage map; comparison follows the [data rule](../concepts/data-rule.md#failure-is-not-absence).
 - A transition alerts after 2 consecutive reads, or at once when the tick is past the bound by at least one tick spacing; the same transition then waits 30 minutes per (rule, position).
 - `alert_events` has a unique key per (rule, position, transition, epoch), where `epoch` is the per-(rule, position) transition sequence number, and an outbox, so retries never send twice.
-- The worker publishes `position.changed { ref, version }` for open web pages; `version` is the snapshot's readBlock.
+- The worker publishes `position.changed { ref, readBlock }` for open web pages.
 - MVP alert rules: range exit and re-entry for every account, fast and uncapped with the 30-minute cooldown above; early warnings ("within X% of the range edge") only for accounts with `alerts.early_warning` ([0043](0043-plans-and-entitlements.md)).
 
 ## Consequences

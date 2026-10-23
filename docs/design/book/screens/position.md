@@ -25,6 +25,9 @@ See one position in full: value, range, amounts, owed fees and where it lives on
 
 | State | On the wire | What changes |
 |---|---|---|
+| `loading` | Request pending | Skeleton hero and sections sized like the content; header keeps Back |
+| `failed` | The request failed | With last data: it stays with its age, banner with Retry. Without: a failed message with Retry and Back to Portfolio |
+| Not found or closed | `404` problem, or `status` `closed` | Says the position is closed or no longer watched; no values; Back to Portfolio. An alert or widget link lands here, never on an error page |
 | In range | `range.status` `in` | Status chip in range, round marker; no banner |
 | `outOfRange` | `range.status` `below` or `above` | Banner and the diamond marker outside the band. The hero value is unchanged |
 | No range | `range` null | No range bar; the status word is pending |
@@ -60,7 +63,7 @@ See one position in full: value, range, amounts, owed fees and where it lives on
 | In | Position row or card (Open on web), alert, widget, link, Siri |
 | Out | Alert rule (sheet), Share (system), explorer (browser), back |
 | Back | Returns to the opener and its scroll position; on web the breadcrumb goes to Portfolio. A push opens Alerts then Position (proposed, see [open questions](../open-questions.md)) |
-| Focus | The pair name heading on arrival. Selecting a row on wide layouts keeps focus on the list. Closing the sheet returns focus to the row |
+| Focus | Native: the pair name heading on arrival. Web: no programmatic focus on page load; a skip link to the hero comes first. Selecting a row on wide layouts keeps focus on the list. Closing the sheet returns focus to the row |
 
 ## Acceptance
 

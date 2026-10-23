@@ -24,7 +24,7 @@ Three layers. A component may use only the layer below it, so a visual change is
 |---|---|---|
 | Theme | light, dark | Colour roles |
 | Motion | full, reduced | Durations, springs (bounce 0 when reduced), stagger 0 |
-| Contrast | normal, increased | Outline and content colour roles; required by the accessibility ADR |
+| Contrast | normal, increased | Outline and content colour roles only; ships in M0 ([values](colour.md#increased-contrast)) |
 | Scheme | default | Page, accent and Fill colours (see ADR 0027) |
 | Scale | device text size | Not a token context: type and text-tied spacing react to system text size |
 
@@ -33,18 +33,18 @@ Three layers. A component may use only the layer below it, so a visual change is
 - **Source** DTCG files in `packages/design-tokens` (*planned*, M0, [ADR 0027](../../../decisions/0027-design-tokens.md))
 - **Build** Terrazzo, plus the native plugin
 - **Outputs** CSS variables and Tailwind theme, Swift constants and colour sets, a Compose object
-- **Check** Contrast test on every pair; CI fails if outputs differ from the committed ones (*planned*)
+- **Check** Contrast test on the [listed pairs](colour.md#contrast-test-pairs); CI fails if outputs differ from the committed ones (*planned*)
 
-## Token groups to create
+## M0 token table
 
-| Group | Names (examples) | Count | Value source |
-|---|---|---|---|
-| Colour roles | `color.*` (Material 3 role names, `fill-1` to `fill-4`, `focus-ring`) | ~40 per theme | Scheme values in ADR 0027, the rest pending |
-| Type | `font.family.* font.size.* font.weight.* font.line-height.* font.letter-spacing.* font.size-adjust font.line-height-adjust font.weight.map font.feature.tabular-nums` and composed roles | 10 roles | Structure fixed, face DM Sans |
-| Space | `space.xxs .. space.xxxl`, `space.inset.* space.gap.* layout.*` | 8 steps | Fixed |
-| Radius | `radius.none .. radius.full` | 7 | Pending |
-| Border and elevation | `border.width.* elevation.level0-3` | ~8 | Pending |
-| Motion | Values and names in [ADR 0023](../../../decisions/0023-motion.md); `flip` is provisional | per ADR 0023 | Fixed |
-| Opacity | `opacity.disabled opacity.scrim opacity.pressed` | 3 | Fixed |
-| Icon and image | `icon.size.* icon.stroke avatar.size.*` | ~8 | Sizes fixed, art pending |
-| Layout | `breakpoint.* layout.max-width target.min` | ~8 | Fixed |
+Every token M0 creates, with its light and dark value, source and status (fixed, prototype, clamped, owner, design-pending; defined in [colour](colour.md#m0-values)). A design-pending token is created with its placeholder and a `design-pending` comment; it is never left out.
+
+| Group | Names | Values, sources, status |
+|---|---|---|
+| Colour roles | `color.*` (Material 3 role names, `fill-1` to `fill-4`, `focus-ring`) | [colour M0 values](colour.md#m0-values), [increased contrast](colour.md#increased-contrast) |
+| Component colours | `range-bar.fill-N.*`, `status-chip.*` | [colour](colour.md#range-bar-and-status-chip-on-fills) |
+| Type | `font.family.* font.size.* font.weight.* font.line-height.* font.letter-spacing.* font.size-adjust font.line-height-adjust font.weight.map font.feature.tabular-nums` and composed roles | [typography](typography.md); face DM Sans |
+| Space and layout | `space.xxs .. space.xxxl`, `space.inset.* space.gap.* layout.* breakpoint.* target.min` | [spacing and layout](spacing-and-layout.md), fixed |
+| Radius, border, elevation, opacity | `radius.none .. radius.full`, `border.width.*`, `elevation.level0-3`, `opacity.*` | [shape and elevation](shape-and-elevation.md) |
+| Motion | Names and values in [ADR 0023](../../../decisions/0023-motion.md); `flip` is provisional | ADR 0023, fixed |
+| Icon and image | `icon.size.* icon.stroke avatar.size.*` | Sizes fixed, art design-pending |

@@ -46,7 +46,7 @@ One scale for spacing; nothing in `space.*` is off the scale. Layout tokens belo
 |---|---|
 | Names | T-shirt steps `xxs` to `xxxl`, eight in all. Add a semantic token, not a ninth step. Names start with a letter so they are valid Swift and Kotlin identifiers |
 | Use | Components use the semantic tokens only; the scale is for building them |
-| Platforms | CSS `--space-md`, not `--spacing-*` (Tailwind v4 treats that as a numeric multiplier); Swift `Spacing.md`; Compose `Spacing.md` as `Dp` |
+| Platforms | CSS `--space-md`. The Tailwind `@theme` block maps each step as `--spacing-md: var(--space-md)` for utilities such as `p-md` and defines no `--spacing` base, so numeric utilities such as `p-4` do not exist ([research](../../../research/repo/contracts-and-tokens.md#design-tokens)); Swift `Spacing.md`; Compose `Spacing.md` as `Dp` |
 | Text size | Page margin and the column grid do not scale. Spacing tied to text (control padding, icon gap) scales with system text size |
 
 > **Rule.** Spacing between siblings uses gap on the container, not margins on the children. Content never touches the screen edge: the margin token plus the safe area is the minimum.

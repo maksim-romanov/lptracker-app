@@ -13,8 +13,8 @@
 
 ## Decisions
 
-- Architecture and process decisions are ADRs in [docs/decisions/](docs/decisions/). They stay `proposed` until M2 and may be edited; after that they are `accepted` and changed only by a superseding ADR.
-- The owner accepts or rejects ADRs and approves specs (`status: approved`).
+- Architecture and process decisions are ADRs in [docs/decisions/](docs/decisions/). A `proposed` ADR may be edited; an `accepted` one changes only by a superseding ADR.
+- The owner accepts or rejects ADRs and approves specs (`status: approved`). Order: 0016, 0054 and the tooling ADRs (0001, 0004, 0005, 0010, 0027, 0037, 0049, 0052) before the first push; the rest in groups at the end of the iteration that relies on them.
 
 ## Integrations
 
@@ -29,6 +29,6 @@
 
 ## Continuity
 
-- At least two people hold admin rights on the repository, the official instance and the app-store accounts.
-- Credentials for the official instance live in the shared secret store described in [ADR 0032](docs/decisions/0032-deployment-and-cost.md), never with one person.
+- At least two people hold admin rights on the repository, the official instance and the app-store accounts. The owner names the second admin before R1.
+- Credentials for the official instance live in a shared secret store, never with one person. The store is chosen in the Ops1 spec.
 - If the owner is unreachable for 90 days, the maintainers decide by majority.

@@ -52,4 +52,4 @@ See the current plan, its limits and what a higher plan adds.
 
 ## Acceptance
 
-Rubric defaults, plus: every state above at 390, 820 and 1280 px on web and on iPhone. Row 14: the guest copy says "Guest", never "Free".
+Rubric defaults, plus: every state above at 390, 820 and 1280 px on web and on iPhone. Row 12: the guest copy says "Guest", never "Free".

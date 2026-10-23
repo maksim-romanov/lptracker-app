@@ -6,7 +6,7 @@ The base the rest of the book uses. It defines names, scales and rules. Colour S
 |---|---|
 | Screens, regions and their order | Remaining colour values; Scheme tweaks |
 | Component anatomy, states and behaviour | Type sizes per role |
-| Token names, layers and contexts | Corner shapes, borders, shadows, glass |
+| Token names, layers and contexts | Values marked design-pending in [colour](colour.md#m0-values) and [shape](shape-and-elevation.md); glass |
 | Size rules, spacing scale, touch targets | Icons, illustration, logos beyond data |
 | Data each element shows | Final copy and imagery |
 | Accessibility and motion rules | Motion character beyond the shared tokens |

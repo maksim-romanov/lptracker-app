@@ -32,7 +32,10 @@ Each rule names the check that enforces it. Until M0 no check runs; follow each 
 |---|---|
 | Everything in the repo is English ([ADR 0052](docs/decisions/0052-docs-as-code.md)) | *convention* |
 | `packages/core` imports nothing outside itself; integrations never import `infra` or each other; MIT code never imports AGPL code | dependency-cruiser |
-| An integration PR edits no core package (`packages/core`, `packages/contracts`, `packages/infra`) and no `AGENTS.md`, `CLAUDE.md`, `.agents/`, `.claude/`, `.mcp.json`, `.skills/`, `.agent/` or `.github/workflows/` | CI path scope |
+| An integration PR edits only `integrations/**` and the app files the [promise](docs/concepts/integration-model.md#promise) allows; any other path fails | CI path scope (allowlist) |
+| Gate and config paths change only with a maintainer review ([ADR 0036](docs/decisions/0036-integration-trust.md)) | CODEOWNERS |
+| Snapshots, canaries and thresholds change only in a PR with the owner's label | baseline guard (*planned*) |
+| No retries on PR runs; a flaky test goes to the nightly repeat run and gets an issue | CI check (*planned*) |
 | Change generated files (`Generated/`, `openapi.json`, `openapi.*.json`, `*.schema.json`, `*.gen.*`) only by running `bun run codegen` | permission deny rules + CI drift check |
 | An integration PR adds no dependency and leaves lockfiles unchanged | CI lockfile guard |
 | Every number shown to users is derived on the server and clients only format it, because four clients must show identical values | golden formatting tests |

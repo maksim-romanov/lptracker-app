@@ -28,4 +28,22 @@ The screen pages win over [screens.html](visual/prototypes/screens.html) until i
 - Alerts: the out-of-range summary line, the unread mark, the push-off banner.
 - Plans: the current plan, limit rows against usage, the action button.
 - Settings: the section order of the page and the Appearance row.
+- Portfolio: `failed` (nothing answered, last data kept), the `truncated` note, the `unpriced` note.
+- Position: `loading`, `failed`, not found or closed.
+
+## Known deviations
+
+Approved prototypes break these rules. The rule wins; each prototype fixes them before its next approval.
+
+| Prototype | Deviation | Rule |
+|---|---|---|
+| ghost-cards.html | Springs and easings are its own (`weights` stiffness and damping, `--bouncy`, `--wobbly`, `--ease` 900 ms, `--lift-dur`, `--d-ease`) instead of `brisk`, `gentle`, `flip`; the knob spring (stiffness 170, damping 15) has bounce 0.42, over 0.4; Spotlight `.details` overshoots | [ADR 0023](../../decisions/0023-motion.md), [ADR 0027](../../decisions/0027-design-tokens.md) |
+| ghost-cards.html | The narrow Rows expansion animates `max-height` | Disclosures open at once and fade, never animate height ([ADR 0023](../../decisions/0023-motion.md)) |
+| ghost-cards.html | `.card:focus-visible` opens the Drawer and Spotlight | Focus never opens; a real button with `aria-expanded` does ([position card](components/data-display.md#position-card)) |
+| ghost-cards.html | Secondary text by opacity (`.meta` 0.72, `.amounts` 0.82, `.ends` 0.7) | Solid colour with 4.5:1 against its fill |
+| ghost-cards.html | Chip tilt (`rotate(±3deg)`) | No tilt in v0 ([motion](foundations/motion.md#ui-kit-v0)) |
+| ghost-cards.html | `--surface`, `--amber` and several `bandFor` results lie outside sRGB | [Clamped values](foundations/colour.md#m0-values) |
+| ui-kit.html | Focus ring is `--accent`, 3 px, offset 2 px, outside fills | [Focus ring](foundations/colour.md#focus-ring) |
+| ui-kit.html | Press and knob motion use `--spring` 420 ms, `--press` 160 ms and 700 ms literals | `brisk`, or none for the knob ([motion](foundations/motion.md#ui-kit-v0)) |
+| ui-kit.html | Light `--surface` and `--success`, dark `--danger` lie outside sRGB; amber chip is 0.86 0.15 85 | [Clamped values](foundations/colour.md#m0-values) |
 

@@ -18,7 +18,7 @@ Chosen **server computes everything**, because protocol math implemented once in
 
 - The server returns token amounts, owed fees, rewards and ranges as decimal strings, and ranges as prices in both orientations with a bar position.
 - Clients only format: locale, compact notation, units. They never multiply by decimals or evaluate ticks.
-- Formatting follows hand-written golden vectors in `packages/contracts`, consumed by the TS, Swift and Kotlin tests.
+- Formatting follows hand-written golden vectors in `packages/contracts`, consumed by the TS, Swift and Kotlin tests. M1a writes them and the owner approves them before any client formats a value. They cover the visible and the spoken string (accessibility label) per locale, amounts above 38 significant digits (beyond a Swift `Decimal`), zero and dust, unpriced and stale values, and partial totals.
 
 ## Consequences
 
