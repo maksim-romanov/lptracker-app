@@ -2,7 +2,10 @@
 
 | Doc | What it answers |
 |---|---|
-| [vision.md](vision.md) | What VoidX is, for whom, MVP scope, non-goals |
+| [vision.md](vision.md) | What VoidX is and what must stay true |
+| [product/problem.md](product/problem.md) | The pains and how VoidX answers them |
+| [product/prd.md](product/prd.md) | Users, jobs to be done, MVP scope, after the MVP |
+| [product/use-cases/](product/use-cases/README.md) | What a person does with VoidX: six user goals |
 | [architecture.md](architecture.md) | What exists and how it fits together |
 | [glossary.md](glossary.md) | The words we use and the identifier grammars |
 | [roadmap.md](roadmap.md) | Order of work: iterations D0 to M6 |

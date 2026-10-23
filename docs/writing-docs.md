@@ -14,7 +14,7 @@ Every doc in this repo is read by coding agents first and people second. Each li
 
 | Kind of fact | Home |
 |---|---|
-| Why the product exists, scope, non-goals | [vision.md](vision.md) |
+| What the product is, why it exists, scope | [vision.md](vision.md), [product/](product/problem.md) |
 | Why a decision was made | [decisions/](decisions/), one ADR each; `proposed` ADRs may be edited, `accepted` ones are superseded |
 | What exists now and how it fits together | [architecture.md](architecture.md) and [concepts/](concepts/) |
 | How to do a task | [guides/](guides/) or a skill in `.agents/skills/` |
